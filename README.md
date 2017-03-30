@@ -170,21 +170,21 @@ we need a library that can deliver this.
 
 ## Libraries
 
-- PyOpenGL
-- pyGLFW
-- PIL/Pillow for texture loading
-- https://www.pygame.org using the mixer module for music
-- Library for matrix and vector algebra: http://pyrr.readthedocs.io
+- [http://pyopengl.sourceforge.net](http://pyopengl.sourceforge.net/)
+- [pyGLFW](https://github.com/FlorianRhiem/pyGLFW) for window and context creation + input
+- [PIL/Pillow](https://github.com/python-pillow/Pillow) for texture loading
+- [https://www.pygame.org](https://www.pygame.org) using the mixer module for music
+- [https://github.com/adamlwgriffiths/Pyrr](https://github.com/adamlwgriffiths/Pyrr) for math (uses numpy)
 
 ## What inspired us to make this project?
 
 - We are old farts from the demoscene
 - We love Python
-- We work a lot with Django .. and love it
+- We work a lot with Django and love it
 
 Why not combine ideas from our own demosys written in C++ and Django making
 a Python 3 version?
 
 Also thanks to [Attila Toth](https://www.youtube.com/channel/UC4L3JyeL7TXQM1f3yD6iVQQ)
-for an excellent video tutorial on Python and OpenGL. We don know OpenGL,
+for an excellent video tutorial on Python and OpenGL. We do know OpenGL,
 but had no clue where to start in the Python world.
