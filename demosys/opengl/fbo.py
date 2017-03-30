@@ -19,12 +19,6 @@ class WindowFBO:
     def release(self):
         pass
 
-    def __bind(self):
-        pass
-
-    def _release(self):
-        pass
-
     def clear(self):
         pass
 
@@ -39,34 +33,35 @@ class FBO:
         self.depth_buffer = None
         self.fbo = GL.glGenFramebuffers(1)
 
-    def bind(self):
+    def bind(self, stack=True):
         """Bind FBO adding it to the stack"""
-        self._bind()
+        GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
+        if not stack:
+            return
+
         push_fbo(self)
         if len(self.color_buffers) > 1:
             GL.glDrawBuffers(len(self.color_buffers), self.color_buffers_ids)
         w, h = self.size
         GL.glViewport(0, 0, w, h)
 
-    def release(self):
-        """Bind FBO popping it from the stack"""
+    def release(self, stack=True):
+        """
+        Bind FBO popping it from the stack
+        :param stack: Should the bind be registered in the stack?
+        """
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
+        if not stack:
+            return
+
         parent = pop_fbo(self)
         if parent:
             parent.bind()
 
-    def _bind(self):
-        """Bind bypassing the stack"""
-        GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
-
-    def _release(self):
-        """Release bypassing the stack"""
-        GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
-
     def clear(self):
-        self._bind()
+        self.bind(stack=False)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
-        self._release()
+        self.release(stack=False)
 
     @property
     def size(self):
@@ -81,7 +76,7 @@ class FBO:
                internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE):
         """Convenient shortcut for creating single color attachment FBOs"""
         fbo = FBO()
-        fbo._bind()
+        fbo.bind(stack=False)
         c = Texture.create_2d(width, height, internal_format=internal_format, format=format, type=type)
         fbo.add_color_attachment(c)
         if depth:
@@ -89,7 +84,7 @@ class FBO:
                                   format=GL.GL_DEPTH_COMPONENT)
             fbo.set_depth_attachment(d)
         fbo.check_status()
-        fbo._release()
+        fbo.release(stack=False)
         return fbo
 
     def add_color_attachment(self, texture):
