@@ -119,11 +119,12 @@ Some babble about the current state of the project:
 - The VAOs `bind(..)` requires you to pass in a shader. This is because the VAO
   will automatically adapt to the attributes in your shader. During the VAO creation
   you need to make the name mapping to the attribute name. If you have a VAO with positions,
-  normals, uvs and tangents and pass in a shader that only use position; the VAO
+  normals, uvs and tangents and pass in a shader that only use position
+  (or any other combination of attributes in the VAO); the VAO
   class will on-the-fly generate a version internally with only positions.
 - We only support 2D textures at the moment loaded with PIL/Pillow, but this is trivial
   to extend.
-- Resource loading is supported in the `Effect` class itself. In `__init__()' you can
+- Resource loading is supported in the `Effect` class itself. In `__init__()` you can
   fetch resources using for example `self.get_shader` or self.get_texture'. This will
   return a lazy object that will be populated after the loading stage is done.
 - Resources shared between effects can be put outside effect packages inside your project
