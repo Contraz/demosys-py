@@ -1,6 +1,35 @@
 from OpenGL import GL
 from demosys.opengl import Texture
 
+# Reference to the window
+WINDOW = None
+
+
+class WindowFBO:
+    """Fake FBO representing default render target"""
+    def __init__(self):
+        self.window = WINDOW
+        self.color_buffers = []
+        self.color_buffers_ids = []
+        self.depth_buffer = None
+
+    def bind(self):
+        GL.glViewport(0, 0, WINDOW.buffer_width, WINDOW.buffer_height)
+
+    def release(self):
+        pass
+
+    def __bind(self):
+        pass
+
+    def _release(self):
+        pass
+
+    def clear(self):
+        pass
+
+WINDOW_FBO = WindowFBO()
+
 
 class FBO:
     """Frame buffer object"""
@@ -22,9 +51,9 @@ class FBO:
     def release(self):
         """Bind FBO popping it from the stack"""
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
-        empty = pop_fbo(self)
-        if empty:
-            GL.glViewport(0, 0, 2560, 1536)
+        parent = pop_fbo(self)
+        if parent:
+            parent.bind()
 
     def _bind(self):
         """Bind bypassing the stack"""
@@ -121,18 +150,23 @@ def push_fbo(fbo):
     global FBO_STACK
     FBO_STACK.append(fbo)
     if len(FBO_STACK) > 8:
-        raise FBOError("FBO stack overflow")
+        raise FBOError("FBO stack overflow. You probably forgot to release a bind somewhere.")
 
 
 def pop_fbo(fbo):
-    """Pops the fbo out of the stack"""
+    """
+    Pops the fbo out of the stack
+    Returns: The last last fbo in the stack
+    """
     global FBO_STACK
     if not FBO_STACK:
-        raise FBOError("FBO stack is already empty")
+        raise FBOError("FBO stack is already empty. You are probably releasing a FBO twice or forgot to bind.")
     fbo_out = FBO_STACK.pop()
     if fbo_out != fbo:
         raise FBOError("Incorrect FBO release order")
-    return len(FBO_STACK) == 0
+    if FBO_STACK:
+        return FBO_STACK[-1]
+    return WINDOW_FBO
 
 
 class FBOError(Exception):

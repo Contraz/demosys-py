@@ -2,6 +2,8 @@ from OpenGL import GL
 import glfw
 from demosys.view.window import Window
 from demosys.effects.registry import effects, Effect
+from demosys.opengl import fbo
+from demosys.opengl.fbo import WINDOW_FBO
 from demosys import resources
 from demosys.timeline import timers
 from demosys.conf import settings
@@ -21,6 +23,7 @@ def run():
 
     global WINDOW
     WINDOW = Window()
+    fbo.WINDOW = WINDOW
 
     print("Loader started at", glfw.get_time())
     # Inject window parameters in the base Effect class
@@ -46,7 +49,7 @@ def run():
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
 
         for e in effect_list:
-            e.draw(t, None)
+            e.draw(t, WINDOW_FBO)
 
         WINDOW.swap_buffers()
         WINDOW.poll_events()

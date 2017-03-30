@@ -1,10 +1,10 @@
-from demosys.effects import Effect
+from demosys.effects import effect
 from demosys.opengl import geometry, FBO
 # from pyrr import matrix44, Vector3, Matrix33
 from OpenGL import GL
 
 
-class CubeEffect(Effect):
+class CubeEffect(effect.Effect):
     """Simple effect drawing a textured cube"""
     depth_testing = True
 
@@ -18,7 +18,9 @@ class CubeEffect(Effect):
         self.quad = geometry.quad_fs()
         self.fbo = FBO.create(512, 512, depth=True)
 
+    @effect.bind_target
     def draw(self, time, target):
+        target.bind()
         GL.glEnable(GL.GL_DEPTH_TEST)
         self.fbo.bind()
 
@@ -49,3 +51,4 @@ class CubeEffect(Effect):
 
         GL.glClearColor(0.5, 0.5, 0.5, 1)
         self.fbo.clear()
+        target.release()

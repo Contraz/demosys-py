@@ -2,6 +2,15 @@ from demosys import resources
 from pyrr import matrix44, Matrix33, Vector3
 
 
+def bind_target(func):
+    """Decorator auto binding and releasing the incoming FBO"""
+    def func_wrapper(*args, **kwargs):
+        args[2].bind()
+        func(*args, **kwargs)
+        args[2].release()
+    return func_wrapper
+
+
 class Effect:
     # Window properties set by controller on initialization
     window_width = 0
