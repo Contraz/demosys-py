@@ -51,14 +51,10 @@ effect.py
 ```python
 from demosys.effects import Effect
 from demosys.opengl import geometry, FBO
-# from pyrr import matrix44, Vector3, Matrix33
 from OpenGL import GL
 
-
 class CubeEffect(Effect):
-    """Simple effect drawing a textured cube"""
-    depth_testing = True
-
+    """Rotating cube with UVs and normals"""
     def __init__(self):
         self.shader = self.get_shader('cube/cube.glsl')
         self.texture = self.get_texture('cube/texture.png')
@@ -67,16 +63,18 @@ class CubeEffect(Effect):
     def draw(self, time, target):
         GL.glEnable(GL.GL_DEPTH_TEST)
 
+        # Cheater methods in base class for lazyness
         mv_m = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),
                                           translation=(0.0, 0.0, -8.0))
         normal_m = self.create_normal_matrix(mv_m)
         proj_m = self.create_projection(fov=60.0, ratio=1.0)
 
+        # The VAO and shader will do a a little dance and agree on attributes
         self.cube.bind(self.shader)
-        self.cube_shader1.uniform_mat4("ProjM", proj_m)
-        self.cube_shader1.uniform_mat4("ModelViewM", mv_m)
-        self.cube_shader1.uniform_mat3("NormalM", normal_m)
-        self.cube_shader1.uniform_sampler_2d(0, "texture0", self.texture1)
+        self.cube_shader.uniform_mat4("ProjM", proj_m)
+        self.cube_shader.uniform_mat4("ModelViewM", mv_m)
+        self.cube_shader.uniform_mat3("NormalM", normal_m)
+        self.cube_shader.uniform_sampler_2d(0, "texture0", self.texture)
         self.cube.draw()
 ```
 
