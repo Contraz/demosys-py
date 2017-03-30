@@ -15,12 +15,6 @@ TIMER = None
 
 def run():
     """Initialize, load and run"""
-    global TIMER
-    if settings.MUSIC:
-        TIMER = timers.MusicTimer(source=settings.MUSIC)
-    else:
-        TIMER = timers.Timer()
-
     global WINDOW
     WINDOW = Window()
     fbo.WINDOW = WINDOW
@@ -39,6 +33,11 @@ def run():
 
     glfw.set_key_callback(WINDOW.window, key_event_callback)
 
+    global TIMER
+    if settings.MUSIC:
+        TIMER = timers.MusicTimer(source=settings.MUSIC)
+    else:
+        TIMER = timers.Timer()
     TIMER.start()
 
     frames = 0
