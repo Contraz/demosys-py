@@ -20,8 +20,11 @@ The package is not yet on PyPI, but will be on the near future.
 ## Contributing
 
 Any contribution to the project is welcome. Never hesitate to ask questions or submit
-pull requests (completed or work in progress). The worst thing that an happen is that
-we or you might learn something. This is supposed to be a fun project
+pull requests (completed or work in progress). The worst thing that can happen is that
+we or you might learn something. This is supposed to be a fun project.
+
+Also check out the [TODO list](TODO.md). Take a stab on what of the features
+or documentation or suggest new entires.
 
 ## Running the damn thing
 
@@ -78,13 +81,17 @@ class CubeEffect(Effect):
         self.cube.draw()
 ```
 
-There you go. Since you asked for `cube.glsl` and `texture.png` these will
-be automatically be loaded ready to use. The `cube` objects is a `VAO`
-that you bind supplying the shader and the system will figure out the
-attribute mapping. Please look in the `demosys.opengl.geometry` module
-for the valid attribute names and look at shaders in the `testproject`.
-You currently define vertex, fragment and geometry shader in one glsl file
-separated by preprocessors.
+There you go. 
+- Since you asked for `cube.glsl` and `texture.png` these will
+  be automatically be loaded ready to use. 
+- The `cube` objects is a `VAO`
+  that you bind supplying the shader and the system will figure out the
+  attribute mapping.
+- Please look in the `demosys.opengl.geometry` module
+  for the valid attribute names and look at shaders in the `testproject`.
+- You currently define vertex, fragment and geometry shader in one glsl file
+  separated by preprocessors.
+- Effects not defined in the `settings` module will not run!
 
 That should give you an idea..
 
@@ -125,8 +132,6 @@ What we currently support:
   something goes wrong.
 - The `time` value passed to the effects `draw` method is the current duration
   in the playing music. If no music is loaded, a dummy timer is used.
-
-See also the TODO.md file.
 
 ## Settings
 
