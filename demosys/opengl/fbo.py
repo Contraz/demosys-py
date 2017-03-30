@@ -1,0 +1,139 @@
+from OpenGL import GL
+from demosys.opengl import Texture
+
+
+class FBO:
+    """Frame buffer object"""
+    def __init__(self):
+        self.color_buffers = []
+        self.color_buffers_ids = []
+        self.depth_buffer = None
+        self.fbo = GL.glGenFramebuffers(1)
+
+    def bind(self):
+        """Bind FBO adding it to the stack"""
+        self._bind()
+        push_fbo(self)
+        if len(self.color_buffers) > 1:
+            GL.glDrawBuffers(len(self.color_buffers), self.color_buffers_ids)
+        w, h = self.size
+        GL.glViewport(0, 0, w, h)
+
+    def release(self):
+        """Bind FBO popping it from the stack"""
+        GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
+        empty = pop_fbo(self)
+        if empty:
+            GL.glViewport(0, 0, 2560, 1536)
+
+    def _bind(self):
+        """Bind bypassing the stack"""
+        GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
+
+    def _release(self):
+        """Release bypassing the stack"""
+        GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
+
+    def clear(self):
+        self._bind()
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
+        self._release()
+
+    @property
+    def size(self):
+        if self.color_buffers:
+            return self.color_buffers[0].size
+        if self.depth_buffer:
+            return self.depth_buffer.size
+        raise FBOError("Cannot determine size of FBO. No attachments.")
+
+    @classmethod
+    def create(cls, width, height, depth=False, stencil=True,
+               internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE):
+        """Convenient shortcut for creating single color attachment FBOs"""
+        fbo = FBO()
+        fbo._bind()
+        c = Texture.create_2d(width, height, internal_format=internal_format, format=format, type=type)
+        fbo.add_color_attachment(c)
+        if depth:
+            d = Texture.create_2d(width, height, internal_format=GL.GL_DEPTH24_STENCIL8,
+                                  format=GL.GL_DEPTH_COMPONENT)
+            fbo.set_depth_attachment(d)
+        fbo.check_status()
+        fbo._release()
+        return fbo
+
+    def add_color_attachment(self, texture):
+        # Internal states
+        self.color_buffers_ids.append(GL.GL_COLOR_ATTACHMENT0 + len(self.color_buffers))
+        self.color_buffers.append(texture)
+        # Attach to fbo
+        GL.glFramebufferTexture2D(
+            GL.GL_FRAMEBUFFER,
+            self.color_buffers_ids[-1],
+            GL.GL_TEXTURE_2D,
+            self.color_buffers[-1].texture,
+            0
+        )
+
+    def set_depth_attachment(self, texture):
+        self.depth_buffer = texture
+        # Attach to fbo
+        GL.glFramebufferTexture2D(
+            GL.GL_FRAMEBUFFER,
+            GL.GL_DEPTH_ATTACHMENT,
+            GL.GL_TEXTURE_2D,
+            self.depth_buffer.texture,
+            0
+        )
+
+    def check_status(self):
+        """Checks the completeness of the FBO"""
+        status = GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)
+        incomplete_states = {
+            GL.GL_FRAMEBUFFER_UNSUPPORTED: "Framebuffer unsupported. Try another format.",
+            GL.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: "Framebuffer incomplete attachment",
+            GL.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: "Framebuffer missing attachment",
+            GL.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS: "Framebuffer unsupported dimension.",
+            GL.GL_FRAMEBUFFER_INCOMPLETE_FORMATS: "Framebuffer incoplete formats.",
+            GL.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER: "Framebuffer incomplete draw buffer.",
+            GL.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER: "Framebuffer incomplete read buffer",
+        }
+        if status == GL.GL_FRAMEBUFFER_COMPLETE:
+            return
+        s = incomplete_states.get(status, "Unknown error")
+        raise FBOError(s)
+
+    def __repr__(self):
+        return "<FBO {} color_attachments={} depth_attachement={}".format(
+            self.fbo,
+            self.color_buffers,
+            self.depth_buffer,
+        )
+
+
+# Internal FBO bind stack so we can support hierarchical binding
+FBO_STACK = []
+
+
+def push_fbo(fbo):
+    """Push fbo into the stack"""
+    global FBO_STACK
+    FBO_STACK.append(fbo)
+    if len(FBO_STACK) > 8:
+        raise FBOError("FBO stack overflow")
+
+
+def pop_fbo(fbo):
+    """Pops the fbo out of the stack"""
+    global FBO_STACK
+    if not FBO_STACK:
+        raise FBOError("FBO stack is already empty")
+    fbo_out = FBO_STACK.pop()
+    if fbo_out != fbo:
+        raise FBOError("Incorrect FBO release order")
+    return len(FBO_STACK) == 0
+
+
+class FBOError(Exception):
+    pass
