@@ -14,12 +14,15 @@ class CubeEffect(effect.Effect):
         self.quad_shader = self.get_shader('quad_fs_uvscale.glsl')
         self.texture1 = self.get_texture('cube/texture.png')
         self.texture2 = self.get_texture('cube/GreenFabric.png')
-        self.cube = geometry.cube(2.0)
+        self.cube = geometry.cube(4.0, 4.0, 4.0)
+        r = (-25.0, 25.0)
+        self.points = geometry.points_random_3d(1000, range_x=r, range_y=r, range_z=r, seed=7656456)
         self.quad = geometry.quad_fs()
         self.fbo = FBO.create(512, 512, depth=True)
 
     @effect.bind_target
     def draw(self, time, target):
+        time *= 0.5
         target.bind()
         GL.glEnable(GL.GL_DEPTH_TEST)
         self.fbo.bind()
@@ -40,14 +43,14 @@ class CubeEffect(effect.Effect):
 
         self.fbo.release()
 
-        proj_m = self.create_projection(fov=60.0)
+        proj_m = self.create_projection(fov=60.0, far=1000)
 
-        self.cube.bind(self.cube_shader2)
+        self.points.bind(self.cube_shader2)
         self.cube_shader2.uniform_mat4("ProjM", proj_m)
         self.cube_shader2.uniform_mat4("ModelViewM", mv_m)
         self.cube_shader2.uniform_mat3("NormalM", normal_m)
         self.cube_shader2.uniform_sampler_2d(0, "texture0", self.fbo.color_buffers[0])
-        self.cube.draw(mode=GL.GL_POINTS)
+        self.points.draw(mode=GL.GL_POINTS)
 
         GL.glClearColor(0.5, 0.5, 0.5, 1)
         self.fbo.clear()
