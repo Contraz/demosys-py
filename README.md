@@ -70,7 +70,7 @@ class CubeEffect(Effect):
         mv_m = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),
                                           translation=(0.0, 0.0, -8.0))
         normal_m = self.create_normal_matrix(mv_m)
-        proj_m = self.create_projection(fov=60.0, ratio=1.0)
+        proj_m = self.create_projection(fov=60.0)
 
         # The VAO and shader will do a a little dance and agree on attributes
         self.cube.bind(self.shader)
@@ -97,7 +97,7 @@ That should give you an idea..
 
 ## Longer Introduction
 
-Anything we draw to the screen must be implemented as an Effect.
+Anything we draw to the screen must be implemented as an `Effect`.
 If that effect is one or multiple things is entirely up to you.
 An effect is an individual package/directory containing an `effect.py`
 module. This package can also contain a `shaders` and `textures` directory
@@ -106,7 +106,7 @@ See the `testproject` directory for reference.
 
 Explore the small `testproject` folder, and you'll get the point.
 
-What we currently support:
+Some babble about the current state of the project:
 - All geometry must be defined using VAOs. There's a very convenient VAO class
   for this already making it quick and easy to create them. Look at the
   `demosys.opengl.geometry` module for examples.
@@ -126,6 +126,9 @@ What we currently support:
 - Resource loading is supported in the `Effect` class itself. In `__init__()' you can
   fetch resources using for example `self.get_shader` or self.get_texture'. This will
   return a lazy object that will be populated after the loading stage is done.
+- Resources shared between effects can be put outside effect packages inside your project
+  directory. For example in `testproject/resources/shaders` and `testproject/resources/textures`.
+  Make sure you add those paths in the settings file.
 - We don't have any scene/mesh loaders. You can hack something in yourself for now
   or just stick to or extend the `geometry` module.
 - We try to do as much validation as possible and give useful feedback when
