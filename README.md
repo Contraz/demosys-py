@@ -4,6 +4,10 @@ A python 3.6 implementation of a C++ project used to create and prototype
 demos (see [demoscene](https://en.wikipedia.org/wiki/Demoscene)) in OpenGL. The design of 
 this version is heavily inspired by the [Django](https://www.djangoproject.com/) project.
 
+|   |   |
+|---|---|
+| ![screenshot1](https://objects.zetta.io:8443/v1/AUTH_06e2dbea5e824620b20b470197323277/contraz.no-static/gfx/productions/SimLife3.png) | ![screenshot2](https://objects.zetta.io:8443/v1/AUTH_06e2dbea5e824620b20b470197323277/contraz.no-static/gfx/productions/SimLife2.png) |
+
 We only support OpenGL 4.1+ core profiles (no backwards compatibility).
 
 **Also note that Python 3.6 will and is the minimum requirement for reasons
