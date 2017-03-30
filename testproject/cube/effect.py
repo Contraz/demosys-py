@@ -45,7 +45,7 @@ class CubeEffect(effect.Effect):
         self.fbo.release()
 
         # proj_m = self.create_projection(fov=60.0, far=1000)
-        self.sys_camera.set_fov(math.sin(time * 2) * 20 + 60)
+        self.sys_camera.update_projection(fov=math.sin(time * 2) * 20 + 60)
         proj_m = self.sys_camera.projection
 
         # Test camera
@@ -53,6 +53,7 @@ class CubeEffect(effect.Effect):
                                          math.sin(time * 10),
                                          math.cos(time) * 10)
         cam_m = self.sys_camera.look_at(pos=[0.0, 0.0, 0.0])
+        normal_m = self.create_normal_matrix(cam_m)
 
         self.points.bind(self.cube_shader2)
         self.cube_shader2.uniform_mat4("ProjM", proj_m)

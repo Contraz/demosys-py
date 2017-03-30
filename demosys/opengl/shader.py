@@ -161,10 +161,10 @@ class Shader:
         uniform = self.uniform_check(name, GL.GL_FLOAT_VEC2)
         GL.glUniform2f(uniform.location, x, y)
 
-    def uniform_3f(self, name, x, y):
+    def uniform_3f(self, name, x, y, z):
         """Set a float uniform"""
         uniform = self.uniform_check(name, GL.GL_FLOAT_VEC3)
-        GL.glUniform2f(uniform.location, x, y)
+        GL.glUniform3f(uniform.location, x, y, z)
 
     def uniform_4f(self, name, x, y, z, w):
         """Set a vec4 uniform"""

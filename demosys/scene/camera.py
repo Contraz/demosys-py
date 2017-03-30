@@ -4,7 +4,13 @@ from pyrr import matrix44, vector3, vector, Vector3
 class Camera:
     """Simple camera class containing projection"""
     def __init__(self, fov=60, aspect=1.0, near=1, far=100):
-        # The cameras projection
+        """
+        Initialize camera using a specific projeciton        
+        :param fov: Field of view
+        :param aspect: Aspect ratio
+        :param near: Near plane
+        :param far: Far plane
+        """
         self.fov = fov
         self.aspect = aspect
         self.near = near
@@ -17,26 +23,32 @@ class Camera:
     def set_position(self, x, y, z):
         self.position = Vector3([x, y, z])
 
-    @update_projection
-    def set_fov(self, value):
-        self.fov = value
+    def update_projection(self, fov=None, aspect=None, near=None, far=None):
+        """
+        Update projection parameters
+        :param fov: Field of view
+        :param aspect: Aspect ratio
+        :param near: Near plane
+        :param far: Far plane
+        """
+        self.fov = fov or self.fov
+        self.near = near or self.near
+        self.far = far or self.far
+        self.aspect = aspect or self.aspect
+        self._update_projection()
 
-    @update_projection
-    def set_near_far(self, near, far):
-        self.near = near
-        self.far = far
-
-    @update_projection
-    def set_aspect(self, value):
-        self.aspect = value
-
-    def look_at(self, vector=None, pos=None):
-        """Look at a specific point"""
+    def look_at(self, vec=None, pos=None):
+        """
+        Look at a specific point
+        :param vec: Vector3 position
+        :param pos: python list [x, y, x]
+        :return: Camera matrix
+        """
         if pos:
-            vector = Vector3(vector)
-        if vector is None:
+            vec = Vector3(pos)
+        if vec is None:
             raise ValueError("vector or pos must be set")
-        return self._gl_look_at(self.position, vector, self._up)
+        return self._gl_look_at(self.position, vec, self._up)
 
     def _gl_look_at(self, pos, target, up):
         """
@@ -71,11 +83,3 @@ class Camera:
     def _update_projection(self):
         self.projection = matrix44.create_perspective_projection_matrix(
             self.fov, self.aspect, self.near, self.far)
-
-
-def update_projection(func):
-    """Decorator updating projection on function exit"""
-    def wrapped(*args, **kwargs):
-        func(*args, **kwargs)
-        args[0]._update_projection()
-    return wrapped
