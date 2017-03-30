@@ -16,6 +16,7 @@ class Effect:
     window_width = 0
     window_height = 0
     window_aspect = 0
+    sys_camera = None
 
     # Methods to override
     def draw(self, time, target):

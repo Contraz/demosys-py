@@ -175,11 +175,15 @@ class Shader:
 
     def uniform_mat3(self, name, mat):
         """Set a mat3 uniform"""
+        if mat is None:
+            raise ShaderError("Attempted to set uniform to None")
         uniform = self.uniform_check(name, GL.GL_FLOAT_MAT3)
         GL.glUniformMatrix3fv(uniform.location, 1, GL.GL_FALSE, mat)
 
     def uniform_mat4(self, name, mat):
         """Set a mat4 uniform"""
+        if mat is None:
+            raise ShaderError("Attempted to set uniform to None")
         uniform = self.uniform_check(name, GL.GL_FLOAT_MAT4)
         GL.glUniformMatrix4fv(uniform.location, 1, GL.GL_FALSE, mat)
 

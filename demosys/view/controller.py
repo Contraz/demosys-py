@@ -1,3 +1,7 @@
+"""
+Quick and dirty controller to get things up and running.
+Thins needs to be improved once more pieces fall in place.
+"""
 from OpenGL import GL
 import glfw
 from demosys.view.window import Window
@@ -7,10 +11,11 @@ from demosys.opengl.fbo import WINDOW_FBO
 from demosys import resources
 from demosys.timeline import timers
 from demosys.conf import settings
-
+from demosys.scene.camera import Camera
 
 WINDOW = None
 TIMER = None
+CAMERA = None
 
 
 def run():
@@ -20,10 +25,14 @@ def run():
     fbo.WINDOW = WINDOW
 
     print("Loader started at", glfw.get_time())
-    # Inject window parameters in the base Effect class
+    # Inject attributes into the base Effect class
     Effect.window_width = WINDOW.buffer_width
     Effect.window_height = WINDOW.buffer_height
     Effect.window_aspect = WINDOW.width / WINDOW.height
+    global CAMERA
+    CAMERA = Camera(aspect=Effect.window_aspect, fov=60.0, near=1, far=1000)
+    Effect.sys_camera = CAMERA
+
     # Initialize effects first so resources are registered
     effect_list = [cls() for cls in effects.get_effects()]
 

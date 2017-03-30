@@ -1,6 +1,7 @@
+import math
 from demosys.effects import effect
 from demosys.opengl import geometry, FBO
-# from pyrr import matrix44, Vector3, Matrix33
+from pyrr import Vector3
 from OpenGL import GL
 
 
@@ -43,11 +44,20 @@ class CubeEffect(effect.Effect):
 
         self.fbo.release()
 
-        proj_m = self.create_projection(fov=60.0, far=1000)
+        # proj_m = self.create_projection(fov=60.0, far=1000)
+        self.sys_camera.set_fov(math.sin(time * 2) * 20 + 60)
+        proj_m = self.sys_camera.projection
+
+        # Test camera
+        self.sys_camera.set_position(math.sin(time) * 10,
+                                         math.sin(time * 10),
+                                         math.cos(time) * 10)
+        cam_m = self.sys_camera.look_at(pos=[0.0, 0.0, 0.0])
 
         self.points.bind(self.cube_shader2)
         self.cube_shader2.uniform_mat4("ProjM", proj_m)
-        self.cube_shader2.uniform_mat4("ModelViewM", mv_m)
+        # self.cube_shader2.uniform_mat4("ModelViewM", mv_m)
+        self.cube_shader2.uniform_mat4("ModelViewM", cam_m)
         self.cube_shader2.uniform_mat3("NormalM", normal_m)
         self.cube_shader2.uniform_sampler_2d(0, "texture0", self.fbo.color_buffers[0])
         self.points.draw(mode=GL.GL_POINTS)
