@@ -28,7 +28,69 @@ we or you might learn something. This is supposed to be a fun project
 Currently you just clone the repo and run `manage.py`. This runs the `testproject` package
 in the repository. You can of course also make your own.
 
-## Quick Introduction
+# I just want to see an example!
+
+Ok, ok! Let's make a project and an effect-package!
+
+Structure of a project. `cube` is an effect. You can make multiple effects
+with the same structure inside `testproject`
+```
+testproject/
+├── cube
+│   ├── effect.py
+│   ├── shaders
+│   │   └── cube
+│   │       ├── cube.glsl
+│   └── textures
+│       └── cube
+│           └── texture.png
+```
+
+effect.py
+
+```python
+from demosys.effects import Effect
+from demosys.opengl import geometry, FBO
+# from pyrr import matrix44, Vector3, Matrix33
+from OpenGL import GL
+
+
+class CubeEffect(Effect):
+    """Simple effect drawing a textured cube"""
+    depth_testing = True
+
+    def __init__(self):
+        self.shader = self.get_shader('cube/cube.glsl')
+        self.texture = self.get_texture('cube/texture.png')
+        self.cube = geometry.cube(2.0)
+
+    def draw(self, time, target):
+        GL.glEnable(GL.GL_DEPTH_TEST)
+
+        mv_m = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),
+                                          translation=(0.0, 0.0, -8.0))
+        normal_m = self.create_normal_matrix(mv_m)
+        proj_m = self.create_projection(fov=60.0, ratio=1.0)
+
+        self.cube.bind(self.shader)
+        self.cube_shader1.uniform_mat4("ProjM", proj_m)
+        self.cube_shader1.uniform_mat4("ModelViewM", mv_m)
+        self.cube_shader1.uniform_mat3("NormalM", normal_m)
+        self.cube_shader1.uniform_sampler_2d(0, "texture0", self.texture1)
+        self.cube.draw()
+```
+
+There you go. Since you asked for `cube.glsl` and `texture.png` these will
+be automatically be loaded ready to use. The `cube` objects is a `VAO`
+that you bind supplying the shader and the system will figure out the
+attribute mapping. Please look in the `demosys.opengl.geometry` module
+for the valid attribute names and look at shaders in the `testproject`.
+You currently define vertex, fragment and geometry shader in one glsl file
+separated by preprocessors.
+
+That should give you an idea..
+
+## Longer Introduction
 
 Anything we draw to the screen must be implemented as an Effect.
 If that effect is one or multiple things is entirely up to you.
