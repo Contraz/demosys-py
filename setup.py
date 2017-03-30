@@ -11,4 +11,14 @@ setup(
     maintainer_email="eforselv@gmail.com",
     packages=find_packages(),
     include_package_data=True,
+    classifiers=[
+        'Programming Language :: Python',
+        'Environment :: MacOS X',
+        'Environment :: X11 Applications',
+        'Intended Audience :: Developers',
+        'Topic :: Multimedia :: Graphics',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3.6',
+        'Topic :: Software Development :: Libraries :: Application Frameworks',
+    ],
 )
