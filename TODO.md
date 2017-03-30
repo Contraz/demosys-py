@@ -1,12 +1,12 @@
 
 ## TODO
 
+- Write documentation (readthedocs)
 - CLI tool creating new projects and effects.
 - Create more examples in testproject
 - Shaders
-  - Test geometry shaders
-  - Custom loader support
   - Core loader support for common formats
+  - Custom loader support / less hacky loading
 Textures:
   - Support 1D and 3D textures
   - Custom texture loaders
@@ -17,7 +17,7 @@ Generic Data:
 - Basic scene and camera support?
 - Mesh / Scene
   - Custom mesh / scene loading
-- Timeline support
+- Time line support
 - Track support
 - Rocket support
 - Debug Windows
