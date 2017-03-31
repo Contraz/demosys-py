@@ -1,8 +1,14 @@
 language: python
+
 sudo: false
-install:
-  - pip install tox-travis flake8
-script:
-  - tox
-env:
-  - TOXENV=py36
+
+matrix:
+  include:
+   - env: TOXENV=flake8
+     python: 3.6
+   - env: TOXENV=py35-master
+     python: 3.6
+
+install: pip install tox
+
+script: tox
