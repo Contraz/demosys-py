@@ -21,7 +21,8 @@ Generic Data:
 - Time line support
 - Track support
 - Rocket support
-- Debug Windows
+- Debug Windows?
   - FBOs
   - Textures
 - Settings entry for key bindings
+- Clean up cotroller/initialization
