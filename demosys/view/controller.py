@@ -11,7 +11,7 @@ from demosys.opengl.fbo import WINDOW_FBO
 from demosys import resources
 from demosys.timeline import timers
 from demosys.conf import settings
-from demosys.scene.camera import Camera
+from demosys.scene import camera
 
 WINDOW = None
 TIMER = None
@@ -32,7 +32,7 @@ def run(runeffect=None):
 
     # Set up the default system camera
     global CAMERA
-    CAMERA = Camera(aspect=Effect.window_aspect, fov=60.0, near=1, far=1000)
+    CAMERA = camera.Camera(aspect=Effect.window_aspect, fov=60.0, near=1, far=1000)
     Effect.sys_camera = CAMERA
 
     # Initialize effects first so resources are registered
@@ -100,6 +100,31 @@ def key_event_callback(window, key, scancode, action, mods):
         WINDOW.set_should_close()
 
     # Toggle pause time
-    if key == glfw.KEY_SPACE and action == glfw.PRESS:
+    elif key == glfw.KEY_SPACE and action == glfw.PRESS:
         TIMER.toggle_pause()
 
+    # Camera movement
+    # Right
+    if key == glfw.KEY_D:
+        if action == glfw.PRESS:
+            CAMERA.move_state(camera.RIGHT, True)
+        elif action == glfw.RELEASE:
+            CAMERA.move_state(camera.RIGHT, False)
+    # Left
+    elif key == glfw.KEY_A:
+        if action == glfw.PRESS:
+            CAMERA.move_state(camera.LEFT, True)
+        elif action == glfw.RELEASE:
+            CAMERA.move_state(camera.LEFT, False)
+    # Forward
+    elif key == glfw.KEY_W:
+        if action == glfw.PRESS:
+            CAMERA.move_state(camera.FORWARD, True)
+        if action == glfw.RELEASE:
+            CAMERA.move_state(camera.FORWARD, False)
+    # Backwards
+    elif key == glfw.KEY_S:
+        if action == glfw.PRESS:
+            CAMERA.move_state(camera.BACKWARD, True)
+        if action == glfw.RELEASE:
+            CAMERA.move_state(camera.BACKWARD, False)

@@ -1,4 +1,16 @@
+import glfw
 from pyrr import matrix44, vector3, vector, Vector3
+
+# Direction Definitions
+RIGHT = 1
+LEFT = 2
+FORWARD = 3
+BACKWARD = 4
+
+# Movement Definitions
+STILL = 0
+POSITIVE = 1
+NEGATIVE = 2
 
 
 class Camera:
@@ -11,31 +23,78 @@ class Camera:
         :param near: Near plane
         :param far: Far plane
         """
+        self.cam_pos = Vector3([0.0, 0.0, 5.0])
+        # Default camera placement
+        self.cam_up = Vector3([0.0, 1.0, 0.0])
+        self.cam_right = Vector3([1.0, 0.0, 0.0])
+        self.cam_dir = Vector3([0.0, 0.0, -1.0])
+        # World up vector
+        self._up = Vector3([0.0, 1.0, 0.0])
+        # Position movement states
+        self._xdir = STILL
+        self._zdir = STILL
+        self._last_time = 0
+        # Velocity in axis units per second
+        self.velocity = 10.0
+
+        # Projection attributes
+        self.projection = None
         self.fov = fov
         self.aspect = aspect
         self.near = near
         self.far = far
-        self.position = None
-        self.set_position(0.0, 0.0, 0.0)
-        self._up = Vector3([0.0, 1.0, 0.0])
-        self._update_projection()
+        self.set_projection()
 
     def set_position(self, x, y, z):
-        self.position = Vector3([x, y, z])
+        self.cam_pos = Vector3([x, y, z])
 
-    def update_projection(self, fov=None, aspect=None, near=None, far=None):
+    def move_state(self, direction, activate):
         """
-        Update projection parameters
+        Set the camera position move state 
+        :param direction: What direction to update
+        :param activate: Start or stop moving in the direction
+        """
+        if direction == RIGHT:
+            self._xdir = POSITIVE if activate else STILL
+        elif direction == LEFT:
+            self._xdir = NEGATIVE if activate else STILL
+        elif direction == FORWARD:
+            self._zdir = NEGATIVE if activate else STILL
+        elif direction == BACKWARD:
+            self._zdir = POSITIVE if activate else STILL
+
+    @property
+    def view_matrix(self):
+        time = glfw.get_time()
+        t = time - self._last_time
+        self._last_time = time
+
+        if self._xdir == POSITIVE:
+            self.cam_pos += self.cam_right * self.velocity * t
+        elif self._xdir == NEGATIVE:
+            self.cam_pos -= self.cam_right * self.velocity * t
+        if self._zdir == NEGATIVE:
+            self.cam_pos += self.cam_dir * self.velocity * t
+        elif self._zdir == POSITIVE:
+            self.cam_pos -= self.cam_dir * self.velocity * t
+        return self._gl_look_at(self.cam_pos, self.cam_pos + self.cam_dir, self._up)
+
+    def set_projection(self, fov=None, aspect=None, near=None, far=None):
+        """
+        Update projection parameters and return the new version
         :param fov: Field of view
         :param aspect: Aspect ratio
         :param near: Near plane
         :param far: Far plane
+        :return: Projection matrix
         """
         self.fov = fov or self.fov
         self.near = near or self.near
         self.far = far or self.far
         self.aspect = aspect or self.aspect
-        self._update_projection()
+        self.projection = matrix44.create_perspective_projection_matrix(
+            self.fov, self.aspect, self.near, self.far)
+        return self.projection
 
     def look_at(self, vec=None, pos=None):
         """
@@ -48,7 +107,7 @@ class Camera:
             vec = Vector3(pos)
         if vec is None:
             raise ValueError("vector or pos must be set")
-        return self._gl_look_at(self.position, vec, self._up)
+        return self._gl_look_at(self.cam_pos, vec, self._up)
 
     def _gl_look_at(self, pos, target, up):
         """
@@ -79,7 +138,3 @@ class Camera:
 
         # return matrix44.multiply(rotate, translate)
         return matrix44.multiply(translate, rotate)
-
-    def _update_projection(self):
-        self.projection = matrix44.create_perspective_projection_matrix(
-            self.fov, self.aspect, self.near, self.far)
