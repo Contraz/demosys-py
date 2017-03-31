@@ -29,6 +29,8 @@ def run(runeffect=None):
     Effect.window_width = WINDOW.buffer_width
     Effect.window_height = WINDOW.buffer_height
     Effect.window_aspect = WINDOW.width / WINDOW.height
+
+    # Set up the default system camera
     global CAMERA
     CAMERA = Camera(aspect=Effect.window_aspect, fov=60.0, near=1, far=1000)
     Effect.sys_camera = CAMERA
@@ -47,12 +49,14 @@ def run(runeffect=None):
         print("\n".join(e.name for e in effect_list))
         return
 
+    # Load resources
     num_resources = resources.count()
     print(f"Loading {num_resources } resources")
     resources.load()
 
     glfw.set_key_callback(WINDOW.window, key_event_callback)
 
+    # Initialize timer
     global TIMER
     if settings.MUSIC:
         TIMER = timers.MusicTimer(source=settings.MUSIC)
@@ -74,8 +78,9 @@ def run(runeffect=None):
         frames += 1
 
     duration = TIMER.stop()
-    fps = round(frames / duration, 2)
-    print("Duration: {}s rendering {} frames at {} fps".format(duration, frames, fps))
+    if duration > 0:
+        fps = round(frames / duration, 2)
+        print("Duration: {}s rendering {} frames at {} fps".format(duration, frames, fps))
 
     WINDOW.terminate()
 
