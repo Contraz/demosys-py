@@ -55,6 +55,8 @@ def run(runeffect=None):
     resources.load()
 
     glfw.set_key_callback(WINDOW.window, key_event_callback)
+    glfw.set_cursor_pos_callback(WINDOW.window, mouse_event_callback)
+    glfw.set_input_mode(WINDOW.window, glfw.CURSOR, glfw.CURSOR_DISABLED)
 
     # Initialize timer
     global TIMER
@@ -142,3 +144,7 @@ def key_event_callback(window, key, scancode, action, mods):
             CAMERA.move_state(camera.DOWN, True)
         if action == glfw.RELEASE:
             CAMERA.move_state(camera.DOWN, False)
+
+
+def mouse_event_callback(window, x, y):
+    CAMERA.rot_state(x, y)

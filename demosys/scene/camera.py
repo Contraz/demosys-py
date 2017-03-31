@@ -1,3 +1,4 @@
+from math import sin, cos, radians
 import glfw
 from pyrr import matrix44, vector3, vector, Vector3
 
@@ -31,8 +32,11 @@ class Camera:
         self.cam_right = Vector3([1.0, 0.0, 0.0])
         self.cam_dir = Vector3([0.0, 0.0, -1.0])
         # Yaw and Pitch
-        self.yaw = 0
-        self.pitch = 0
+        self.yaw = -90.0
+        self.pitch = 0.0
+        self.mouse_sensitivity = 0.5
+        self.last_x = None
+        self.last_y = None
 
         # World up vector
         self._up = Vector3([0.0, 1.0, 0.0])
@@ -74,7 +78,40 @@ class Camera:
         elif direction == DOWN:
             self._ydir = NEGATIVE if activate else STILL
 
-    # def rot_state(self, ):
+    def rot_state(self, x, y):
+        if self.last_x is None:
+            self.last_x = x
+        if self.last_y is None:
+            self.last_y = y
+
+        x_offset = self.last_x - x
+        y_offset = self.last_y - y
+
+        self.last_x = x
+        self.last_y = y
+
+        x_offset *= self.mouse_sensitivity
+        y_offset *= self.mouse_sensitivity
+
+        self.yaw -= x_offset
+        self.pitch += y_offset
+
+        if self.pitch > 80.0:
+            self.pitch = 80.0
+        if self.pitch < -80.0:
+            self.pitch = -80.0
+
+        self.update_yaw_and_pitch()
+
+    def update_yaw_and_pitch(self):
+        front = Vector3([0.0, 0.0, 0.0])
+        front.x = cos(radians(self.yaw)) * cos(radians(self.pitch))
+        front.y = sin(radians(self.pitch))
+        front.z = sin(radians(self.yaw)) * cos(radians(self.pitch))
+
+        self.cam_dir = vector.normalise(front)
+        self.cam_right = vector.normalise(vector3.cross(self.cam_dir, self._up))
+        self.cam_up = vector.normalise(vector3.cross(self.cam_right, self.cam_dir))
 
     @property
     def view_matrix(self):
@@ -141,7 +178,7 @@ class Camera:
         :param up: direction up
         """
         z = vector.normalise(pos - target)
-        x = vector.normalise(vector3.cross(vector.normalise(up), z))
+        x = vector.normalise(vector3.cross(vector.normalise(self._up), z))
         y = vector3.cross(z, x)
 
         translate = matrix44.create_identity()

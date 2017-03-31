@@ -76,7 +76,7 @@ Manual setup (OS X / Linux):
 Controls
 ========
 
-- Currently you can control the camera with ``A``, ```W``, ``S`` and ``D``
+- Currently you can control the camera with ``A``, ``W``, ``S`` and ``D``
 - ``ESC`` for exit
 - ``SPACE`` for pause
 
