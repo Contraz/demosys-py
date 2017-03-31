@@ -30,6 +30,10 @@ class Camera:
         self.cam_up = Vector3([0.0, 1.0, 0.0])
         self.cam_right = Vector3([1.0, 0.0, 0.0])
         self.cam_dir = Vector3([0.0, 0.0, -1.0])
+        # Yaw and Pitch
+        self.yaw = 0
+        self.pitch = 0
+
         # World up vector
         self._up = Vector3([0.0, 1.0, 0.0])
         # Position movement states
@@ -69,6 +73,8 @@ class Camera:
             self._ydir = POSITIVE if activate else STILL
         elif direction == DOWN:
             self._ydir = NEGATIVE if activate else STILL
+
+    # def rot_state(self, ):
 
     @property
     def view_matrix(self):
