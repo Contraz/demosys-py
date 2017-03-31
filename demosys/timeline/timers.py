@@ -1,8 +1,10 @@
 import glfw
 from pygame import mixer
+import time
 
 
 class Timer:
+    """Timer based on glfw time"""
     def __init__(self, **kwargs):
         self.start_time = None
         self.stop_time = None
@@ -45,6 +47,7 @@ class Timer:
 
 
 class MusicTimer:
+    """Timer based on music"""
     def __init__(self, **kwargs):
         mixer.init()
         mixer.music.load(kwargs['source'])
@@ -58,6 +61,8 @@ class MusicTimer:
         if self.initialized:
             mixer.music.unpause()
         else:
+            mixer.music.play()
+            # FIXME: Calling play twice to ensure the music is actually playing
             mixer.music.play()
             self.initialized = True
         self.paused = False
