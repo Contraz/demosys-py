@@ -290,6 +290,16 @@ Same principle as shaders.
         'demosys.core.texturefiles.finders.EffectDirectoriesFinder'
     )
 
+SCREENSHOT_PATH
+~~~~~~~~~~~~~~~
+
+Absolute path to the directory screenshots will be saved.
+If not defined or the directory don't exist, the current working directory will be used.
+
+.. code:: python
+
+    SCREENSHOT_PATH = os.path.join(PROJECT_DIR, 'screenshots')
+
 Known Issues
 ------------
 
