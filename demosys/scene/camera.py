@@ -96,10 +96,10 @@ class Camera:
         self.yaw -= x_offset
         self.pitch += y_offset
 
-        if self.pitch > 80.0:
-            self.pitch = 80.0
-        if self.pitch < -80.0:
-            self.pitch = -80.0
+        if self.pitch > 85.0:
+            self.pitch = 85.0
+        if self.pitch < -85.0:
+            self.pitch = -85.0
 
         self.update_yaw_and_pitch()
 
