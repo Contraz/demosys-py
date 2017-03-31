@@ -134,15 +134,17 @@ effect.py
             self.cube_shader.uniform_sampler_2d(0, "texture0", self.texture)
             self.cube.draw()
 
-There you go. - Since you asked for ``cube.glsl`` and ``texture.png``
-these will be automatically be loaded ready to use. - The ``cube``
-objects is a ``VAO`` that you bind supplying the shader and the system
-will figure out the attribute mapping. - Please look in the
-``demosys.opengl.geometry`` module for the valid attribute names and
-look at shaders in the ``demosys_test``. - You currently define vertex,
-fragment and geometry shader in one glsl file separated by
-preprocessors. - Effects not defined in the ``settings`` module will not
-run!
+There you go.
+
+- Since you asked for ``cube.glsl`` and ``texture.png`` these will be
+  automatically be loaded ready to use.
+- The ``cube`` objects is a ``VAO`` that you bind supplying the shader and the system
+  will figure out the attribute mapping.
+- Please look in the ``demosys.opengl.geometry`` module for the valid attribute names and
+  look at shaders in the ``demosys_test``.
+- You currently define vertex,
+  fragment and geometry shader in one glsl file separated by
+  preprocessors. - Effects not defined in the ``settings`` module will not run!
 
 That should give you an idea..
 
@@ -158,40 +160,44 @@ that demosys will automatically find and load resources from. See the
 
 Explore the small ``demosys_test`` folder, and you'll get the point.
 
-Some babble about the current state of the project: - All geometry must
-be defined using VAOs. There's a very convenient VAO class for this
-already making it quick and easy to create them. Look at the
-``demosys.opengl.geometry`` module for examples. - We support vertex,
-fragment and geometry shaders for now. A program must currently be
-written in one single ``.glsl`` file separating the shaders with
-preprocessors. See existing shaders in ``demosys_test``. - The Shader
-class will inspect the linked shader and cache all attributes and
-uniforms in local dictionaries. This means all ``uniform*``-setters use
-the name of the uniform instead of the location. Location is resolved
-internally in the object/class. - The VAOs ``bind(..)`` requires you to
-pass in a shader. This is because the VAO will automatically adapt to
-the attributes in your shader. During the VAO creation you need to make
-the name mapping to the attribute name. If you have a VAO with
-positions, normals, uvs and tangents and pass in a shader that only use
-position (or any other combination of attributes in the VAO); the VAO
-class will on-the-fly generate a version internally with only positions.
+Some babble about the current state of the project:
+
+- All geometry must be defined using VAOs. There's a very convenient VAO
+  class for this already making it quick and easy to create them. Look at
+  the ``demosys.opengl.geometry`` module for examples.
+- We support vertex,
+  fragment and geometry shaders for now. A program must currently be
+  written in one single ``.glsl`` file separating the shaders with
+  preprocessors. See existing shaders in ``demosys_test``.
+- The Shader class will inspect the linked shader and cache all attributes
+  and uniforms in local dictionaries. This means all ``uniform*``-setters use
+  the name of the uniform instead of the location. Location is resolved
+  internally in the object/class.
+- The VAOs ``bind(..)`` requires you to pass in a shader. This is because
+  the VAO will automatically adapt to the attributes in your shader.
+  During the VAO creation you need to make the name mapping to the attribute
+  name. If you have a VAO with positions, normals, uvs and tangents and pass
+  in a shader that only use position (or any other combination of attributes
+  in the VAO); the VAO class will on-the-fly generate a version internally
+  with only positions.
 - We only support 2D textures at the moment loaded with PIL/Pillow, but
-this is trivial to extend. - Resource loading is supported in the
-``Effect`` class itself. In ``init()`` you can fetch resources using for
-example ``self.get_shader`` or\ ``self.get_texture``. This will return a
-lazy object that will be populated after the loading stage is done. -
-Please do not implement ``__init__()`` as this is used to initialize
-internal attributes in the effect class. Stick to ``init()`` for now. -
-Resources shared between effects can be put outside effect packages
-inside your project directory. For example in
-``testproject/resources/shaders`` and
-``testproject/resources/textures``. Make sure you add those paths in the
-settings file. - We don't have any scene/mesh loaders. You can hack
-something in yourself for now or just stick to or extend the
-``geometry`` module. - We try to do as much validation as possible and
-give useful feedback when something goes wrong. - The ``time`` value
-passed to the effects ``draw`` method is the current duration in the
-playing music. If no music is loaded, a dummy timer is used.
+  this is trivial to extend.
+- Resource loading is supported in the ``Effect`` class itself. In ``init()``
+  you can fetch resources using for example ``self.get_shader`` or\ ``self.get_texture``.
+  This will return a lazy object that will be populated after the loading
+  stage is done.
+- Please do not implement ``__init__()`` as this is used to initialize
+  internal attributes in the effect class. Stick to ``init()`` for now.
+- Resources shared between effects can be put outside effect packages
+  inside your project directory. For example in ``testproject/resources/shaders``
+  and ``testproject/resources/textures``. Make sure you add those paths in the
+  settings file.
+- We don't have any scene/mesh loaders. You can hack something in yourself
+  for now or just stick to or extend the ``geometry`` module. - We try to
+  do as much validation as possible and give useful feedback when something
+  goes wrong.
+- The ``time`` value passed to the effects ``draw`` method is the current
+  duration in the playing music. If no music is loaded, a dummy timer is used.
 
 Settings
 --------
