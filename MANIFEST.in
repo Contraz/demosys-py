@@ -1,2 +1,3 @@
-recursive-include demosys *.py *.glsl *.md
-recursive-include testproject *.py *.png *.glsl *.mp3
+recursive-include demosys *.py *.glsl
+include README.rst
+
