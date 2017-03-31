@@ -34,7 +34,7 @@ we or you might learn something. This is supposed to be a fun project.
 Also check out the [TODO list](TODO.md). Take a stab on what of the features
 or documentation or suggest new entires.
 
-## Running the damn thing
+## Running the damned thing
 
 Currently you just clone the repo and run:
  
