@@ -130,14 +130,14 @@ def key_event_callback(window, key, scancode, action, mods):
             CAMERA.move_state(camera.BACKWARD, False)
 
     # UP
-    elif key == glfw.KEY_UP:
+    elif key == glfw.KEY_Q:
         if action == glfw.PRESS:
             CAMERA.move_state(camera.UP, True)
         if action == glfw.RELEASE:
             CAMERA.move_state(camera.UP, False)
 
     # Down
-    elif key == glfw.KEY_DOWN:
+    elif key == glfw.KEY_E:
         if action == glfw.PRESS:
             CAMERA.move_state(camera.DOWN, True)
         if action == glfw.RELEASE:

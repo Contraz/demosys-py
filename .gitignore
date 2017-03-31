@@ -2,3 +2,6 @@ __pycache__
 /.idea
 /.tox
 /env
+/build
+/demosys_py.egg-info
+/dist

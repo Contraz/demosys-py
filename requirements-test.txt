@@ -1,8 +1,2 @@
-PyOpenGL==3.1.0
-glfw==1.4.0
-pyrr==0.8.2
-Pillow==4.0.0
-
-tox
 coverage==4.2
 mock>=2.0.0

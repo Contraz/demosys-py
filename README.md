@@ -1,3 +1,7 @@
+
+[![pypi](https://img.shields.io/pypi/v/demosys-py.svg)](https://pypi.python.org/pypi/demosys-py)
+[![travis](https://travis-ci.org/Contraz/demosys-py.svg?branch=master)](https://travis-ci.org/Contraz/demosys-py)
+
 # demosys-py
 
 A python 3.6 implementation of a C++ project used to create and prototype
