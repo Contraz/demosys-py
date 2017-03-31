@@ -1,6 +1,7 @@
 
 ## TODO
 
+- Properly verify all settings
 - Write documentation (readthedocs)
 - CLI tool creating new projects and effects.
 - Create more examples in testproject
@@ -23,3 +24,4 @@ Generic Data:
 - Debug Windows
   - FBOs
   - Textures
+- Settings entry for key bindings
