@@ -17,7 +17,7 @@ class Camera:
     """Simple camera class containing projection"""
     def __init__(self, fov=60, aspect=1.0, near=1, far=100):
         """
-        Initialize camera using a specific projeciton        
+        Initialize camera using a specific projeciton
         :param fov: Field of view
         :param aspect: Aspect ratio
         :param near: Near plane
@@ -50,7 +50,7 @@ class Camera:
 
     def move_state(self, direction, activate):
         """
-        Set the camera position move state 
+        Set the camera position move state
         :param direction: What direction to update
         :param activate: Start or stop moving in the direction
         """

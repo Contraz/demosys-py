@@ -60,9 +60,9 @@ def cube(width, height, depth, normals=True, uvs=True):
     :param depth: depth of the bubs
     :param normals: (bool) Include normals
     :param uvs: (bool) include uv coordinates
-    :return: 
+    :return: VAO representing the cube
     """
-    width, height, depth = width / 2, height / 2, depth /2
+    width, height, depth = width / 2, height / 2, depth / 2
     pos = VBO(numpy.array([
         width, -height, depth,
         width, height, depth,

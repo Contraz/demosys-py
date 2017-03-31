@@ -1,6 +1,5 @@
 import glfw
 from pygame import mixer
-import time
 
 
 class Timer:

@@ -22,6 +22,7 @@ class WindowFBO:
     def clear(self):
         pass
 
+
 WINDOW_FBO = WindowFBO()
 
 

@@ -1,4 +1,4 @@
-import math
+# import math
 from demosys.effects import effect
 from demosys.opengl import geometry, FBO
 # from pyrr import Vector3
@@ -16,8 +16,9 @@ class CubeEffect(effect.Effect):
         self.texture1 = self.get_texture('cube/texture.png')
         self.texture2 = self.get_texture('cube/GreenFabric.png')
         self.cube = geometry.cube(4.0, 4.0, 4.0)
-        r = (-25.0, 25.0)
-        self.points = geometry.points_random_3d(1000, range_x=r, range_y=r, range_z=r, seed=7656456)
+        v = 100.0
+        r = (-v, v)
+        self.points = geometry.points_random_3d(100_000, range_x=r, range_y=r, range_z=r, seed=7656456)
         self.quad = geometry.quad_fs()
         self.fbo = FBO.create(512, 512, depth=True)
 
@@ -43,7 +44,7 @@ class CubeEffect(effect.Effect):
         self.fbo.release()
 
         # Test camera
-        # self.sys_camera.set_projection(fov=math.sin(time * 2) * 20 + 60)
+        self.sys_camera.set_projection(near=1, far=1000)
         # self.sys_camera.set_position(10.0, 0.0, 10.0)
         # self.sys_camera.set_position(math.sin(time) * 10,
         #                                  math.sin(time * 10),
