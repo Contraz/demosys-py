@@ -316,7 +316,7 @@ Libraries
 Credits
 -------
 
--  Music in 'testproject' by `binaryf <https://github.com/binaryf>`__
+-  Music in ``demosys_test`` by `binaryf <https://github.com/binaryf>`__
 -  Also thanks to `Attila
    Toth <https://www.youtube.com/channel/UC4L3JyeL7TXQM1f3yD6iVQQ>`__
    for an excellent tutorial on OpenGL in Python. We do know OpenGL, but
