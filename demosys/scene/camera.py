@@ -6,6 +6,8 @@ RIGHT = 1
 LEFT = 2
 FORWARD = 3
 BACKWARD = 4
+UP = 5
+DOWN = 6
 
 # Movement Definitions
 STILL = 0
@@ -33,6 +35,7 @@ class Camera:
         # Position movement states
         self._xdir = STILL
         self._zdir = STILL
+        self._ydir = STILL
         self._last_time = 0
         # Velocity in axis units per second
         self.velocity = 10.0
@@ -62,21 +65,36 @@ class Camera:
             self._zdir = NEGATIVE if activate else STILL
         elif direction == BACKWARD:
             self._zdir = POSITIVE if activate else STILL
+        elif direction == UP:
+            self._ydir = POSITIVE if activate else STILL
+        elif direction == DOWN:
+            self._ydir = NEGATIVE if activate else STILL
 
     @property
     def view_matrix(self):
+        # Use separate time in camera so we can move it when the demo is paused
         time = glfw.get_time()
-        t = time - self._last_time
+        # If the camera has been inactive for a while, a large time delta
+        # can suddenly move the camera far away from the scene
+        t = max(time - self._last_time, 0)
         self._last_time = time
 
+        # X Movement
         if self._xdir == POSITIVE:
             self.cam_pos += self.cam_right * self.velocity * t
         elif self._xdir == NEGATIVE:
             self.cam_pos -= self.cam_right * self.velocity * t
+        # Z Movement
         if self._zdir == NEGATIVE:
             self.cam_pos += self.cam_dir * self.velocity * t
         elif self._zdir == POSITIVE:
             self.cam_pos -= self.cam_dir * self.velocity * t
+        # Y Movement
+        if self._ydir == POSITIVE:
+            self.cam_pos += self.cam_up * self.velocity * t
+        elif self._ydir == NEGATIVE:
+            self.cam_pos -= self.cam_up * self.velocity * t
+
         return self._gl_look_at(self.cam_pos, self.cam_pos + self.cam_dir, self._up)
 
     def set_projection(self, fov=None, aspect=None, near=None, far=None):
