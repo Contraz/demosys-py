@@ -144,8 +144,10 @@ Some babble about the current state of the project:
 - We only support 2D textures at the moment loaded with PIL/Pillow, but this is trivial
   to extend.
 - Resource loading is supported in the `Effect` class itself. In `init()` you can
-  fetch resources using for example `self.get_shader` or self.get_texture'. This will
+  fetch resources using for example `self.get_shader` or` self.get_texture`. This will
   return a lazy object that will be populated after the loading stage is done.
+- Please do not implement `__init__()` as this is used to initialize internal attributes
+  in the effect class. Stick to `init()` for now.
 - Resources shared between effects can be put outside effect packages inside your project
   directory. For example in `testproject/resources/shaders` and `testproject/resources/textures`.
   Make sure you add those paths in the settings file.
