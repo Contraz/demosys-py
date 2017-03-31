@@ -4,9 +4,7 @@ sudo: false
 
 matrix:
   include:
-   - env: TOXENV=flake8
-     python: 3.6
-   - env: TOXENV=py35-master
+   - env: TOXENV=pep8
      python: 3.6
 
 install: pip install tox
