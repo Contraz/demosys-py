@@ -3,6 +3,8 @@ import importlib
 import inspect
 from demosys.effects.effect import Effect
 
+EFFECT_MODULE = 'effect'
+
 
 class EffectConfig:
     def __init__(self, module=None, cls=None):
@@ -23,8 +25,8 @@ class Effects:
 
     def get_effects(self):
         """Get all effect classes"""
-        for k, v in self.effects.items():
-            yield v.cls
+        for name, config in self.effects.items():
+            yield config.cls(name=name.replace(f".{EFFECT_MODULE}", ''))
 
     def get_dirs(self):
         """Get all effect directories"""
@@ -36,7 +38,7 @@ class Effects:
         Load all effects
         """
         for effect in effect_list:
-            module = importlib.import_module(f'{effect}.effect')
+            module = importlib.import_module(f'{effect}.{EFFECT_MODULE}')
             # Find the Effect class in the module
             for name, obj in inspect.getmembers(module):
                 if inspect.isclass(obj):

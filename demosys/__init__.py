@@ -8,5 +8,5 @@ def setup():
     effects.polulate(settings.EFFECTS)
 
 
-def run():
-    view.run()
+def run(*args, **kwargs):
+    view.run(*args, **kwargs)

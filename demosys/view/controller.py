@@ -18,7 +18,7 @@ TIMER = None
 CAMERA = None
 
 
-def run():
+def run(runeffect=None):
     """Initialize, load and run"""
     global WINDOW
     WINDOW = Window()
@@ -34,7 +34,18 @@ def run():
     Effect.sys_camera = CAMERA
 
     # Initialize effects first so resources are registered
-    effect_list = [cls() for cls in effects.get_effects()]
+    effect_list = [cls for cls in effects.get_effects()]
+    active_effect = None
+    for effect in effect_list:
+        effect.init()
+        if effect.name == runeffect:
+            active_effect = effect
+
+    if not active_effect:
+        print(f"Cannot find effect '{runeffect}'")
+        print("Available effects:")
+        print("\n".join(e.name for e in effect_list))
+        return
 
     num_resources = resources.count()
     print(f"Loading {num_resources } resources")
@@ -56,8 +67,7 @@ def run():
         GL.glClearColor(0.0, 0.0, 0.0, 0.0)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
 
-        for e in effect_list:
-            e.draw(t, WINDOW_FBO)
+        active_effect.draw(t, WINDOW_FBO)
 
         WINDOW.swap_buffers()
         WINDOW.poll_events()
@@ -79,7 +89,12 @@ def key_event_callback(window, key, scancode, action, mods):
     :param mods: Bit field describing which modifier keys were held down.
     """
     # print("Key event:", key, scancode, action, mods)
+
+    # The well-known standard key for quick exit
     if key == glfw.KEY_ESCAPE:
         WINDOW.set_should_close()
+
+    # Toggle pause time
     if key == glfw.KEY_SPACE and action == glfw.PRESS:
         TIMER.toggle_pause()
+

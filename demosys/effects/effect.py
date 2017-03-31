@@ -13,10 +13,14 @@ def bind_target(func):
 
 class Effect:
     # Window properties set by controller on initialization
+    name = ""
     window_width = 0
     window_height = 0
     window_aspect = 0
     sys_camera = None
+
+    def __init__(self, name=name):
+        self.name = name
 
     # Methods to override
     def draw(self, time, target):

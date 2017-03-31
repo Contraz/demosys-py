@@ -32,10 +32,16 @@ or documentation or suggest new entires.
 
 ## Running the damn thing
 
-Currently you just clone the repo and run `manage.py`. This runs the `testproject` package
-in the repository. You can of course also make your own.
+Currently you just clone the repo and run:
+ 
+```
+ ./manage.py runeffect testeffect.cube
+```
 
-Manualt setup (OS X / Linux):
+This runs the effect `cube` in the `testproject` package in the repository.
+You can of course also make your own.
+
+Manual setup (OS X / Linux):
 Install the lastest python 3.6 pkg from python.org
 ```python
 python3 -m pip install virtualenv
@@ -71,7 +77,7 @@ from OpenGL import GL
 
 class CubeEffect(Effect):
     """Rotating cube with UVs and normals"""
-    def __init__(self):
+    def init(self):
         self.shader = self.get_shader('cube/cube.glsl')
         self.texture = self.get_texture('cube/texture.png')
         self.cube = geometry.cube(2.0)
