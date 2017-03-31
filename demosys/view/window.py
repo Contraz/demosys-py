@@ -65,6 +65,11 @@ class Window:
             glfw.terminate()
             raise ValueError("Failed to create window")
 
+        if not settings.WINDOW.get('cursor'):
+            glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_DISABLED)
+
+        glfw.set_window_aspect_ratio(self.window, self.width, self.height)
+
         # Get the actual buffer size of the window
         # This is important for some displays like Apple's Retina as reported window sizes are virtual
         self.buffer_width, self.buffer_height = glfw.get_framebuffer_size(self.window)
@@ -95,6 +100,11 @@ class Window:
 
     def swap_buffers(self):
         glfw.swap_buffers(self.window)
+
+    def resize(self, width, height):
+        self.width = width
+        self.height = height
+        self.buffer_width, self.buffer_height = glfw.get_framebuffer_size(self.window)
 
     def terminate(self):
         glfw.terminate()

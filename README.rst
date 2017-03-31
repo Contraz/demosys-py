@@ -45,6 +45,7 @@ Running the damned thing
 ------------------------
 
 - First og all install the latest python 3.6 package (or later) from python.org
+- Install GLFW binaries for your OS from your favorite package manger or download it from http://www.glfw.org/
 - Make a virtualenv and install the package: ``pip install demosys-py``.
 - Run the default test effect: ``demosys_test runeffect demosys_test.cube``
 
@@ -314,6 +315,9 @@ simple data from the music for visualisation
 
 Libraries
 ---------
+
+GLFW binaries must also be installed. Get from your favourite location.
+Use version 3.2.1 or later.
 
 -  `http://pyopengl.sourceforge.net <http://pyopengl.sourceforge.net/>`__
 -  `pyGLFW <https://github.com/FlorianRhiem/pyGLFW>`__ for window and

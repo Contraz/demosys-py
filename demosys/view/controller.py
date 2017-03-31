@@ -57,7 +57,7 @@ def run(runeffect=None):
 
     glfw.set_key_callback(WINDOW.window, key_event_callback)
     glfw.set_cursor_pos_callback(WINDOW.window, mouse_event_callback)
-    glfw.set_input_mode(WINDOW.window, glfw.CURSOR, glfw.CURSOR_DISABLED)
+    glfw.set_window_size_callback(WINDOW.window, window_resize_callback)
 
     # Initialize timer
     global TIMER
@@ -153,3 +153,7 @@ def key_event_callback(window, key, scancode, action, mods):
 
 def mouse_event_callback(window, x, y):
     CAMERA.rot_state(x, y)
+
+
+def window_resize_callback(window, width, height):
+    WINDOW.resize(width, height)
