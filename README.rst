@@ -24,7 +24,11 @@ enjoy playing around with modern OpenGL without having to spend lots of
 time creating all the tooling to get things up and running and at the
 same time avoid all the old cruft in OpenGL.
 
-The package is not yet on PyPI, but will be on the near future.
+Demosys is now on PyPI
+
+::
+
+    pip install demosys-py
 
 Contributing
 ------------
@@ -40,24 +44,42 @@ features or documentation or suggest new entires.
 Running the damned thing
 ------------------------
 
-Currently you just clone the repo and run:
+- First og all install the latest python 3.6 package (or later) from python.org
+- Make a virtualenv and install the package: ``pip install demosys-py``.
+- Run the default test effect: ``demosys_test runeffect demosys_test.cube``
+
+
+Running from source
+-------------------
+
+Again, make sure you have python 3.6 or later before proceeding.
 
 ::
 
-     ./manage.py runeffect testeffect.cube
+    ./manage.py runeffect demosys_test.cube
 
-This runs the effect ``cube`` in the ``testproject`` package in the
+This runs the effect ``cube`` in the ``demosys_test`` package in the
 repository. You can of course also make your own.
 
-Manual setup (OS X / Linux): Install the lastest python 3.6 pkg from
-python.org
+Manual setup (OS X / Linux):
 
 .. code:: python
 
+    git clone https://github.com/Contraz/demosys-py
+    cd demosys-py
     python3 -m pip install virtualenv
     python3 -m virtualenv env
     source bin/activate
     pip install -r requirements.txt
+
+
+Controls
+========
+
+- Currently you can control the camera with ``A``, ```W``, ``S`` and ``D``
+- ``ESC`` for exit
+- ``SPACE`` for pause
+
 
 I just want to see an example!
 ==============================
@@ -65,11 +87,11 @@ I just want to see an example!
 Ok, ok! Let's make a project and an effect-package!
 
 Structure of a project. ``cube`` is an effect. You can make multiple
-effects with the same structure inside ``testproject``
+effects with the same structure inside ``demosys_test``
 
 ::
 
-    testproject/
+    demosys_test
     ├── cube
     │   ├── effect.py
     │   ├── shaders
@@ -116,7 +138,7 @@ these will be automatically be loaded ready to use. - The ``cube``
 objects is a ``VAO`` that you bind supplying the shader and the system
 will figure out the attribute mapping. - Please look in the
 ``demosys.opengl.geometry`` module for the valid attribute names and
-look at shaders in the ``testproject``. - You currently define vertex,
+look at shaders in the ``demosys_test``. - You currently define vertex,
 fragment and geometry shader in one glsl file separated by
 preprocessors. - Effects not defined in the ``settings`` module will not
 run!
@@ -131,9 +153,9 @@ that effect is one or multiple things is entirely up to you. An effect
 is an individual package/directory containing an ``effect.py`` module.
 This package can also contain a ``shaders`` and ``textures`` directory
 that demosys will automatically find and load resources from. See the
-``testproject`` directory for reference.
+``demosys_test`` directory for reference.
 
-Explore the small ``testproject`` folder, and you'll get the point.
+Explore the small ``demosys_test`` folder, and you'll get the point.
 
 Some babble about the current state of the project: - All geometry must
 be defined using VAOs. There's a very convenient VAO class for this
@@ -141,7 +163,7 @@ already making it quick and easy to create them. Look at the
 ``demosys.opengl.geometry`` module for examples. - We support vertex,
 fragment and geometry shaders for now. A program must currently be
 written in one single ``.glsl`` file separating the shaders with
-preprocessors. See existing shaders in ``testproject``. - The Shader
+preprocessors. See existing shaders in ``demosys_test``. - The Shader
 class will inspect the linked shader and cache all attributes and
 uniforms in local dictionaries. This means all ``uniform*``-setters use
 the name of the uniform instead of the location. Location is resolved
