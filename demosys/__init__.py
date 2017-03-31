@@ -1,5 +1,3 @@
-from demosys import view
-
 
 def setup():
     from demosys.effects.registry import effects
@@ -9,4 +7,5 @@ def setup():
 
 
 def run(*args, **kwargs):
+    from demosys import view
     view.run(*args, **kwargs)

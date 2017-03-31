@@ -1,4 +1,5 @@
 import os
+import sys
 import pkgutil
 from demosys.utils.module_loading import import_module
 
@@ -22,14 +23,20 @@ def load_command_class(name):
     return import_module('demosys.core.management.commands.{}'.format(name))
 
 
-def execute_from_command_line(args):
+def execute_from_command_line(argv=None):
+    if not argv:
+        argv = sys.argv
     commands = find_commands(local_command_dir())
-    command = args[1] if len(args) > 1 else None
+    command = argv[1] if len(argv) > 1 else None
+
+    source = os.path.basename(argv[0])
+    if source == "demosys-admin":
+        print("Running as demosys-admin")
 
     if command in commands:
         module = load_command_class(command)
         if hasattr(module, 'run'):
-            module.run(args[2:])
+            module.run(argv[2:])
         else:
             print("Command {} is not runnable".format(command))
     else:

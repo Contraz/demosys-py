@@ -25,7 +25,7 @@ MUSIC = os.path.join(PROJECT_DIR, 'resources/music/tg2035.mp3')
 
 # What effects to load
 EFFECTS = (
-    'testproject.cube',
+    'demosys_test.cube',
 )
 
 SHADER_DIRS = (
