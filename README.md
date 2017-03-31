@@ -35,6 +35,15 @@ or documentation or suggest new entires.
 Currently you just clone the repo and run `manage.py`. This runs the `testproject` package
 in the repository. You can of course also make your own.
 
+Manualt setup (OS X / Linux):
+Install the lastest python 3.6 pkg from python.org
+```python
+python3 -m pip install virtualenv
+python3 -m virtualenv env
+source bin/activate
+pip install -r requirements.txt
+```
+
 # I just want to see an example!
 
 Ok, ok! Let's make a project and an effect-package!
@@ -249,6 +258,13 @@ we need a library that can deliver this.
 - [https://www.pygame.org](https://www.pygame.org) using the mixer module for music
 - [https://github.com/adamlwgriffiths/Pyrr](https://github.com/adamlwgriffiths/Pyrr) for math (uses numpy)
 
+## Credits
+
+- Music in 'testproject' by [binaryf](https://github.com/binaryf)
+- Also thanks to [Attila Toth](https://www.youtube.com/channel/UC4L3JyeL7TXQM1f3yD6iVQQ)
+  for an excellent tutorial on OpenGL in Python. We do know OpenGL,
+  but had no clue where to start in the Python world.
+
 ## What inspired us to make this project?
 
 - We are old farts from the demoscene
@@ -258,6 +274,3 @@ we need a library that can deliver this.
 Why not combine ideas from our own demosys written in C++ and Django making
 a Python 3 version?
 
-Also thanks to [Attila Toth](https://www.youtube.com/channel/UC4L3JyeL7TXQM1f3yD6iVQQ)
-for an excellent video tutorial on Python and OpenGL. We do know OpenGL,
-but had no clue where to start in the Python world.
