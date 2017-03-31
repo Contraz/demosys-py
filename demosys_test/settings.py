@@ -4,6 +4,8 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEBUG = False
 
+# SCREENSHOT_PATH = os.path.join(PROJECT_DIR, 'screenshots')
+
 # Profile: any, core, compat
 OPENGL = {
     "version": (4, 1),

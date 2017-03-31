@@ -4,6 +4,8 @@ Default settings for demosys. Override using a settings module.
 
 DEBUG = False
 
+SCREENSHOT_PATH = None
+
 # OpenGL context configuration
 # version: (MAJOR, MINOR)
 # profile: any, core, compat

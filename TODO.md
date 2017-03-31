@@ -4,7 +4,7 @@
 - Properly verify all settings
 - Write documentation (readthedocs)
 - CLI tool creating new projects and effects.
-- Create more examples in testproject
+- Create more examples in demosys_test
 - Shaders
   - Core loader support for common formats
   - Custom loader support / less hacky loading
@@ -15,8 +15,7 @@ Textures:
   - Support layers
 Generic Data:
   - Custom resource loaders ("misc stuff")
-- Basic scene and camera support?
-- Mesh / Scene
+- Mesh / Scene?
   - Custom mesh / scene loading
 - Time line support
 - Track support

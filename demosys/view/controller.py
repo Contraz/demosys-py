@@ -12,6 +12,7 @@ from demosys import resources
 from demosys.timeline import timers
 from demosys.conf import settings
 from demosys.scene import camera
+from . import screenshot
 
 WINDOW = None
 TIMER = None
@@ -144,6 +145,10 @@ def key_event_callback(window, key, scancode, action, mods):
             CAMERA.move_state(camera.DOWN, True)
         if action == glfw.RELEASE:
             CAMERA.move_state(camera.DOWN, False)
+
+    # Screenshots
+    if key == glfw.KEY_X and action == glfw.PRESS:
+        screenshot.create()
 
 
 def mouse_event_callback(window, x, y):

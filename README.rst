@@ -79,7 +79,7 @@ Controls
 - Currently you can control the camera with ``A``, ``W``, ``S`` and ``D``
 - ``ESC`` for exit
 - ``SPACE`` for pause
-
+- ``X`` for taking ``png`` screenshot
 
 I just want to see an example!
 ==============================
