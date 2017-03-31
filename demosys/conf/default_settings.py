@@ -20,6 +20,7 @@ WINDOW = {
     "fullscreen": False,
     "resizable": False,
     "title": "demosys-py",
+    "vsync": True,
 }
 
 # Empty effects tuple

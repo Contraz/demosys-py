@@ -15,6 +15,7 @@ WINDOW = {
     # "size": (640, 360),
     "size": (1280, 768),
     # "size": (1000, 600),
+    "vsync": True,
     "resizable": False,
     "fullscreen": False,
     "title": "demosys-py",

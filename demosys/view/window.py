@@ -77,6 +77,9 @@ class Window:
         glfw.make_context_current(self.window)
         print("Context Version:", GL.glGetString(GL.GL_VERSION).decode())
 
+        if settings.WINDOW.get('vsync'):
+            glfw.swap_interval(1)
+
     @property
     def instance(self):
         return self.window
