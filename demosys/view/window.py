@@ -74,7 +74,6 @@ class Window:
         # This is important for some displays like Apple's Retina as reported window sizes are virtual
         self.buffer_width, self.buffer_height = glfw.get_framebuffer_size(self.window)
         print("Frame buffer size:", self.buffer_width, self.buffer_height)
-        # GL.glViewport(0, 0, self.buffer_width, self.buffer_height)
 
         w, h = glfw.get_window_size(self.window)
         print("Actual window size:", w, h)
