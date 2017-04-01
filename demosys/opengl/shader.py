@@ -230,7 +230,7 @@ class ShaderSource:
         message = GL.glGetShaderInfoLog(self.shader)
         if message:
             self.print()
-            raise ShaderError("Failed to compile {} {}: {}".format(self.type_name(), self.name, message))
+            raise ShaderError("Failed to compile {} {}: {}".format(self.type_name(), self.name, message.decode()))
 
     def print(self):
         print("---[ START {} ]---".format(self.name))

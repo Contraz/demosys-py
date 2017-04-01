@@ -23,14 +23,35 @@ uniform float time;
 
 in vec3 normal;
 in vec2 uv0;
+in vec3 lightdir;
+in vec3 eyepos;
+
 
 void main()
 {
+    vec4 diffuse = vec4(0.5, 0.5, 0.5, 1.0);
+    vec4 ambient = vec4(0.2, 0.2, 0.2, 1.0);
+    vec4 specular = vec4(1.0, 1.0, 1.0, 1.0);
+    float shininess = 0.5;
+
     vec4 c = texture(texture0, uv0);
-    vec3 dir = vec3(0.0, 0.0, 1.0);
-    float d = dot(dir, normal);
-    fragColor = c * d;
+    vec4 spec = vec4(0.0);
+
+    vec3 n = normalize(normal);
+    vec3 l = normalize(lightdir);
+    vec3 e = normalize(eyepos);
+
+    float intensity = max(dot(n,l), 0.0);
+    if (intensity > 0.0) {
+        vec3 h = normalize(l + e);
+        float intSpec = max(dot(h, n), 0.0);
+        spec = specular * pow(intSpec, shininess);
+    }
+    float att = clamp(1.0 - length(eyepos)/200.0, 0.0, 1.0);
+    att *= att;
+    fragColor = c * max(intensity * diffuse + spec, ambient) * att;
 }
+
 
 #elif defined GEOMETRY_SHADER
 
@@ -40,9 +61,13 @@ layout (triangle_strip, max_vertices = 24) out; // 4 vertices per side of the cu
 uniform mat4 ProjM;
 uniform mat4 ModelViewM;
 uniform mat3 NormalM;
+uniform vec3 lightpos;
+uniform float time;
 
 out vec2 uv0;
 out vec3 normal;
+out vec3 lightdir;
+out vec3 eyepos;
 
 // Define the 8 corners of a cube (back plane, front plane (counter clockwise))
 vec3 cube_corners[8] = vec3[]  (
@@ -58,7 +83,9 @@ vec3 cube_corners[8] = vec3[]  (
 
 #define EMIT_V(POS, UV, NORMAL) \
 	uv0 = UV; \
-	normal = NormalM * NORMAL; \
+	normal = normalize(NormalM * NORMAL); \
+	lightdir = lightpos - POS.xyz; \
+	eyepos = -POS.xyz; \
 	gl_Position = ProjM * vec4(POS, 1.0); \
 	EmitVertex()
 
@@ -78,6 +105,10 @@ void main()
 	for(i = 0; i < 8; i++)
 	{
 		vec3 pos = point.xyz + cube_corners[i] * 0.5;
+		pos.y += sin(time + length(gl_in[0].gl_Position.xyz));
+		pos.x += cos(time + gl_in[0].gl_Position.x);
+		pos.z += cos(time + gl_in[0].gl_Position.z);
+
 		corners[i] = (ModelViewM * vec4(pos, 1.0)).xyz;
 	}
 	EMIT_QUAD(3, 2, 0, 1, vec3( 0.0,  0.0, -1.0)); // back

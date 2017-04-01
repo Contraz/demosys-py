@@ -1,6 +1,7 @@
 
 ## TODO
 
+- Split up README into several files
 - Properly verify all settings
 - Write documentation (readthedocs)
 - CLI tool creating new projects and effects.

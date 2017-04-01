@@ -1,4 +1,4 @@
-# import math
+import math
 from demosys.effects import effect
 from demosys.opengl import geometry, FBO
 # from pyrr import Vector3
@@ -18,7 +18,7 @@ class CubeEffect(effect.Effect):
         self.cube = geometry.cube(4.0, 4.0, 4.0)
         v = 100.0
         r = (-v, v)
-        self.points = geometry.points_random_3d(100_000, range_x=r, range_y=r, range_z=r, seed=7656456)
+        self.points = geometry.points_random_3d(50_000, range_x=r, range_y=r, range_z=r, seed=7656456)
         self.quad = geometry.quad_fs()
         self.fbo = FBO.create(512, 512, depth=True)
 
@@ -44,7 +44,7 @@ class CubeEffect(effect.Effect):
         self.fbo.release()
 
         # Test camera
-        self.sys_camera.set_projection(near=1, far=1000)
+        self.sys_camera.set_projection(near=0.1, far=1000)
         # self.sys_camera.set_position(10.0, 0.0, 10.0)
         # self.sys_camera.set_position(math.sin(time) * 10,
         #                                  math.sin(time * 10),
@@ -58,6 +58,8 @@ class CubeEffect(effect.Effect):
         self.cube_shader2.uniform_mat4("ModelViewM", view_m)
         self.cube_shader2.uniform_mat3("NormalM", normal_m)
         self.cube_shader2.uniform_sampler_2d(0, "texture0", self.fbo.color_buffers[0])
+        self.cube_shader2.uniform_1f("time", time)
+        self.cube_shader2.uniform_3f("lightpos", 0.0, 0.0, 0.0)
         self.points.draw(mode=GL.GL_POINTS)
 
         GL.glClearColor(0.5, 0.5, 0.5, 1)
