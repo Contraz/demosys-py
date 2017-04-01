@@ -12,6 +12,8 @@ PROFILES = {
 
 
 class Window:
+    min_glfw_version = (3, 2, 1)
+
     def __init__(self):
         self.width = settings.WINDOW['size'][0]
         self.height = settings.WINDOW['size'][1]
@@ -21,7 +23,7 @@ class Window:
         if not glfw.init():
             raise ValueError("Failed to initialize glfw")
 
-        print("glfw version: {} (python wrapper version {})".format(glfw.get_version(), glfw.__version__))
+        self.check_glfw_version()
 
         glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, settings.OPENGL['version'][0])
         glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, settings.OPENGL['version'][1])
@@ -81,6 +83,8 @@ class Window:
         glfw.make_context_current(self.window)
         print("Context Version:", GL.glGetString(GL.GL_VERSION).decode())
 
+        # The number of screen updates to wait from the time glfwSwapBuffers
+        # was called before swapping the buffers and returning
         if settings.WINDOW.get('vsync'):
             glfw.swap_interval(1)
 
@@ -107,3 +111,8 @@ class Window:
 
     def terminate(self):
         glfw.terminate()
+
+    def check_glfw_version(self):
+        print("glfw version: {} (python wrapper version {})".format(glfw.get_version(), glfw.__version__))
+        if glfw.get_version() < self.min_glfw_version:
+            raise ValueError("Please update glfw binaries to version {} or later".format(self.min_glfw_version))
