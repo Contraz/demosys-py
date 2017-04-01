@@ -1,4 +1,4 @@
-import math
+# import math
 from demosys.effects import effect
 from demosys.opengl import geometry, FBO
 # from pyrr import Vector3

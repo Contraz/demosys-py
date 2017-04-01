@@ -5,7 +5,7 @@ from OpenGL import GL
 from demosys.conf import settings
 
 
-def create(format='png'):
+def create(window, format='png'):
     """
     Create a screenshot
     :param format: formats supported by PIL (png, jpeg etc)
@@ -20,11 +20,15 @@ def create(format='png'):
         else:
             print("SCREENSHOT_PATH {} does not exist. Using cwd as fallback".format(settings.SCREENSHOT_PATH))
 
-    x, y, width, height = GL.glGetIntegerv(GL.GL_VIEWPORT)
+    # x, y, width, height = GL.glGetIntegerv(GL.GL_VIEWPORT)
+    # print("Screenshot viewport:", x, y, width, height)
+    # FIXME: Snap to viewport
+    print("Screenshot viewport:", window.buffer_width, window.buffer_height)
     GL.glPixelStorei(GL.GL_PACK_ALIGNMENT, 1)
-    data = GL.glReadPixels(x, y, width, height, GL.GL_RGB, GL.GL_UNSIGNED_BYTE)
 
-    image = Image.frombytes("RGB", (width, height), data)
+    data = GL.glReadPixels(0, 0, window.buffer_width, window.buffer_height, GL.GL_RGB, GL.GL_UNSIGNED_BYTE)
+
+    image = Image.frombytes("RGB", (window.buffer_width, window.buffer_height), data)
     image = image.transpose(Image.FLIP_TOP_BOTTOM)
     name = "{}.{}".format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"), format)
     image.save(os.path.join(dest, name), format=format)

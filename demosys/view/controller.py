@@ -148,7 +148,7 @@ def key_event_callback(window, key, scancode, action, mods):
 
     # Screenshots
     if key == glfw.KEY_X and action == glfw.PRESS:
-        screenshot.create()
+        screenshot.create(WINDOW)
 
 
 def mouse_event_callback(window, x, y):
