@@ -99,10 +99,12 @@ class VAO:
         :param components: Number of components (for example 3 for a x, y, x position)
         """
         ab = self.array_buffer_map[id(vbo)]
+
         # FIXME: Determine byte size based on data type in VBO
         offset = ab.stride
         ab.stride += components * 4
         am = ArrayMapping(ab, attrib_name, components, offset)
+
         self.array_mapping.append(am)
         self.array_mapping_map[attrib_name] = am
 
@@ -134,7 +136,7 @@ class VAO:
             return combo
 
         print("Generating VAO Combo for {} using key {}".format(self.name, shader.attribute_key))
-        combo = VAOCombo("moo")
+        combo = VAOCombo(shader.attribute_key)
         combo.bind()
 
         # Build the vao according to the shader's attribute specifications
@@ -159,6 +161,7 @@ class VAO:
 
             mapping.array_buffer.vbo.bind()
             GL.glEnableVertexAttribArray(shader.attribute_list[i].location)
+
             if mapping.array_buffer.format == GL.GL_FLOAT:
                 GL.glVertexAttribPointer(shader.attribute_list[i].location,
                                          mapping.components,

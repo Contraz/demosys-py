@@ -25,6 +25,8 @@ class CubeEffect(effect.Effect):
     @effect.bind_target
     def draw(self, time, target):
         GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glEnable(GL.GL_CULL_FACE)
+
         self.fbo.bind()
 
         mv_m = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),
