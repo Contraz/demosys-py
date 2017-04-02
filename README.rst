@@ -21,8 +21,7 @@ reasons we won't dig deeper into right now**
 This was originally made for for non-interactive real time graphics
 combined with music ("real time music videos"). It's made for people who
 enjoy playing around with modern OpenGL without having to spend lots of
-time creating all the tooling to get things up and running and at the
-same time avoid all the old cruft in OpenGL.
+time creating all the tooling to get things up and running.
 
 Demosys is now on PyPI
 
@@ -231,9 +230,11 @@ values refer to the virual size. The actual buffer size will be 2 x.
 
     WINDOW = {
         "size": (1280, 768),
+        "vsync": True,
         "resizable": False,
         "fullscreen": False,
         "title": "demosys-py",
+        "cursor": False,
     }
 
 MUSIC

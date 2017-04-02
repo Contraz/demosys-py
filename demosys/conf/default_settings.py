@@ -27,6 +27,7 @@ WINDOW = {
     "resizable": False,
     "title": "demosys-py",
     "vsync": True,
+    "cursor": False,
 }
 
 # Empty effects tuple
