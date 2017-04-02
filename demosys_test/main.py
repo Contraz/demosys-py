@@ -1,6 +1,4 @@
-"""
-Entrypoint for custom entrypoint in setup.py
-"""
+"""Entrypoint from entrypoint in setup.py"""
 import os
 import sys
 
