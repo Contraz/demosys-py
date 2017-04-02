@@ -215,7 +215,7 @@ def points_random_3d(count, range_x=(-10.0, 10.0), range_y=(-10.0, 10.0), range_
             yield random.uniform(*range_z)
 
     pos = VBO(numpy.array(list(gen()), dtype=numpy.float32))
-    vao = VAO("geometry:points_random")
+    vao = VAO("geometry:points_random_3d")
     vao.add_array_buffer(GL.GL_FLOAT, pos)
     vao.map_buffer(pos, "in_position", 3)
     vao.build()

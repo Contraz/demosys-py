@@ -1,15 +1,16 @@
-from demosys.effects import Effect
+from demosys.effects import effect
 from demosys.opengl import geometry
 from OpenGL import GL
 from pyrr import matrix44
 
 
-class DefaultEffect(Effect):
+class DefaultEffect(effect.Effect):
     """Generated default efffect"""
     def init(self):
         self.shader = self.get_shader("default.glsl")
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
+    @effect.bind_target
     def draw(self, time, target):
         GL.glEnable(GL.GL_DEPTH_TEST)
 
