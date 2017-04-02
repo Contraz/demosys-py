@@ -9,7 +9,7 @@ def reqs_from_requirements_file():
 
 setup(
     name="demosys-py",
-    version="0.1.3",
+    version="0.1.4",
     description="Modern OpenGL 4.1+ Prototype Framework inspired by Django",
     long_description=open('README.rst').read(),
     url="https://github.com/Contraz/demosys-py",
