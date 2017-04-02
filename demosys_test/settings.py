@@ -21,7 +21,7 @@ WINDOW = {
     "resizable": True,
     "fullscreen": False,
     "title": "demosys-py",
-    "cursor": True,
+    "cursor": False,
 }
 
 MUSIC = os.path.join(PROJECT_DIR, 'resources/music/tg2035.mp3')

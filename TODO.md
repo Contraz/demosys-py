@@ -4,14 +4,21 @@
 - Split up README into several files
 - Properly verify all settings
 - Write documentation (readthedocs)
+- Make EffectControllers
+  - SingleEffectController
+  - TrackSystemEffectController
+  - SimpleTimeLineEffectController
 - CLI tool creating new projects and effects.
 - Create more examples in demosys_test
 - Shaders
+  - Improve error prints (use actual source from GL so we can see expanded typedefs)
   - Core loader support for common formats
   - Custom loader support / less hacky loading
 Textures:
-  - Support 1D and 3D textures
-  - Custom texture loaders
+  - 1D and 3D
+  - Texture Array
+  - Texture Cube
+- Custom texture loaders
 - FBOs
   - Support layers
 Generic Data:
@@ -25,4 +32,5 @@ Generic Data:
   - FBOs
   - Textures
 - Settings entry for key bindings
-- Clean up cotroller/initialization
+- Clean up controller/initialization
+- Look into using freetype
