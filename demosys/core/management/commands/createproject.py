@@ -1,65 +1,47 @@
-# FIXME: Rewrite this into something less horrible in the future
-# Right now we just want this to work
 import os
-from importlib import import_module
-
-HELP = "Create a project"
+from demosys.core.management.base import CreateCommand
 
 
-def print_usage():
-    print("Usage:")
-    print("  crateproject <name>")
+class Command(CreateCommand):
+    help = "Create a project"
 
+    def add_arguments(self, parser):
+        parser.add_argument("name", help="Name of the project")
 
-def run(args):
-    if not args:
-        print_usage()
-        return
+    def handle(self, *args, **options):
+        name = options['name']
 
-    name = args[0]
-    print(f"Creating project '{name}'")
+        # Check for python module collision
+        self.try_import(name)
 
-    # Check for python module collision
-    try:
-        import_module(name)
-    except ImportError:
-        pass
-    else:
-        raise ValueError(f"{name} conflicts with an existing python module")
+        # Is the name a valid identifier?
+        self.validate_name(name)
 
-    # Is the name a valid identifier?
-    validate_name(name)
+        # Make sure we don't mess with existing directories
+        if os.path.exists(name):
+            print(f"Directory {name} already exist. Aborting.")
+            return
 
-    # Make sure we don't mess with existing directories
-    if os.path.exists(name):
-        print(f"Directory {name} already exist. Aborting.")
-        return
+        manage_file = 'manage.py'
+        if os.path.exists(manage_file):
+            print("A manage.py file already exist in the current directory. Aborting.")
+            return
 
-    # Create the project directory
-    os.makedirs(name)
+        # Create the project directory
+        os.makedirs(name)
 
-    # Use the default settings file
-    os.environ['DEMOSYS_SETTINGS_MODULE'] = 'demosys.conf.default_settings'
-    from demosys.conf import settings
-    from demosys.conf import settingsfile
+        # Use the default settings file
+        os.environ['DEMOSYS_SETTINGS_MODULE'] = 'demosys.conf.default_settings'
+        from demosys.conf import settings
+        from demosys.conf import settingsfile
 
-    with open(os.path.join(name, 'settings.py'), 'w') as fd:
-        fd.write(settingsfile.create(settings))
+        with open(os.path.join(name, 'settings.py'), 'w') as fd:
+            fd.write(settingsfile.create(settings))
 
-    manage_file = 'manage.py'
-    with open(manage_file, 'w') as fd:
-        fd.write(gen_manage_py(name))
+        with open(manage_file, 'w') as fd:
+            fd.write(gen_manage_py(name))
 
-    os.chmod(manage_file, 0o777)
-
-
-def validate_name(name):
-    if not name:
-        raise ValueError("Name cannot be empty")
-
-    # Can the name be used as an identifier in python (module or package name)
-    if not name.isidentifier():
-        raise ValueError(f"{name} is not a valid identifier")
+        os.chmod(manage_file, 0o777)
 
 
 def gen_manage_py(project_name):

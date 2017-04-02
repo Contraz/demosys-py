@@ -19,26 +19,26 @@ def local_command_dir():
     return command_dir
 
 
-def load_command_class(name):
-    return import_module('demosys.core.management.commands.{}'.format(name))
+def load_command_class(app_name, name):
+    module = import_module(f'{app_name}.management.commands.{name}')
+    return module.Command()
 
 
 def execute_from_command_line(argv=None):
+    """
+    Currently the only entrypoint (manage.py, demosys-admin)
+    """
     if not argv:
         argv = sys.argv
+
+    # prog_name = argv[0]
     commands = find_commands(local_command_dir())
     command = argv[1] if len(argv) > 1 else None
 
-    source = os.path.basename(argv[0])
-    if source == "demosys-admin":
-        print("Running as demosys-admin")
-
     if command in commands:
-        module = load_command_class(command)
-        if hasattr(module, 'run'):
-            module.run(argv[2:])
-        else:
-            print("Command {} is not runnable".format(command))
+        cmd = load_command_class('demosys.core', command)
+        cmd.run_from_argv(argv)
     else:
         print("Available commands:")
-        print("\n".join(commands))
+        for c in commands:
+            print(f" - {c}")
