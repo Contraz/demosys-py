@@ -17,6 +17,8 @@ def create(settings):
         elif isinstance(value, tuple):
             value = ",\n".join("    {}".format(to_s(v)) for v in value)
             data += f"{name} = (\n{value})\n\n"
+        elif value is None:
+            data += f"{name} = {value}\n\n"
 
     return data
 
