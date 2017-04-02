@@ -2,20 +2,15 @@
 Run a specific effect
 """
 import demosys
-
-HELP = "Runs an effect"
-
-
-def print_usage():
-    print("Usage:")
-    print("  runeffect <effectname>")
+from demosys.core.management.base import CreateCommand
 
 
-def run(args):
-    effect_name = args[0] if args else None
-    if effect_name is None:
-        print_usage()
-        return
+class Command(CreateCommand):
+    help = "Runs an effect"
 
-    demosys.setup()
-    demosys.run(runeffect=effect_name)
+    def add_arguments(self, parser):
+        parser.add_argument("name", help="Name of the effect")
+
+    def handle(self, *args, **options):
+        demosys.setup()
+        demosys.run(runeffect=options['name'])
