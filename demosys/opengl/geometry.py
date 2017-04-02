@@ -45,9 +45,9 @@ def quad_2d(width, height, xpos, ypos):
     vao.add_array_buffer(GL.GL_FLOAT, pos)
     vao.add_array_buffer(GL.GL_FLOAT, normals)
     vao.add_array_buffer(GL.GL_FLOAT, uvs)
-    vao.map_buffer(pos, "in_Position", 3)
+    vao.map_buffer(pos, "in_position", 3)
     vao.map_buffer(normals, "in_normal", 3)
-    vao.map_buffer(uvs, "in_UV0", 2)
+    vao.map_buffer(uvs, "in_uv", 2)
     vao.build()
     return vao
 
@@ -186,11 +186,11 @@ def cube(width, height, depth, normals=True, uvs=True):
         vao.add_array_buffer(GL.GL_FLOAT, normals)
     if uvs:
         vao.add_array_buffer(GL.GL_FLOAT, uvs)
-    vao.map_buffer(pos, "in_Position", 3)
+    vao.map_buffer(pos, "in_position", 3)
     if normals:
-        vao.map_buffer(normals, "in_Normal", 3)
+        vao.map_buffer(normals, "in_normal", 3)
     if uvs:
-        vao.map_buffer(uvs, "in_UV0", 2)
+        vao.map_buffer(uvs, "in_uv", 2)
     vao.build()
     return vao
 
@@ -217,6 +217,6 @@ def points_random_3d(count, range_x=(-10.0, 10.0), range_y=(-10.0, 10.0), range_
     pos = VBO(numpy.array(list(gen()), dtype=numpy.float32))
     vao = VAO("geometry:points_random")
     vao.add_array_buffer(GL.GL_FLOAT, pos)
-    vao.map_buffer(pos, "in_Position", 3)
+    vao.map_buffer(pos, "in_position", 3)
     vao.build()
     return vao

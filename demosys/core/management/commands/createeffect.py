@@ -21,3 +21,30 @@ class Command(CreateCommand):
         if os.path.exists(name):
             print(f"Directory {name} already exist. Aborting.")
             return
+
+        os.mkdir(name)
+        os.mkdir(os.path.join(name, 'textures'))
+        os.mkdir(os.path.join(name, 'shaders'))
+
+        # Create effect.py
+        with open(os.path.join(name, 'effect.py'), 'w') as fd:
+            fd.write(default_effect())
+
+        # Create default.glsl
+        with open(os.path.join(name, 'shaders', 'default.glsl'), 'w') as fd:
+            fd.write(default_shader())
+
+
+def default_effect():
+    file_path = os.path.join(root_path(), 'effects/default/effect.py')
+    return open(file_path, 'r').read()
+
+
+def default_shader():
+    file_path = os.path.join(root_path(), 'effects/default/shaders/default.glsl')
+    return open(file_path, 'r').read()
+
+
+def root_path():
+    module_dir = os.path.dirname(globals()['__file__'])
+    return os.path.dirname(os.path.dirname(os.path.dirname(module_dir)))

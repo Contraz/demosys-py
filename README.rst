@@ -76,7 +76,9 @@ Manual setup (OS X / Linux):
 Controls
 ========
 
-- Currently you can control the camera with ``A``, ``W``, ``S`` and ``D``
+- Currently you can control the camera with ``A``, ``W``, ``S`` and ``D``.
+  ``Q`` and ``E`` for y axis movements
+- Standard yaw/pitch camera rotation with mouse
 - ``ESC`` for exit
 - ``SPACE`` for pause
 - ``X`` for taking ``png`` screenshot

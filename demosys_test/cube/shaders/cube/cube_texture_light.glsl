@@ -2,17 +2,14 @@
 
 #if defined VERTEX_SHADER
 
-in vec3 in_Position;
+in vec3 in_position;
 
-uniform mat4 ProjM;
-uniform mat4 ModelViewM;
-uniform mat3 NormalM;
-
-out vec3 normal;
-out vec2 uv0;
+uniform mat4 m_proj;
+uniform mat4 m_mv;
+uniform mat3 m_normal;
 
 void main() {
-	gl_Position = vec4(in_Position, 1.0);
+	gl_Position = vec4(in_position, 1.0);
 }
 
 #elif defined FRAGMENT_SHADER
@@ -22,7 +19,7 @@ uniform sampler2D texture0;
 uniform float time;
 
 in vec3 normal;
-in vec2 uv0;
+in vec2 uv;
 in vec3 lightdir;
 in vec3 eyepos;
 
@@ -34,7 +31,7 @@ void main()
     vec4 specular = vec4(1.0, 1.0, 1.0, 1.0);
     float shininess = 0.5;
 
-    vec4 c = texture(texture0, uv0);
+    vec4 c = texture(texture0, uv);
     vec4 spec = vec4(0.0);
 
     vec3 n = normalize(normal);
@@ -58,13 +55,13 @@ void main()
 layout (points) in;
 layout (triangle_strip, max_vertices = 24) out; // 4 vertices per side of the cube
 
-uniform mat4 ProjM;
-uniform mat4 ModelViewM;
-uniform mat3 NormalM;
+uniform mat4 m_proj;
+uniform mat4 m_mv;
+uniform mat3 m_normal;
 uniform vec3 lightpos;
 uniform float time;
 
-out vec2 uv0;
+out vec2 uv;
 out vec3 normal;
 out vec3 lightdir;
 out vec3 eyepos;
@@ -82,11 +79,11 @@ vec3 cube_corners[8] = vec3[]  (
 );
 
 #define EMIT_V(POS, UV, NORMAL) \
-	uv0 = UV; \
-	normal = normalize(NormalM * NORMAL); \
+	uv = UV; \
+	normal = normalize(m_normal * NORMAL); \
 	lightdir = lightpos - POS.xyz; \
 	eyepos = -POS.xyz; \
-	gl_Position = ProjM * vec4(POS, 1.0); \
+	gl_Position = m_proj * vec4(POS, 1.0); \
 	EmitVertex()
 
 #define EMIT_QUAD(P1, P2, P3, P4, NORMAL) \
@@ -109,7 +106,7 @@ void main()
 		pos.x += cos(time + gl_in[0].gl_Position.x);
 		pos.z += cos(time + gl_in[0].gl_Position.z);
 
-		corners[i] = (ModelViewM * vec4(pos, 1.0)).xyz;
+		corners[i] = (m_mv * vec4(pos, 1.0)).xyz;
 	}
 	EMIT_QUAD(3, 2, 0, 1, vec3( 0.0,  0.0, -1.0)); // back
 	EMIT_QUAD(6, 7, 5, 4, vec3( 0.0,  0.0,  1.0)); // front
