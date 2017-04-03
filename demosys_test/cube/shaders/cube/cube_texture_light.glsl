@@ -22,7 +22,7 @@ in vec3 normal;
 in vec2 uv;
 in vec3 lightdir;
 in vec3 eyepos;
-
+in vec3 color;
 
 void main()
 {
@@ -46,7 +46,7 @@ void main()
     }
     float att = clamp(1.0 - length(eyepos)/200.0, 0.0, 1.0);
     att *= att;
-    fragColor = c * max(intensity * diffuse + spec, ambient) * att;
+    fragColor = c * max(intensity * diffuse + spec, ambient) * vec4(color, 1.0) * att;
 }
 
 
@@ -65,6 +65,7 @@ out vec2 uv;
 out vec3 normal;
 out vec3 lightdir;
 out vec3 eyepos;
+out vec3 color;
 
 // Define the 8 corners of a cube (back plane, front plane (counter clockwise))
 vec3 cube_corners[8] = vec3[]  (
@@ -78,19 +79,20 @@ vec3 cube_corners[8] = vec3[]  (
 	vec3( 1.0, -1.0,  1.0)  // right bottom near
 );
 
-#define EMIT_V(POS, UV, NORMAL) \
+#define EMIT_V(POS, UV, NORMAL, COL) \
 	uv = UV; \
 	normal = normalize(m_normal * NORMAL); \
 	lightdir = lightpos - POS.xyz; \
 	eyepos = -POS.xyz; \
+	color = COL; \
 	gl_Position = m_proj * vec4(POS, 1.0); \
 	EmitVertex()
 
-#define EMIT_QUAD(P1, P2, P3, P4, NORMAL) \
-	EMIT_V(corners[P1], vec2(0.0, 0.0), NORMAL); \
-	EMIT_V(corners[P2], vec2(1.0, 0.0), NORMAL); \
-	EMIT_V(corners[P3], vec2(0.0, 1.0), NORMAL); \
-	EMIT_V(corners[P4], vec2(1.0, 1.0), NORMAL); \
+#define EMIT_QUAD(P1, P2, P3, P4, NORMAL, COL) \
+	EMIT_V(corners[P1], vec2(0.0, 0.0), NORMAL, COL); \
+	EMIT_V(corners[P2], vec2(1.0, 0.0), NORMAL, COL); \
+	EMIT_V(corners[P3], vec2(0.0, 1.0), NORMAL, COL); \
+	EMIT_V(corners[P4], vec2(1.0, 1.0), NORMAL, COL); \
 	EndPrimitive()
 
 void main()
@@ -108,12 +110,13 @@ void main()
 
 		corners[i] = (m_mv * vec4(pos, 1.0)).xyz;
 	}
-	EMIT_QUAD(3, 2, 0, 1, vec3( 0.0,  0.0, -1.0)); // back
-	EMIT_QUAD(6, 7, 5, 4, vec3( 0.0,  0.0,  1.0)); // front
-	EMIT_QUAD(7, 3, 4, 0, vec3( 1.0,  0.0,  0.0)); // right
-	EMIT_QUAD(2, 6, 1, 5, vec3(-1.0,  0.0,  0.0)); // left
-	EMIT_QUAD(5, 4, 1, 0, vec3( 0.0,  1.0,  0.0)); // top
-	EMIT_QUAD(2, 3, 6, 7, vec3( 0.0, -1.0,  0.0)); // bottom
+	vec3 col = normalize(gl_in[0].gl_Position.xyz);
+	EMIT_QUAD(3, 2, 0, 1, vec3( 0.0,  0.0, -1.0), col); // back
+	EMIT_QUAD(6, 7, 5, 4, vec3( 0.0,  0.0,  1.0), col); // front
+	EMIT_QUAD(7, 3, 4, 0, vec3( 1.0,  0.0,  0.0), col); // right
+	EMIT_QUAD(2, 6, 1, 5, vec3(-1.0,  0.0,  0.0), col); // left
+	EMIT_QUAD(5, 4, 1, 0, vec3( 0.0,  1.0,  0.0), col); // top
+	EMIT_QUAD(2, 3, 6, 7, vec3( 0.0, -1.0,  0.0), col); // bottom
     EndPrimitive();
 }
 
