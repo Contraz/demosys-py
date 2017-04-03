@@ -26,11 +26,11 @@ class Camera:
         :param near: Near plane
         :param far: Far plane
         """
-        self.cam_pos = Vector3([0.0, 0.0, 5.0])
+        self.position = Vector3([0.0, 0.0, 0.0])
         # Default camera placement
-        self.cam_up = Vector3([0.0, 1.0, 0.0])
-        self.cam_right = Vector3([1.0, 0.0, 0.0])
-        self.cam_dir = Vector3([0.0, 0.0, -1.0])
+        self.up = Vector3([0.0, 1.0, 0.0])
+        self.right = Vector3([1.0, 0.0, 0.0])
+        self.dir = Vector3([0.0, 0.0, -1.0])
         # Yaw and Pitch
         self.yaw = -90.0
         self.pitch = 0.0
@@ -57,7 +57,7 @@ class Camera:
         self.set_projection()
 
     def set_position(self, x, y, z):
-        self.cam_pos = Vector3([x, y, z])
+        self.position = Vector3([x, y, z])
 
     def move_state(self, direction, activate):
         """
@@ -109,9 +109,9 @@ class Camera:
         front.y = sin(radians(self.pitch))
         front.z = sin(radians(self.yaw)) * cos(radians(self.pitch))
 
-        self.cam_dir = vector.normalise(front)
-        self.cam_right = vector.normalise(vector3.cross(self.cam_dir, self._up))
-        self.cam_up = vector.normalise(vector3.cross(self.cam_right, self.cam_dir))
+        self.dir = vector.normalise(front)
+        self.right = vector.normalise(vector3.cross(self.dir, self._up))
+        self.up = vector.normalise(vector3.cross(self.right, self.dir))
 
     @property
     def view_matrix(self):
@@ -124,21 +124,21 @@ class Camera:
 
         # X Movement
         if self._xdir == POSITIVE:
-            self.cam_pos += self.cam_right * self.velocity * t
+            self.position += self.right * self.velocity * t
         elif self._xdir == NEGATIVE:
-            self.cam_pos -= self.cam_right * self.velocity * t
+            self.position -= self.right * self.velocity * t
         # Z Movement
         if self._zdir == NEGATIVE:
-            self.cam_pos += self.cam_dir * self.velocity * t
+            self.position += self.dir * self.velocity * t
         elif self._zdir == POSITIVE:
-            self.cam_pos -= self.cam_dir * self.velocity * t
+            self.position -= self.dir * self.velocity * t
         # Y Movement
         if self._ydir == POSITIVE:
-            self.cam_pos += self.cam_up * self.velocity * t
+            self.position += self.up * self.velocity * t
         elif self._ydir == NEGATIVE:
-            self.cam_pos -= self.cam_up * self.velocity * t
+            self.position -= self.up * self.velocity * t
 
-        return self._gl_look_at(self.cam_pos, self.cam_pos + self.cam_dir, self._up)
+        return self._gl_look_at(self.position, self.position + self.dir, self._up)
 
     def set_projection(self, fov=None, aspect=None, near=None, far=None):
         """
@@ -168,7 +168,7 @@ class Camera:
             vec = Vector3(pos)
         if vec is None:
             raise ValueError("vector or pos must be set")
-        return self._gl_look_at(self.cam_pos, vec, self._up)
+        return self._gl_look_at(self.position, vec, self._up)
 
     def _gl_look_at(self, pos, target, up):
         """
