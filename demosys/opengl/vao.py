@@ -63,8 +63,14 @@ class VAOCombo:
 
 class VAO:
     """Vertex Array Object"""
-    def __init__(self, name):
+    def __init__(self, name, mode=GL.GL_TRIANGLES):
+        """
+        Create and empty VAO
+        :param name: The name for debug purposes
+        :param mode: Default draw mode for this VAO
+        """
         self.name = name
+        self.mode = mode
         self.array_buffer_map = {}
 
         self.array_mapping = []
@@ -79,10 +85,17 @@ class VAO:
         combo = self.generate_vao_combo(shader)
         combo.bind()
 
-    def draw(self, mode=GL.GL_TRIANGLES):
+    def draw(self, mode=None):
+        """
+        Draw the VAO
+        :param mode: Override the default GL_TRIANGLES 
+        """
         if self.element_buffer:
             raise NotImplemented
-        GL.glDrawArrays(mode, 0, self.vertex_count)
+        if mode is not None:
+            GL.glDrawArrays(mode, 0, self.vertex_count)
+        else:
+            GL.glDrawArrays(self.mode, 0, self.vertex_count)
 
     def add_array_buffer(self, format, vbo):
         self.array_buffer_map[id(vbo)] = ArrayBuffer(format, vbo)
