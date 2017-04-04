@@ -91,11 +91,21 @@ class VAO:
         :param mode: Override the default GL_TRIANGLES
         """
         if self.element_buffer:
-            raise NotImplemented
-        if mode is not None:
-            GL.glDrawArrays(mode, 0, self.vertex_count)
+            if mode is not None:
+                GL.glDrawElements(mode,
+                                  self.element_buffer.size,
+                                  self.element_buffer.format,
+                                  self.element_buffer.vbo)
+            else:
+                GL.glDrawElements(self.mode,
+                                  self.element_buffer.size,
+                                  self.element_buffer.format,
+                                  self.element_buffer.vbo)
         else:
-            GL.glDrawArrays(self.mode, 0, self.vertex_count)
+            if mode is not None:
+                GL.glDrawArrays(mode, 0, self.vertex_count)
+            else:
+                GL.glDrawArrays(self.mode, 0, self.vertex_count)
 
     def add_array_buffer(self, format, vbo):
         self.array_buffer_map[id(vbo)] = ArrayBuffer(format, vbo)
@@ -185,6 +195,9 @@ class VAO:
             else:
                 raise VAOError("VAO class have not implemented array binding for {}".format(
                     mapping.array_buffer.format))
+
+        if self.element_buffer:
+            self.element_buffer.vbo.bind()
 
         self.combos[shader.attribute_key] = combo
         GL.glBindVertexArray(0)
