@@ -80,10 +80,15 @@ class VAO:
         self.vertex_count = 0
         self.combos = {}
 
+        self.bind_context = VAOBindContext(self)
+
     def bind(self, shader):
         shader.bind()
         combo = self.generate_vao_combo(shader)
         combo.bind()
+        # Return context manager
+        self.bind_context.shader = shader
+        return self.bind_context
 
     def draw(self, mode=None):
         """
@@ -202,3 +207,16 @@ class VAO:
         self.combos[shader.attribute_key] = combo
         GL.glBindVertexArray(0)
         return combo
+
+
+class VAOBindContext:
+    """Context managers for bound VAOs"""
+    def __init__(self, vao):
+        self.vao = vao
+        self.shader = None
+
+    def __enter__(self):
+        return self.shader
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
