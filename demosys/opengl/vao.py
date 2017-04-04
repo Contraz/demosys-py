@@ -88,7 +88,7 @@ class VAO:
     def draw(self, mode=None):
         """
         Draw the VAO
-        :param mode: Override the default GL_TRIANGLES 
+        :param mode: Override the default GL_TRIANGLES
         """
         if self.element_buffer:
             raise NotImplemented

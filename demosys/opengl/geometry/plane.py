@@ -41,9 +41,7 @@ def plane_xz(size=(10, 10), resolution=(10, 10)):
     data = numpy.fromiter(gen(), dtype=numpy.float32)
     position_vbo = VBO(data)
 
-    # vao = VAO("plane_xz", mode=GL.GL_TRIANGLE_STRIP)
-    vao = VAO("plane_xz", mode=GL.GL_LINE_STRIP)
-    # vao = VAO("plane_xz", mode=GL.GL_LINES)
+    vao = VAO("plane_xz", mode=GL.GL_TRIANGLE_STRIP)
     vao.add_array_buffer(GL.GL_FLOAT, position_vbo)
     vao.map_buffer(position_vbo, "in_position", 3)
     vao.build()
