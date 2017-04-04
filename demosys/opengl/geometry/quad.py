@@ -43,7 +43,7 @@ def quad_2d(width, height, xpos, ypos):
         1.0, 0.0,
         1.0, 1.0,
     ], dtype=numpy.float32))
-    vao = VAO("geometry:quad")
+    vao = VAO("geometry:quad", mode=GL.GL_TRIANGLES)
     vao.add_array_buffer(GL.GL_FLOAT, pos)
     vao.add_array_buffer(GL.GL_FLOAT, normals)
     vao.add_array_buffer(GL.GL_FLOAT, uvs)
