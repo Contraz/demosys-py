@@ -107,17 +107,18 @@ effect.py
 
 .. code:: python
 
-    from demosys.effects import Effect
+    from demosys.effects import effect
     from demosys.opengl import geometry, FBO
     from OpenGL import GL
 
-    class CubeEffect(Effect):
+    class CubeEffect(effect.Effect):
         """Rotating cube with UVs and normals"""
         def init(self):
             self.shader = self.get_shader('cube/cube.glsl')
             self.texture = self.get_texture('cube/texture.png')
-            self.cube = geometry.cube(2.0)
+            self.cube = geometry.cube(2.0, 2.0, 2.0)
 
+        @effect.bind_target
         def draw(self, time, target):
             GL.glEnable(GL.GL_DEPTH_TEST)
 
@@ -128,11 +129,11 @@ effect.py
             proj_m = self.create_projection(fov=60.0)
 
             # The VAO and shader will do a a little dance and agree on attributes
-            self.cube.bind(self.shader)
-            self.cube_shader.uniform_mat4("ProjM", proj_m)
-            self.cube_shader.uniform_mat4("ModelViewM", mv_m)
-            self.cube_shader.uniform_mat3("NormalM", normal_m)
-            self.cube_shader.uniform_sampler_2d(0, "texture0", self.texture)
+            with self.cube.bind(self.shader) as shader:
+                shader.uniform_mat4("m_proj", proj_m)
+                shader.uniform_mat4("m_mv", mv_m)
+                shader.uniform_mat3("m_normal", normal_m)
+                shader.uniform_sampler_2d(0, "texture0", self.texture)
             self.cube.draw()
 
 There you go.
