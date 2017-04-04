@@ -34,6 +34,25 @@ class FBO:
         self.depth_buffer = None
         self.fbo = GL.glGenFramebuffers(1)
 
+    @property
+    def size(self):
+        # FIXME: How do we deal with attachments of different sizes?
+        if self.color_buffers:
+            return self.color_buffers[0].size
+        if self.depth_buffer:
+            return self.depth_buffer.size
+        raise FBOError("Cannot determine size of FBO. No attachments.")
+
+    def __enter__(self):
+        """Entering context manager"""
+        self.bind()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Exit context manager"""
+        self.release()
+        # We let exceptions propagate, so not returning anything
+
     def bind(self, stack=True):
         """Bind FBO adding it to the stack"""
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
@@ -63,14 +82,6 @@ class FBO:
         self.bind(stack=False)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
         self.release(stack=False)
-
-    @property
-    def size(self):
-        if self.color_buffers:
-            return self.color_buffers[0].size
-        if self.depth_buffer:
-            return self.depth_buffer.size
-        raise FBOError("Cannot determine size of FBO. No attachments.")
 
     @classmethod
     def create(cls, width, height, depth=False, stencil=True,
