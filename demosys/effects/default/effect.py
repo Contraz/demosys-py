@@ -25,8 +25,8 @@ class DefaultEffect(effect.Effect):
         m_normal = self.create_normal_matrix(m_mv)
 
         # Draw the cube
-        self.cube.bind(self.shader)
-        self.shader.uniform_mat4("m_proj", self.sys_camera.projection)
-        self.shader.uniform_mat4("m_mv", m_mv)
-        self.shader.uniform_mat3("m_normal", m_normal)
+        with self.cube.bind(self.shader) as shader:
+            shader.uniform_mat4("m_proj", self.sys_camera.projection)
+            shader.uniform_mat4("m_mv", m_mv)
+            shader.uniform_mat3("m_normal", m_normal)
         self.cube.draw()

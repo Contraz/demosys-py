@@ -25,23 +25,20 @@ class CubeEffect(effect.Effect):
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glEnable(GL.GL_CULL_FACE)
 
-        self.fbo.bind()
-
         mv_m = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),
                                           translation=(0.0, 0.0, -8.0))
         normal_m = self.create_normal_matrix(mv_m)
         proj_m = self.create_projection(fov=60.0, ratio=1.0)
 
-        self.cube.bind(self.cube_shader1)
-        self.cube_shader1.uniform_mat4("m_proj", proj_m)
-        self.cube_shader1.uniform_mat4("m_mv", mv_m)
-        self.cube_shader1.uniform_mat3("m_normal", normal_m)
-        self.cube_shader1.uniform_sampler_2d(0, "texture0", self.texture1)
-        self.cube_shader1.uniform_sampler_2d(1, "texture1", self.texture2)
-        self.cube_shader1.uniform_1f("time", time)
-        self.cube.draw()
-
-        self.fbo.release()
+        with self.fbo:
+            with self.cube.bind(self.cube_shader1) as shader:
+                shader.uniform_mat4("m_proj", proj_m)
+                shader.uniform_mat4("m_mv", mv_m)
+                shader.uniform_mat3("m_normal", normal_m)
+                shader.uniform_sampler_2d(0, "texture0", self.texture1)
+                shader.uniform_sampler_2d(1, "texture1", self.texture2)
+                shader.uniform_1f("time", time)
+            self.cube.draw()
 
         # Test camera
         self.sys_camera.set_projection(near=0.1, far=1000)
@@ -53,13 +50,13 @@ class CubeEffect(effect.Effect):
         view_m = self.sys_camera.view_matrix
         normal_m = self.create_normal_matrix(view_m)
 
-        self.points.bind(self.cube_shader2)
-        self.cube_shader2.uniform_mat4("m_proj", self.sys_camera.projection)
-        self.cube_shader2.uniform_mat4("m_mv", view_m)
-        self.cube_shader2.uniform_mat3("m_normal", normal_m)
-        self.cube_shader2.uniform_sampler_2d(0, "texture0", self.fbo.color_buffers[0])
-        self.cube_shader2.uniform_1f("time", time)
-        self.cube_shader2.uniform_3f("lightpos", 0.0, 0.0, 0.0)
+        with self.points.bind(self.cube_shader2) as shader:
+            shader.uniform_mat4("m_proj", self.sys_camera.projection)
+            shader.uniform_mat4("m_mv", view_m)
+            shader.uniform_mat3("m_normal", normal_m)
+            shader.uniform_sampler_2d(0, "texture0", self.fbo.color_buffers[0])
+            shader.uniform_1f("time", time)
+            shader.uniform_3f("lightpos", 0.0, 0.0, 0.0)
         self.points.draw(mode=GL.GL_POINTS)
 
         GL.glClearColor(0.5, 0.5, 0.5, 1)
