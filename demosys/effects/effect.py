@@ -44,14 +44,14 @@ class Effect:
     def create_transformation(self, rotation=None, translation=None):
         """Convenient transformation method doing rotations and translation"""
         mat = None
-        if rotation:
+        if rotation is not None:
             x = matrix44.create_from_x_rotation(rotation[0])
             y = matrix44.create_from_y_rotation(rotation[1])
             z = matrix44.create_from_z_rotation(rotation[2])
             mat = matrix44.multiply(x, y)
             mat = matrix44.multiply(mat, z)
 
-        if translation:
+        if translation is not None:
             trans = matrix44.create_from_translation(Vector3(translation))
             if mat is None:
                 mat = trans
