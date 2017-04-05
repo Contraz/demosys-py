@@ -7,12 +7,12 @@ class ManagerError(Exception):
 
 class BaseEffectManger:
     """Base effect manager"""
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def init_effects(self):
+    def pre_load(self):
         """Init after context creations"""
-        pass
+        return True
+
+    def post_load(self):
+        return True
 
     def draw(self, time, target):
         """Draw efffect(s)"""
@@ -24,11 +24,10 @@ class SingleEffectManager(BaseEffectManger):
     def __init__(self, effect_module=None):
         self.active_effect = None
         self.effect_module = effect_module
-        super().__init__()
 
-    def init_effects(self):
+    def pre_load(self):
         """Init after context creations"""
-        effect_list = [cls for cls in effects.get_effects()]
+        effect_list = [cfg.cls() for name, cfg in effects.effects.items()]
         for effect in effect_list:
             effect.init()
             if effect.name == self.effect_module:
@@ -39,6 +38,9 @@ class SingleEffectManager(BaseEffectManger):
             print("Available effects:")
             print("\n".join(e.name for e in effect_list))
             return False
+        return True
+
+    def post_load(self):
         return True
 
     def draw(self, time, target):

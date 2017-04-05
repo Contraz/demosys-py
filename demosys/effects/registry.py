@@ -23,11 +23,6 @@ class Effects:
     def __init__(self):
         self.effects = {}
 
-    def get_effects(self):
-        """Get all effect classes"""
-        for name, config in self.effects.items():
-            yield config.cls(name=name.replace(f".{EFFECT_MODULE}", ''))
-
     def get_dirs(self):
         """Get all effect directories"""
         for k, v in self.effects.items():
@@ -40,14 +35,15 @@ class Effects:
         for effect in effect_list:
             module = importlib.import_module(f'{effect}.{EFFECT_MODULE}')
             # Find the Effect class in the module
-            for name, obj in inspect.getmembers(module):
-                if inspect.isclass(obj):
-                    if obj == Effect:
+            for name, cls in inspect.getmembers(module):
+                if inspect.isclass(cls):
+                    if cls == Effect:
                         continue
                     # Use MRO to figure out if this is really an effect
-                    mro = inspect.getmro(obj)
-                    if obj in mro and Effect in mro:
-                        self.effects[module.__name__] = EffectConfig(module=module, cls=obj)
+                    mro = inspect.getmro(cls)
+                    if cls in mro and Effect in mro:
+                        cls.name = effect
+                        self.effects[module.__name__] = EffectConfig(module=module, cls=cls)
 
 
 effects = Effects()

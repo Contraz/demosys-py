@@ -19,9 +19,6 @@ class Effect:
     window_aspect = 0
     sys_camera = None
 
-    def __init__(self, name=name):
-        self.name = name
-
     # Methods to override
     def draw(self, time, target):
         raise NotImplemented

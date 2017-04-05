@@ -37,14 +37,18 @@ def run(manager=None):
     CAMERA = camera.Camera(aspect=Effect.window_aspect, fov=60.0, near=1, far=1000)
     Effect.sys_camera = CAMERA
 
-    # Tell EffectManager to initialize effects
-    if not manager.init_effects():
+    # Initialize Effects
+    if not manager.pre_load():
         return
 
     # Load resources
     num_resources = resources.count()
     print(f"Loading {num_resources } resources")
     resources.load()
+
+    # Post-Load actions for effects
+    if not manager.post_load():
+        return
 
     glfw.set_key_callback(WINDOW.window, key_event_callback)
     glfw.set_cursor_pos_callback(WINDOW.window, mouse_event_callback)
