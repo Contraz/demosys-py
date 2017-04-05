@@ -5,7 +5,7 @@ Thins needs to be improved once more pieces fall in place.
 from OpenGL import GL
 import glfw
 from demosys.view.window import Window
-from demosys.effects.registry import effects, Effect
+from demosys.effects.registry import Effect
 from demosys.opengl import fbo
 from demosys.opengl.fbo import WINDOW_FBO
 from demosys import resources
@@ -19,13 +19,14 @@ TIMER = None
 CAMERA = None
 
 
-def run(runeffect=None):
+def run(manager=None):
     """Initialize, load and run"""
     global WINDOW
     WINDOW = Window()
     fbo.WINDOW = WINDOW
 
     print("Loader started at", glfw.get_time())
+
     # Inject attributes into the base Effect class
     Effect.window_width = WINDOW.buffer_width
     Effect.window_height = WINDOW.buffer_height
@@ -36,18 +37,8 @@ def run(runeffect=None):
     CAMERA = camera.Camera(aspect=Effect.window_aspect, fov=60.0, near=1, far=1000)
     Effect.sys_camera = CAMERA
 
-    # Initialize effects first so resources are registered
-    effect_list = [cls for cls in effects.get_effects()]
-    active_effect = None
-    for effect in effect_list:
-        effect.init()
-        if effect.name == runeffect:
-            active_effect = effect
-
-    if not active_effect:
-        print(f"Cannot find effect '{runeffect}'")
-        print("Available effects:")
-        print("\n".join(e.name for e in effect_list))
+    # Tell EffectManager to initialize effects
+    if not manager.init_effects():
         return
 
     # Load resources
@@ -74,7 +65,7 @@ def run(runeffect=None):
         GL.glClearColor(0.0, 0.0, 0.0, 0.0)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
 
-        active_effect.draw(t, WINDOW_FBO)
+        manager.draw(t, WINDOW_FBO)
 
         WINDOW.swap_buffers()
         WINDOW.poll_events()
