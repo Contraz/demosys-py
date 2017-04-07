@@ -64,17 +64,29 @@ class Texture:
         GL.glTexParameteri(self.target, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR)
         GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT)
         GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT)
-        GL.glTexImage2D(self.target, self.lod, self.internal_format,
-                        self.width, self.height, 0,
-                        self.format, self.type, data)
-        # GL.glBindTexture(GL.GL_TEXTURE_2D, 0)
+
+        if self.target == GL.GL_TEXTURE_2D:
+            GL.glTexImage2D(self.target, self.lod, self.internal_format,
+                            self.width, self.height, 0,
+                            self.format, self.type, data)
+        elif self.target == GL.GL_TEXTURE_1D:
+            if self.width > self.height:
+                GL.glTexImage1D(self.target, self.lod, self.internal_format,
+                                self.width, 0, self.format, self.type, data)
+            else:
+                GL.glTexImage1D(self.target, self.lod, self.internal_format,
+                                self.height, 0, self.format, self.type, data)
 
     def set_image(self, image):
         """Set image data using a PIL/Pillow image"""
         image_flipped = image.transpose(Image.FLIP_TOP_BOTTOM)
         data = image_flipped.convert("RGBA").tobytes()
         self.width, self.height = image.size
-        self._build(self.width, self.height, 0, data=data)
+        if self.width == 1 or self.height == 1:
+            self.target = GL.GL_TEXTURE_1D
+        else:
+            self.target = GL.GL_TEXTURE_2D
+        self._build(self.width, self.height, 0, data=data, target=self.target)
 
     def set_texture_repeat(self, mode):
         self.bind()

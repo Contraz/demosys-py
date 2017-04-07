@@ -195,6 +195,12 @@ class Shader:
         texture.bind()
         GL.glUniform1i(uniform.location, unit)
 
+    def uniform_sampler_1d(self, unit, name, texture):
+        uniform = self.uniform(name)
+        GL.glActiveTexture(GL.GL_TEXTURE0 + unit)
+        texture.bind()
+        GL.glUniform1i(uniform.location, unit)
+
 
 class ShaderSource:
     def __init__(self, type, name, source):
