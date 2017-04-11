@@ -62,18 +62,21 @@ def run(manager=None):
         TIMER = timers.Timer()
     TIMER.start()
 
-    frames = 0
+    frames, ft = 0, 0
+    prev_time = TIMER.get_time()
     while not WINDOW.should_close():
         t = TIMER.get_time()
         GL.glViewport(0, 0, WINDOW.buffer_width, WINDOW.buffer_height)
         GL.glClearColor(0.0, 0.0, 0.0, 0.0)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
 
-        manager.draw(t, WINDOW_FBO)
+        manager.draw(t, ft, WINDOW_FBO)
 
         WINDOW.swap_buffers()
         WINDOW.poll_events()
         frames += 1
+        ft = t - prev_time
+        prev_time = t
 
     duration = TIMER.stop()
     if duration > 0:

@@ -14,7 +14,7 @@ class BaseEffectManger:
     def post_load(self):
         return True
 
-    def draw(self, time, target):
+    def draw(self, time, frametime, target):
         """Draw efffect(s)"""
         pass
 
@@ -43,8 +43,8 @@ class SingleEffectManager(BaseEffectManger):
     def post_load(self):
         return True
 
-    def draw(self, time, target):
-        self.active_effect.draw(time, target)
+    def draw(self, time, frametime, target):
+        self.active_effect.draw(time, frametime, target)
 
 
 class TrackerEffectManager(BaseEffectManger):

@@ -21,7 +21,7 @@ class CubeEffect(effect.Effect):
         self.fbo = FBO.create(512, 512, depth=True)
 
     @effect.bind_target
-    def draw(self, time, target):
+    def draw(self, time, frametime, target):
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glEnable(GL.GL_CULL_FACE)
 
