@@ -24,7 +24,7 @@ WINDOW = {
     "cursor": False,
 }
 
-MUSIC = os.path.join(PROJECT_DIR, 'resources/music/tg2035.mp3')
+# MUSIC = os.path.join(PROJECT_DIR, 'resources/music/tg2035.mp3')
 
 # What effects to load
 EFFECTS = (
