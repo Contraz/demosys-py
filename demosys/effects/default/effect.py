@@ -11,7 +11,7 @@ class DefaultEffect(effect.Effect):
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
     @effect.bind_target
-    def draw(self, time, target):
+    def draw(self, time, frametime, target):
         GL.glEnable(GL.GL_DEPTH_TEST)
 
         # Rotate and translate
