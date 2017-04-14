@@ -1,11 +1,4 @@
-from setuptools import setup, find_packages
-from pip.req import parse_requirements
-
-
-def reqs_from_requirements_file():
-    reqs = parse_requirements('requirements.txt', session='hack')
-    return [str(r.req) for r in reqs]
-
+from setuptools import setup
 
 setup(
     name="demosys-py",
@@ -30,7 +23,14 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
-    install_requires=reqs_from_requirements_file(),
+    install_requires=[
+        'PyOpenGL==3.1.0',
+        'glfw==1.4.0',
+        'pyrr==0.8.2',
+        'Pillow==4.0.0',
+        'pyrocket==0.1.0',
+        'pygame==1.9.3',
+    ],
     entry_points={'console_scripts': [
         'demosys-admin = demosys.core.management:execute_from_command_line',
     ]},
