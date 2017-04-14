@@ -29,7 +29,6 @@ class SingleEffectManager(BaseEffectManger):
         """Init after context creations"""
         effect_list = [cfg.cls() for name, cfg in effects.effects.items()]
         for effect in effect_list:
-            effect.init()
             if effect.name == self.effect_module:
                 self.active_effect = effect
 
