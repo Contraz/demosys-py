@@ -32,7 +32,7 @@ class Effect:
         return resources.textures.get(path, create=True)
 
     def get_track(self, name):
-        resources.tracks.get(name)
+        return resources.tracks.get(name)
 
     # Utility methods for matrices
 
