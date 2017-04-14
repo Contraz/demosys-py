@@ -29,7 +29,7 @@ setup(
         'glfw==1.4.0',
         'pyrr==0.8.2',
         'Pillow==4.0.0',
-        'pyrocket==0.1.0',
+        'pyrocket==0.1.2',
         'pygame==1.9.3',
     ],
     entry_points={'console_scripts': [
