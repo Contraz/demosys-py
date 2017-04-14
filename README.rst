@@ -3,7 +3,7 @@
 demosys-py
 ==========
 
-A python 3.6 implementation of a C++ project used to create and
+A python 3 implementation of a C++ project used to create and
 prototype demos (see
 `demoscene <https://en.wikipedia.org/wiki/Demoscene>`__) in OpenGL. The
 design of this version is heavily inspired by the
@@ -15,15 +15,12 @@ design of this version is heavily inspired by the
 
 We only support OpenGL 4.1+ core profiles (no backwards compatibility).
 
-**Also note that Python 3.6 will and is the minimum requirement for
-reasons we won't dig deeper into right now**
-
 This was originally made for for non-interactive real time graphics
 combined with music ("real time music videos"). It's made for people who
 enjoy playing around with modern OpenGL without having to spend lots of
 time creating all the tooling to get things up and running.
 
-Demosys is now on PyPI
+demosys-py is now on PyPI
 
 ::
 
@@ -43,8 +40,9 @@ features or documentation or suggest new entires.
 Running the damned thing
 ------------------------
 
-- First og all install the latest python 3.6 package (or later) from python.org
+- First of all install the latest python 3.6 package (or later) from python.org
 - Install GLFW binaries for your OS from your favorite package manger or download it from http://www.glfw.org/
+- If you want working music you will also need to install SDL
 - Make a virtualenv and install the package: ``pip install demosys-py``.
 - Run the default test effect: ``demosys_test runeffect demosys_test.cube``
 
@@ -53,25 +51,17 @@ Running from source
 -------------------
 
 Again, make sure you have python 3.6 or later before proceeding.
+Let's clone the testdemo project.
 
 ::
-
-    ./manage.py runeffect demosys_test.cube
-
-This runs the effect ``cube`` in the ``demosys_test`` package in the
-repository. You can of course also make your own.
-
-Manual setup (OS X / Linux):
-
-.. code:: python
-
-    git clone https://github.com/Contraz/demosys-py
-    cd demosys-py
-    python3 -m pip install virtualenv
+    git clone https://github.com/Contraz/demosys-py-test
+    cd demosys-py-test
     python3 -m virtualenv env
     source env/bin/activate
     pip install -r requirements.txt
+    ./manage.py runeffect testdemo.cube
 
+This runs the effect ``cube`` in the ``testdemo`` package.
 
 Controls
 ========
@@ -86,14 +76,21 @@ Controls
 I just want to see an example!
 ==============================
 
-Ok, ok! Let's make a project and an effect-package!
+Ok, ok! You can find examples in the testdemo_.
 
-Structure of a project. ``cube`` is an effect. You can make multiple
-effects with the same structure inside ``demosys_test``
+To create a project with an effect we can use the convenient demosys-admin command.
+
+.. code:: shell
+
+    demosys-admin createproject testdemo
+    cd testdemo
+    demosys-admin createeffect cube
+
+We should now have the following stucture with a working effect we can actually run.
 
 ::
 
-    demosys_test
+    testdemo
     ├── cube
     │   ├── effect.py
     │   ├── shaders
@@ -103,7 +100,7 @@ effects with the same structure inside ``demosys_test``
     │       └── cube
     │           └── texture.png
 
-effect.py
+The effect.py generated looks something like this:
 
 .. code:: python
 
@@ -138,15 +135,15 @@ effect.py
 
 There you go.
 
-- Since you asked for ``cube.glsl`` and ``texture.png`` these will be
-  automatically be loaded ready to use.
+- Shaders and textures can be easily loaded by using the ``get_texture`` and
+  ``get_shader`` method inherited from ``Effect``.
 - The ``cube`` objects is a ``VAO`` that you bind supplying the shader and the system
   will figure out the attribute mapping.
 - Please look in the ``demosys.opengl.geometry`` module for the valid attribute names and
-  look at shaders in the ``demosys_test``.
+  look at shaders in the testdemo_.
 - You currently define vertex,
   fragment and geometry shader in one glsl file separated by
-  preprocessors. - Effects not defined in the ``settings`` module will not run!
+  preprocessors. - Effects not defined in the ``settings.py`` module will not run.
 
 That should give you an idea..
 
@@ -158,9 +155,9 @@ that effect is one or multiple things is entirely up to you. An effect
 is an individual package/directory containing an ``effect.py`` module.
 This package can also contain a ``shaders`` and ``textures`` directory
 that demosys will automatically find and load resources from. See the
-``demosys_test`` directory for reference.
+testdemo_.
 
-Explore the small ``demosys_test`` folder, and you'll get the point.
+Explore the testdemo_ project, and you'll get the point.
 
 Some babble about the current state of the project:
 
@@ -170,7 +167,7 @@ Some babble about the current state of the project:
 - We support vertex,
   fragment and geometry shaders for now. A program must currently be
   written in one single ``.glsl`` file separating the shaders with
-  preprocessors. See existing shaders in ``demosys_test``.
+  preprocessors. See existing shaders in testdemo_.
 - The Shader class will inspect the linked shader and cache all attributes
   and uniforms in local dictionaries. This means all ``uniform*``-setters use
   the name of the uniform instead of the location. Location is resolved
@@ -248,6 +245,17 @@ tried mp3 files!)
 
     PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
     MUSIC = os.path.join(PROJECT_DIR, 'resources/music/tg2035.mp3')
+
+TIMER
+~~~~~
+
+This is the timer class that controls time in your project.
+This defaults to ``demosys.timers.Timer`` that is simply keeps
+track of system time using ``glfw``.
+
+```demosys.timers.MusicTimer``` requires ``MUSIC`` to be defined
+and will use the current time in the mp3.
+
 
 EFFECTS
 ~~~~~~~
@@ -338,7 +346,7 @@ Use version 3.2.1 or later.
 Credits
 -------
 
--  Music in ``demosys_test`` by `binaryf <https://github.com/binaryf>`__
+-  Music in testdemo_ by `binaryf <https://github.com/binaryf>`__
 -  Also thanks to `Attila
    Toth <https://www.youtube.com/channel/UC4L3JyeL7TXQM1f3yD6iVQQ>`__
    for an excellent tutorial on OpenGL in Python. We do know OpenGL, but
@@ -354,9 +362,11 @@ What inspired us to make this project?
 Why not combine ideas from our own demosys written in C++ and Django
 making a Python 3 version?
 
+.. _testdemo: https://github.com/Contraz/demosys-py-test
 .. |pypi| image:: https://img.shields.io/pypi/v/demosys-py.svg
    :target: https://pypi.python.org/pypi/demosys-py
 .. |travis| image:: https://travis-ci.org/Contraz/demosys-py.svg?branch=master
    :target: https://travis-ci.org/Contraz/demosys-py
 .. |screenshot1| image:: https://objects.zetta.io:8443/v1/AUTH_06e2dbea5e824620b20b470197323277/contraz.no-static/gfx/productions/SimLife3.png
 .. |screenshot2| image:: https://objects.zetta.io:8443/v1/AUTH_06e2dbea5e824620b20b470197323277/contraz.no-static/gfx/productions/SimLife2.png
+
