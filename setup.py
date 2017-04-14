@@ -20,6 +20,7 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Multimedia :: Graphics',
         'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],

@@ -20,7 +20,7 @@ def local_command_dir():
 
 
 def load_command_class(app_name, name):
-    module = import_module(f'{app_name}.management.commands.{name}')
+    module = import_module('{}.management.commands.{}'.format(app_name, name))
     return module.Command()
 
 
@@ -41,4 +41,4 @@ def execute_from_command_line(argv=None):
     else:
         print("Available commands:")
         for c in commands:
-            print(f" - {c}")
+            print(" - {}".format(c))

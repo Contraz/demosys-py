@@ -44,5 +44,5 @@ def get_finders():
 def get_finder(import_path):
     Finder = import_string(import_path)
     if not issubclass(Finder, finders.FileSystemFinder):
-        raise ImproperlyConfigured(f'Finder {import_path} is not a subclass of core.finders.FileSystemFinder')
+        raise ImproperlyConfigured('Finder {} is not a subclass of core.finders.FileSystemFinder'.format(import_path))
     return Finder()

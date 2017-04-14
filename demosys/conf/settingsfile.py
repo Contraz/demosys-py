@@ -16,15 +16,15 @@ def create(settings):
             data += "%s = {\n%s\n}\n\n" % (name, value)
         elif isinstance(value, tuple):
             value = ",\n".join("    {}".format(to_s(v)) for v in value)
-            data += f"{name} = (\n{value})\n\n"
+            data += "{} = (\n{})\n\n".format(name, value)
         elif value is None:
-            data += f"{name} = {value}\n\n"
+            data += "{} = {}\n\n".format(name, value)
 
     return data
 
 
 def to_s(t):
     if isinstance(t, str):
-        return f'"{t}"'
+        return '"{}"'.format(t)
     else:
         return str(t)

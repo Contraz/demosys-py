@@ -43,7 +43,7 @@ def run(manager=None):
 
     # Load resources
     num_resources = resources.count()
-    print(f"Loading {num_resources } resources")
+    print("Loading {} resources".format(num_resources))
     resources.load()
 
     # Post-Load actions for effects

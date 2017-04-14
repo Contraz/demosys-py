@@ -31,7 +31,7 @@ class Shaders:
                     shader.prepare()
                     break
             else:
-                raise ImproperlyConfigured(f"Cannot find shader {name}")
+                raise ImproperlyConfigured("Cannot find shader {}".format(name))
 
 
 shaders = Shaders()

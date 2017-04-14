@@ -35,22 +35,15 @@ worst thing that can happen is that we or you might learn something.
 This is supposed to be a fun project.
 
 Also check out the `TODO list <TODO.md>`__. Take a stab on what of the
-features or documentation or suggest new entires.
+features or documentation or suggest new entries.
 
 Running the damned thing
 ------------------------
 
-- First of all install the latest python 3.6 package (or later) from python.org
+- First of all make sure you have python3 installed
 - Install GLFW binaries for your OS from your favorite package manger or download it from http://www.glfw.org/
 - If you want working music you will also need to install SDL
-- Make a virtualenv and install the package: ``pip install demosys-py``.
-- Run the default test effect: ``demosys_test runeffect demosys_test.cube``
 
-
-Running from source
--------------------
-
-Again, make sure you have python 3.6 or later before proceeding.
 Let's clone the testdemo project.
 
 ::
@@ -143,7 +136,8 @@ There you go.
   look at shaders in the testdemo_.
 - You currently define vertex,
   fragment and geometry shader in one glsl file separated by
-  preprocessors. - Effects not defined in the ``settings.py`` module will not run.
+  preprocessors.
+- Effects not defined in the ``settings.py`` module will not run.
 
 That should give you an idea..
 
@@ -186,8 +180,8 @@ Some babble about the current state of the project:
   This will return a lazy object that will be populated after the loading
   stage is done.
 - Resources shared between effects can be put outside effect packages
-  inside your project directory. For example in ``testproject/resources/shaders``
-  and ``testproject/resources/textures``. Make sure you add those paths in the
+  inside your project directory. For example in ``testdemo/resources/shaders``
+  and ``testdemo/resources/textures``. Make sure you add those paths in the
   settings file.
 - We don't have any scene/mesh loaders. You can hack something in yourself
   for now or just stick to or extend the ``geometry`` module. - We try to

@@ -52,7 +52,7 @@ class CreateCommand(BaseCommand):
 
         # Can the name be used as an identifier in python (module or package name)
         if not name.isidentifier():
-            raise ValueError(f"{name} is not a valid identifier")
+            raise ValueError("{} is not a valid identifier".format(name))
 
     def try_import(self, name):
         """Attemt to import the name"""
@@ -61,4 +61,4 @@ class CreateCommand(BaseCommand):
         except ImportError:
             pass
         else:
-            raise ValueError(f"{name} conflicts with an existing python module")
+            raise ValueError("{} conflicts with an existing python module".format(name))

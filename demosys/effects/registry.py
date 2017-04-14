@@ -35,13 +35,13 @@ class Effects:
     def polulate(self, effect_list):
         """Find all effects"""
         for effect in effect_list:
-            name = f'{effect}.{EFFECT_MODULE}'
+            name = '{}.{}'.format(effect, EFFECT_MODULE)
             module, cls = self.get_effect_cls(name)
             if cls:
                 cls.name = effect
                 self.effects[module.__name__] = EffectConfig(module=module, cls=cls)
             else:
-                raise EffectError(f"Effect '{effect}' has no effect class")
+                raise EffectError("Effect '{}' has no effect class".format(effect))
 
     def get_effect_cls(self, module_name):
         """Find and return an effect class in a module

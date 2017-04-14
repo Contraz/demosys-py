@@ -19,7 +19,7 @@ class Command(CreateCommand):
 
         # Make sure we don't mess with existing directories
         if os.path.exists(name):
-            print(f"Directory {name} already exist. Aborting.")
+            print("Directory {} already exist. Aborting.".format(name))
             return
 
         manage_file = 'manage.py'
