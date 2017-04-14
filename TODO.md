@@ -8,8 +8,6 @@
   - SingleEffectController
   - TrackSystemEffectController
   - SimpleTimeLineEffectController
-- demosys_test
-  - Move into separate project
 - Shaders
   - Improve error prints (use actual source from GL so we can see expanded typedefs)
   - Core loader support for common formats

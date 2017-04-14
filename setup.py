@@ -9,7 +9,7 @@ def reqs_from_requirements_file():
 
 setup(
     name="demosys-py",
-    version="0.2.0",
+    version="0.2.1",
     description="Modern OpenGL 4.1+ Prototype Framework inspired by Django",
     long_description=open('README.rst').read(),
     url="https://github.com/Contraz/demosys-py",
@@ -19,7 +19,7 @@ setup(
     maintainer_email="eforselv@gmail.com",
     packages=find_packages(),
     include_package_data=True,
-    keywords = ['opengl', 'framework'],
+    keywords = ['opengl', 'framework', 'demoscene'],
     classifiers=[
         'Programming Language :: Python',
         'Environment :: MacOS X',
@@ -32,7 +32,6 @@ setup(
     ],
     install_requires=reqs_from_requirements_file(),
     entry_points={'console_scripts': [
-        'demosys_test = demosys_test.main:main',
         'demosys-admin = demosys.core.management:execute_from_command_line',
     ]},
 )
