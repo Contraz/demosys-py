@@ -23,12 +23,18 @@ class Effect:
     def draw(self, time, frametime, target):
         raise NotImplemented
 
-    # Utility Stuff
+    # Methods for getting resources
+
     def get_shader(self, path):
         return resources.shaders.get(path, create=True)
 
     def get_texture(self, path):
         return resources.textures.get(path, create=True)
+
+    def get_track(self, name):
+        resources.tracks.get(name)
+
+    # Utility methods for matrices
 
     def create_projection(self, fov=75.0, near=1.0, far=100.0, ratio=None):
         return matrix44.create_perspective_projection_matrix(
