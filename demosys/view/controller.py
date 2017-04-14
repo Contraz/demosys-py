@@ -9,7 +9,7 @@ from demosys.effects.registry import Effect
 from demosys.opengl import fbo
 from demosys.opengl.fbo import WINDOW_FBO
 from demosys import resources
-from demosys.timeline import timers
+from demosys import timers
 from demosys.conf import settings
 from demosys.scene import camera
 from . import screenshot
