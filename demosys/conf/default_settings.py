@@ -3,7 +3,7 @@ Default settings for demosys. Override using a settings module.
 """
 
 # What attributes should be used when generating a settings file
-__ORDER__ = ('DEBUG', 'SCREENSHOT_PATH', 'OPENGL', 'WINDOW', 'EFFECTS', 'EFFECT_MANAGER', 'MUSIC',
+__ORDER__ = ('DEBUG', 'SCREENSHOT_PATH', 'OPENGL', 'WINDOW', 'MUSIC', 'TIMER', 'EFFECTS', 'EFFECT_MANAGER',
              'SHADER_DIRS', 'SHADER_FINDERS', 'TEXTURE_DIRS', 'TEXTURE_FINDERS')
 
 DEBUG = False
@@ -30,12 +30,15 @@ WINDOW = {
     "cursor": False,
 }
 
+MUSIC = None
+
+TIMER = 'demosys.timers.Timer'
+
 # Empty effects tuple
 EFFECTS = ()
 
 EFFECT_MANAGER = 'demosys.effects.managers.single.SingleEffectManager'
 
-MUSIC = None
 
 # Additional directories shaders can be found
 SHADER_DIRS = ()

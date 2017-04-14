@@ -12,6 +12,7 @@ from demosys import resources
 from demosys import timers
 from demosys.conf import settings
 from demosys.scene import camera
+from demosys.utils import module_loading
 from . import screenshot
 
 WINDOW = None
@@ -56,10 +57,8 @@ def run(manager=None):
 
     # Initialize timer
     global TIMER
-    if settings.MUSIC:
-        TIMER = timers.MusicTimer(source=settings.MUSIC)
-    else:
-        TIMER = timers.Timer()
+    timer_cls = module_loading.import_string(settings.TIMER)
+    TIMER = timer_cls()
     TIMER.start()
 
     frames, ft = 0, 0

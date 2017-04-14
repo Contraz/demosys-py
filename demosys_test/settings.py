@@ -4,7 +4,7 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DEBUG = False
 
-# SCREENSHOT_PATH = os.path.join(PROJECT_DIR, 'screenshots')
+SCREENSHOT_PATH = os.path.join(PROJECT_DIR, 'screenshots')
 
 # Profile: any, core, compat
 OPENGL = {
@@ -24,7 +24,8 @@ WINDOW = {
     "cursor": False,
 }
 
-# MUSIC = os.path.join(PROJECT_DIR, 'resources/music/tg2035.mp3')
+MUSIC = os.path.join(PROJECT_DIR, 'resources/music/tg2035.mp3')
+TIMER = 'demosys.timers.MusicTimer'
 
 # What effects to load
 EFFECTS = (

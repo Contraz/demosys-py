@@ -1,13 +1,14 @@
 import glfw
 from pygame import mixer
 from .base import Timer
+from demosys.conf import settings
 
 
 class MusicTimer(Timer):
     """Timer based on music"""
     def __init__(self, **kwargs):
         mixer.init()
-        mixer.music.load(kwargs['source'])
+        mixer.music.load(settings.MUSIC)
         self.paused = True
         # Reported time is not accurate when pausing or unpausing. We hack around it.
         self.pause_time = 0
