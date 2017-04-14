@@ -17,7 +17,7 @@ setup(
     author_email="eforselv@gmail.com",
     maintainer="Einar Forselv",
     maintainer_email="eforselv@gmail.com",
-    packages=find_packages(),
+    packages=['demosys'],
     include_package_data=True,
     keywords = ['opengl', 'framework', 'demoscene'],
     classifiers=[

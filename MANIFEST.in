@@ -1,4 +1,3 @@
 recursive-include demosys *.py *.glsl
-recursive-include demosys_test *.py *.glsl *.png
 
 include README.rst
