@@ -8,14 +8,14 @@
   - SingleEffectController
   - TrackSystemEffectController
   - SimpleTimeLineEffectController
-- CLI tool creating new projects and effects.
-- Create more examples in demosys_test
+- demosys_test
+  - Move into separate project
 - Shaders
   - Improve error prints (use actual source from GL so we can see expanded typedefs)
   - Core loader support for common formats
   - Custom loader support / less hacky loading
 Textures:
-  - 1D and 3D
+  - 3D
   - Texture Array
   - Texture Cube
 - Custom texture loaders
