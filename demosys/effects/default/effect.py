@@ -6,7 +6,7 @@ from pyrr import matrix44
 
 class DefaultEffect(effect.Effect):
     """Generated default efffect"""
-    def init(self):
+    def __init__(self):
         self.shader = self.get_shader("default.glsl")
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
