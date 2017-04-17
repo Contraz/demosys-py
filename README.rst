@@ -47,6 +47,7 @@ Running the damned thing
 Let's clone the testdemo project.
 
 ::
+
     git clone https://github.com/Contraz/demosys-py-test
     cd demosys-py-test
     python3 -m virtualenv env
