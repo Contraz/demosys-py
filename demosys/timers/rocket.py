@@ -1,14 +1,27 @@
-from rocket.controller import TimeController
-from rocket.rocket import Rocket
+from rocket.controllers import TimeController
+from rocket import Rocket
 from demosys.resources import tracks
 
 
 class RocketTimer:
     """Basic rocket timer"""
-    def __init__(self):
+    def __init__(self, config):
+        if config is None:
+            config = {}
+
+        self.mode = config.get('mode') or 'editor'
+        self.files = config.get('files') or './tracks'
+        self.project = config.get('project') or 'project.xml'
+
         self.controller = TimeController(24)
-        self.rocket = Rocket(self.controller, track_path="./data")
-        self.rocket.start()
+        if self.mode == 'editor':
+            self.rocket = Rocket.from_socket(self.controller, track_path=self.files)
+        elif self.mode == 'project':
+            self.rocket = Rocket.from_project_file(self.controller, self.project)
+        elif self.mode == 'files':
+            self.rocket = Rocket.from_files(self.controller, self.files)
+        else:
+            raise ValueError("Unknown rocket mode: '{}'".format(self.mode))
 
         # Register tracks in the editor
         # Ninja in pre-created track objects
@@ -19,8 +32,10 @@ class RocketTimer:
         for track in tracks.tacks:
             self.rocket.track(track.name)
 
+        self.rocket.update()
+
     def start(self):
-        pass
+        self.rocket.start()
 
     def get_time(self):
         self.rocket.update()
