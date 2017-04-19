@@ -1,11 +1,14 @@
 from rocket.controllers import TimeController
 from rocket import Rocket
 from demosys.resources import tracks
+from demosys.conf import settings
+from .base import BaseTimer
 
 
-class RocketTimer:
+class RocketTimer(BaseTimer):
     """Basic rocket timer"""
-    def __init__(self, config):
+    def __init__(self, **kwargs):
+        config = getattr(settings, 'ROCKET', None)
         if config is None:
             config = {}
 
@@ -13,7 +16,7 @@ class RocketTimer:
         self.files = config.get('files') or './tracks'
         self.project = config.get('project') or 'project.xml'
 
-        self.controller = TimeController(24)
+        self.controller = TimeController(config.get('rps', 24))
         if self.mode == 'editor':
             self.rocket = Rocket.from_socket(self.controller, track_path=self.files)
         elif self.mode == 'project':
@@ -33,6 +36,7 @@ class RocketTimer:
             self.rocket.track(track.name)
 
         self.rocket.update()
+        super().__init__(**kwargs)
 
     def start(self):
         self.rocket.start()

@@ -36,6 +36,7 @@ TIMER = 'demosys.timers.Timer'
 
 ROCKET = {
     'mode': 'editor',
+    'rps': 24,
     'project_file': None,
     'files': None,
 }

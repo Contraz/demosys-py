@@ -1,10 +1,10 @@
 import glfw
 from pygame import mixer
-from .base import Timer
 from demosys.conf import settings
+from .base import BaseTimer
 
 
-class MusicTimer(Timer):
+class MusicTimer(BaseTimer):
     """Timer based on music"""
     def __init__(self, **kwargs):
         mixer.init()
@@ -14,6 +14,7 @@ class MusicTimer(Timer):
         self.pause_time = 0
         self.initialized = False
         self._upt = 0  # hack fixing jaggy unpause
+        super().__init__(**kwargs)
 
     def start(self):
         if self.initialized:

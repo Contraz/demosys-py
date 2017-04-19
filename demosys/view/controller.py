@@ -57,7 +57,7 @@ def run(manager=None):
     # Initialize timer
     global TIMER
     timer_cls = module_loading.import_string(settings.TIMER)
-    TIMER = timer_cls(getattr(settings, 'ROCKET'))
+    TIMER = timer_cls()
     TIMER.start()
 
     frames, ft = 0, 0
