@@ -24,6 +24,7 @@ class ArrayBuffer:
 
     @property
     def size(self):
+        """Byte size"""
         return self.vbo.size
 
     @property
@@ -98,12 +99,12 @@ class VAO:
         if self.element_buffer:
             if mode is not None:
                 GL.glDrawElements(mode,
-                                  self.element_buffer.size,
+                                  self.element_buffer.size // 4,  # 4b per int
                                   self.element_buffer.format,
                                   self.element_buffer.vbo)
             else:
                 GL.glDrawElements(self.mode,
-                                  self.element_buffer.size,
+                                  self.element_buffer.size // 4,  # 4b per int
                                   self.element_buffer.format,
                                   self.element_buffer.vbo)
         else:
