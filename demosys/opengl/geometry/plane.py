@@ -47,7 +47,7 @@ def plane_xz(size=(10, 10), resolution=(10, 10)):
     uv_data = numpy.fromiter(gen_uv(), dtype=numpy.float32)
     uv_vbo = VBO(uv_data)
 
-    index_data = numpy.fromiter(gen_index(), dtype=numpy.int32)
+    index_data = numpy.fromiter(gen_index(), dtype=numpy.uint32)
     index_vbo = VBO(index_data, target=GL.GL_ELEMENT_ARRAY_BUFFER)
 
     vao = VAO("plane_xz", mode=GL.GL_TRIANGLES)
