@@ -57,7 +57,7 @@ def plane_xz(size=(10, 10), resolution=(10, 10)):
     normal_vbo = VBO(normal_data)
 
     index_data = numpy.fromiter(gen_index(), dtype=numpy.uint32)
-    index_vbo = VBO(index_data, target=GL.GL_ELEMENT_ARRAY_BUFFER)
+    index_vbo = VBO(index_data, target="GL_ELEMENT_ARRAY_BUFFER")
 
     vao = VAO("plane_xz", mode=GL.GL_TRIANGLES)
 

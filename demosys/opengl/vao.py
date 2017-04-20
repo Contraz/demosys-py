@@ -132,7 +132,16 @@ class VAO:
         self.array_buffer_map[id(vbo)] = ArrayBuffer(format, vbo)
 
     def set_element_buffer(self, format, vbo):
-        # GL_ELEMENT_ARRAY_BUFFER, GL_UNSIGNED_INT
+        """Set the index buffer for this VAO"""
+        if not isinstance(vbo, VBO):
+            raise VAOError("vbo parameter must be an OpenGL.arrays.vbo.VBO instance")
+
+        if vbo.target not in ["GL_ELEMENT_ARRAY_BUFFER"]:
+            raise VAOError("Element buffers must have target=GL_ELEMENT_ARRAY_BUFFER")
+
+        if format not in [GL.GL_UNSIGNED_INT]:
+            raise VAOError("Format can currently only be GL_UNSIGNED_INT")
+
         self.element_buffer = ArrayBuffer(format, vbo)
 
     def map_buffer(self, vbo, attrib_name, components):
@@ -167,7 +176,7 @@ class VAO:
             if buff.stride == 0:
                 raise VAOError("Buffer {} was never mapped in VAO {}".format(key, self.name))
 
-        # Check that all buffers have the same number of elements
+        # Check that all buffers have the same number of units
         last_vertices = -1
         for name, buf in self.array_buffer_map.items():
             vertices = buf.vertices
