@@ -6,3 +6,5 @@ __pycache__
 /demosys_py.egg-info
 /dist
 .DS_Store
+/manage.py
+/testdemo
