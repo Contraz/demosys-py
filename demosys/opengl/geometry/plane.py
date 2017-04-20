@@ -29,6 +29,12 @@ def plane_xz(size=(10, 10), resolution=(10, 10)):
                 yield x / (rx - 1)
                 yield 1 - z / (rz - 1)
 
+    def gen_normal():
+        for z in range(rx * rz):
+            yield 0.0
+            yield 1.0
+            yield 0.0
+
     def gen_index():
         for z in range(rz - 1):
             for x in range(rx - 1):
@@ -47,15 +53,23 @@ def plane_xz(size=(10, 10), resolution=(10, 10)):
     uv_data = numpy.fromiter(gen_uv(), dtype=numpy.float32)
     uv_vbo = VBO(uv_data)
 
+    normal_data = numpy.fromiter(gen_normal(), dtype=numpy.float32)
+    normal_vbo = VBO(normal_data)
+
     index_data = numpy.fromiter(gen_index(), dtype=numpy.uint32)
     index_vbo = VBO(index_data, target=GL.GL_ELEMENT_ARRAY_BUFFER)
 
     vao = VAO("plane_xz", mode=GL.GL_TRIANGLES)
+
     vao.add_array_buffer(GL.GL_FLOAT, position_vbo)
     vao.add_array_buffer(GL.GL_FLOAT, uv_vbo)
+    vao.add_array_buffer(GL.GL_FLOAT, normal_vbo)
+
     vao.map_buffer(position_vbo, "in_position", 3)
     vao.map_buffer(uv_vbo, "in_uv", 2)
+    vao.map_buffer(normal_vbo, "in_normal", 3)
     vao.set_element_buffer(GL.GL_UNSIGNED_INT, index_vbo)
+
     vao.build()
     return vao
 
