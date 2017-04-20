@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="demosys-py",
-    version="0.3.4",
+    version="0.3.5",
     description="Modern OpenGL 4.1+ Prototype Framework inspired by Django",
     long_description=open('README.rst').read(),
     url="https://github.com/Contraz/demosys-py",
@@ -29,7 +29,7 @@ setup(
         'glfw==1.4.0',
         'pyrr==0.8.2',
         'Pillow==4.0.0',
-        'pyrocket==0.2.3',
+        'pyrocket==0.2.5',
         'pygame==1.9.3',
     ],
     entry_points={'console_scripts': [
