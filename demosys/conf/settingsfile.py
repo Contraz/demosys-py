@@ -13,14 +13,21 @@ def create(settings):
         value = getattr(settings, name)
         if isinstance(value, dict):
             value = ",\n".join('    "{}": {}'.format(k, to_s(v)) for k, v in value.items())
+            # Add comma after the last dict entry
+            if len(value) > 0:
+                value += ','
             data += "%s = {\n%s\n}\n\n" % (name, value)
         elif isinstance(value, tuple):
             value = ",\n".join("    {}".format(to_s(v)) for v in value)
-            data += "{} = (\n{})\n\n".format(name, value)
+            # Add comma after the last tuple entry
+            if len(value) > 0:
+                value += ","
+            data += "{} = (\n{}\n)\n\n".format(name, value)
         elif value is None:
             data += "{} = {}\n\n".format(name, value)
 
-    return data
+    # Return config excluding last newline
+    return data[:-1]
 
 
 def to_s(t):
