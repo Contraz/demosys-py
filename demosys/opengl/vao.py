@@ -1,4 +1,5 @@
 from OpenGL import GL
+from OpenGL.arrays.vbo import VBO
 
 
 class VAOError(Exception):
@@ -114,6 +115,14 @@ class VAO:
                 GL.glDrawArrays(self.mode, 0, self.vertex_count)
 
     def add_array_buffer(self, format, vbo):
+        if not isinstance(vbo, VBO):
+            raise VAOError("vbo parameter must be an OpenGL.arrays.vbo.VBO instance")
+
+        # Check that the buffer target is sane
+        if vbo.target not in  ["GL_ARRAY_BUFFER", "GL_TRANSFORM_FEEDBACK_BUFFER"]:
+            raise VAOError("VBO must have target GL_ARRAY_BUFFER or GL_TRANSFORM_FEEDBACK_BUFFER, "
+                           "not {}".format(vbo.target))
+
         self.array_buffer_map[id(vbo)] = ArrayBuffer(format, vbo)
 
     def set_element_buffer(self, format, vbo):
