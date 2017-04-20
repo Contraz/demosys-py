@@ -3,7 +3,7 @@ Default settings for demosys. Override using a settings module.
 """
 
 # What attributes should be used when generating a settings file
-__ORDER__ = ('DEBUG', 'SCREENSHOT_PATH', 'OPENGL', 'WINDOW', 'MUSIC', 'TIMER', 'ROCKET_MODE', 'EFFECTS',
+__ORDER__ = ('DEBUG', 'SCREENSHOT_PATH', 'OPENGL', 'WINDOW', 'MUSIC', 'TIMER', 'ROCKET', 'EFFECTS',
              'EFFECT_MANAGER', 'SHADER_DIRS', 'SHADER_FINDERS', 'TEXTURE_DIRS', 'TEXTURE_FINDERS')
 
 DEBUG = False
