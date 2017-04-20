@@ -119,7 +119,7 @@ class VAO:
             raise VAOError("vbo parameter must be an OpenGL.arrays.vbo.VBO instance")
 
         # Check that the buffer target is sane
-        if vbo.target not in  ["GL_ARRAY_BUFFER", "GL_TRANSFORM_FEEDBACK_BUFFER"]:
+        if vbo.target not in ["GL_ARRAY_BUFFER", "GL_TRANSFORM_FEEDBACK_BUFFER"]:
             raise VAOError("VBO must have target GL_ARRAY_BUFFER or GL_TRANSFORM_FEEDBACK_BUFFER, "
                            "not {}".format(vbo.target))
 
