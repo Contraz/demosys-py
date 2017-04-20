@@ -142,11 +142,17 @@ class VAO:
         :param attrib_name: Name of the attribute in the shader
         :param components: Number of components (for example 3 for a x, y, x position)
         """
-        ab = self.array_buffer_map[id(vbo)]
+        if not isinstance(vbo, VBO):
+            raise VAOError("vbo parameter must be an OpenGL.arrays.vbo.VBO instance")
+
+        ab = self.array_buffer_map.get(id(vbo))
+        if not ab:
+            raise VAOError("VBO {} not previously added as an array map. "
+                           "Forgot to call add_arrray_buffer(..)?".format(id(vbo)))
 
         # FIXME: Determine byte size based on data type in VBO
         offset = ab.stride
-        ab.stride += components * 4
+        ab.stride += components * type_size(ab.format)
         am = ArrayMapping(ab, attrib_name, components, offset)
 
         self.array_mapping.append(am)
