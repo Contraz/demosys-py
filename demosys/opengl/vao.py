@@ -12,6 +12,12 @@ class ArrayBuffer:
         self.format = format
         self.vbo = vbo
         self.stride = 0
+        self.element_size = type_size(self.format)
+        if self.size % self.element_size != 0:
+            raise VAOError("Buffer with type {} has size not aligning with {}. Remainder: ".format(
+                self.format, self.element_size, self.size % self.element_size,
+            ))
+        self.elements = self.size // self.element_size
 
     @property
     def target(self):
@@ -100,12 +106,12 @@ class VAO:
         if self.element_buffer:
             if mode is not None:
                 GL.glDrawElements(mode,
-                                  self.element_buffer.size // 4,  # 4b per int
+                                  self.element_buffer.elements,  # 4b per int
                                   self.element_buffer.format,
                                   self.element_buffer.vbo)
             else:
                 GL.glDrawElements(self.mode,
-                                  self.element_buffer.size // 4,  # 4b per int
+                                  self.element_buffer.elements,  # 4b per int
                                   self.element_buffer.format,
                                   self.element_buffer.vbo)
         else:
@@ -230,3 +236,12 @@ class VAOBindContext:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
+
+
+def type_size(format):
+    """Determines the byte size of a format"""
+    if format == GL.GL_FLOAT:
+        return 4
+    if format == GL.GL_UNSIGNED_INT:
+        return 4
+    raise VAOError("Cannot determine byte size of {}".format(format))
