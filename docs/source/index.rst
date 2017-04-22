@@ -28,8 +28,9 @@ time creating all the tooling to get things up and running.
    :caption: Contents:
 
    quickstart
-
-
+   controls
+   settings
+   tempnotes
 
 Indices and tables
 ==================
