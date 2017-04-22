@@ -44,9 +44,10 @@ Features
 - Support for custom management commands
 - Camera and system camera support so we can easily inspect our scene
 - Easy resource management system (shaders, textures)
-- Supports vertex, fragment and geometry shaders (tessellation soon (tm))
+- Supports vertex, fragment and geometry shaders (tessellation is wip)
 - A geometry module for quick creation of common mesh/VAO types
-- Well documented (soon (tm))
+- Well documented (wip)
+- (Experimental audio playback support)
 
 Requirements
 ------------
@@ -82,7 +83,7 @@ pygame's mixer module. (Optional setup for this)
 Audio Requirements:
 
 - As the current position in the music is what all
-  draw timers are connected to, we need a library that can deliver this.
+  draw timers are based on, we need a library that can deliver very accurate value for this.
 - Efficient and accurate seeking + pause support
 - Some way to extract simple data from the music for visualisation
 
@@ -100,6 +101,7 @@ Use version 3.2.1 or later.
 -  https://github.com/adamlwgriffiths/Pyrr for math (uses numpy)
 
 Optional for audio:
+
 -  https://www.pygame.org using the mixer module for music
 
 What inspired us to make this project?
