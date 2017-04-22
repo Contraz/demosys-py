@@ -30,6 +30,7 @@ time creating all the tooling to get things up and running.
    quickstart
    controls
    settings
+   effects
    tempnotes
 
 Indices and tables
