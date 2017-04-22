@@ -9,6 +9,10 @@ class VAOError(Exception):
 class ArrayBuffer:
     """Container for a vbo with additional information"""
     def __init__(self, format, vbo):
+        """
+        :param format: The format of the buffer
+        :param vbo: The vbo object
+        """
         self.format = format
         self.vbo = vbo
         self.stride = 0
@@ -21,21 +25,30 @@ class ArrayBuffer:
 
     @property
     def target(self):
-        """GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER etc"""
+        """
+        :return: Returns the trarget of the vbo. GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER etc
+        """
         return self.vbo.target
 
     @property
     def usage(self):
-        """GL_DYNAMIC_DRAW / GL_STATIC_DRAW"""
+        """
+        :return: The usage of the vbo. GL_DYNAMIC_DRAW / GL_STATIC_DRAW
+        """
         return self.usage
 
     @property
     def size(self):
-        """Byte size"""
+        """
+        :return: Size of the vbo in bytes
+        """
         return self.vbo.size
 
     @property
     def vertices(self):
+        """
+        :return: The number of vertices based on the current stride
+        """
         if self.size % self.stride != 0:
             raise VAOError("size % stride != 0")
         return self.size // self.stride
@@ -44,6 +57,12 @@ class ArrayBuffer:
 class ArrayMapping:
     """Keeps track of vbo to attribute mapping"""
     def __init__(self, array_buffer, attrib_name, components, offset):
+        """
+        :param array_buffer: The array buffer
+        :param attrib_name: Name of the attribute
+        :param components: Number of components
+        :param offset: Byte offset in the buffer
+        """
         self.array_buffer = array_buffer
         self.attrib_name = attrib_name
         self.components = components
@@ -51,20 +70,33 @@ class ArrayMapping:
 
 
 class VAOCombo:
-    """VAO of a specific attribute configuration"""
+    """
+    VAO of a specific attribute configuration.
+    These are the actual VAOs used when drawing.
+    """
     def __init__(self, key):
+        """
+        :param key: The unique key for this bind combination
+        """
         self.vao = GL.glGenVertexArrays(1)
         self.key = key
         self.array_mapping_list = []
         self.array_mapping_map = {}
 
     def bind(self):
+        """
+        Bind the VAO
+        """
         # FIXME: Bind counter
         # FIXME: Track currently bound VAO to avoid re-binding
         GL.glBindVertexArray(self.vao)
 
     def add_array_mapping(self, mapping):
-        """Add ArrayMappings relevant to this VAO version"""
+        """
+        Add ArrayMappings relevant to this VAO version
+
+        :param mapping: The ArrayMapping to add
+        """
         self.array_mapping_list.append(mapping)
         self.array_mapping_map[mapping.attrib_name] = mapping
 
@@ -74,6 +106,7 @@ class VAO:
     def __init__(self, name, mode=GL.GL_TRIANGLES):
         """
         Create and empty VAO
+
         :param name: The name for debug purposes
         :param mode: Default draw mode for this VAO
         """
@@ -91,6 +124,15 @@ class VAO:
         self.bind_context = VAOBindContext(self)
 
     def bind(self, shader):
+        """
+        Bind the VAO using a shader.
+        This is the standard way of binding so the shader and VAO can negotiate
+        the needed attributes. This will generate new VAOs in the background on the
+        fly (caching them) if needed.
+
+        :param shader: The shader
+        :return: A VAOBindContext object (optional use)
+        """
         shader.bind()
         combo = self.generate_vao_combo(shader)
         combo.bind()
@@ -100,8 +142,11 @@ class VAO:
 
     def draw(self, mode=None):
         """
-        Draw the VAO
-        :param mode: Override the default GL_TRIANGLES
+        Draw the VAO.
+        Will use ``glDrawElements`` if an element buffer is present
+        and ``glDrawArrays`` if no element array is present.
+
+        :param mode: Override the draw mode (GL_TRIANGLES etc)
         """
         if self.element_buffer:
             if mode is not None:
@@ -121,6 +166,13 @@ class VAO:
                 GL.glDrawArrays(self.mode, 0, self.vertex_count)
 
     def add_array_buffer(self, format, vbo):
+        """
+        Register a vbo in the VAO. This can be called multiple times.
+        This can be one or multiple buffers (interleaved or not)
+
+        :param format: The format of the buffer
+        :param vbo: The vbo object
+        """
         if not isinstance(vbo, VBO):
             raise VAOError("vbo parameter must be an OpenGL.arrays.vbo.VBO instance")
 
@@ -132,7 +184,12 @@ class VAO:
         self.array_buffer_map[id(vbo)] = ArrayBuffer(format, vbo)
 
     def set_element_buffer(self, format, vbo):
-        """Set the index buffer for this VAO"""
+        """
+        Set the index buffer for this VAO
+
+        :param format: The format of the element buffer
+        :param vbo: the vbo object
+        """
         if not isinstance(vbo, VBO):
             raise VAOError("vbo parameter must be an OpenGL.arrays.vbo.VBO instance")
 
@@ -146,7 +203,10 @@ class VAO:
 
     def map_buffer(self, vbo, attrib_name, components):
         """
-        Map parts of the vbo to an attribute name
+        Map parts of the vbos to an attribute name.
+        This can be called multiple times to describe hos the buffers map to attribute names.
+        If the same vbo is passed more than once it must be an interleaved buffer.
+
         :param vbo: The vbo
         :param attrib_name: Name of the attribute in the shader
         :param components: Number of components (for example 3 for a x, y, x position)
@@ -168,7 +228,10 @@ class VAO:
         self.array_mapping_map[attrib_name] = am
 
     def build(self):
-        """Finalize the VAO"""
+        """
+        Finalize the VAO.
+        This runs various sanity checks on the input data.
+        """
         if len(self.array_buffer_map) == 0:
             raise VAOError("VAO has no buffers")
 
@@ -188,7 +251,14 @@ class VAO:
         print("VAO {} has {} vertices".format(self.name, self.vertex_count))
 
     def generate_vao_combo(self, shader):
-        """Create a VAO based on the shader's attribute specification."""
+        """
+        Create a VAO based on the shader's attribute specification.
+        This is called by ``bind(shader)`` and should not be messed with
+        unless you are absolutely sure about what you are doing.
+
+        :param shader: The shader we are generating the combo for
+        :return: A new VAOCombo object with the correct attribute binding
+        """
         # Return the combo if already generated
         combo = self.combos.get(shader.attribute_key)
         if combo:
@@ -247,9 +317,15 @@ class VAOBindContext:
         self.shader = None
 
     def __enter__(self):
+        """
+        Entering the context
+
+        :return: The shader object
+        """
         return self.shader
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """Exist the context (No action)"""
         pass
 
 

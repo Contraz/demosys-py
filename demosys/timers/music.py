@@ -21,6 +21,7 @@ class MusicTimer(BaseTimer):
         super().__init__(**kwargs)
 
     def start(self):
+        """Start the timer and music"""
         if self.initialized:
             mixer.music.unpause()
         else:
@@ -37,6 +38,7 @@ class MusicTimer(BaseTimer):
         mixer.music.pause()
 
     def toggle_pause(self):
+        """Toggle pause mode"""
         if self.paused:
             self.start()
             self._upt = glfw.get_time()
@@ -44,10 +46,12 @@ class MusicTimer(BaseTimer):
             self.pause()
 
     def stop(self):
+        """Stop the music and the timer"""
         mixer.music.stop()
         return self.get_time()
 
     def get_time(self):
+        """Get the current time in seconds"""
         # Hack around inaccuracy in mixer
         if self.paused:
             return self.pause_time

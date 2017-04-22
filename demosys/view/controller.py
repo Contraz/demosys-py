@@ -20,7 +20,11 @@ CAMERA = None
 
 
 def run(manager=None):
-    """Initialize, load and run"""
+    """
+    Initialize, load and run
+
+    :param manager: The effect manager to use
+    """
     global WINDOW
     WINDOW = Window()
     fbo.WINDOW = WINDOW
@@ -60,16 +64,23 @@ def run(manager=None):
     TIMER = timer_cls()
     TIMER.start()
 
+    # Main loop
     frames, ft = 0, 0
     prev_time = TIMER.get_time()
     while not WINDOW.should_close():
+        # Immediately get control of the current time
         t = TIMER.get_time()
+
+        # Set the viewport as FBOs will change the values
         GL.glViewport(0, 0, WINDOW.buffer_width, WINDOW.buffer_height)
+        # Clear the buffer
         GL.glClearColor(0.0, 0.0, 0.0, 0.0)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
 
+        # Tell the manager to draw stuff
         manager.draw(t, ft, WINDOW_FBO)
 
+        # Swap buffers and deal with events and statistics
         WINDOW.swap_buffers()
         WINDOW.poll_events()
         frames += 1
@@ -86,6 +97,8 @@ def run(manager=None):
 
 def key_event_callback(window, key, scancode, action, mods):
     """
+    Key event callback for glfw
+
     :param window: Window event origin
     :param key: The keyboard key that was pressed or released.
     :param scancode: The system-specific scancode of the key.
@@ -148,8 +161,22 @@ def key_event_callback(window, key, scancode, action, mods):
 
 
 def mouse_event_callback(window, x, y):
+    """
+    Mouse event callback from glfw
+
+    :param window: The window
+    :param x: viewport x pos
+    :param y: viewport y pos
+    """
     CAMERA.rot_state(x, y)
 
 
 def window_resize_callback(window, width, height):
+    """
+    Window resize callback for glfw
+
+    :param window: The window
+    :param width: New width
+    :param height: New height
+    """
     WINDOW.resize(width, height)

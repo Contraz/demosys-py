@@ -8,6 +8,7 @@ from .base import BaseTimer
 class RocketTimer(BaseTimer):
     """Basic rocket timer"""
     def __init__(self, **kwargs):
+        """Initialize the rocket timer using values from settings"""
         config = getattr(settings, 'ROCKET', None)
         if config is None:
             config = {}
@@ -39,17 +40,22 @@ class RocketTimer(BaseTimer):
         super().__init__(**kwargs)
 
     def start(self):
+        """Start the timer"""
         self.rocket.start()
 
     def get_time(self):
+        """Get the current time in seconds"""
         self.rocket.update()
         return self.rocket.time
 
     def pause(self):
+        """Pause the timer"""
         self.controller.playing = False
 
     def toggle_pause(self):
+        """Toggle pause mode"""
         self.controller.playing = not self.controller.playing
 
     def stop(self):
+        """Stop the timer"""
         return self.rocket.time

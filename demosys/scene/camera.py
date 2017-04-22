@@ -20,7 +20,8 @@ class Camera:
     """Simple camera class containing projection"""
     def __init__(self, fov=60, aspect=1.0, near=1, far=100):
         """
-        Initialize camera using a specific projeciton
+        Initialize camera using a specific projection
+
         :param fov: Field of view
         :param aspect: Aspect ratio
         :param near: Near plane
@@ -57,11 +58,19 @@ class Camera:
         self.set_projection()
 
     def set_position(self, x, y, z):
+        """
+        Set the 3D position of the camera
+
+        :param x: float
+        :param y: float
+        :param z: float
+        """
         self.position = Vector3([x, y, z])
 
     def move_state(self, direction, activate):
         """
         Set the camera position move state
+
         :param direction: What direction to update
         :param activate: Start or stop moving in the direction
         """
@@ -79,6 +88,12 @@ class Camera:
             self._ydir = NEGATIVE if activate else STILL
 
     def rot_state(self, x, y):
+        """
+        Set the rotation state of the camera
+
+        :param x: viewport x pos
+        :param y: viewport y pos
+        """
         if self.last_x is None:
             self.last_x = x
         if self.last_y is None:
@@ -104,6 +119,9 @@ class Camera:
         self.update_yaw_and_pitch()
 
     def update_yaw_and_pitch(self):
+        """
+        Updates the camera vectors based on the current yaw and pitch
+        """
         front = Vector3([0.0, 0.0, 0.0])
         front.x = cos(radians(self.yaw)) * cos(radians(self.pitch))
         front.y = sin(radians(self.pitch))
@@ -115,6 +133,9 @@ class Camera:
 
     @property
     def view_matrix(self):
+        """
+        :return: The current view matrix for the camera
+        """
         # Use separate time in camera so we can move it when the demo is paused
         time = glfw.get_time()
         # If the camera has been inactive for a while, a large time delta
@@ -127,11 +148,13 @@ class Camera:
             self.position += self.right * self.velocity * t
         elif self._xdir == NEGATIVE:
             self.position -= self.right * self.velocity * t
+
         # Z Movement
         if self._zdir == NEGATIVE:
             self.position += self.dir * self.velocity * t
         elif self._zdir == POSITIVE:
             self.position -= self.dir * self.velocity * t
+
         # Y Movement
         if self._ydir == POSITIVE:
             self.position += self.up * self.velocity * t
@@ -143,6 +166,7 @@ class Camera:
     def set_projection(self, fov=None, aspect=None, near=None, far=None):
         """
         Update projection parameters and return the new version
+
         :param fov: Field of view
         :param aspect: Aspect ratio
         :param near: Near plane
@@ -160,6 +184,7 @@ class Camera:
     def look_at(self, vec=None, pos=None):
         """
         Look at a specific point
+
         :param vec: Vector3 position
         :param pos: python list [x, y, x]
         :return: Camera matrix
@@ -173,6 +198,7 @@ class Camera:
     def _gl_look_at(self, pos, target, up):
         """
         The standard lookAt method
+
         :param pos: current position
         :param target: target position to look at
         :param up: direction up

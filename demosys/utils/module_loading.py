@@ -6,6 +6,9 @@ def import_string(dotted_path):
     """
     Import a dotted module path and return the attribute/class designated by the
     last name in the path. Raise ImportError if the import failed.
+
+    :param dotted_path: The path to attempt importing
+    :return: The object
     """
     try:
         module_path, class_name = dotted_path.rsplit('.', 1)
