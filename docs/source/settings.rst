@@ -73,7 +73,7 @@ Other timers are:
 - ``demosys.timers.RocketMusicTimer`` requires ``MUSIC`` and ``ROCKET`` to be configured.
 
 ROCKET
-~~~~~~
+^^^^^^
 
 Configuration of the pyrocket_ sync-tracker library.
 
