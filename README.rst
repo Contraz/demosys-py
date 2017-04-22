@@ -24,6 +24,12 @@ If you are not a fan of using a framework, you can create your own context
 and just use the classes in ``demosys.opengl``. These will give you fairly
 straight forward ways to use VAOs, Shaders, Textures and FBOs.
 
+Documentation
+-------------
+
+Project documentation can be found at readthedocs_. Optionally you can
+build your own docs from the ``docs`` directory.
+
 Features
 --------
 
@@ -32,6 +38,7 @@ Features
 - Convenient wrappers for VAO, Shader, Texture, FBO
 - On-the-fly Shader and VAO negotiation of the needed buffer binding
 - Strict validation in most OpenGL operations with reasonable error feedback
+- Timeline / Timer support
 - Support for the rocket sync-tracker system to create interesting keyframe data
 - A highly pluggable framework
 - Support for custom management commands
@@ -53,13 +60,6 @@ In order to use the framework it's an advantage to know the following:
 If you are missing any of these requirements, the framework can definitely be used
 to learn the. Zero/0 lines of code are needed to generate a project with a spinning
 cube and you can get started playing with things.
-
-Documentation
--------------
-
-Project documentation can be found at readthedocs_. Optionally you can
-build your own docs from the ``docs`` directory.
-
 
 Contributing
 ------------
