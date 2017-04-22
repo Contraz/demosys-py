@@ -23,26 +23,33 @@ class Command(CreateCommand):
             return
 
         os.mkdir(name)
-        os.mkdir(os.path.join(name, 'textures'))
-        os.mkdir(os.path.join(name, 'shaders'))
+        os.makedirs(os.path.join(name, 'textures', name))
+        os.makedirs(os.path.join(name, 'shaders', name))
 
         # Create effect.py
         with open(os.path.join(name, 'effect.py'), 'w') as fd:
-            fd.write(default_effect())
+            fd.write(default_effect(name))
 
         # Create default.glsl
-        with open(os.path.join(name, 'shaders', 'default.glsl'), 'w') as fd:
+        with open(os.path.join(name, 'shaders', name, 'default.glsl'), 'w') as fd:
             fd.write(default_shader())
 
 
-def default_effect():
+def default_effect(name):
     file_path = os.path.join(root_path(), 'effects/default/effect.py')
-    return open(file_path, 'r').read()
+    with open(file_path, 'r') as fd:
+        data = fd.read()
+
+    data = data.replace('"default/default.glsl"', '"{}/default.glsl"'.format(name))
+    return data
 
 
 def default_shader():
-    file_path = os.path.join(root_path(), 'effects/default/shaders/default.glsl')
-    return open(file_path, 'r').read()
+    file_path = os.path.join(root_path(), 'effects/default/shaders/default/default.glsl')
+    with open(file_path, 'r') as fd:
+        data = fd.read()
+
+    return data
 
 
 def root_path():

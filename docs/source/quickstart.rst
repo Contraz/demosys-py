@@ -102,8 +102,10 @@ We should now have the folloing structure:
     ├── cube
     │   ├── effect.py
     │   ├── shaders
-    │   │   └── default.glsl
+    │   │   └── cube
+    │   │       └── default.glsl
     │   └── textures
+    │       └── cube
     └── settings.py
     manage.py
 
@@ -111,6 +113,12 @@ The ``cube`` directory is a template for an effect:
 - The standard ``effect.py`` module containing a single ``Effect`` implementation
 - A local ``shaders`` directory for glsl shaders specific to the effect
 - A local ``textures`` directory for texture files specific to the effect
+
+Notice that the ``shaders`` and ``textures`` directory also has a sub-folder with the same name
+as the effect. This is because these directories are added to a global virtual directory
+and the only way to make these resources unique is to put it in a directory that is *hopefully* unique.
+
+This can of course be used in creative ways to also override resources on purpose.
 
 For the effect to be recognized by the system we need to add it ``EFFECTS`` in
 ``settings.py``.

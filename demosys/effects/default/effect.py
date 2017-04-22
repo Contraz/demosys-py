@@ -1,13 +1,13 @@
 from demosys.effects import effect
 from demosys.opengl import geometry
 from OpenGL import GL
-from pyrr import matrix44
+# from pyrr import matrix44
 
 
 class DefaultEffect(effect.Effect):
     """Generated default efffect"""
     def __init__(self):
-        self.shader = self.get_shader("default.glsl")
+        self.shader = self.get_shader("default/default.glsl")
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
     @effect.bind_target
@@ -16,7 +16,7 @@ class DefaultEffect(effect.Effect):
 
         # Rotate and translate
         m_mv = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),
-                                          translation=(0.0, 0.0, -6.0))
+                                          translation=(0.0, 0.0, -8.0))
 
         # Apply the rotation and translation from the system camera
         # m_mv = matrix44.multiply(m_mv, self.sys_camera.view_matrix)

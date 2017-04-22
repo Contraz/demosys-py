@@ -1,9 +1,10 @@
 
 ## TODO
 
-- Split up README into several files
-- Properly verify all settings
 - Write documentation (readthedocs)
+  - Effects
+  - OpenGL stuff
+- Properly verify all settings
 - Make EffectControllers
   - SingleEffectController
   - TrackSystemEffectController
@@ -27,4 +28,4 @@ Generic Data:
   - FBOs
   - Textures
 - Settings entry for key bindings
-- Look into using freetype
+- Look into using freetype or some kind of fonts
