@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="demosys-py",
-    version="0.3.6",
+    version="0.3.7",
     description="Modern OpenGL 4.1+ Prototype Framework inspired by Django",
     long_description=open('README.rst').read(),
     url="https://github.com/Contraz/demosys-py",
@@ -19,7 +19,7 @@ setup(
         'Environment :: X11 Applications',
         'Intended Audience :: Developers',
         'Topic :: Multimedia :: Graphics',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: ISC License (ISCL)',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
