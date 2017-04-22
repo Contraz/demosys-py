@@ -14,6 +14,7 @@ def quad_fs():
 def quad_2d(width, height, xpos, ypos):
     """
     Creates a 2D quad VAO using 2 triangles.
+
     :param width: Width of the quad
     :param height: Height of the quad
     :param xpos: Center position x

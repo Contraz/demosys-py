@@ -7,6 +7,7 @@ from OpenGL.arrays.vbo import VBO
 def plane_xz(size=(10, 10), resolution=(10, 10)):
     """
     Generates a plane on the xz axis of a specific size and resolution
+
     :param size: (x, y) tuple
     :param resolution: (x, y) tuple
     :return: VAO

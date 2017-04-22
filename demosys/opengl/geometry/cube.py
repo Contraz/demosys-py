@@ -7,6 +7,7 @@ from OpenGL.arrays.vbo import VBO
 def cube(width, height, depth, normals=True, uvs=True):
     """
     Generates a cube centered at 0, 0, 0
+
     :param width: Width of the cube
     :param height: height of the cube
     :param depth: depth of the bubs

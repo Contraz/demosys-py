@@ -46,6 +46,9 @@ class Attribute:
 
 
 class Shader:
+    """
+    Represents a shader program
+    """
     def __init__(self, path):
         self.path = path
         self.name = os.path.basename(path)
@@ -62,10 +65,18 @@ class Shader:
         self.attribute_key = None
 
     def bind(self):
+        """
+        Bind the shader
+        """
         GL.glUseProgram(self.program)
 
     def set_source(self, source):
-        """Define a single source file"""
+        """
+        Set a single source file.
+        This is used when you have all shaders in one file separated by preprocessors.
+
+        :param source: (string) The shader source
+        """
         self.set_vertex_source(source)
         self.set_fragment_source(source)
         # TODO: This needs to be solved in a better way
@@ -73,16 +84,34 @@ class Shader:
             self.set_geometry_source(source)
 
     def set_vertex_source(self, source):
+        """
+        Set the vertex shader source
+
+        :param source: (string) Vertex shader source
+        """
         self.vert_source = ShaderSource(GL.GL_VERTEX_SHADER, self.name, source)
 
     def set_fragment_source(self, source):
+        """
+        Set the fragment shader source
+
+        :param source: (string) Fragment shader source
+        """
         self.frag_source = ShaderSource(GL.GL_FRAGMENT_SHADER, self.name, source)
 
     def set_geometry_source(self, source):
+        """
+        Set the geometry shader source
+
+        :param source: (string) Geometry shader source
+        """
         self.geo_source = ShaderSource(GL.GL_GEOMETRY_SHADER, self.name, source)
 
     def prepare(self):
-        # check version ..
+        """
+        Compiles all the shaders and links the program.
+        If the linking is successful, it builds the uniform and attribute map.
+        """
         self.vert_source.compile()
         self.frag_source.compile()
         if self.geo_source:
@@ -92,6 +121,10 @@ class Shader:
         self.build_attribute_map()
 
     def link(self):
+        """
+        Links the program.
+        Raises ``ShaderError`` if the linker failed.
+        """
         self.program = GL.glCreateProgram()
         GL.glAttachShader(self.program, self.vert_source.shader)
         GL.glAttachShader(self.program, self.frag_source.shader)
@@ -105,6 +138,10 @@ class Shader:
             raise ShaderError("Failed to link shader {}: {}".format(self.name, message))
 
     def build_uniform_map(self):
+        """
+        Builds an internal uniform map by querying the program.
+        This way we don't have to query OpenGL (can cause slowdowns)
+        """
         uniform_count = GL.glGetProgramiv(self.program, GL.GL_ACTIVE_UNIFORMS)
         print("Shader {} has {} uniform(s)".format(self.name, uniform_count))
         for i in range(uniform_count):
@@ -116,6 +153,11 @@ class Shader:
             print(" - {}".format(uniform))
 
     def build_attribute_map(self):
+        """
+        Builds an internal attribute map by querying the program.
+        This way we don't have to query OpenGL (can cause slowdowns)
+        This information is also used when the shader and VAO negotiates the buffer binding.
+        """
         attribute_count = GL.glGetProgramiv(self.program, GL.GL_ACTIVE_ATTRIBUTES)
         bufsize = GL.glGetProgramiv(self.program, GL.GL_ACTIVE_ATTRIBUTE_MAX_LENGTH)
         print("Shader {} has {} attribute(s)".format(self.name, attribute_count))
@@ -136,14 +178,29 @@ class Shader:
         print("Shader attribute key:", self.attribute_key)
 
     def uniform(self, name):
-        """Get the uniform location"""
+        """
+        Get the uniform location.
+        Raises ``ShaderError`` if the uniform is not found.
+
+        :param name: The name of the uniform
+        :return: Uniform object
+        """
         uniform = self.uniform_map.get(name)
         if not uniform:
             raise ShaderError("Uniform '{}' not found in shader {}".format(name, self.name))
         return uniform
 
     def uniform_check(self, name, expected_type):
-        """Get a uniform and verify the expected type"""
+        """
+        Get a uniform and verify the expected type.
+        This is used by the ``uniform_*`` methods for validating the actual type in the shader
+        and the uniform we are trying to set.
+        Raises ``ShaderError`` if the uniform is not found.
+
+        :param name: The name of the uniform
+        :param expected_type: The expected type of the uniform.
+        :return: The Uniform object
+        """
         uniform = self.uniform(name)
         if uniform.type.value != expected_type:
             raise ShaderError("Incorrect data type: Uniform '{}' is of type {}".format(name, uniform.type.name))
@@ -152,36 +209,72 @@ class Shader:
     # --- Setting uniforms ---
 
     def uniform_1f(self, name, value):
-        """Set a float uniform"""
+        """
+        Set a float uniform
+
+        :param name: Name of the uniform
+        :param value: float value
+        """
         uniform = self.uniform_check(name, GL.GL_FLOAT)
         GL.glUniform1f(uniform.location, value)
 
     def uniform_2f(self, name, x, y):
-        """Set a float uniform"""
+        """
+        Set a vec2 uniform
+
+        :param name: name of the uniform
+        :param x: float value
+        :param y: float value
+        """
         uniform = self.uniform_check(name, GL.GL_FLOAT_VEC2)
         GL.glUniform2f(uniform.location, x, y)
 
     def uniform_3f(self, name, x, y, z):
-        """Set a float uniform"""
+        """
+        Set a vec3 uniform
+
+        :param name: Name of the uniform
+        :param x: float value
+        :param y: float value
+        :param z: float value
+        """
         uniform = self.uniform_check(name, GL.GL_FLOAT_VEC3)
         GL.glUniform3f(uniform.location, x, y, z)
 
     def uniform_4f(self, name, x, y, z, w):
-        """Set a vec4 uniform"""
+        """
+        Set a vec4 uniform
+
+        :param name: Name of the uniform
+        :param x: float value
+        :param y: float value
+        :param z: float value
+        :param w: float value
+        """
         uniform = self.uniform_check(name, GL.GL_FLOAT_VEC4)
         GL.glUniform4f(uniform.location, x, y, z, w)
 
     # --- Matrices ---
 
     def uniform_mat3(self, name, mat):
-        """Set a mat3 uniform"""
+        """
+        Sets a mat3 uniform
+
+        :param name: Name of the uniform
+        :param mat: matrix
+        """
         if mat is None:
             raise ShaderError("Attempted to set uniform to None")
         uniform = self.uniform_check(name, GL.GL_FLOAT_MAT3)
         GL.glUniformMatrix3fv(uniform.location, 1, GL.GL_FALSE, mat)
 
     def uniform_mat4(self, name, mat):
-        """Set a mat4 uniform"""
+        """
+        Set a mat4 uniform
+
+        :param name: Name of the uniform
+        :param mat: matrix
+        """
         if mat is None:
             raise ShaderError("Attempted to set uniform to None")
         uniform = self.uniform_check(name, GL.GL_FLOAT_MAT4)
@@ -190,12 +283,26 @@ class Shader:
     # --- Sampler ---
 
     def uniform_sampler_2d(self, unit, name, texture):
+        """
+        Sets a sampler2d
+
+        :param unit: The texture unit to use (0 - N)
+        :param name: Name of the uniform
+        :param texture: The Texture object
+        """
         uniform = self.uniform(name)
         GL.glActiveTexture(GL.GL_TEXTURE0 + unit)
         texture.bind()
         GL.glUniform1i(uniform.location, unit)
 
     def uniform_sampler_1d(self, unit, name, texture):
+        """
+        Sets a sampler1d
+
+        :param unit: The texture unit to use (0 - N)
+        :param name: Name of the uniform
+        :param texture: The Texture object
+        """
         uniform = self.uniform(name)
         GL.glActiveTexture(GL.GL_TEXTURE0 + unit)
         texture.bind()
@@ -203,6 +310,10 @@ class Shader:
 
 
 class ShaderSource:
+    """
+    Helper class to deal with shader source files.
+    This represents a single shader (vert/frag/geo)
+    """
     def __init__(self, type, name, source):
         self.type = type
         self.name = name
@@ -230,6 +341,7 @@ class ShaderSource:
         self.source = '\n'.join(self.lines)
 
     def compile(self):
+        """Compile the shader"""
         self.shader = GL.glCreateShader(self.type)
         GL.glShaderSource(self.shader, self.source)
         GL.glCompileShader(self.shader)
@@ -239,12 +351,14 @@ class ShaderSource:
             raise ShaderError("Failed to compile {} {}: {}".format(self.type_name(), self.name, message.decode()))
 
     def print(self):
+        """Print the shader lines"""
         print("---[ START {} ]---".format(self.name))
         for i, line in enumerate(self.lines):
             print("{}: {}".format(str(i).zfill(3), line))
         print("---[ END {} ]---".format(self.name))
 
     def type_name(self):
+        """Returns a string representation of the shader type"""
         if self.type == GL.GL_VERTEX_SHADER:
             return 'VERTEX_SHADER'
         if self.type == GL.GL_FRAGMENT_SHADER:
@@ -261,6 +375,11 @@ SIZE_OF_INT = 4
 
 
 class TypeInfo:
+    """
+    Information about a data type in a glsl shader.
+
+    Example: "GL_FLOAT_VEC3" is a GL.GL_FLOAT_VEC3 of byte size 12
+    """
     def __init__(self, name, value, size):
         """
         :param name: Name of the type (ex 'GL_FLOAT_VEC4')

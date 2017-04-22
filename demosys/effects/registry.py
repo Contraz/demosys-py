@@ -28,12 +28,18 @@ class Effects:
         self.effects = {}
 
     def get_dirs(self):
-        """Get all effect directories"""
+        """
+        Get all effect directories for registered effects.
+        """
         for k, v in self.effects.items():
             yield v.path
 
     def polulate(self, effect_list):
-        """Find all effects"""
+        """
+        Find all effect modules.
+
+        :param effect_list: List of effect module paths
+        """
         for effect in effect_list:
             name = '{}.{}'.format(effect, EFFECT_MODULE)
             module, cls = self.get_effect_cls(name)
@@ -44,7 +50,9 @@ class Effects:
                 raise EffectError("Effect '{}' has no effect class".format(effect))
 
     def get_effect_cls(self, module_name):
-        """Find and return an effect class in a module
+        """
+        Find and return an effect class in a module
+
         :param module_name: Name of the module
         :returns: module, cls tuple
         """

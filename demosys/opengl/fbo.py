@@ -6,7 +6,9 @@ WINDOW = None
 
 
 class WindowFBO:
-    """Fake FBO representing default render target"""
+    """
+    Fake FBO representing default render target
+    """
     def __init__(self):
         self.window = WINDOW
         self.color_buffers = []
@@ -14,12 +16,21 @@ class WindowFBO:
         self.depth_buffer = None
 
     def bind(self):
+        """
+        Sets the viewport back to the buffer size of the screen/window
+        """
         GL.glViewport(0, 0, WINDOW.buffer_width, WINDOW.buffer_height)
 
     def release(self):
+        """
+        Dummy release method.
+        """
         pass
 
     def clear(self):
+        """
+        Dummy clear method.
+        """
         pass
 
 
@@ -36,6 +47,14 @@ class FBO:
 
     @property
     def size(self):
+        """
+        Attempts to determine the pixel size of the FBO.
+        Currently returns the size of the first color attachment.
+        If the FBO has no color attachments, the depth attachment will be used.
+        Raises ```FBOError`` if the size cannot be determined.
+
+        :return: (w, h) tuple representing the size in pixels
+        """
         # FIXME: How do we deal with attachments of different sizes?
         if self.color_buffers:
             return self.color_buffers[0].size
@@ -44,17 +63,26 @@ class FBO:
         raise FBOError("Cannot determine size of FBO. No attachments.")
 
     def __enter__(self):
-        """Entering context manager"""
+        """
+        Entering context manager.
+        This will bind the FBO and return itself.
+        """
         self.bind()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Exit context manager"""
+        """
+        Exit context manager.
+        This will release the FBO.
+        """
         self.release()
-        # We let exceptions propagate, so not returning anything
 
     def bind(self, stack=True):
-        """Bind FBO adding it to the stack"""
+        """
+        Bind FBO adding it to the stack.
+
+        :param stack: (bool) If the bind should push the current FBO on the stack.
+        """
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
         if not stack:
             return
@@ -68,7 +96,8 @@ class FBO:
     def release(self, stack=True):
         """
         Bind FBO popping it from the stack
-        :param stack: Should the bind be registered in the stack?
+
+        :param stack: (bool) If the bind should be popped form the FBO stack.
         """
         GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
         if not stack:
@@ -79,14 +108,28 @@ class FBO:
             parent.bind()
 
     def clear(self):
-        self.bind(stack=False)
+        """
+        Clears the FBO using ``glClear``.
+        """
+        self.bind()
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
-        self.release(stack=False)
+        self.release()
 
     @classmethod
     def create(cls, width, height, depth=False, stencil=True,
                internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE):
-        """Convenient shortcut for creating single color attachment FBOs"""
+        """
+        Convenient shortcut for creating single color attachment FBOs
+
+        :param width: Color buffer width
+        :param height: Coller buffer height
+        :param depth: (bool) Create a depth attachment
+        :param stencil: (bool) Create a stencil attachment
+        :param internal_format: The internalformat of the color buffer
+        :param format: The format of the color buffer
+        :param type: The type of the color buffer
+        :return: A new FBO
+        """
         fbo = FBO()
         fbo.bind(stack=False)
         c = Texture.create_2d(width, height, internal_format=internal_format, format=format, type=type)
@@ -100,6 +143,11 @@ class FBO:
         return fbo
 
     def add_color_attachment(self, texture):
+        """
+        Add a texture as a color attachment.
+
+        :param texture: The Texture object
+        """
         # Internal states
         self.color_buffers_ids.append(GL.GL_COLOR_ATTACHMENT0 + len(self.color_buffers))
         self.color_buffers.append(texture)
@@ -113,6 +161,11 @@ class FBO:
         )
 
     def set_depth_attachment(self, texture):
+        """
+        Set a texture as depth attachment.
+
+        :param texture: The Texture object
+        """
         self.depth_buffer = texture
         # Attach to fbo
         GL.glFramebufferTexture2D(
@@ -124,7 +177,9 @@ class FBO:
         )
 
     def check_status(self):
-        """Checks the completeness of the FBO"""
+        """
+        Checks the completeness of the FBO
+        """
         status = GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)
         incomplete_states = {
             GL.GL_FRAMEBUFFER_UNSUPPORTED: "Framebuffer unsupported. Try another format.",
@@ -177,4 +232,5 @@ def pop_fbo(fbo):
 
 
 class FBOError(Exception):
+    """Generic FBO Error"""
     pass
