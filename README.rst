@@ -30,19 +30,22 @@ Features
 - A simple effect system based on python packages
 - Managment commands to create new projects and effects
 - Convenient wrappers for VAO, Shader, Texture, FBO
+- On-the-fly Shader and VAO negotiation of the needed buffer binding
+- Strict validation in most OpenGL operations with reasonable error feedback
 - Support for the rocket sync-tracker system to create interesting keyframe data
 - A highly pluggable framework
-- Support for customm management commands
-- Camrea and system camera support so we can easily inspect our scene
+- Support for custom management commands
+- Camera and system camera support so we can easily inspect our scene
 - Easy resource management system (shaders, textures)
 - Supports vertex, fragment and geometry shaders (tessellation soon (tm))
-- A geometry module for generating common mesh types
+- A geometry module for quick creation of common mesh/VAO types
 - Well documented (soon (tm))
 
 Requirements
 ------------
 
 In order to use the framework it's an advantage to know the following:
+
 - Basic or intermediate Python knowledge
 - Basic glsl knowledge
 - Basic knowledge about matrix math
