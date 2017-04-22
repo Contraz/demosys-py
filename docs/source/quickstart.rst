@@ -8,10 +8,8 @@ Python 3
 Make sure you have Python 3 installed. On Windows and OSX you can simply install
 the latest Python 3 by downloading an installer from the official_ Python site.
 
-Note
-
-We recommend Python 3.6 or higher because of general **speed improvements** of the language,
-but Python versions down to 3.4 should work.
+.. Note:: We recommend Python 3.6 or higher because of general **speed improvements**
+    of the language, but Python versions down to 3.4 should work.
 
 Most linux distributions already have at least Python 3.4 installed thought `python3`.
 See documentation for your distribution on how to install a newer versions.
