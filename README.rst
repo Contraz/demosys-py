@@ -59,7 +59,7 @@ In order to use the framework it's an advantage to know the following:
 - Basic knowledge about matrix math
 
 If you are missing any of these requirements, the framework can definitely be used
-to learn the. Zero/0 lines of code are needed to generate a project with a spinning
+to learn. Zero/0 lines of code are needed to generate a project with a spinning
 cube and you can get started playing with things.
 
 Contributing

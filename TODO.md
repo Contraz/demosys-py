@@ -4,6 +4,9 @@
 - Write documentation (readthedocs)
   - Effects
   - OpenGL stuff
+  - Pyrr / Math
+  - Timers
+  - EffectManagers
 - Properly verify all settings
 - Make EffectControllers
   - SingleEffectController
