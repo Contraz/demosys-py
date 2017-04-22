@@ -30,7 +30,7 @@ setup(
         'pyrr==0.8.2',
         'Pillow==4.0.0',
         'pyrocket==0.2.5',
-        'pygame==1.9.3',
+        # 'pygame==1.9.3',
     ],
     entry_points={'console_scripts': [
         'demosys-admin = demosys.core.management:execute_from_command_line',

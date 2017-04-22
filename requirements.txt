@@ -5,4 +5,4 @@ Pillow==4.0.0
 pyrocket==0.2.5
 
 # Optional
-pygame==1.9.3
+#pygame==1.9.3

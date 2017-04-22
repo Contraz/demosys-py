@@ -1,7 +1,11 @@
 import glfw
-from pygame import mixer
 from demosys.conf import settings
 from .base import BaseTimer
+
+try:
+    from pygame import mixer
+except ImportError as e:
+    print("pygame is needed for audio playback")
 
 
 class MusicTimer(BaseTimer):
