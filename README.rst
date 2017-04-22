@@ -24,11 +24,39 @@ If you are not a fan of using a framework, you can create your own context
 and just use the classes in ``demosys.opengl``. These will give you fairly
 straight forward ways to use VAOs, Shaders, Textures and FBOs.
 
+Features
+--------
+
+- A simple effect system based on python packages
+- Managment commands to create new projects and effects
+- Convenient wrappers for VAO, Shader, Texture, FBO
+- Support for the rocket sync-tracker system to create interesting keyframe data
+- A highly pluggable framework
+- Support for customm management commands
+- Camrea and system camera support so we can easily inspect our scene
+- Easy resource management system (shaders, textures)
+- Supports vertex, fragment and geometry shaders (tessellation soon (tm))
+- A geometry module for generating common mesh types
+- Well documented (soon (tm))
+
+Requirements
+------------
+
+In order to use the framework it's an advantage to know the following:
+- Basic or intermediate Python knowledge
+- Basic glsl knowledge
+- Basic knowledge about matrix math
+
+If you are missing any of these requirements, the framework can definitely be used
+to learn the. Zero/0 lines of code are needed to generate a project with a spinning
+cube and you can get started playing with things.
+
 Documentation
 -------------
 
 Project documentation can be found at readthedocs_. Optionally you can
 build your own docs from the ``docs`` directory.
+
 
 Contributing
 ------------
@@ -46,12 +74,14 @@ Known Issues
 
 The sound player an be a bit wonky at times on startup refusing to play
 on some platforms. We have tried a few libraries and ended up using
-pygame's mixer module.
+pygame's mixer module. (Optional setup for this)
 
-Audio Requirements: - As the current position in the music is what all
-draw timers are connected to, we need a library that can deliver this. -
-Efficient and accurate seeking + pause support - Some way to extract
-simple data from the music for visualisation
+Audio Requirements:
+
+- As the current position in the music is what all
+  draw timers are connected to, we need a library that can deliver this.
+- Efficient and accurate seeking + pause support
+- Some way to extract simple data from the music for visualisation
 
 Libraries
 ---------
