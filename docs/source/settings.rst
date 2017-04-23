@@ -35,6 +35,11 @@ and you should assume severe a performance hit.**
   those who might want to include legacy OpenGL code permanently or temporary. Do note that
   not using core profile will exclude the project from working on certain setups and may
   have unexpected side effects.
+
+  - ``any``: glfw.OPENGL_ANY_PROFILE,
+  - ``core``: glfw.OPENGL_CORE_PROFILE,
+  - ``compat``: glfw.OPENGL_COMPAT_PROFILE,
+
 - ``forward_compat`` True, is required for the project to work on OS X
 
 The default opengl version is 4.1. Some older systems might need that tuned down to 3.3,
