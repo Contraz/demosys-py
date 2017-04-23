@@ -9,7 +9,7 @@ This is ignoring delays or blocks caused by OpenGL calls.
 
 .. Note::
 
-    How important performance is will of course depends on the project.
+    How important performance is will of course depend on the project.
     Visualization for a scientific application doing some heavy
     calculations would probably not need to run at 60 fps.
     It's also not illegal to not care about performance and just have fun.
