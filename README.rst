@@ -36,6 +36,7 @@ Features
 --------
 
 - A simple effect system based on python packages
+- Well documented
 - Managment commands to create new projects and effects
 - Convenient wrappers for VAO, Shader, Texture, FBO
 - On-the-fly Shader and VAO negotiation of the needed buffer binding
@@ -48,7 +49,6 @@ Features
 - Easy resource management system (shaders, textures)
 - Supports vertex, fragment and geometry shaders (tessellation is wip)
 - A geometry module for quick creation of common mesh/VAO types
-- Well documented (wip)
 - (Experimental audio playback support)
 
 Requirements
@@ -123,7 +123,6 @@ Credits
 -  Also thanks to `Attila
    Toth <https://www.youtube.com/channel/UC4L3JyeL7TXQM1f3yD6iVQQ>`__
    for an excellent tutorial on OpenGL in Python.
-
 
 .. _testdemo: https://github.com/Contraz/demosys-py-test
 .. |pypi| image:: https://img.shields.io/pypi/v/demosys-py.svg
