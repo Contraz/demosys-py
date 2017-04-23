@@ -68,3 +68,7 @@ SHADERS = {
     'fragment_shader_suffix': ('frag', '_fs.glsl', '.glslf'),
     'geometry_shader_suffix': ('geom', '_gs.glsl', '.glslg'),
 }
+
+SCENE_LOADERS = {
+    'obj': 'demosys.scene.loaders.obj.'
+}

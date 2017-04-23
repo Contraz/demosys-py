@@ -27,6 +27,8 @@ We require glfw 3.2.1 or later.
 
 **OS X**
 
+.. code-block:: shell
+
     brew install gflw
 
 **Linux**
@@ -40,15 +42,15 @@ Download binaries from the glfw_ website.
 We do also support audio playback that will need additional dependencies, but this
 is covered in a different section.
 
-Create a virualenv
-^^^^^^^^^^^^^^^^^^
+Create a virtualenv
+^^^^^^^^^^^^^^^^^^^
 
 First of all create a directory for your project and navigate to it using a terminal.
 We assume Python 3.6 here.
 
 OS X / Linux
 
-.. code-block:: bash
+.. code-block:: shell
 
     python3.6 -m pip install virtualenv
     python3.6 -m virtualenv env
@@ -70,9 +72,13 @@ Setting up a Project
 
 First of all, install the package (you should already be inside a virtualenv)
 
+.. code-block:: shell
+
     pip install demosys-py
 
 The package will add a new command ``demosys-admin`` we will now use to create a project.
+
+.. code-block:: shell
 
     demosys-admin createproject myproject
 
