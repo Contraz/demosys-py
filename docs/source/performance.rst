@@ -12,6 +12,7 @@ This is ignoring delays or blocks caused by OpenGL calls.
     How important performance is will of course depends on the project.
     Visualization for a scientific application doing some heavy
     calculations would probably not need to run at 60 fps.
+    It's also not illegal to not care about performance and just have fun.
 
 Probably the biggest enemy to performance in python is **memory allocation**.
 
@@ -27,11 +28,13 @@ but this is not always easy to determine and will needs testing.
 
 Try to do as much as possible on the GPU. Use features like transform
 feedback to alter buffer data and use your creativity to find efficient
-solitions.
+solutions.
 
 Performance in rendering is not straight forward to measure in any language.
 Simply adding timers in the code will not really tell us much unless
 we also query OpenGL about the performance.
+
+We could also try to compile your project with pypy, but we have not tested this (yet)
 
 We can also strive to do more with less. Rendering, in the end, is really just
 about creating illusions.
