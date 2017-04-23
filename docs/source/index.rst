@@ -34,6 +34,7 @@ time creating all the tooling to get things up and running.
    opengl
    timers
    effectmanagers
+   audio
    pyrrmath
    performance
    tempnotes

@@ -7,6 +7,11 @@ The ``settings.py`` file must be present in your project and contains
 (you guessed right!) settings for the framework. This is pretty much
 identical to Django.
 
+When running your project with ``manage.py``, the script will set
+the ``DEMOSYS_SETTINGS_MODULE`` environment variable. This tells
+the framework where it can import its settings from. If the environment
+variable is not set, the framework cannot start.
+
 OPENGL
 ^^^^^^
 
@@ -22,8 +27,15 @@ latest version you drivers support.
         "forward_compat": True,
     }
 
+- ``version`` describes the major and minor version of the OpenGL context we are creating
+- ``profile`` should ideally always be ``core``, but we leave it configurable for
+  those who might want to include legacy OpenGL code permanently or temporary. Do not that
+  not using core profile will exclude the project from working on certain setups.
+- ``forward_compat`` is required for the project to work on OS X
+
 The default opengl version is 4.1. Some older systems might need
 that tuned down to 3.3, but generally 4.1 is widely supported.
+To make your project work on OS X you cannot move past version 4.1 (sadly).
 
 WINDOW
 ^^^^^^
@@ -35,12 +47,31 @@ values refer to the virual size. The actual buffer size will be 2 x.
 
     WINDOW = {
         "size": (1280, 768),
-        "vsync": True,
-        "resizable": False,
         "fullscreen": False,
+        "resizable": False,
+        "vsync": True,
         "title": "demosys-py",
         "cursor": False,
     }
+
+- ``size``: The window size to open. Note that on 4k displays and retina the actual
+  frame buffer size will normally be twice as large. Internally we query glfw for
+  the actual buffer size so the viewport can be correctly applied.
+- ``fullscreen``: True if you want to create a context in fullscreen mode
+- ``resizable``: If the window should be resizable. This only applies in windowed mode.
+  Currently we constrain the window size to the aspect ratio of the resolution (needs improvement)
+- ``vsync``: Only render one frame per screen refresh
+- ``title``: The visible title on the window in windowed mode
+- ``cursor``: Should the mouse cursor be visble on the screen? Disabling
+  this is also useful in windowed mode when controlling the camera on some platforms
+  as moving the mouse outside the window can cause issues.
+
+The created window frame buffer will by default use:
+
+- RGBA8
+- 32 bit depth buffer were 24 bits is for depth and 8 bits for stencil
+- Double buffering
+- color, depth and stencil is cleared every frame
 
 MUSIC
 ^^^^^
@@ -79,9 +110,11 @@ Configuration of the pyrocket_ sync-tracker library.
 
 - ``rps``: Number of rows per second
 - ``mode``: The mode to run the rocket client
+
   - ``editor``: Requires a rocket editor to run so the library can connect to it
   - ``project``: Loads the project file created by the editor and plays it back
   - ``files``: Loads the binary track files genrated by the client through remote export in the editor.
+
 - ``project_file``: The absolute path to the project file
 - ``files``: The absolute path to the directory containing binary track data
 
