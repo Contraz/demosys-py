@@ -16,13 +16,16 @@ OPENGL
 ^^^^^^
 
 Using these values you are sure it will run on all platforms. OS X only
-support forward compatible core contexts. This will bump you to the
-latest version you drivers support.
+supports forward compatible core contexts. This will ensure deprecation
+older features.
+
+**We cannot guarantee that the framework will work properly for non-default values,
+and you should assume severe a performance hit.**
 
 .. code:: python
 
     OPENGL = {
-        "version": (4, 1),
+        "version": (4, 1),  # 3.3 -> 4.1 is acceptable
         "profile": "core",
         "forward_compat": True,
     }
