@@ -30,6 +30,7 @@ time creating all the tooling to get things up and running.
    quickstart
    controls
    settings
+   project
    effects
    opengl
    timers

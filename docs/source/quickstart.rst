@@ -93,6 +93,11 @@ This will generate the following files:
 - ``settings.py`` is the settings for your project
 - ``manage.py`` is an executable script for running your project
 
+More information about projects can be found in the :doc:`project` section.
+
+Creating an Effect
+^^^^^^^^^^^^^^^^^^
+
 In order to get something to the screen we have to make an effect.
 
 .. code-block:: bash
