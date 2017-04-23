@@ -17,6 +17,7 @@ from . import screenshot
 WINDOW = None
 TIMER = None
 CAMERA = None
+MANAGER = None
 
 
 def run(manager=None):
@@ -25,6 +26,9 @@ def run(manager=None):
 
     :param manager: The effect manager to use
     """
+    global MANAGER
+    MANAGER = manager
+
     global WINDOW
     WINDOW = Window()
     fbo.WINDOW = WINDOW
@@ -110,9 +114,10 @@ def key_event_callback(window, key, scancode, action, mods):
     # The well-known standard key for quick exit
     if key == glfw.KEY_ESCAPE:
         WINDOW.set_should_close()
+        return
 
     # Toggle pause time
-    elif key == glfw.KEY_SPACE and action == glfw.PRESS:
+    if key == glfw.KEY_SPACE and action == glfw.PRESS:
         TIMER.toggle_pause()
 
     # Camera movement
@@ -158,6 +163,9 @@ def key_event_callback(window, key, scancode, action, mods):
     # Screenshots
     if key == glfw.KEY_X and action == glfw.PRESS:
         screenshot.create()
+
+    # Forward the event to the effect manager
+    MANAGER.key_event(key, scancode, action, mods)
 
 
 def mouse_event_callback(window, x, y):

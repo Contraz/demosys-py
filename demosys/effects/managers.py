@@ -36,6 +36,18 @@ class BaseEffectManger:
         """
         pass
 
+    def key_event(self, key, scancode, action, mods):
+        """
+        Forwarded (unconsumed) key events from the system.
+        See glfw's key events for detailed information.
+
+        :param key: The keyboard key that was pressed or released.
+        :param scancode: The system-specific scancode of the key.
+        :param action: GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
+        :param mods: Bit field describing which modifier keys were held down.
+        """
+        pass
+
 
 class SingleEffectManager(BaseEffectManger):
     """Run a single effect"""
@@ -69,6 +81,9 @@ class SingleEffectManager(BaseEffectManger):
 
     def draw(self, time, frametime, target):
         self.active_effect.draw(time, frametime, target)
+
+    def key_event(self, key, scancode, action, mods):
+        print("SingleEffectManager:key_event", key, scancode, action, mods)
 
 
 class TrackerEffectManager(BaseEffectManger):
