@@ -27,8 +27,10 @@ straight forward ways to use VAOs, Shaders, Textures and FBOs.
 Documentation
 -------------
 
-Project documentation can be found at readthedocs_. Optionally you can
-build your own docs from the ``docs`` directory.
+Project documentation can be found at readthedocs_. Optionally you can build your own
+docs from the ``docs`` directory. If anything is unclear or incorrect in the docs,
+please make an issue on it. This also applies when the docs are simply bad or
+too vague. Please also feel free to make pull requests on documentation.
 
 Features
 --------

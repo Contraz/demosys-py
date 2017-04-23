@@ -119,6 +119,23 @@ The standard effect example:
                 shader.uniform_mat3("m_normal", m_normal)
             self.cube.draw()
 
+The parameters in the draw effect is:
+
+- ``time``: The current time reported by our configured Timer in seconds.
+- ``frametime``: The time a frame is expected to take in seconds.
+  This is useful when you cannot use ``time``. Should be avoided.
+- ``target`` is the target FBO of the effect
+
+Time can potentially move at any speed or direction so it's good practice
+to make sure the effect can run when time is moving in any direction.
+
+The ``bind_target`` decorator is useful when you want to ensure
+that an FBO passed to the effect is bound on entry and released on exit.
+By default a fake FBO is passed in representing the window framebuffer.
+EffectManagers can be used to pass in your own FBOs or another effect
+can call ``draw(..)`` requesting the result to end up in the FBO it passes in
+and then use this FBO as a texture on a cube.
+
 Effect Base Class
 ^^^^^^^^^^^^^^^^^
 
