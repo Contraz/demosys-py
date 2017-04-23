@@ -96,7 +96,7 @@ def run(manager=None):
         fps = round(frames / duration, 2)
         print("Duration: {}s rendering {} frames at {} fps".format(duration, frames, fps))
 
-    WINDOW.terminate()
+    # Let the window and context clean itself up
 
 
 def key_event_callback(window, key, scancode, action, mods):
