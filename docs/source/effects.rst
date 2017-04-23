@@ -2,10 +2,25 @@
 Effects
 =======
 
-Effect documentation. Write more stuff here!
+In order to draw something to the screen using this framework you need to make one or multiple effects.
+An effect is an independent python package of a certain format.
 
+The Effect Package
+^^^^^^^^^^^^^^^^^^
+
+The effect package should have the following structure:
+
+The effect Module
+^^^^^^^^^^^^^^^^^
+
+
+Effect Base Class
+^^^^^^^^^^^^^^^^^
 
 .. autoclass:: demosys.effects.effect.Effect
-   :members: draw, get_shader, get_texture, get_track, create_projection, create_transformation, create_normal_matrix
+   :members:
+
+Decorators
+^^^^^^^^^^
 
 .. autofunction:: demosys.effects.effect.bind_target

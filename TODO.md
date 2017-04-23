@@ -3,8 +3,7 @@
 
 - EffectManagers
   - Implement run
-  - Forward key events from controller
-
+- Support some kind of middleware?
 - Write documentation (readthedocs)
   - Effects
   - OpenGL stuff

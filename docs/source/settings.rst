@@ -32,13 +32,15 @@ and you should assume severe a performance hit.**
 
 - ``version`` describes the major and minor version of the OpenGL context we are creating
 - ``profile`` should ideally always be ``core``, but we leave it configurable for
-  those who might want to include legacy OpenGL code permanently or temporary. Do not that
-  not using core profile will exclude the project from working on certain setups.
-- ``forward_compat`` is required for the project to work on OS X
+  those who might want to include legacy OpenGL code permanently or temporary. Do note that
+  not using core profile will exclude the project from working on certain setups and may
+  have unexpected side effects.
+- ``forward_compat`` True, is required for the project to work on OS X
 
-The default opengl version is 4.1. Some older systems might need
-that tuned down to 3.3, but generally 4.1 is widely supported.
-To make your project work on OS X you cannot move past version 4.1 (sadly).
+The default opengl version is 4.1. Some older systems might need that tuned down to 3.3,
+but generally 4.1 is widely supported. To make your project work on OS X you cannot move
+past version 4.1 (sadly). This doesn't mean we cannot move past 4.1, but as of right now
+we focus on implementing features up to 4.1.
 
 WINDOW
 ^^^^^^
