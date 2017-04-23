@@ -1,0 +1,5 @@
+
+Effect Managers
+===============
+
+Write stuff

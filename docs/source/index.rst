@@ -31,6 +31,11 @@ time creating all the tooling to get things up and running.
    controls
    settings
    effects
+   opengl
+   timers
+   effectmanagers
+   pyrrmath
+   performance
    tempnotes
 
 Indices and tables
