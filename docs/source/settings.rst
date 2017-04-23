@@ -139,6 +139,25 @@ Django).
         'myproject.cube',
     )
 
+EFFECT_MANAGER
+^^^^^^^^^^^^^^
+
+Effect mangers are pluggable classed that initialize and run effect.
+when only having a single effect we can run it using ``runeffect``,
+but when having multiple effects we need something to decide what
+effect should be active.
+
+The default effect manager is the ``SingleEffectManager`` that is
+also enforced when running ``./manage.py runeffect <name>``.
+If we use the ``run`` sub-command, the first registered effect will run.
+
+.. code:: python
+
+    EFFECT_MANAGER = 'demosys.effects.managers.single.SingleEffectManager'
+
+More effect managers will be added to framework soon.
+Read the detailed section about effect mangers for more info.
+
 SHADER_DIRS/FINDERS
 ^^^^^^^^^^^^^^^^^^^
 
