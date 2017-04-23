@@ -13,4 +13,4 @@ class ObjLoader(SceneLoader):
 
         :return: VAO containing the object
         """
-        
+        pass
