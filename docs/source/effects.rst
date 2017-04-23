@@ -2,9 +2,13 @@
 Effects
 =======
 
-In order to draw something to the screen using this framework you need to make one or multiple effects.
-An effect is an independent python package of a certain format.
+In order to draw something to the screen using this framework you need to make one or
+multiple effects. what these effects are doing is entirely up to you. Some like to
+put everything into one effect and switch what they draw by flipping some internal
+states, but this is probably not practical for more complex things.
 
+An effect is a class with references to resources and a method for drawing.
+An effect is an independent python package of specific format.
 
 The Effect Package
 ^^^^^^^^^^^^^^^^^^
@@ -52,6 +56,10 @@ Resources
 
 Resource loading is baked into the effect class it self. Methods are inherited
 from the base ``Effect`` class such as ``get_shader`` and ``get_texture``.
+
+Remember that you can also create global resource directories for all
+the effects in your projects as well. This can be achieved by configuring
+resource finders in :doc:`settings`.
 
 The Effect Module
 ^^^^^^^^^^^^^^^^^
