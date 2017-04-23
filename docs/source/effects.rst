@@ -85,7 +85,7 @@ decides the effect should be active at least.
 
 The standard effect example:
 
-.. code-block:: bash
+.. code-block:: python
 
     from demosys.effects import effect
     from demosys.opengl import geometry
