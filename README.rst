@@ -30,18 +30,18 @@ Documentation
 -------------
 
 Project documentation can be found at readthedocs_. If anything is unclear or incorrect,
-please make an issue on it or make a pull request.
+please make an issue or make a pull request on github.
 
 Features
 --------
 
 - A simple effect system based on python packages
 - Well documented
-- Managment commands to create new projects and effects
+- Management commands to create new projects and effects
 - Convenient wrappers for VAO, Shader, Texture, FBO
 - On-the-fly Shader and VAO negotiation of the needed buffer binding
 - Strict validation in most OpenGL operations with reasonable error feedback
-- Timeline / Timer support
+- Time line / Timer support
 - Support for the rocket sync-tracker system to create interesting keyframe data
 - A highly pluggable framework
 - Support for custom management commands
@@ -71,6 +71,8 @@ Any contribution to the project is welcome. Never hesitate to ask
 questions or submit pull requests (completed or work in progress). The
 worst thing that can happen is that we or you might learn something.
 This is supposed to be a fun project.
+
+General feedback can be posted here on github or you can mail eforselv@gmail.com.
 
 Also check out the `TODO list <TODO.md>`__. Take a stab on what of the
 features or documentation or suggest new entries.
