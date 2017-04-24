@@ -9,14 +9,14 @@ The ``demosys.opengl.geometry`` module currently provides some simple functions 
 - Plane: A plane with a dimension and resolution
 - Points: Random points in 3D
 
-.. Nore:: We definitely need more here. Please make pull requests or make an issue on github.
+.. Note:: We definitely need more here. Please make pull requests or make an issue on github.
 
 Creating Custom Geometry
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 To efficiently generate geometry in Python we must avoid as much memory allocation as possible.
 As mentioned in other sections we use PyOpenGL's VBO class that takes numpy arrays.
-We also use pyrr for vector and matrix math and representation.
+We also use pyrr for vector/matrix math/representation.
 
 .. Note:: This is a "best practices" guide to efficiently generate geometry
    with python code that will scale well even for large amounts of data.
@@ -48,8 +48,8 @@ The naive way to generate geometry would probably look something like this:
        return vao
 
 This works perfectly fine, but we allocate a new list for every iteration
-and pyrr internally creates a numpy array of this. The ``points`` list will also
-have to dynamically expand. This exponentially more ugly as the ``count``
+and pyrr internally creates a numpy array. The ``points`` list will also
+have to dynamically expand. This gets exponentially more ugly as the ``count``
 value increases.
 
 We move on to version 2:
@@ -70,7 +70,7 @@ We move on to version 2:
      points_vbo = VBO(numpy.array(points, dtype=numpy.float32))
 
 This version is orders of magnitude faster because we don't allocate memory
-in the loop. It has one glaring flaw though. It's not a very pleasant read
+in the loop. It has one glaring flaw though. It's **not a very pleasant read**
 even for such simple task, and it will not get any better if we add more complexity.
 
 Let's move on to version 3:
@@ -87,14 +87,14 @@ Let's move on to version 3:
 
        points_vbo = VBO(numpy.fromiter(generate(), count=count * 3, dtype=numpy.float32)
 
-Using generators in python like this is much cleaner way. We also take advantage
+Using generators in Python like this is much a cleaner way. We also take advantage
 of numpy's ``fromiter()`` that basically slurps up all the numbers we emit with
 yield into its internal buffers. By also telling numpy what the final size of the
 buffer will be using the ``count`` parameter, it will pre-allocate this not having
 to dynamically increase it's internal buffer.
 
 Generators are extremely simple and powerful. If things get complex we can easily
-split things up in several functions because Pythons ``yield from`` can forward
+split things up in several functions because Python's ``yield from`` can forward
 generators.
 
 Imagine generating a single VBO with interleaved position, normal and uv data:
@@ -127,7 +127,7 @@ Imagine generating a single VBO with interleaved position, normal and uv data:
                yield from normal(x, y, z)
                yield from uv(x, y, z)
 
-       interleaved_vbo = VBO(numpy.fromiter(generate(), count=count * 3, dtype=numpy.float32)
+       interleaved_vbo = VBO(numpy.fromiter(generate(), count=count * 8, dtype=numpy.float32)
 
 
 The geometry Module
