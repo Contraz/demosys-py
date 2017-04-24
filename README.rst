@@ -16,8 +16,10 @@ design of this version is heavily inspired by the
 We only support OpenGL 3.3+ forward compatible core profiles (no backwards compatibility).
 
 This was originally made for for non-interactive real time graphics
-combined with music ("real time music videos"). It's made for people who
-enjoy playing around with modern OpenGL without having to spend lots of
+combined with music ("real time music videos"), but can of course
+be used for other purposes.
+
+It's made for people who enjoy playing around with modern OpenGL without having to spend lots of
 time creating all the tooling to get things up and running.
 
 If you are not a fan of using a framework, you can create your own context
@@ -27,10 +29,8 @@ straight forward ways to use VAOs, Shaders, Textures and FBOs.
 Documentation
 -------------
 
-Project documentation can be found at readthedocs_. Optionally you can build your own
-docs from the ``docs`` directory. If anything is unclear or incorrect in the docs,
-please make an issue on it. This also applies when the docs are simply bad or
-too vague. Please also feel free to make pull requests on documentation.
+Project documentation can be found at readthedocs_. If anything is unclear or incorrect,
+please make an issue on it or make a pull request.
 
 Features
 --------
@@ -60,9 +60,9 @@ In order to use the framework it's an advantage to know the following:
 - Basic glsl
 - Basic matrix math
 
-If you are missing any of these requirements, the framework can definitely be used
+If you are missing any of these requirements the framework can definitely be used
 to learn. Zero/0 lines of code are needed to generate a project with a spinning
-cube and you can get started playing with things.
+cube and you can star poking at things.
 
 Contributing
 ------------
@@ -77,6 +77,8 @@ features or documentation or suggest new entries.
 
 Known Issues
 ------------
+
+If you care about audio..
 
 The sound player an be a bit wonky at times on startup refusing to play
 on some platforms. We have tried a few libraries and ended up using
