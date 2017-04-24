@@ -14,17 +14,33 @@ design of this version is heavily inspired by the
 +-----------------+-----------------+
 
 We only support OpenGL 3.3+ forward compatible core profiles (no backwards compatibility).
+Originally made for for non-interactive real time graphics combined with music
+("real time music videos"), but can of course be used for other purposes.
 
-This was originally made for for non-interactive real time graphics
-combined with music ("real time music videos"), but can of course
-be used for other purposes.
-
-It's made for people who enjoy playing around with modern OpenGL without having to spend lots of
+Made for people who enjoy playing around with modern OpenGL without spending time
 time creating all the tooling to get things up and running.
 
-If you are not a fan of using a framework, you can create your own context
-and just use the classes in ``demosys.opengl``. These will give you fairly
-straight forward ways to use VAOs, Shaders, Textures and FBOs.
+Setting a project with a spinning cube can be done in less than a minute
+
+.. code-block:: shell
+
+   pip install demosys-py
+   demosys-admin createproject myproject
+   demosys-admin createeffect myproject/cube
+
+Now edit ``myproject/settings.py`` and add the effect to the ``EFFECTS`` tuple.
+
+.. code-block:: python
+
+   EFFECTS = (
+      'myproject.cube',
+   )
+
+Now run the effect!
+
+.. code-block:: shell
+
+   ./manage.py runeffect myproject.cube
 
 Documentation
 -------------
@@ -50,6 +66,10 @@ Features
 - Supports vertex, fragment and geometry shaders (tessellation is wip)
 - A geometry module for quick creation of common mesh/VAO types
 - (Experimental audio playback support)
+
+If you are not a fan of using a framework, you can create your own context
+and just use the classes in ``demosys.opengl``. These will give you fairly
+straight forward ways to use VAOs, Shaders, Textures and FBOs.
 
 Requirements
 ------------
