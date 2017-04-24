@@ -69,7 +69,7 @@ def execute_from_command_line(argv=None):
     if command in commands:
         cmd = load_command_class('demosys.core', command)
         cmd.run_from_argv(argv)
-    if command in project_commands:
+    elif command in project_commands:
         cmd = load_command_class(project_package, command)
         cmd.run_from_argv(argv)
     else:

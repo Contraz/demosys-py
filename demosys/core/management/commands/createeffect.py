@@ -9,7 +9,12 @@ class Command(CreateCommand):
         parser.add_argument("name", help="Name of the effect")
 
     def handle(self, *args, **options):
-        name = options['name']
+        name = os.path.basename(options['name'])
+        path = os.path.dirname(options['name'])
+
+        # Does the name have a path prefix?
+        if path and not os.path.exists(path):
+            raise ValueError("{} directory does not exist".format(path))
 
         # Check for python module collision
         self.try_import(name)
@@ -22,16 +27,16 @@ class Command(CreateCommand):
             print("Directory {} already exist. Aborting.".format(name))
             return
 
-        os.mkdir(name)
-        os.makedirs(os.path.join(name, 'textures', name))
-        os.makedirs(os.path.join(name, 'shaders', name))
+        os.mkdir(os.path.join(path, name))
+        os.makedirs(os.path.join(path, name, 'textures', name))
+        os.makedirs(os.path.join(path, name, 'shaders', name))
 
         # Create effect.py
-        with open(os.path.join(name, 'effect.py'), 'w') as fd:
+        with open(os.path.join(path, name, 'effect.py'), 'w') as fd:
             fd.write(default_effect(name))
 
         # Create default.glsl
-        with open(os.path.join(name, 'shaders', name, 'default.glsl'), 'w') as fd:
+        with open(os.path.join(path, name, 'shaders', name, 'default.glsl'), 'w') as fd:
             fd.write(default_shader())
 
 
