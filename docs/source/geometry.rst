@@ -11,8 +11,17 @@ The ``demosys.opengl.geometry`` module currently provides some simple functions 
 
 .. Note:: We definitely need more here. Please make pull requests or make an issue on github.
 
-Creating Custom Geometry
-^^^^^^^^^^^^^^^^^^^^^^^^
+Scene/Mesh File Formats
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``demosys.scene.loaders`` are meant for this.
+
+.. Note:: We currently do not support loading any formats.
+   If you have any suggestions in this area, please make an
+   issue on github.
+
+Generating Custom Geometry
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To efficiently generate geometry in Python we must avoid as much memory allocation as possible.
 As mentioned in other sections we use PyOpenGL's VBO class that takes numpy arrays.
