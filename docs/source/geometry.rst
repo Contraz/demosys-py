@@ -32,7 +32,7 @@ We also use pyrr for vector/matrix math/representation.
    This was benchmarked generating various vertex formats with 1M vertices.
    For fairly small data sizes doesn't matter that much.
 
-The naive way to generate geometry would probably look something like this:
+The naive way of generating geometry would probably look something like this:
 
 .. code-block:: python
 
@@ -66,10 +66,9 @@ We move on to version 2:
 .. code-block:: python
 
    def random_points(count):
-       # Pre-allocate a list containing zeros of length count
-       # We multiply by 3 to make room for a x, y and z value
+       # Pre-allocate a list containing zeros of length count * 3
        points = [0] * count * 3
-       # Loop count time incrementing by 3 every frame
+       # Loop count times incrementing by 3 every frame
        for p in range(0, count * 3, 3):
            # Let's pretend we calculated random values for x, y, z
            points[p] = x
