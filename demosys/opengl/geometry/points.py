@@ -25,7 +25,7 @@ def points_random_3d(count, range_x=(-10.0, 10.0), range_y=(-10.0, 10.0), range_
 
     data = numpy.fromiter(gen(), count=count * 3, dtype=numpy.float32)
     pos = VBO(data)
-    vao = VAO("geometry:points_random_3d")
+    vao = VAO("geometry:points_random_3d", mode=GL.GL_POINTS)
     vao.add_array_buffer(GL.GL_FLOAT, pos)
     vao.map_buffer(pos, "in_position", 3)
     vao.build()
