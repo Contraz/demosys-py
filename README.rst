@@ -56,9 +56,9 @@ Requirements
 
 In order to use the framework it's an advantage to know the following:
 
-- Basic or intermediate Python knowledge
-- Basic glsl knowledge
-- Basic knowledge about matrix math
+- Basic or intermediate Python
+- Basic glsl
+- Basic matrix math
 
 If you are missing any of these requirements, the framework can definitely be used
 to learn. Zero/0 lines of code are needed to generate a project with a spinning
