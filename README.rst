@@ -3,21 +3,19 @@
 demosys-py
 ==========
 
-A python 3 implementation of a C++ project used to create and
-prototype demos (see
-`demoscene <https://en.wikipedia.org/wiki/Demoscene>`__) in OpenGL. The
-design of this version is heavily inspired by the
-`Django <https://www.djangoproject.com/>`__ project.
+A modern OpenGL 3.3+ framework inspired by Django.
 
 +-----------------+-----------------+
 | |screenshot1|   | |screenshot2|   |
 +-----------------+-----------------+
 
-We only support OpenGL 3.3+ forward compatible core profiles (no backwards compatibility).
-Originally made for for non-interactive real time graphics combined with music
-("real time music videos"), but can of course be used for other purposes.
+We mainly support OpenGL 3.3+ forward compatible core profiles (no backwards compatibility).
 
-Made for people who enjoy playing around with modern OpenGL without spending time
+Originally made for for non-interactive real time graphics combined with music
+("real time music videos", (see `demoscene <https://en.wikipedia.org/wiki/Demoscene>`__)),
+but can of course be used for other purposes.
+
+Made for people who enjoy playing around with modern OpenGL without spending lots of
 time creating all the tooling to get things up and running.
 
 Setting a project with a spinning cube can be done in less than a minute
