@@ -43,8 +43,8 @@ Now run the effect!
 Documentation
 -------------
 
-Project documentation can be found at readthedocs_. If anything is unclear or incorrect,
-please make an issue or make a pull request on github.
+Detailed documentation can be found at readthedocs_.
+If anything is unclear or incorrect, please make an issue or make a pull request on github.
 
 Features
 --------
