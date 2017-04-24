@@ -14,13 +14,13 @@ the latest Python 3 by downloading an installer from the official_ Python site.
 Most linux distributions already have at least Python 3.4 installed thought ``python3``.
 See documentation for your distribution on how to install a newer versions.
 
-It is common to have multiple versions of Python installed on all operating systems.
+It's common to have multiple versions of Python installed on all operating systems.
 
 Binary Dependencies
 ^^^^^^^^^^^^^^^^^^^
 
 We use glfw_ for creating an OpenGL context, windows and handling keyboard and mouse events.
-This is done thought the pyGLFW_ package that is a ``ctype`` wrapper over the origonal GLFW
+This is done though the pyGLFW_ package that is a ``ctype`` wrapper over the original glfw
 api. You will have to install the actual library yourself.
 
 We require glfw 3.2.1 or later.
@@ -65,7 +65,7 @@ Windows
     \env\Scripts\activate
 
 We have now created an isolated Python environment and are ready to install packages
-without affecting the Python version in our operating system.
+without affecting the Python versions in our operating system.
 
 Setting up a Project
 ^^^^^^^^^^^^^^^^^^^^
@@ -76,7 +76,7 @@ First of all, install the package (you should already be inside a virtualenv)
 
     pip install demosys-py
 
-The package will add a new command ``demosys-admin`` we will now use to create a project.
+The package will add a new command ``demosys-admin`` we use to create a project.
 
 .. code-block:: shell
 
@@ -98,16 +98,16 @@ More information about projects can be found in the :doc:`project` section.
 Creating an Effect
 ^^^^^^^^^^^^^^^^^^
 
-In order to get something to the screen we have to make an effect.
+In order to draw something to the screen we have to make an effect.
 
 .. code-block:: bash
 
     cd myproject
     demosys-admin createeffect cube
 
-We should now have the folloing structure:
+We should now have the following structure:
 
-.. code-block:: bash
+.. code-block:: shell
 
     myproject/
     ├── cube
@@ -131,7 +131,7 @@ and the only way to make these resources unique is to put it in a directory that
 
 This can of course be used in creative ways to also override resources on purpose.
 
-For the effect to be recognized by the system we need to add it ``EFFECTS`` in
+For the effect to be recognized by the system we need to add it to ``EFFECTS`` in
 ``settings.py``.
 
 .. code-block:: bash

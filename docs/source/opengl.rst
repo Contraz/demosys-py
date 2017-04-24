@@ -2,11 +2,12 @@
 OpenGL Objects
 ==============
 
-We proved some simple and powerful wrappers over OpenGL features.
+We proved some simple and powerful wrappers over OpenGL features in the
+``demosys.opengl`` package.
 
 - **Texture**: Textures from images or manually constructed/generated
 - **Shader**: Shader programs currently supporting vertex/fragment/geometry shaders
-- **Frame Buffer Object**: Offscreen rendering targets
+- **Frame Buffer Object**: Offscreen rendering targets represented as textures
 - **Vertex Array Object**: Represents the geometry we are drawing using a shader
 
 Texture
@@ -14,8 +15,9 @@ Texture
 
 Textures are normally loaded by requesting the resource by path/name in the initializer
 of an effect using the ``self.get_texture`` method inherited from the ``Effect`` base class.
+We use the PIL/Pillow library to image data from file.
 
-Textures can of course also be crated manually.
+Textures can of course also be crated manually if needed.
 
 .. autoclass:: demosys.opengl.texture.Texture
     :members:
@@ -27,9 +29,13 @@ Shader
 
 In oder to draw something to the screen, we need a shader. There is no other way.
 
-Shader should ideally always be loaded from ``.glsl`` files residing in a shader directory
+Shader should ideally always be loaded from ``.glsl`` files located in a ``shaders`` directory
 in your effect or project global resource directory. Shaders have to be written in a single
 file were the different shader types are separated using preprocessors.
+
+.. Note:: We wish to support loading shaders in other common formats such
+   as separate files for each shader type. Feel free to make a pull request
+   or create an issue on github.
 
 Like textures they are loaded in the effect using the ``get_shader`` method in the initializer.
 
@@ -69,6 +75,9 @@ and give useful error feedback if something is wrong.
 Other than setting uniforms and using the right file format for shaders, there
 are not much more to them.
 
+.. Note:: We are planning to support passing in preprocessors to shader.
+   Please make an issue or a pull request on github.
+
 .. autoclass:: demosys.opengl.shader.Shader
     :members:
     :undoc-members:
@@ -103,7 +112,7 @@ The vertex shader will have to define the exact same attribute names:
 
 This is not entirely true. The shader will at least have to define
 the ``in_position``. The other two attributes are optional. This
-is were the VAO and the Shader object negotiates the attribute binding.
+is were the VAO and the Shader negotiates the attribute binding.
 The VAO object will on-the-fly generate a version of itself that
 supports the shaders attributes.
 
@@ -113,6 +122,11 @@ the shader so you can use a shorter name.
 
 .. code-block:: python
 
+    # Without context manager
+    vao.bind(shader)
+    shader.unform_1f("value", 1.0)
+    vao.draw()
+
     # Bind the shader and negotiate attribute binding
     with vao.bind(shader) as s:
         s.unform_1f("value", 1.0)
@@ -121,7 +135,7 @@ the shader so you can use a shorter name.
     vao.draw()
 
 When creating a VBO we need to use the `OpenGL.arrays.vbo.VBO instance` in
-PyOpenGL. We pass a numpy array to the constructor. It's imporant to use
+PyOpenGL. We pass a numpy array to the constructor. It's important to use
 the correct ``dtype`` so it matches the type passed in ``add_array_buffer``.
 
 Each VBO is first added to the VAO using ``add_array_buffer``. This is simply
@@ -131,6 +145,10 @@ The ``map_buffer`` part will define the actual attribute mapping.
 Without this the VAO is not complete.
 
 Calling ``build()`` will finalize and sanity check the VAO.
+
+The VAO initializer also takes an optional argument ``mode``
+were you can specify what the default draw mode is. This can
+be overridden in ``draw(mode=...)``.
 
 The VAO will always do **very** strict error checking and give
 useful feedback when something is wrong. VAOs must also be
@@ -198,8 +216,8 @@ Frame Buffer Object
 Frame Buffer Objects are offscreen render targets.
 Internally they are simply textures that can be used further in rendering.
 FBOs can even have multiple layers so a shader can write to multiple buffers at once.
-They can also have depth buffers and stencil buffers. Currently we by default
-use a depth 24 / stencil 8 buffer as the depth format.
+They can also have depth/stencil buffers. Currently we use
+use a depth 24 / stencil 8 buffer by default as the depth format.
 
 Creating an FBO:
 
@@ -224,7 +242,7 @@ Creating an FBO:
         # Draw stuff in the FBO
 
 When binding the FBOs with multiple color attachments it will automatically
-call ``glDrawBuffers`` enabling multiple outputs in the framgment shader.
+call ``glDrawBuffers`` enabling multiple outputs in the fragment shader.
 
 Shader example with multiple layers:
 
@@ -242,7 +260,7 @@ Shader example with multiple layers:
         outColor1 = vec4(0.0, 0.0, 1.0, 1.0)
     }
 
-Will draw red, green and blue in the separate layers in the FBO.
+Will draw red, green and blue in the separate layers in the FBO/textures.
 
 .. Warning:: It's important to use explicit attribute locations as not all drivers
    will guarantee preservation of the order and things end up in the wrong buffers!
@@ -304,6 +322,9 @@ resporting the viewport size is also a huge burden off our shoulders.
         # ...
 
 There are of course ways to bypass the stack, but should be done with extreme caution.
+
+.. Note:: We are also aiming to support layered rendering using the geometry shader.
+   Please make an issue or pull request on github.
 
 .. autoclass:: demosys.opengl.fbo.FBO
     :members:

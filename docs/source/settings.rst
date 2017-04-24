@@ -4,23 +4,28 @@ Settings
 
 
 The ``settings.py`` file must be present in your project and contains
-(you guessed right!) settings for the framework. This is pretty much
-identical to Django.
+(you guessed right!) settings for the project. This is pretty much
+identical in Django.
 
 When running your project with ``manage.py``, the script will set
 the ``DEMOSYS_SETTINGS_MODULE`` environment variable. This tells
-the framework where it can import its settings from. If the environment
-variable is not set, the framework cannot start.
+the framework where it can import the project settings. If the environment
+variable is not set the project cannot start.
 
 OPENGL
 ^^^^^^
 
-Using these values you are sure it will run on all platforms. OS X only
-supports forward compatible core contexts. This will ensure deprecation
-older features.
+.. Warning:: We cannot guarantee that the framework will work properly for non-default values,
+   and you should assume severe a performance hit if backwards compatibility is enabled.
+   It might of curse make sense in some cases if you bring in existing draw
+   code from older projects. Be extra careful when using deprecated OpenGL states.
 
-**We cannot guarantee that the framework will work properly for non-default values,
-and you should assume severe a performance hit.**
+Using these values we can be more confident that cross-platform support is upheld.
+Remember that some platforms/drivers such as on OS X, core profiles can only be forward
+compatible or the context creation will simply fail.
+
+The default OpenGL version is 4.1. Some older systems might need that tuned down to 3.3,
+but generally 4.1 is widely supported.
 
 .. code:: python
 
@@ -29,6 +34,7 @@ and you should assume severe a performance hit.**
         "profile": "core",
         "forward_compat": True,
     }
+
 
 - ``version`` describes the major and minor version of the OpenGL context we are creating
 - ``profile`` should ideally always be ``core``, but we leave it configurable for
@@ -40,18 +46,18 @@ and you should assume severe a performance hit.**
   - ``core``: glfw.OPENGL_CORE_PROFILE,
   - ``compat``: glfw.OPENGL_COMPAT_PROFILE,
 
-- ``forward_compat`` True, is required for the project to work on OS X
+- ``forward_compat`` True, is required for the project to work on OS X and drivers
+  only supporting forward compatibility.
 
-The default opengl version is 4.1. Some older systems might need that tuned down to 3.3,
-but generally 4.1 is widely supported. To make your project work on OS X you cannot move
-past version 4.1 (sadly). This doesn't mean we cannot move past 4.1, but as of right now
-we focus on implementing features up to 4.1.
+.. Note:: To make your project work on OS X you cannot move past version 4.1 (sadly).
+   This doesn't mean we cannot move past 4.1, but as of right now we focus on
+   implementing features up to 4.1.
 
 WINDOW
 ^^^^^^
 
-Window properties. If you are using Retina display, be aware that these
-values refer to the virual size. The actual buffer size will be 2 x.
+Window/screen properties. If you are using Retina or 4k displays, be aware that these
+values can refer to the virtual size. The actual buffer size will be larger.
 
 .. code:: python
 
@@ -72,13 +78,13 @@ values refer to the virual size. The actual buffer size will be 2 x.
   Currently we constrain the window size to the aspect ratio of the resolution (needs improvement)
 - ``vsync``: Only render one frame per screen refresh
 - ``title``: The visible title on the window in windowed mode
-- ``cursor``: Should the mouse cursor be visble on the screen? Disabling
+- ``cursor``: Should the mouse cursor be visible on the screen? Disabling
   this is also useful in windowed mode when controlling the camera on some platforms
   as moving the mouse outside the window can cause issues.
 
 The created window frame buffer will by default use:
 
-- RGBA8
+- RGBA8 (32 bit per pixel)
 - 32 bit depth buffer were 24 bits is for depth and 8 bits for stencil
 - Double buffering
 - color, depth and stencil is cleared every frame
@@ -86,10 +92,12 @@ The created window frame buffer will by default use:
 MUSIC
 ^^^^^
 
-If ``MUSIC`` is defined, demosys will attempt to play. (We have only
-tried mp3 files!)
+The ``MUSIC`` attribute is used by timers supporting audio playback.
+When using a timer not requiring an audio file, the value is ignored.
+Should contain a string with the absolute path to the audio file.
 
 .. Note:: Getting audio to work requires additional setup.
+   See the :doc:`audio` section.
 
 .. code:: python
 
@@ -112,6 +120,8 @@ Other timers are:
 - ``demosys.timers.MusicTimer`` requires ``MUSIC`` to be defined and will use the current time in an mp3.
 - ``demosys.timers.RocketTimer`` is the same as the default timer, but uses uses the rocket library.
 - ``demosys.timers.RocketMusicTimer`` requires ``MUSIC`` and ``ROCKET`` to be configured.
+
+More information can be found in the :doc:`timers` section.
 
 ROCKET
 ^^^^^^
@@ -140,8 +150,8 @@ Configuration of the pyrocket_ sync-tracker library.
 EFFECTS
 ^^^^^^^
 
-Effect packages demosys will initialize and use (Same as apps in
-Django).
+Effect packages that will be recognized by the project.
+Initialization should happens in the order they appear in the list.
 
 .. code:: python
 
@@ -152,8 +162,8 @@ Django).
 EFFECT_MANAGER
 ^^^^^^^^^^^^^^
 
-Effect mangers are pluggable classed that initialize and run effect.
-when only having a single effect we can run it using ``runeffect``,
+Effect mangers are pluggable classed that initialize and run effects.
+When only having a single effect we can run it using ``runeffect``,
 but when having multiple effects we need something to decide what
 effect should be active.
 
@@ -165,26 +175,25 @@ If we use the ``run`` sub-command, the first registered effect will run.
 
     EFFECT_MANAGER = 'demosys.effects.managers.single.SingleEffectManager'
 
-More effect managers will be added to framework soon.
-Read the detailed section about effect mangers for more info.
+More info in the :doc:`effectmanagers` section.
 
 SHADER_DIRS/FINDERS
 ^^^^^^^^^^^^^^^^^^^
 
-``DIRS`` contains absolute paths the ``FileSystemFinder`` will look for
-shader while ``EffectDirectoriesFinder`` will look for shaders in all
-registered effects in the order they were added.
+``SHADER_DIRS`` contains absolute paths the ``FileSystemFinder`` will look for shaders.
 
-The ``FileSystemFinder`` will look in all paths specified in ``SHADER_DIRS``.
-All paths must be absolute (just join on ``PROJECT_DIR``). This is a good way
-to add project-global shaders used by multiple effecst.
+``EffectDirectoriesFinder`` will look for shaders in all registered effects
+in the order they were added. This assumes you have a ``shaders`` directory in
+your effect package.
 
 .. code:: python
 
+    # Register a project-global shader directory
     SHADER_DIRS = (
         os.path.join(PROJECT_DIR, 'resources/shaders'),
     )
 
+    # This is the defaults is the property is not defined
     SHADER_FINDERS = (
         'demosys.core.shaderfiles.finders.FileSystemFinder',
         'demosys.core.shaderfiles.finders.EffectDirectoriesFinder',
@@ -197,7 +206,7 @@ Same principle as ``SHADER_DIRS`` and ``SHADER_FINDERS``.
 
 .. code:: python
 
-    # Hardcoded paths to shader dirs
+    # Absolute path to a project-global texture directory
     TEXTURE_DIRS = (
         os.path.join(PROJECT_DIR, 'resource/textures'),
     )

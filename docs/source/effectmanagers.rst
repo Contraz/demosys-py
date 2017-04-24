@@ -8,6 +8,22 @@ An effect manager is responsible of:
 - Knowing what effect should be drawn based in some internal state
 - Reading keyboard events if this is needed (optional)
 
+You are fairly free to do what you want. Having control over
+effect instantiation also means you can make multiple instances
+of the same effect and assign different resources to them.
+
+The most important part in the end is how you implement ``draw()``.
+
+Some sane or insane examples to get started:
+
+- Simply hard code what should run at what time or state
+- A manger that cycles what effect is active based on a next/previous key
+- Cycle effects based on a duration property you assign to them
+- Load some external timer data describing what effect should run at what time. This can
+  easily be done with rocket (we are planning to make a manager for this)
+- You could just put all your draw code in the manager and not use effects
+- Treat the manager as the main loop of a simple game
+
 This is an example of the default ``SingleEffectManager``.
 
 .. code-block:: python

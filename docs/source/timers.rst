@@ -2,7 +2,7 @@
 Timers
 ======
 
-Timers are classes keeping track of time passing these time values
+Timers are classes keeping track of time passing the value
 to the effect's ``draw`` methods. We should assume that time can move
 in any direction at any speed. Time is always reported as a float in
 seconds.
@@ -15,7 +15,6 @@ The default timer if not specified in settings:
 
 This is a simple timer starting at 0 when effects start drawing.
 All timers should respond correctly to pause ``SPACE``.
-
 
 Standard Timers
 ^^^^^^^^^^^^^^^

@@ -6,8 +6,8 @@ Basic Keyboard Controls
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 - ``ESC`` to exit
-- ``SPACE`` to pause the current time
-- ``X`` for taking a screenshot (see settings)
+- ``SPACE`` to pause the current time (tells the configured timer to pause)
+- ``X`` for taking a screenshot (output path is configurable in settings)
 
 Camera Controls
 ^^^^^^^^^^^^^^^
