@@ -12,7 +12,7 @@ A modern OpenGL 3.3+ framework inspired by Django.
 We mainly support OpenGL 3.3+ forward compatible core profiles (no backwards compatibility).
 
 Originally made for for non-interactive real time graphics combined with music
-("real time music videos", (see `demoscene <https://en.wikipedia.org/wiki/Demoscene>`__)),
+("real time music videos", see `demoscene <https://en.wikipedia.org/wiki/Demoscene>`__),
 but can of course be used for other purposes.
 
 Made for people who enjoy playing around with modern OpenGL without spending lots of
