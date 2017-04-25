@@ -65,18 +65,22 @@ class SingleEffectManager(BaseEffectManger):
         Initialize the effect that should run.
         """
         effect_list = [cfg.cls() for name, cfg in effects.effects.items()]
+
+        # If an effect want't specified in the initializer we grab the first one
         if not self.active_effect:
             self.active_effect = effect_list[0]
-
-        for effect in effect_list:
-            if effect.name == self.effect_module:
-                self.active_effect = effect
+        else:
+            # Otherwise we look for an effect with the name
+            for effect in effect_list:
+                if effect.name == self.effect_module:
+                    self.active_effect = effect
 
         if not self.active_effect:
             print("Cannot find effect '{}'".format(self.active_effect))
             print("Available effects:")
             print("\n".join(e.name for e in effect_list))
             return False
+
         return True
 
     def post_load(self):
