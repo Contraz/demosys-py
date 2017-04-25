@@ -65,6 +65,9 @@ class SingleEffectManager(BaseEffectManger):
         Initialize the effect that should run.
         """
         effect_list = [cfg.cls() for name, cfg in effects.effects.items()]
+        if not self.active_effect:
+            self.active_effect = effect_list[0]
+
         for effect in effect_list:
             if effect.name == self.effect_module:
                 self.active_effect = effect

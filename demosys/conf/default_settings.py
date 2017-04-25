@@ -44,7 +44,7 @@ ROCKET = {
 # Empty effects tuple
 EFFECTS = ()
 
-EFFECT_MANAGER = 'demosys.effects.managers.single.SingleEffectManager'
+EFFECT_MANAGER = 'demosys.effects.managers.SingleEffectManager'
 
 
 # Additional directories shaders can be found
