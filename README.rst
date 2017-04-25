@@ -18,7 +18,8 @@ but can of course be used for other purposes.
 Made for people who enjoy playing around with modern OpenGL without spending lots of
 time creating all the tooling to get things up and running.
 
-Setting a project with a spinning cube can be done in less than a minute
+Creating a project with a spinning cube can be done in less than a minute.
+(Assuming you have glfw installed)
 
 .. code-block:: shell
 
@@ -26,12 +27,12 @@ Setting a project with a spinning cube can be done in less than a minute
    demosys-admin createproject myproject
    demosys-admin createeffect myproject/cube
 
-Now edit ``myproject/settings.py`` and add the effect to the ``EFFECTS`` tuple.
+Now edit ``myproject/settings.py`` adding the effect in ``EFFECTS``.
 
 .. code-block:: python
 
    EFFECTS = (
-      'myproject.cube',
+      'myproject.cube',  # note the comma!
    )
 
 Now run the effect!
