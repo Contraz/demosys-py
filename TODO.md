@@ -1,15 +1,13 @@
 
 ## TODO
 
-- EffectManagers
-  - Implement run
-- Support some kind of middleware?
 - Write documentation (readthedocs)
   - Pyrr / Math
+- EffectManagers
 - Properly verify all settings
 - Make EffectControllers
   - TrackSystemEffectController
-  - SimpleTimeLineEffectController
+  - SimpleTimeLineEffectManager
 - Shaders
   - Improve error prints (use actual source from GL so we can see expanded typedefs)
   - Core loader support for common formats

@@ -1,5 +1,5 @@
 from demosys import resources
-from pyrr import matrix44, Matrix33, Vector3
+from pyrr import matrix44, Matrix33, Matrix44, Vector3
 
 
 def bind_target(func):
@@ -104,11 +104,7 @@ class Effect:
         """Convenient transformation method doing rotations and translation"""
         mat = None
         if rotation is not None:
-            x = matrix44.create_from_x_rotation(rotation[0])
-            y = matrix44.create_from_y_rotation(rotation[1])
-            z = matrix44.create_from_z_rotation(rotation[2])
-            mat = matrix44.multiply(x, y)
-            mat = matrix44.multiply(mat, z)
+            mat = Matrix44.from_eulers(Vector3(rotation))
 
         if translation is not None:
             trans = matrix44.create_from_translation(Vector3(translation))
