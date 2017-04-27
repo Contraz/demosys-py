@@ -16,10 +16,12 @@ class RocketTimer(BaseTimer):
         self.mode = config.get('mode') or 'editor'
         self.files = config.get('files') or './tracks'
         self.project = config.get('project') or 'project.xml'
+        self.start_paused = False
 
         self.controller = TimeController(config.get('rps', 24))
         if self.mode == 'editor':
             self.rocket = Rocket.from_socket(self.controller, track_path=self.files)
+            self.start_paused = True
         elif self.mode == 'project':
             self.rocket = Rocket.from_project_file(self.controller, self.project)
         elif self.mode == 'files':
@@ -41,7 +43,8 @@ class RocketTimer(BaseTimer):
 
     def start(self):
         """Start the timer"""
-        self.rocket.start()
+        if not self.start_paused:
+            self.rocket.start()
 
     def get_time(self):
         """Get the current time in seconds"""
