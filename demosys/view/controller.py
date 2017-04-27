@@ -42,7 +42,7 @@ def run(manager=None):
 
     # Set up the default system camera
     global CAMERA
-    CAMERA = camera.Camera(aspect=Effect.window_aspect, fov=60.0, near=1, far=1000)
+    CAMERA = camera.SystemCamera(aspect=Effect.window_aspect, fov=60.0, near=1, far=1000)
     Effect.sys_camera = CAMERA
 
     # Initialize Effects
