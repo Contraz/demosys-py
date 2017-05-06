@@ -30,6 +30,13 @@ class Texture:
         self.mag_filter = mag_filter
         self.anisotropy = anisotropy
         self.mipmap = mipmap
+        # Force mipmaps if anisotropy is specified
+        if self.anisotropy > 0:
+            self.mipmap = True
+        # Ensure we are using the right interpolation modes
+        if self.mipmap:
+            self.min_filter = GL.GL_LINEAR_MIPMAP_LINEAR
+            self.mag_filter = GL.GL_LINEAR
         # For pre-loading files
         self.name = name
         self.path = path
@@ -98,6 +105,9 @@ class Texture:
             else:
                 GL.glTexImage1D(self.target, self.lod, self.internal_format,
                                 self.height, 0, self.format, self.type, data)
+
+        if self.mipmap:
+            GL.glGenerateMipmap(self.target)
 
     def set_image(self, image):
         """
