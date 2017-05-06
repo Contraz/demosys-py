@@ -20,7 +20,7 @@ class Textures:
         """
         return len(self.textures)
 
-    def get(self, path, create=False):
+    def get(self, path, create=False, **kwargs):
         """
         Get or create a texture object.
         This may return an empty object that will be filled during load
@@ -32,7 +32,7 @@ class Textures:
         """
         texture = self.textures.get(path)
         if create and not texture:
-            texture = Texture.from_image(path)
+            texture = Texture.from_image(path, **kwargs)
             self.textures[path] = texture
         return texture
 

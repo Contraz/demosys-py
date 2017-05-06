@@ -59,7 +59,7 @@ class Effect:
         """
         return resources.shaders.get(path, create=True)
 
-    def get_texture(self, path):
+    def get_texture(self, path, **kwargs):
         """
         Get a shader or schedule the texture for loading.
         If the resource is not loaded yet, an empty texture object
@@ -68,7 +68,7 @@ class Effect:
         :param path: Path to the texture in the virtual texture directory
         :return: Texture object
         """
-        return resources.textures.get(path, create=True)
+        return resources.textures.get(path, create=True, **kwargs)
 
     def get_track(self, name):
         """

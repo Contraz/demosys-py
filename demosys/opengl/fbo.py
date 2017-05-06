@@ -116,7 +116,7 @@ class FBO:
         self.release()
 
     @classmethod
-    def create(cls, width, height, depth=False, stencil=True,
+    def create(cls, width, height, depth=False,
                internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE):
         """
         Convenient shortcut for creating single color attachment FBOs
@@ -124,7 +124,6 @@ class FBO:
         :param width: Color buffer width
         :param height: Coller buffer height
         :param depth: (bool) Create a depth attachment
-        :param stencil: (bool) Create a stencil attachment
         :param internal_format: The internalformat of the color buffer
         :param format: The format of the color buffer
         :param type: The type of the color buffer
@@ -132,11 +131,12 @@ class FBO:
         """
         fbo = FBO()
         fbo.bind(stack=False)
-        c = Texture.create_2d(width, height, internal_format=internal_format, format=format, type=type)
+        c = Texture.create_2d(width=width, height=height, internal_format=internal_format, format=format, type=type,
+                              wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
         fbo.add_color_attachment(c)
         if depth:
-            d = Texture.create_2d(width, height, internal_format=GL.GL_DEPTH24_STENCIL8,
-                                  format=GL.GL_DEPTH_COMPONENT)
+            d = Texture.create_2d(width=width, height=height, internal_format=GL.GL_DEPTH24_STENCIL8, format=GL.GL_DEPTH_COMPONENT,
+                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
             fbo.set_depth_attachment(d)
         fbo.check_status()
         fbo.release(stack=False)

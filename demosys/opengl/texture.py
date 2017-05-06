@@ -5,25 +5,34 @@ from PIL import Image
 
 class Texture:
     """Represents a texture"""
-    def __init__(self):
+    def __init__(self, name=None, path=None, width=0, height=0, depth=0, lod=0, target=GL.GL_TEXTURE_2D,
+                 internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE,
+                 mipmap=False, anisotropy=0, min_filter=GL.GL_LINEAR, mag_filter=GL.GL_LINEAR,
+                 wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE,
+                 ):
         """Initialize texture without allocating data using default values"""
         self.texture = GL.glGenTextures(1)
         # dimensions
-        self.width = 0
-        self.height = 0
-        self.depth = 0
+        self.width = width
+        self.height = height
+        self.depth = depth
         # format / type
-        self.target = GL.GL_TEXTURE_2D
-        self.lod = 0
-        self.internal_format = GL.GL_RGBA8
-        self.format = GL.GL_RGBA
-        self.type = GL.GL_UNSIGNED_BYTE
+        self.target = target
+        self.lod = lod
+        self.internal_format = internal_format
+        self.format = format
+        self.type = type
+        self.wrap_s = wrap_s
+        self.wrap_t = wrap_t
+        self.wrap_r = wrap_r
         # filters
-        self.min_filter = GL.GL_LINEAR
-        self.mag_filter = GL.GL_LINEAR
+        self.min_filter = min_filter
+        self.mag_filter = mag_filter
+        self.anisotropy = anisotropy
+        self.mipmap = mipmap
         # For pre-loading files
-        self.name = None
-        self.path = None
+        self.name = name
+        self.path = path
 
     @property
     def size(self):
@@ -35,36 +44,31 @@ class Texture:
         return self.width, self.height
 
     @classmethod
-    def from_image(cls, path, image=None):
+    def from_image(cls, path, image=None, **kwargs):
         """
-        Creates and image from a image file using Pillow/PIL
+        Creates and image from a image file using Pillow/PIL.
+        Additional parameters is passed to the texture initializer.
 
         :param path: The path to the file
-        :param image: The PIL/Pillow image object
+        :param image: The PIL/Pillow image object (Can be None)
         :return: Texture object
         """
-        t = Texture()
-        t.path = path
-        t.name = os.path.basename(path)
+        t = Texture(path=path, name=os.path.basename(path), **kwargs)
         if image:
             t.set_image(image)
         return t
 
     @classmethod
-    def create_2d(cls, width, height, internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE):
+    def create_2d(cls, **kwargs):
         """
-        Creates a 2d texture
+        Creates a 2d texture.
+        All parameters are passed on the texture initializer.
 
-        :param width: Width of the texture
-        :param height: height of the texture
-        :param internal_format: Internal format
-        :param format: Format
-        :param type: Type
         :return: Texture object
         """
-        t = Texture()
-        t._build(width, height, 0, target=GL.GL_TEXTURE_2D,
-                 internal_format=internal_format, format=format, type=type, data=None)
+        kwargs['target'] = GL.GL_TEXTURE_2D
+        t = Texture(**kwargs)
+        t._build()
         return t
 
     def bind(self):
@@ -73,24 +77,15 @@ class Texture:
         """
         GL.glBindTexture(self.target, self.texture)
 
-    def _build(self, width, height, depth, target=GL.GL_TEXTURE_2D, lod=0,
-               internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE, data=None):
+    def _build(self, data=None):
         """Internal method for building the texture"""
-        # keep track of all states
-        self.width = width
-        self.height = height
-        self.depth = depth
-        self.target = target
-        self. lod = lod
-        self.internal_format = internal_format
-        self.format = format
-        self.type = type
-        # set states
         self.bind()
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR)
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR)
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT)
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT)
+        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MIN_FILTER, self.min_filter)
+        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MAG_FILTER, self.mag_filter)
+
+        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_S, self.wrap_s)
+        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_T, self.wrap_t)
+        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_R, self.wrap_r)
 
         if self.target == GL.GL_TEXTURE_2D:
             GL.glTexImage2D(self.target, self.lod, self.internal_format,
@@ -110,7 +105,6 @@ class Texture:
 
         :param image: The PIL/Pillow image object
         """
-        """Set image data using a PIL/Pillow image"""
         image_flipped = image.transpose(Image.FLIP_TOP_BOTTOM)
         data = image_flipped.convert("RGBA").tobytes()
         self.width, self.height = image.size
@@ -118,24 +112,34 @@ class Texture:
             self.target = GL.GL_TEXTURE_1D
         else:
             self.target = GL.GL_TEXTURE_2D
-        self._build(self.width, self.height, 0, data=data, target=self.target)
+        self._build(data=data)
 
-    def set_texture_repeat(self, mode):
+    def set_texture_repeat(self, wrap_s, wrap_t, wrap_r):
         """
         Sets the texture repeat mode
 
-        :param mode: Repeat mode (gl enum)
+        :param wrap_s: Repeat mode S (glenum)
+        :param wrap_t: Repeat mode T (glenum)
+        :param wrap_r: Repeat mode R (glenum)
         """
-        self.bind()
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_S, mode)
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_T, mode)
+        self.wrap_s = wrap_s
+        self.wrap_t = wrap_t
+        self.wrap_r = wrap_r
 
-    def set_interpolation(self, mode):
+        self.bind()
+        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_S, self.wrap_s)
+        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_T, self.wrap_t)
+        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_R, self.wrap_r)
+
+    def set_interpolation(self, min_filter, mag_filter):
         """
         Sets the texture interpolation mode
 
-        :param mode: Interpolation mode (gl enum)
+        :param min_filter: Min filter mode (glenum)
+        :param mag_filter: Max filter mode (glenum)
         """
+        self.min_filter = min_filter
+        self.mag_filter = mag_filter
         self.bind()
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MIN_FILTER, mode)
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MAG_FILTER, mode)
+        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MIN_FILTER, self.min_filter)
+        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MAG_FILTER, self.mag_filter)
