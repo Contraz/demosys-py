@@ -135,7 +135,8 @@ class FBO:
                               wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
         fbo.add_color_attachment(c)
         if depth:
-            d = Texture.create_2d(width=width, height=height, internal_format=GL.GL_DEPTH24_STENCIL8, format=GL.GL_DEPTH_COMPONENT,
+            d = Texture.create_2d(width=width, height=height,
+                                  internal_format=GL.GL_DEPTH24_STENCIL8, format=GL.GL_DEPTH_COMPONENT,
                                   wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
             fbo.set_depth_attachment(d)
         fbo.check_status()
