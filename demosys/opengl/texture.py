@@ -1,5 +1,6 @@
 import os
 from OpenGL import GL
+from OpenGL.GL.EXT.texture_filter_anisotropic import *
 from PIL import Image
 
 
@@ -28,7 +29,7 @@ class Texture:
         # filters
         self.min_filter = min_filter
         self.mag_filter = mag_filter
-        self.anisotropy = anisotropy
+        self.anisotropy = float(anisotropy)
         self.mipmap = mipmap
         # Force mipmaps if anisotropy is specified
         if self.anisotropy > 0:
@@ -108,6 +109,11 @@ class Texture:
 
         if self.mipmap:
             GL.glGenerateMipmap(self.target)
+
+        if self.anisotropy > 0:
+            max_ani = GL.glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT)
+            self.anisotropy = min(max_ani, self.anisotropy)
+            GL.glTexParameterf(self.target, GL_TEXTURE_MAX_ANISOTROPY_EXT, self.anisotropy)
 
     def set_image(self, image):
         """
