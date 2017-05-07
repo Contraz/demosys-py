@@ -70,6 +70,18 @@ Remember that you can also create global resource directories for all
 the effects in your projects as well. This can be achieved by configuring
 resource finders in :doc:`settings`.
 
+Methods fetching resources can take additional parameters to override defaults.
+
+Example setting texture repeat and enable anisotropic filtering:
+
+.. code-block:: bash
+
+    self.get_texture("cube/texture.png",
+                     wrap_s=GL_REPEAT, wrap_t=GL_REPEAT,
+                     anisotropy=16)
+
+This will also automatically generate mipmaps for the texture.
+
 The Effect Module
 ^^^^^^^^^^^^^^^^^
 

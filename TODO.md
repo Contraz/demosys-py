@@ -6,7 +6,6 @@ don't have a binary distribution for darwin.
 
 - Write documentation (readthedocs)
   - Pyrr / Math
-- EffectManagers
 - Properly verify all settings
 - Make EffectControllers
   - TrackSystemEffectController
