@@ -1,25 +1,27 @@
 from OpenGL import GL
 from demosys.opengl import Texture
 
-# Reference to the window
-WINDOW = None
+WINDOW_FBO = None
 
 
 class WindowFBO:
     """
     Fake FBO representing default render target
     """
-    def __init__(self):
-        self.window = WINDOW
-        self.color_buffers = []
-        self.color_buffers_ids = []
-        self.depth_buffer = None
+    def __init__(self, window):
+        self.window = window
 
     def bind(self):
         """
         Sets the viewport back to the buffer size of the screen/window
         """
-        GL.glViewport(0, 0, WINDOW.buffer_width, WINDOW.buffer_height)
+        # The expected height with the current viewport width
+        expected_height = int(self.window.buffer_width / self.window.aspect_ratio)
+        # How much positive or negative y padding
+        blank_space = self.window.buffer_height - expected_height
+
+        GL.glViewport(0, int(blank_space / 2),
+                      self.window.buffer_width, expected_height)
 
     def release(self):
         """
@@ -32,9 +34,6 @@ class WindowFBO:
         Dummy clear method.
         """
         pass
-
-
-WINDOW_FBO = WindowFBO()
 
 
 class FBO:

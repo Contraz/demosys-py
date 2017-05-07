@@ -7,7 +7,6 @@ import glfw
 from demosys.view.window import Window
 from demosys.effects.registry import Effect
 from demosys.opengl import fbo
-from demosys.opengl.fbo import WINDOW_FBO
 from demosys import resources
 from demosys.conf import settings
 from demosys.scene import camera
@@ -31,18 +30,19 @@ def run(manager=None):
 
     global WINDOW
     WINDOW = Window()
-    fbo.WINDOW = WINDOW
+
+    fbo.WINDOW_FBO = fbo.WindowFBO(WINDOW)
 
     print("Loader started at", glfw.get_time())
 
     # Inject attributes into the base Effect class
     Effect.window_width = WINDOW.buffer_width
     Effect.window_height = WINDOW.buffer_height
-    Effect.window_aspect = WINDOW.width / WINDOW.height
+    Effect.window_aspect = WINDOW.aspect_ratio
 
     # Set up the default system camera
     global CAMERA
-    CAMERA = camera.SystemCamera(aspect=Effect.window_aspect, fov=60.0, near=1, far=1000)
+    CAMERA = camera.SystemCamera(aspect=WINDOW.aspect_ratio, fov=60.0, near=1, far=1000)
     Effect.sys_camera = CAMERA
 
     # Initialize Effects
@@ -77,12 +77,13 @@ def run(manager=None):
 
         # Set the viewport as FBOs will change the values
         GL.glViewport(0, 0, WINDOW.buffer_width, WINDOW.buffer_height)
+
         # Clear the buffer
         GL.glClearColor(0.0, 0.0, 0.0, 0.0)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
 
         # Tell the manager to draw stuff
-        manager.draw(t, ft, WINDOW_FBO)
+        manager.draw(t, ft, fbo.WINDOW_FBO)
 
         # Swap buffers and deal with events and statistics
         WINDOW.swap_buffers()

@@ -19,6 +19,7 @@ class Window:
         self.height = settings.WINDOW['size'][1]
         self.resizable = settings.WINDOW.get('resizable') or False
         self.title = settings.WINDOW.get('title') or "demosys-py"
+        self.aspect_ratio = settings.WINDOW.get('aspect_ratio', 16 / 9)
 
         if not glfw.init():
             raise ValueError("Failed to initialize glfw")
@@ -69,8 +70,6 @@ class Window:
 
         if not settings.WINDOW.get('cursor'):
             glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_DISABLED)
-
-        glfw.set_window_aspect_ratio(self.window, self.width, self.height)
 
         # Get the actual buffer size of the window
         # This is important for some displays like Apple's Retina as reported window sizes are virtual

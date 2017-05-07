@@ -23,11 +23,12 @@ OPENGL = {
 # Window size
 WINDOW = {
     "size": (1280, 720),
+    "aspect_ratio": 16 / 9,
     "fullscreen": False,
-    "resizable": False,
+    "resizable": True,
     "title": "demosys-py",
     "vsync": True,
-    "cursor": False,
+    "cursor": True,
 }
 
 MUSIC = None
