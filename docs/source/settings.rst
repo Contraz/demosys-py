@@ -63,6 +63,7 @@ values can refer to the virtual size. The actual buffer size will be larger.
 
     WINDOW = {
         "size": (1280, 768),
+        "aspect_ratio": 16 / 9,
         "fullscreen": False,
         "resizable": False,
         "vsync": True,
@@ -73,6 +74,7 @@ values can refer to the virtual size. The actual buffer size will be larger.
 - ``size``: The window size to open. Note that on 4k displays and retina the actual
   frame buffer size will normally be twice as large. Internally we query glfw for
   the actual buffer size so the viewport can be correctly applied.
+- ``aspect_ratio`` is the enforced aspect ratio of the viewport.
 - ``fullscreen``: True if you want to create a context in fullscreen mode
 - ``resizable``: If the window should be resizable. This only applies in windowed mode.
   Currently we constrain the window size to the aspect ratio of the resolution (needs improvement)
