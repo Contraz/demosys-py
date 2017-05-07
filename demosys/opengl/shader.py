@@ -536,6 +536,52 @@ class Shader:
         uniform = self.uniform_check(name, GL.GL_UNSIGNED_INT_VEC4)
         GL.glUniform4ui(uniform.location, x, y, z, w)
 
+    # --- Unsigned Integer Arrays ---
+
+    def uniform_1uiv(self, name, value, count=1):
+        """
+        Sets an uint
+
+        :param name: Name of the uniform
+        :param value: integer array
+        :param count: Length of the uniform array (default 1)
+        """
+        uniform = self.uniform_check(name, GL.GL_UNSIGNED_INT)
+        GL.glUniform1uiv(uniform.location, count, value)
+
+    def uniform_2uiv(self, name, value, count=1):
+        """
+        Sets an uvec2
+
+        :param name: Uniform name
+        :param value: integer array
+        :param count: Length of the uniform array (default 1)
+        """
+        uniform = self.uniform_check(name, GL.GL_UNSIGNED_INT_VEC2)
+        GL.glUniform2uiv(uniform.location, count, value)
+
+    def uniform_3uiv(self, name, value, count=1):
+        """
+        Sets an uvec3
+
+        :param name: Uniform name
+        :param value: integer array
+        :param count: Length of the uniform array (default 1)
+        """
+        uniform = self.uniform_check(name, GL.GL_UNSIGNED_INT_VEC3)
+        GL.glUniform3uiv(uniform.location, count, value)
+
+    def uniform_4uiv(self, name, value, count=1):
+        """
+        Sets an uvec4
+
+        :param name: Uniform name
+        :param value: integer array
+        :param count: Length of the uniform array (default 1)
+        """
+        uniform = self.uniform_check(name, GL.GL_UNSIGNED_INT_VEC4)
+        GL.glUniform4uiv(uniform.location, count, value)
+
     # --- Matrices ---
 
     def uniform_mat3(self, name, mat):
