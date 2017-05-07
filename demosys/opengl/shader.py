@@ -518,6 +518,19 @@ class Shader:
 
     # --- Sampler ---
 
+    def uniform_sampler_1d(self, unit, name, texture):
+        """
+        Sets a sampler1d
+
+        :param unit: The texture unit to use (0 - N)
+        :param name: Name of the uniform
+        :param texture: The Texture object
+        """
+        uniform = self.uniform(name)
+        GL.glActiveTexture(GL.GL_TEXTURE0 + unit)
+        texture.bind()
+        GL.glUniform1i(uniform.location, unit)
+
     def uniform_sampler_2d(self, unit, name, texture):
         """
         Sets a sampler2d
@@ -531,9 +544,9 @@ class Shader:
         texture.bind()
         GL.glUniform1i(uniform.location, unit)
 
-    def uniform_sampler_1d(self, unit, name, texture):
+    def uniform_sampler_3d(self, unit, name, texture):
         """
-        Sets a sampler1d
+        Sets a sampler3d
 
         :param unit: The texture unit to use (0 - N)
         :param name: Name of the uniform
