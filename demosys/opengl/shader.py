@@ -206,7 +206,7 @@ class Shader:
             raise ShaderError("Incorrect data type: Uniform '{}' is of type {}".format(name, uniform.type.name))
         return uniform
 
-    # --- Setting uniforms ---
+    # --- Float uniforms ---
 
     def uniform_1f(self, name, value):
         """
@@ -253,6 +253,52 @@ class Shader:
         """
         uniform = self.uniform_check(name, GL.GL_FLOAT_VEC4)
         GL.glUniform4f(uniform.location, x, y, z, w)
+
+    # --- Float uniform arrays ---
+
+    def uniform_1fv(self, name, value, count=1):
+        """
+        Set a float uniform
+
+        :param name: Name of the uniform
+        :param count: Length of the uniform array (default 1)
+        :param value: float array
+        """
+        uniform = self.uniform_check(name, GL.GL_FLOAT)
+        GL.glUniform1fv(uniform.location, count, value)
+
+    def uniform_2fv(self, name, value, count=1):
+        """
+        Set a vec2 uniform
+
+        :param name: name of the uniform
+        :param count: Length of the uniform array (default 1)
+        :param value: float array
+        """
+        uniform = self.uniform_check(name, GL.GL_FLOAT_VEC2)
+        GL.glUniform2fv(uniform.location, count, value)
+
+    def uniform_3fv(self, name, value, count=1):
+        """
+        Set a vec3 uniform
+
+        :param name: Name of the uniform
+        :param count: Length of the uniform array (default 1)
+        :param value: float array
+        """
+        uniform = self.uniform_check(name, GL.GL_FLOAT_VEC3)
+        GL.glUniform3fv(uniform.location, count, value)
+
+    def uniform_4fv(self, name, value, count=1):
+        """
+        Set a vec4 uniform
+
+        :param name: Name of the uniform
+        :param count: Length of the uniform array (default 1)
+        :param value: float array
+        """
+        uniform = self.uniform_check(name, GL.GL_FLOAT_VEC4)
+        GL.glUniform4fv(uniform.location, count, value)
 
     # --- Signed Integers ---
 
