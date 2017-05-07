@@ -258,7 +258,7 @@ class Shader:
 
     def uniform_1i(self, name, value):
         """
-        Sets an uint or int
+        Sets an int
 
         :param name: Name of the uniform
         :param value: Integer value
@@ -269,7 +269,7 @@ class Shader:
     def uniform_2i(self, name, x, y):
         """
         Sets an ivec2
-        
+
         :param name: Uniform name
         :param x: Integer
         :param y: Integer
@@ -300,7 +300,55 @@ class Shader:
         :param w: Integer
         """
         uniform = self.uniform_check(name, GL.GL_INT_VEC4)
-        GL.glUniform3i(uniform.location, x, y, z, w)
+        GL.glUniform4i(uniform.location, x, y, z, w)
+
+    # --- Unsigned Integers ---
+
+    def uniform_1ui(self, name, value):
+        """
+        Sets an uint
+
+        :param name: Name of the uniform
+        :param value: Integer value
+        """
+        uniform = self.uniform_check(name, GL.GL_UNSIGNED_INT)
+        GL.glUniform1ui(uniform.location, value)
+
+    def uniform_2ui(self, name, x, y):
+        """
+        Sets an uvec2
+
+        :param name: Uniform name
+        :param x: Integer
+        :param y: Integer
+        """
+        uniform = self.uniform_check(name, GL.GL_UNSIGNED_INT_VEC2)
+        GL.glUniform2ui(uniform.location, x, y)
+
+    def uniform_3ui(self, name, x, y, z):
+        """
+        Sets an uvec3
+
+        :param name: Uniform name
+        :param x: Integer
+        :param y: Integer
+        :param z: Integer
+        """
+        uniform = self.uniform_check(name, GL.GL_UNSIGNED_INT_VEC3)
+        GL.glUniform3ui(uniform.location, x, y, z)
+
+    def uniform_4ui(self, name, x, y, z, w):
+        """
+        Sets an uvec4
+
+        :param name: Uniform name
+        :param x: Integer
+        :param y: Integer
+        :param z: Integer
+        :param w: Integer
+        """
+        uniform = self.uniform_check(name, GL.GL_UNSIGNED_INT_VEC4)
+        GL.glUniform4ui(uniform.location, x, y, z, w)
 
     # --- Matrices ---
 
