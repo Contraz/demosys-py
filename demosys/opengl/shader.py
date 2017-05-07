@@ -300,6 +300,54 @@ class Shader:
         uniform = self.uniform_check(name, GL.GL_FLOAT_VEC4)
         GL.glUniform4fv(uniform.location, count, value)
 
+    # --- Double precision floats ---
+
+    def uniform_1d(self, name, value):
+        """
+        Set a double uniform
+
+        :param name: Name of the uniform
+        :param value: double value
+        """
+        uniform = self.uniform_check(name, GL.GL_DOUBLE)
+        GL.glUniform1d(uniform.location, value)
+
+    def uniform_2d(self, name, x, y):
+        """
+        Set a dvec2 uniform
+
+        :param name: name of the uniform
+        :param x: double value
+        :param y: double value
+        """
+        uniform = self.uniform_check(name, GL.GL_DOUBLE_VEC2)
+        GL.glUniform2d(uniform.location, x, y)
+
+    def uniform_3d(self, name, x, y, z):
+        """
+        Set a dvec3 uniform
+
+        :param name: Name of the uniform
+        :param x: double value
+        :param y: double value
+        :param z: double value
+        """
+        uniform = self.uniform_check(name, GL.GL_DOUBLE_VEC3)
+        GL.glUniform3d(uniform.location, x, y, z)
+
+    def uniform_4d(self, name, x, y, z, w):
+        """
+        Set a dvec4 uniform
+
+        :param name: Name of the uniform
+        :param x: double value
+        :param y: double value
+        :param z: double value
+        :param w: double value
+        """
+        uniform = self.uniform_check(name, GL.GL_DOUBLE_VEC4)
+        GL.glUniform4d(uniform.location, x, y, z, w)
+
     # --- Signed Integers ---
 
     def uniform_1i(self, name, value):
