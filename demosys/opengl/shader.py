@@ -632,6 +632,19 @@ class Shader:
 
     # --- Matrices ---
 
+    def uniform_mat2(self, name, mat, transpose=GL.GL_FALSE):
+        """
+        Sets a mat3 uniform
+
+        :param name: Name of the uniform
+        :param mat: matrix
+        :param transpose: Traspose the matrix
+        """
+        if mat is None:
+            raise ShaderError("Attempted to set uniform to None")
+        uniform = self.uniform_check(name, GL.GL_FLOAT_MAT2)
+        GL.glUniformMatrix2fv(uniform.location, 1, transpose, mat)
+
     def uniform_mat3(self, name, mat, transpose=GL.GL_FALSE):
         """
         Sets a mat3 uniform
