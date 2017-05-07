@@ -254,6 +254,54 @@ class Shader:
         uniform = self.uniform_check(name, GL.GL_FLOAT_VEC4)
         GL.glUniform4f(uniform.location, x, y, z, w)
 
+    # --- Signed Integers ---
+
+    def uniform_1i(self, name, value):
+        """
+        Sets an uint or int
+
+        :param name: Name of the uniform
+        :param value: Integer value
+        """
+        uniform = self.uniform_check(name, GL.GL_INT)
+        GL.glUniform1i(uniform.location, value)
+
+    def uniform_2i(self, name, x, y):
+        """
+        Sets an ivec2
+        
+        :param name: Uniform name
+        :param x: Integer
+        :param y: Integer
+        """
+        uniform = self.uniform_check(name, GL.GL_INT_VEC2)
+        GL.glUniform2i(uniform.location, x, y)
+
+    def uniform_3i(self, name, x, y, z):
+        """
+        Sets an ivec3
+
+        :param name: Uniform name
+        :param x: Integer
+        :param y: Integer
+        :param z: Integer
+        """
+        uniform = self.uniform_check(name, GL.GL_INT_VEC3)
+        GL.glUniform3i(uniform.location, x, y, z)
+
+    def uniform_4i(self, name, x, y, z, w):
+        """
+        Sets an ivec4
+
+        :param name: Uniform name
+        :param x: Integer
+        :param y: Integer
+        :param z: Integer
+        :param w: Integer
+        """
+        uniform = self.uniform_check(name, GL.GL_INT_VEC4)
+        GL.glUniform3i(uniform.location, x, y, z, w)
+
     # --- Matrices ---
 
     def uniform_mat3(self, name, mat):
