@@ -582,6 +582,54 @@ class Shader:
         uniform = self.uniform_check(name, GL.GL_UNSIGNED_INT_VEC4)
         GL.glUniform4uiv(uniform.location, count, value)
 
+    # --- Booleans ---
+
+    def uniform_1b(self, name, value):
+        """
+        Sets an bool
+
+        :param name: Name of the uniform
+        :param value: Integer value
+        """
+        uniform = self.uniform_check(name, GL.GL_BOOL)
+        GL.glUniform1i(uniform.location, value)
+
+    def uniform_2b(self, name, x, y):
+        """
+        Sets an bvec2
+
+        :param name: Uniform name
+        :param x: bool
+        :param y: bool
+        """
+        uniform = self.uniform_check(name, GL.GL_BOOL_VEC2)
+        GL.glUniform2i(uniform.location, x, y)
+
+    def uniform_3b(self, name, x, y, z):
+        """
+        Sets an bvec3
+
+        :param name: Uniform name
+        :param x: bool
+        :param y: bool
+        :param z: bool
+        """
+        uniform = self.uniform_check(name, GL.GL_BOOL_VEC3)
+        GL.glUniform3i(uniform.location, x, y, z)
+
+    def uniform_4b(self, name, x, y, z, w):
+        """
+        Sets an bvec4
+
+        :param name: Uniform name
+        :param x: bool
+        :param y: bool
+        :param z: bool
+        :param w: bool
+        """
+        uniform = self.uniform_check(name, GL.GL_BOOL_VEC4)
+        GL.glUniform4i(uniform.location, x, y, z, w)
+
     # --- Matrices ---
 
     def uniform_mat3(self, name, mat):
