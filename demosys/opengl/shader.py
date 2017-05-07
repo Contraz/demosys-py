@@ -442,6 +442,52 @@ class Shader:
         uniform = self.uniform_check(name, GL.GL_INT_VEC4)
         GL.glUniform4i(uniform.location, x, y, z, w)
 
+    # --- Signed Integers Arrays ---
+
+    def uniform_1iv(self, name, value, count=1):
+        """
+        Sets an int
+
+        :param name: Name of the uniform
+        :param value: integer array
+        :param count: Length of the uniform array (default 1)
+        """
+        uniform = self.uniform_check(name, GL.GL_INT)
+        GL.glUniform1iv(uniform.location, count, value)
+
+    def uniform_2iv(self, name, value, count=1):
+        """
+        Sets an ivec2
+
+        :param name: Uniform name
+        :param value: integer array
+        :param count: Length of the uniform array (default 1)
+        """
+        uniform = self.uniform_check(name, GL.GL_INT_VEC2)
+        GL.glUniform2iv(uniform.location, count, value)
+
+    def uniform_3iv(self, name, value, count=1):
+        """
+        Sets an ivec3
+
+        :param name: Uniform name
+        :param value: integer array
+        :param count: Length of the uniform array (default 1)
+        """
+        uniform = self.uniform_check(name, GL.GL_INT_VEC3)
+        GL.glUniform3iv(uniform.location, count, value)
+
+    def uniform_4iv(self, name, value, count=1):
+        """
+        Sets an ivec4
+
+        :param name: Uniform name
+        :param value: integer array
+        :param count: Length of the uniform array (default 1)
+        """
+        uniform = self.uniform_check(name, GL.GL_INT_VEC4)
+        GL.glUniform4iv(uniform.location, count, value)
+
     # --- Unsigned Integers ---
 
     def uniform_1ui(self, name, value):
