@@ -4,8 +4,7 @@
 Find more efficient OpenGL bindings. ModernGL (https://pypi.python.org/pypi/ModernGL) 
 don't have a binary distribution for darwin.
 
-- Write documentation (readthedocs)
-  - Pyrr / Math
+- Runtime re-loading of shaders
 - Properly verify all settings
 - Make EffectControllers
   - TrackSystemEffectController
