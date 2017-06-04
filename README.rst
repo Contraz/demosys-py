@@ -52,12 +52,12 @@ Features
 
 - A simple effect system based on python packages
 - Well documented
+- Support for the rocket sync-tracker system to create interesting keyframe data (Using pyrocket_)
 - Management commands to create new projects and effects
 - Convenient wrappers for VAO, Shader, Texture, FBO
 - On-the-fly Shader and VAO negotiation of the needed buffer binding
 - Strict validation in most OpenGL operations with reasonable error feedback
 - Time line / Timer support
-- Support for the rocket sync-tracker system to create interesting keyframe data
 - A highly pluggable framework
 - Support for custom management commands
 - Camera and system camera support so we can easily inspect our scene
@@ -148,6 +148,7 @@ Credits
    for an excellent tutorial on OpenGL in Python.
 
 .. _testdemo: https://github.com/Contraz/demosys-py-test
+.. _pyrocket: https://github.com/Contraz/pyrocket
 .. |pypi| image:: https://img.shields.io/pypi/v/demosys-py.svg
    :target: https://pypi.python.org/pypi/demosys-py
 .. |travis| image:: https://travis-ci.org/Contraz/demosys-py.svg?branch=master
