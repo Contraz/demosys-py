@@ -11,7 +11,7 @@ def quad_fs():
     return quad_2d(2.0, 2.0, 0.0, 0.0)
 
 
-def quad_2d(width, height, xpos, ypos):
+def quad_2d(width, height, xpos=0.0, ypos=0.0):
     """
     Creates a 2D quad VAO using 2 triangles.
 
