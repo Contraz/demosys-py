@@ -89,6 +89,7 @@ class FBO:
         push_fbo(self)
         if len(self.color_buffers) > 1:
             GL.glDrawBuffers(len(self.color_buffers), self.color_buffers_ids)
+
         w, h = self.size
         GL.glViewport(0, 0, w, h)
 
@@ -116,7 +117,7 @@ class FBO:
 
     @classmethod
     def create(cls, width, height, depth=False,
-               internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE):
+               internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE, layers=1):
         """
         Convenient shortcut for creating single color attachment FBOs
 
@@ -130,14 +131,20 @@ class FBO:
         """
         fbo = FBO()
         fbo.bind(stack=False)
-        c = Texture.create_2d(width=width, height=height, internal_format=internal_format, format=format, type=type,
-                              wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
-        fbo.add_color_attachment(c)
+
+        # Add N layers of color attachments
+        for layer in range(layers):
+            c = Texture.create_2d(width=width, height=height, internal_format=internal_format, format=format, type=type,
+                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
+            fbo.add_color_attachment(c)
+
+        # Set depth attachment is specified
         if depth:
             d = Texture.create_2d(width=width, height=height,
                                   internal_format=GL.GL_DEPTH24_STENCIL8, format=GL.GL_DEPTH_COMPONENT,
                                   wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
             fbo.set_depth_attachment(d)
+
         fbo.check_status()
         fbo.release(stack=False)
         return fbo
@@ -151,6 +158,7 @@ class FBO:
         # Internal states
         self.color_buffers_ids.append(GL.GL_COLOR_ATTACHMENT0 + len(self.color_buffers))
         self.color_buffers.append(texture)
+
         # Attach to fbo
         GL.glFramebufferTexture2D(
             GL.GL_FRAMEBUFFER,
