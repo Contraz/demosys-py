@@ -1,7 +1,7 @@
 PyOpenGL==3.1.0
 glfw==1.4.0
-pyrr==0.8.2
-Pillow==4.0.0
+pyrr==0.8.3
+Pillow==4.1.1
 pyrocket==0.2.5
 
 # Optional
