@@ -159,6 +159,9 @@ class FBO:
         self.color_buffers_ids.append(GL.GL_COLOR_ATTACHMENT0 + len(self.color_buffers))
         self.color_buffers.append(texture)
 
+        # Make sure the FBO is bound
+        self.bind(stack=False)
+
         # Attach to fbo
         GL.glFramebufferTexture2D(
             GL.GL_FRAMEBUFFER,
@@ -167,6 +170,7 @@ class FBO:
             self.color_buffers[-1].texture,
             0
         )
+        self.release(stack=False)
 
     def set_depth_attachment(self, texture):
         """
@@ -175,6 +179,10 @@ class FBO:
         :param texture: The Texture object
         """
         self.depth_buffer = texture
+
+        # Make sure the FBO is bound
+        self.bind(stack=False)
+
         # Attach to fbo
         GL.glFramebufferTexture2D(
             GL.GL_FRAMEBUFFER,
@@ -183,6 +191,7 @@ class FBO:
             self.depth_buffer.texture,
             0
         )
+        self.release(stack=False)
 
     def check_status(self):
         """
