@@ -165,6 +165,9 @@ def key_event_callback(window, key, scancode, action, mods):
     if key == glfw.KEY_X and action == glfw.PRESS:
         screenshot.create()
 
+    if key == glfw.KEY_R and action == glfw.PRESS:
+        resources.shaders.load()
+
     # Forward the event to the effect manager
     MANAGER.key_event(key, scancode, action, mods)
 

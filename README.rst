@@ -56,6 +56,7 @@ Features
 - Management commands to create new projects and effects
 - Convenient wrappers for VAO, Shader, Texture, FBO
 - On-the-fly Shader and VAO negotiation of the needed buffer binding
+- Runtime re-loading shaders (press R)
 - Strict validation in most OpenGL operations with reasonable error feedback
 - Time line / Timer support
 - A highly pluggable framework

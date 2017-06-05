@@ -23,6 +23,7 @@ Simply apply the ``view_matrix`` of the camera to your transformations.
 - ``D`` strafe right
 - ``Q`` down the y axis
 - ``E`` up the y axis
+- ``R`` reload all shaders
 
 **Mouse Controls**
 

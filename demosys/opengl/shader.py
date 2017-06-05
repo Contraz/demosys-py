@@ -112,13 +112,32 @@ class Shader:
         Compiles all the shaders and links the program.
         If the linking is successful, it builds the uniform and attribute map.
         """
+        # Attempt to delete the current shader in case we are re-loading
+        self.delete()
+
+        # Compile the separate shaders
         self.vert_source.compile()
         self.frag_source.compile()
         if self.geo_source:
             self.geo_source.compile()
         self.link()
+
+        # Build internal lookups
         self.build_uniform_map()
         self.build_attribute_map()
+
+        # We only need the programs for linking
+        if self.vert_source:
+            self.vert_source.delete(self.program)
+        if self.frag_source:
+            self.frag_source.delete(self.program)
+        if self.geo_source:
+            self.geo_source.delete(self.program)
+
+    def delete(self):
+        """Frees the memory and invalidates the name associated with the program"""
+        if self.program:
+            GL.glDeleteProgram(self.program)
 
     def link(self):
         """
@@ -752,6 +771,14 @@ class ShaderSource:
         if message:
             self.print()
             raise ShaderError("Failed to compile {} {}: {}".format(self.type_name(), self.name, message.decode()))
+
+    def delete(self, program=None):
+        """Frees the memory and invalidates the name associated with the shader object """
+        # The shader will not be deleted if attached
+        if program:
+            GL.glDetachShader(program, self.shader)
+        # Now we can delete it
+        GL.glDeleteShader(self.shader)
 
     def print(self):
         """Print the shader lines"""
