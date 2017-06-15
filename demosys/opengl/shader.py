@@ -146,13 +146,14 @@ class Shader:
         """
         self.program = GL.glCreateProgram()
         GL.glAttachShader(self.program, self.vert_source.shader)
-        GL.glAttachShader(self.program, self.frag_source.shader)
         if self.geo_source:
             GL.glAttachShader(self.program, self.geo_source.shader)
+        if self.frag_source:
+            GL.glAttachShader(self.program, self.frag_source.shader)
         GL.glLinkProgram(self.program)
         status = GL.glGetProgramiv(self.program, GL.GL_LINK_STATUS)
         if not status:
-            message = GL.glGetShaderInfoLog(self.program)
+            message = GL.glGetProgramInfoLog(self.program)
             print("M:", message)
             raise ShaderError("Failed to link shader {}: {}".format(self.name, message))
 
