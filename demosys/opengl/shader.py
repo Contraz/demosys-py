@@ -1,5 +1,6 @@
 import os
 from OpenGL import GL
+import ctypes
 
 
 class ShaderError(Exception):
@@ -78,10 +79,12 @@ class Shader:
         :param source: (string) The shader source
         """
         self.set_vertex_source(source)
-        self.set_fragment_source(source)
-        # TODO: This needs to be solved in a better way
+
         if 'GEOMETRY_SHADER' in source:
             self.set_geometry_source(source)
+
+        if 'FRAGMENT_SHADER' in source:
+            self.set_fragment_source(source)
 
     def set_vertex_source(self, source):
         """
@@ -117,9 +120,13 @@ class Shader:
 
         # Compile the separate shaders
         self.vert_source.compile()
-        self.frag_source.compile()
+
         if self.geo_source:
             self.geo_source.compile()
+
+        if self.frag_source:
+            self.frag_source.compile()
+
         self.link()
 
         # Build internal lookups
@@ -146,11 +153,36 @@ class Shader:
         """
         self.program = GL.glCreateProgram()
         GL.glAttachShader(self.program, self.vert_source.shader)
+
         if self.geo_source:
             GL.glAttachShader(self.program, self.geo_source.shader)
+
         if self.frag_source:
             GL.glAttachShader(self.program, self.frag_source.shader)
+
+        # If no fragment shader is present we are dealing with transform feedback
+        if not self.frag_source:
+            # Find out attributes
+            # Out attribs is present in geometry shader if present
+            if self.geo_source:
+                out_attribs = self.geo_source.find_out_attribs()
+            # Otherwise they are specified in vertex shader
+            else:
+                out_attribs = self.vert_source.find_out_attribs()
+
+            print("Transform feedback attribs:", out_attribs)
+
+            # Prepare ctypes data containing attrib names
+            array_type = ctypes.c_char_p * len(out_attribs)
+            buff = array_type()
+            for i, e in enumerate(out_attribs):
+                buff[i] = e.encode()
+
+            c_text = ctypes.cast(ctypes.pointer(buff), ctypes.POINTER(ctypes.POINTER(GL.GLchar)))
+            GL.glTransformFeedbackVaryings(self.program, len(out_attribs), c_text, GL.GL_INTERLEAVED_ATTRIBS)
+
         GL.glLinkProgram(self.program)
+
         status = GL.glGetProgramiv(self.program, GL.GL_LINK_STATUS)
         if not status:
             message = GL.glGetProgramInfoLog(self.program)
@@ -780,6 +812,17 @@ class ShaderSource:
             GL.glDetachShader(program, self.shader)
         # Now we can delete it
         GL.glDeleteShader(self.shader)
+
+    def find_out_attribs(self):
+        """
+        Get all out attributes in the shader source.
+        :return: List of attribute names
+        """
+        names = []
+        for line in self.lines:
+            if line.strip().startswith("out "):
+                names.append(line.split()[2].replace(';', ''))
+        return names
 
     def print(self):
         """Print the shader lines"""
