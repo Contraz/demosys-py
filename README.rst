@@ -87,15 +87,7 @@ cube and you can star poking at things.
 Contributing
 ------------
 
-Any contribution to the project is welcome. Never hesitate to ask
-questions or submit pull requests (completed or work in progress). The
-worst thing that can happen is that we or you might learn something.
-This is supposed to be a fun project.
-
-General feedback can be posted here on github or you can mail eforselv@gmail.com.
-
-Also check out the `TODO list <TODO.md>`__. Take a stab on what of the
-features or documentation or suggest new entries.
+See `CONTRIBUTING <CONTRIBUTING.md>`__.
 
 Known Issues
 ------------
