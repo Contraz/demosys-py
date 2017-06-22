@@ -50,9 +50,19 @@ class Shader:
     """
     Represents a shader program
     """
-    def __init__(self, path):
+    def __init__(self, path=None, name=None):
+        """
+        Create a shader using either a file path or a name
+        :param path: Full file path to the shader
+        :param name: Name of the shader (debug purposes)
+        """
+        if not path and not name:
+            raise ShaderError("Shader must have a path or a name")
         self.path = path
-        self.name = os.path.basename(path)
+        if not name:
+            self.name = os.path.basename(path)
+        else:
+            self.name = name
         self.vert_source = None
         self.frag_source = None
         self.geo_source = None
