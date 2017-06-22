@@ -46,5 +46,19 @@ class DeferredRenderer:
             # Attach the same depth buffer as the geometry buffer
             self.lightbuffer.set_depth_attachment(self.gbuffer.depth_buffer)
 
-    def render_geometry(self):
-        pass
+    def clear(self):
+        """clear all buffers"""
+        self.gbuffer.clear()
+        self.lightbuffer.clear()
+
+    def draw_buffers(self, near, far):
+        """
+        Draw framebuffers for debug purposes.
+        We need to supply near and far plane so the depth buffer can be linearized when visualizing.
+        :param near: Projection near value
+        :param far: Projection far value
+        """
+        self.gbuffer.draw_color_layer(layer=0, pos=(0.0, 0.0), scale=(0.25, 0.25))
+        self.gbuffer.draw_color_layer(layer=1, pos=(0.5, 0.0), scale=(0.25, 0.25))
+        self.gbuffer.draw_depth(near, far, pos=(1.0, 0.0), scale=(0.25, 0.25))
+        self.lightbuffer.draw_color_layer(layer=0, pos=(1.5, 0.0), scale=(0.25, 0.25))
