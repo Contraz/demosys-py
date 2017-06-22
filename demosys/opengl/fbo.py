@@ -1,5 +1,7 @@
 from OpenGL import GL
 from demosys.opengl import Texture
+from demosys.opengl import Shader
+from demosys.opengl import geometry
 
 WINDOW_FBO = None
 
@@ -15,6 +17,7 @@ class WindowFBO:
         """
         Sets the viewport back to the buffer size of the screen/window
         """
+        # FIXME: Should we round up before converting to int?
         # The expected height with the current viewport width
         expected_height = int(self.window.buffer_width / self.window.aspect_ratio)
         # How much positive or negative y padding
@@ -38,11 +41,19 @@ class WindowFBO:
 
 class FBO:
     """Frame buffer object"""
+    # VAO and shaders for drawing FBO layers
+    quad = None
+    color_shader = None
+    depth_shader = None
+    # The FBO stack
+    stack = []
+
     def __init__(self):
         self.color_buffers = []
         self.color_buffers_ids = []
         self.depth_buffer = None
         self.fbo = GL.glGenFramebuffers(1)
+        _init_fbo_draw()
 
     @property
     def size(self):
@@ -86,7 +97,10 @@ class FBO:
         if not stack:
             return
 
-        push_fbo(self)
+        FBO.stack.append(self)
+        if len(FBO.stack) > 8:
+            raise FBOError("FBO stack overflow. You probably forgot to release a bind somewhere.")
+
         if len(self.color_buffers) > 1:
             GL.glDrawBuffers(len(self.color_buffers), self.color_buffers_ids)
 
@@ -103,7 +117,19 @@ class FBO:
         if not stack:
             return
 
-        parent = pop_fbo(self)
+        # Are we trying to release an FBO that is not bound?
+        if not FBO.stack:
+            raise FBOError("FBO stack is already empty. You are probably releasing a FBO twice or forgot to bind.")
+        fbo_out = FBO.stack.pop()
+        # Make sure we released this FBO and not some other random one
+        if fbo_out != self:
+            raise FBOError("Incorrect FBO release order")
+        # Find the parent fbo
+        if FBO.stack:
+            parent = FBO.stack[-1]
+        else:
+            parent = WINDOW_FBO
+        # Bind the parent FBO
         if parent:
             parent.bind()
 
@@ -114,6 +140,35 @@ class FBO:
         self.bind()
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
         self.release()
+
+    def draw_color_layer(self, layer=0, pos=(0.0, 0.0), scale=(1.0, 1.0)):
+        """
+        Draw a color layer in the FBO.
+        :param layer: Layer ID
+        :param pos: (tuple) offset x, y
+        :param scale: (tuple) scale x, y
+        """
+        with self.quad.bind(self.color_shader) as s:
+            s.uniform_2f("offset", pos[0] - 1.0, pos[1] - 1.0)
+            s.uniform_2f("scale", scale[0], scale[1])
+            s.uniform_sampler_2d(0, "texture0", self.color_buffers[layer])
+        self.quad.draw()
+
+    def draw_depth(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
+        """
+        Draw depth buffer linearized.
+        :param near: Near plane in projection
+        :param far: Far plane in projection
+        :param pos: (tuple) offset x, y
+        :param scale: (tuple) scale x, y
+        """
+        with self.quad.bind(self.depth_shader) as s:
+            s.uniform_2f("offset", pos[0] - 1.0, pos[1] - 1.0)
+            s.uniform_2f("scale", scale[0], scale[1])
+            s.uniform_1f("near", near)
+            s.uniform_1f("far", far)
+            s.uniform_sampler_2d(0, "texture0", self.depth_buffer)
+        self.quad.draw()
 
     @classmethod
     def create(cls, width, height, depth=False,
@@ -220,34 +275,74 @@ class FBO:
         )
 
 
-# Internal FBO bind stack so we can support hierarchical binding
-FBO_STACK = []
-
-
-def push_fbo(fbo):
-    """Push fbo into the stack"""
-    global FBO_STACK
-    FBO_STACK.append(fbo)
-    if len(FBO_STACK) > 8:
-        raise FBOError("FBO stack overflow. You probably forgot to release a bind somewhere.")
-
-
-def pop_fbo(fbo):
-    """
-    Pops the fbo out of the stack
-    Returns: The last last fbo in the stack
-    """
-    global FBO_STACK
-    if not FBO_STACK:
-        raise FBOError("FBO stack is already empty. You are probably releasing a FBO twice or forgot to bind.")
-    fbo_out = FBO_STACK.pop()
-    if fbo_out != fbo:
-        raise FBOError("Incorrect FBO release order")
-    if FBO_STACK:
-        return FBO_STACK[-1]
-    return WINDOW_FBO
-
-
 class FBOError(Exception):
     """Generic FBO Error"""
     pass
+
+
+def _init_fbo_draw():
+    """Initialize geometry and shader for drawing FBO layers"""
+    if FBO.quad:
+        return
+    print("INIT")
+
+    FBO.quad = geometry.quad_fs()
+    # Shader for drawing color layers
+    src = [
+        "#version 330",
+        "#if defined VERTEX_SHADER",
+        "in vec3 in_position;",
+        "in vec2 in_uv;",
+        "out vec2 uv;",
+        "uniform vec2 offset;",
+        "uniform vec2 scale;",
+        "",
+        "void main() {",
+        "    uv = in_uv;"
+        "    gl_Position = vec4((in_position.xy + vec2(1.0, 1.0)) * scale + offset, 0.0, 1.0);",
+        "}",
+        "",
+        "#elif defined FRAGMENT_SHADER",
+        "out vec4 out_color;",
+        "in vec2 uv;",
+        "uniform sampler2D texture0;",
+        "void main() {",
+        "    out_color = texture(texture0, uv);",
+        "}",
+        "#endif",
+    ]
+    FBO.color_shader = Shader(name="fbo_shader")
+    FBO.color_shader.set_source("\n".join(src))
+    FBO.color_shader.prepare()
+
+    # Shader for drawing depth layers
+    src = [
+        "#version 330",
+        "#if defined VERTEX_SHADER",
+        "in vec3 in_position;",
+        "in vec2 in_uv;",
+        "out vec2 uv;",
+        "uniform vec2 offset;",
+        "uniform vec2 scale;",
+        "",
+        "void main() {",
+        "    uv = in_uv;"
+        "    gl_Position = vec4((in_position.xy + vec2(1.0, 1.0)) * scale + offset, 0.0, 1.0);",
+        "}",
+        "",
+        "#elif defined FRAGMENT_SHADER",
+        "out vec4 out_color;",
+        "in vec2 uv;",
+        "uniform sampler2D texture0;",
+        "uniform float near;"
+        "uniform float far;"
+        "void main() {",
+        "    float z = texture(texture0, uv).x;"
+        "    float d = (2.0 * near) / (far + near - z * (far - near));"
+        "    out_color = vec4(d);",
+        "}",
+        "#endif",
+    ]
+    FBO.depth_shader = Shader(name="depth_shader")
+    FBO.depth_shader.set_source("\n".join(src))
+    FBO.depth_shader.prepare()
