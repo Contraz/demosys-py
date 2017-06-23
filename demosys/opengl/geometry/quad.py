@@ -3,12 +3,18 @@ from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
 import numpy
 
+# Cache fullscreen quad
+QUAD_FS = None
+
 
 def quad_fs():
     """
     Creates a screen aligned quad.
     """
-    return quad_2d(2.0, 2.0, 0.0, 0.0)
+    global QUAD_FS
+    if not QUAD_FS:
+        QUAD_FS = quad_2d(2.0, 2.0, 0.0, 0.0)
+    return QUAD_FS
 
 
 def quad_2d(width, height, xpos=0.0, ypos=0.0):
