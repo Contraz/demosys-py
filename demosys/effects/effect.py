@@ -44,7 +44,7 @@ class Effect:
         :param frametime: The number of milliseconds the frame is expected to take
         :param target: The target FBO for the effect
         """
-        raise NotImplemented
+        raise NotImplementedError("draw() is not implemented")
 
     # Methods for getting resources
 
