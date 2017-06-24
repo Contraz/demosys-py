@@ -6,6 +6,10 @@ from PIL import Image
 
 class Texture:
     """Represents a texture"""
+    # Class attributes for drawing textures
+    quad = None
+    shader_2d = None
+
     def __init__(self, name=None, path=None, width=0, height=0, depth=0, lod=0, target=GL.GL_TEXTURE_2D,
                  internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE,
                  mipmap=False, anisotropy=0, min_filter=GL.GL_LINEAR, mag_filter=GL.GL_LINEAR,
@@ -41,6 +45,7 @@ class Texture:
         # For pre-loading files
         self.name = name
         self.path = path
+        _init_texture_draw()
 
     @property
     def size(self):
@@ -84,6 +89,19 @@ class Texture:
         Binds the texture to the currently active texture unit
         """
         GL.glBindTexture(self.target, self.texture)
+
+    def draw(self, shader=None, pos=(0.0, 0.0), scale=(1.0, 1.0)):
+        """
+        Draw texture
+        :param shader: override shader
+        :param pos: (tuple) offset x, y
+        :param scale: (tuple) scale x, y
+        """
+        with self.quad.bind(self.shader_2d) as s:
+            s.uniform_2f("offset", pos[0] - 1.0, pos[1] - 1.0)
+            s.uniform_2f("scale", scale[0], scale[1])
+            s.uniform_sampler_2d(0, "texture0", self)
+        self.quad.draw()
 
     def _build(self, data=None):
         """Internal method for building the texture"""
@@ -159,3 +177,41 @@ class Texture:
         self.bind()
         GL.glTexParameteri(self.target, GL.GL_TEXTURE_MIN_FILTER, self.min_filter)
         GL.glTexParameteri(self.target, GL.GL_TEXTURE_MAG_FILTER, self.mag_filter)
+
+
+def _init_texture_draw():
+    """Initialize geometry and shader for drawing FBO layers"""
+    from demosys.opengl import Shader
+    from demosys.opengl import geometry
+
+    if Texture.quad:
+        return
+
+    Texture.quad = geometry.quad_fs()
+    # Shader for drawing color layers
+    src = [
+        "#version 330",
+        "#if defined VERTEX_SHADER",
+        "in vec3 in_position;",
+        "in vec2 in_uv;",
+        "out vec2 uv;",
+        "uniform vec2 offset;",
+        "uniform vec2 scale;",
+        "",
+        "void main() {",
+        "    uv = in_uv;"
+        "    gl_Position = vec4((in_position.xy + vec2(1.0, 1.0)) * scale + offset, 0.0, 1.0);",
+        "}",
+        "",
+        "#elif defined FRAGMENT_SHADER",
+        "out vec4 out_color;",
+        "in vec2 uv;",
+        "uniform sampler2D texture0;",
+        "void main() {",
+        "    out_color = texture(texture0, uv);",
+        "}",
+        "#endif",
+    ]
+    Texture.shader_2d = Shader(name="fbo_shader")
+    Texture.shader_2d.set_source("\n".join(src))
+    Texture.shader_2d.prepare()

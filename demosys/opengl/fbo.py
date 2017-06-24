@@ -1,7 +1,5 @@
 from OpenGL import GL
 from demosys.opengl import Texture
-from demosys.opengl import Shader
-from demosys.opengl import geometry
 
 WINDOW_FBO = None
 
@@ -43,7 +41,6 @@ class FBO:
     """Frame buffer object"""
     # VAO and shaders for drawing FBO layers
     quad = None
-    color_shader = None
     depth_shader = None
     # The FBO stack
     stack = []
@@ -148,11 +145,7 @@ class FBO:
         :param pos: (tuple) offset x, y
         :param scale: (tuple) scale x, y
         """
-        with self.quad.bind(self.color_shader) as s:
-            s.uniform_2f("offset", pos[0] - 1.0, pos[1] - 1.0)
-            s.uniform_2f("scale", scale[0], scale[1])
-            s.uniform_sampler_2d(0, "texture0", self.color_buffers[layer])
-        self.quad.draw()
+        self.color_buffers[layer].draw(pos=pos, scale=scale)
 
     def draw_depth(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
@@ -282,39 +275,13 @@ class FBOError(Exception):
 
 def _init_fbo_draw():
     """Initialize geometry and shader for drawing FBO layers"""
+    from demosys.opengl import Shader
+    from demosys.opengl import geometry
+
     if FBO.quad:
         return
-    print("INIT")
 
     FBO.quad = geometry.quad_fs()
-    # Shader for drawing color layers
-    src = [
-        "#version 330",
-        "#if defined VERTEX_SHADER",
-        "in vec3 in_position;",
-        "in vec2 in_uv;",
-        "out vec2 uv;",
-        "uniform vec2 offset;",
-        "uniform vec2 scale;",
-        "",
-        "void main() {",
-        "    uv = in_uv;"
-        "    gl_Position = vec4((in_position.xy + vec2(1.0, 1.0)) * scale + offset, 0.0, 1.0);",
-        "}",
-        "",
-        "#elif defined FRAGMENT_SHADER",
-        "out vec4 out_color;",
-        "in vec2 uv;",
-        "uniform sampler2D texture0;",
-        "void main() {",
-        "    out_color = texture(texture0, uv);",
-        "}",
-        "#endif",
-    ]
-    FBO.color_shader = Shader(name="fbo_shader")
-    FBO.color_shader.set_source("\n".join(src))
-    FBO.color_shader.prepare()
-
     # Shader for drawing depth layers
     src = [
         "#version 330",
