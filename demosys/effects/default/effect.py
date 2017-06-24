@@ -26,7 +26,7 @@ class DefaultEffect(effect.Effect):
 
         # Draw the cube
         with self.cube.bind(self.shader) as shader:
-            shader.uniform_mat4("m_proj", self.sys_camera.projection)
+            shader.uniform_mat4("m_proj", self.sys_camera.projection.matrix)
             shader.uniform_mat4("m_mv", m_mv)
             shader.uniform_mat3("m_normal", m_normal)
         self.cube.draw()

@@ -1,6 +1,7 @@
 from math import sin, cos, radians
 import glfw
 from pyrr import matrix44, vector3, vector, Vector3
+from demosys.opengl import Projection
 
 # Direction Definitions
 RIGHT = 1
@@ -39,13 +40,8 @@ class Camera:
         # World up vector
         self._up = Vector3([0.0, 1.0, 0.0])
 
-        # Projection attributes
-        self.projection = None
-        self.fov = fov
-        self.aspect = aspect
-        self.near = near
-        self.far = far
-        self.set_projection()
+        # Projection
+        self.projection = Projection(aspect, fov, near, far)
 
     def set_position(self, x, y, z):
         """
@@ -77,25 +73,6 @@ class Camera:
         self.dir = vector.normalise(front)
         self.right = vector.normalise(vector3.cross(self.dir, self._up))
         self.up = vector.normalise(vector3.cross(self.right, self.dir))
-
-    def set_projection(self, fov=None, aspect=None, near=None, far=None):
-        """
-        Update projection parameters and return the new version
-
-        :param fov: Field of view
-        :param aspect: Aspect ratio
-        :param near: Near plane
-        :param far: Far plane
-        :return: Projection matrix
-        """
-        self.fov = fov or self.fov
-        self.near = near or self.near
-        self.far = far or self.far
-        self.aspect = aspect or self.aspect
-        self.projection = matrix44.create_perspective_projection_matrix(
-            self.fov, self.aspect, self.near, self.far)
-
-        return self.projection
 
     def look_at(self, vec=None, pos=None):
         """
