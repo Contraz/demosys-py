@@ -47,6 +47,9 @@ EFFECTS = ()
 
 EFFECT_MANAGER = 'demosys.effects.managers.SingleEffectManager'
 
+# Raise errors when uniforms are assigned with incorrect type
+# Otherwise just print the errors to terminal
+SHADER_STRICT_VALIDATION = True
 
 # Additional directories shaders can be found
 SHADER_DIRS = ()

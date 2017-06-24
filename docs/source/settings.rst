@@ -179,6 +179,18 @@ If we use the ``run`` sub-command, the first registered effect will run.
 
 More info in the :doc:`effectmanagers` section.
 
+SHADER_STRICT_VALIDATION
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Boolean value. If ``True`` shaders will raise ``ShaderError`` when for example
+setting uniforms variables that don't exist or is of the wrong type.
+
+If the value is ``False`` an error message will be generated instead.
+
+This is useful when working with shaders. Sometimes you want to allow
+missing or incorrect uniforms. Other times you want to know in a more
+brutal way that something is wrong.
+
 SHADER_DIRS/FINDERS
 ^^^^^^^^^^^^^^^^^^^
 
