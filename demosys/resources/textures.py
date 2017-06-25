@@ -51,7 +51,7 @@ class Textures:
                     texture.set_image(image)
                     break
             else:
-                raise ImproperlyConfigured("Cannot find texture {name}")
+                raise ImproperlyConfigured("Cannot find texture {}".format(name))
 
 
 textures = Textures()
