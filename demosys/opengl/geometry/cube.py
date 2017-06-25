@@ -15,7 +15,7 @@ def cube(width, height, depth, normals=True, uvs=True):
     :param uvs: (bool) include uv coordinates
     :return: VAO representing the cube
     """
-    width, height, depth = width / 2, height / 2, depth / 2
+    width, height, depth = width / 2.0, height / 2.0, depth / 2.0
     pos = VBO(numpy.array([
         width, -height, depth,
         width, height, depth,
