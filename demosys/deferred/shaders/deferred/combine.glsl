@@ -20,7 +20,7 @@ uniform sampler2D light_buffer;
 in vec2 uv;
 
 void main() {
-    out_color = texture(diffuse_buffer, uv) * texture(light_buffer, uv);
+    out_color = texture(diffuse_buffer, uv) * (texture(light_buffer, uv) * 0.75 + 0.25);
 }
 
 #endif

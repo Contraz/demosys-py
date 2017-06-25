@@ -32,6 +32,7 @@ in vec2 uv;
 void main() {
     out_normal = normalize(normal);
     out_color = texture(texture0, uv);
+//    out_color = vec4(1.0);
 }
 
 #endif

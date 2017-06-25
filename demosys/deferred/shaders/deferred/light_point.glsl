@@ -34,7 +34,7 @@ in vec3 vs_lightpos;
 
 void main() {
     vec2 uv = vec2(gl_FragCoord.x / screensize.x, gl_FragCoord.y / screensize.y);
-	vec3 N = normalize(texture(g_normal, uv).rgb);
+	vec3 normal = normalize(texture(g_normal, uv).rgb);
 
 	// View position reconstruct from depth
 	float depth = texture(g_depth, uv).r;
@@ -48,15 +48,19 @@ void main() {
         discard;
     }
 
-    vec3 L = normalize(vs_lightpos - pos);
-    vec3 R = reflect(L, N);
-    float ndl = max(dot(N, L), 0.0);
+    vec3 lightDir = normalize(vs_lightpos - pos);
+    vec3 viewDir = normalize(-pos);
+//    vec3 halfwayDir = normalize(lightDir + viewDir);
+    vec3 reflectDir = reflect(-lightDir, normal);
 
-//    out_light = vec4(1.0 - (dist / radius));
-    out_light = vec4(ndl);
-//    out_light = vec4(R, 1.0);
-//    out_light = vec4(N, 1.0);
-//    out_light = vec4(depth);
+    float diffuse = max(dot(normal, lightDir), 0.0);
+//    float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.8);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 4.0);
+
+    float l = diffuse * 0.5 + spec;
+    // l *= (1.0 - dist / radius);
+    l *= clamp(1.0 - dist*dist/(radius*radius), 0.0, 1.0);
+    out_light = vec4(l);
 }
 
 #endif
