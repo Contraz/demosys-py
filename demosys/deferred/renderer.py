@@ -115,7 +115,7 @@ class DeferredRenderer:
                     s.uniform_mat4("m_proj", projection.matrix)
                     s.uniform_mat4("m_light", m_light)
                     s.uniform_sampler_2d(0, "g_normal", self.gbuffer.color_buffers[1])
-                    s.uniform_sampler_2d(0, "g_depth", self.gbuffer.depth_buffer)
+                    s.uniform_sampler_2d(1, "g_depth", self.gbuffer.depth_buffer)
                     s.uniform_2f("screensize", self.width, self.height)
                     s.uniform_2f("proj_const", *projection.projection_constants)
                     s.uniform_1f("radius", light_size)

@@ -34,7 +34,7 @@ in vec3 vs_lightpos;
 
 void main() {
     vec2 uv = vec2(gl_FragCoord.x / screensize.x, gl_FragCoord.y / screensize.y);
-	vec3 normal = normalize(texture(g_normal, uv).xyz);
+	vec3 N = normalize(texture(g_normal, uv).rgb);
 
 	// View position reconstruct from depth
 	float depth = texture(g_depth, uv).r;
@@ -42,15 +42,21 @@ void main() {
 	float linear_depth = proj_const.y  / (depth - proj_const.x);
 	vec3 pos = ray * linear_depth;
 
-    float dist = length(pos - vs_lightpos);
+    // Discard fragments outside the light radius
+    float dist = length(vs_lightpos - pos);
     if (dist > radius) {
-//        out_light = vec4(1.0, 0.0, 0.0, 1.0);
-//        return;
         discard;
     }
 
-//    out_light = vec4(linear_depth);
-    out_light = vec4(1.0 - (dist / radius));
+    vec3 L = normalize(vs_lightpos - pos);
+    vec3 R = reflect(L, N);
+    float ndl = max(dot(N, L), 0.0);
+
+//    out_light = vec4(1.0 - (dist / radius));
+    out_light = vec4(ndl);
+//    out_light = vec4(R, 1.0);
+//    out_light = vec4(N, 1.0);
+//    out_light = vec4(depth);
 }
 
 #endif

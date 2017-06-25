@@ -24,13 +24,13 @@ void main() {
 layout(location=0) out vec4 out_color;
 layout(location=1) out vec3 out_normal;
 
+uniform sampler2D texture0;
+
 in vec3 normal;
 in vec2 uv;
 
-uniform sampler2D texture0;
-
 void main() {
-    out_normal = normal;
+    out_normal = normalize(normal);
     out_color = texture(texture0, uv);
 }
 
