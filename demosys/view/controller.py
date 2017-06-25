@@ -71,6 +71,7 @@ def run(manager=None):
     # Main loop
     frames, ft = 0, 0
     prev_time = TIMER.get_time()
+    time_start = glfw.get_time()
     while not WINDOW.should_close():
         # Immediately get control of the current time
         t = TIMER.get_time()
@@ -92,10 +93,12 @@ def run(manager=None):
         ft = t - prev_time
         prev_time = t
 
-    duration = TIMER.stop()
+    duration_timer = TIMER.stop()
+    duration = glfw.get_time() - time_start
     if duration > 0:
         fps = round(frames / duration, 2)
         print("Duration: {}s rendering {} frames at {} fps".format(duration, frames, fps))
+        print("Timeline duration:", duration_timer)
 
     # Let the window and context clean itself up
 
