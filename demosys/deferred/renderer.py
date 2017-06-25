@@ -66,8 +66,8 @@ class DeferredRenderer:
             # Attach the same depth buffer as the geometry buffer
             self.lightbuffer.set_depth_attachment(self.gbuffer.depth_buffer)
 
-        # Unit cube for point lights
-        self.unit_cube = geometry.cube(width=1, height=1, depth=1)
+        # Unit cube for point lights (cube with radius 1.0)
+        self.unit_cube = geometry.cube(width=2, height=2, depth=2)
         self.point_light_shader = resources.shaders.get("deferred/light_point.glsl", create=True)
 
         # Debug draw lights
@@ -92,13 +92,19 @@ class DeferredRenderer:
 
     def render_lights(self, camera_matrix, projection):
         """Render light volumes"""
-        GL.glDisable(GL.GL_CULL_FACE)
+        # Disable culling so lights can be rendered when inside volumes
+        GL.glEnable(GL.GL_CULL_FACE)
+        GL.glFrontFace(GL.GL_CW)
+        # No depth testing
         GL.glDisable(GL.GL_DEPTH_TEST)
+        # Enable additive blending
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_ONE, GL.GL_ONE)
 
         with self.lightbuffer:
             for light in self.point_lights:
                 # Calc light properties
-                light_size = light.radius * 2.0
+                light_size = light.radius
                 m_light = matrix44.multiply(light.matrix, camera_matrix)
                 # Draw the light volume
                 with self.unit_cube.bind(self.point_light_shader) as s:
@@ -111,6 +117,9 @@ class DeferredRenderer:
                     s.uniform_1f("radius", light_size)
                 self.unit_cube.draw()
 
+        GL.glDisable(GL.GL_BLEND)
+        GL.glDisable(GL.GL_CULL_FACE)
+
     def render_lights_debug(self, camera_matrix, projection):
         """Render outlines of light volumes"""
         GL.glEnable(GL.GL_BLEND)
@@ -118,7 +127,7 @@ class DeferredRenderer:
 
         for light in self.point_lights:
             m_mv = matrix44.multiply(light.matrix, camera_matrix)
-            light_size = light.radius * 2
+            light_size = light.radius
             with self.unit_cube.bind(self.debug_shader) as s:
                 s.uniform_mat4("m_proj", projection.matrix)
                 s.uniform_mat4("m_mv", m_mv)
