@@ -73,6 +73,10 @@ class DeferredRenderer:
         # Debug draw lights
         self.debug_shader = resources.shaders.get("deferred/debug.glsl", create=True)
 
+        # Combine shader
+        self.combine_shader = resources.shaders.get("deferred/combine.glsl", create=True)
+        self.quad = geometry.quad_fs()
+
     def draw_buffers(self, near, far):
         """
         Draw framebuffers for debug purposes.
@@ -138,6 +142,13 @@ class DeferredRenderer:
 
     def render_geometry(self, cam_matrix, projection):
         raise NotImplementedError("render_geometry() not implemented")
+
+    def combine(self):
+        """Combine diffuse and light buffer"""
+        with self.quad.bind(self.combine_shader) as s:
+            s.uniform_sampler_2d(0, "diffuse_buffer", self.gbuffer.color_buffers[0])
+            s.uniform_sampler_2d(1, "light_buffer", self.lightbuffer.color_buffers[0])
+        self.quad.draw()
 
     def clear(self):
         """clear all buffers"""

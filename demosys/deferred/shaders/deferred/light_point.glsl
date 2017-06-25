@@ -49,9 +49,8 @@ void main() {
         discard;
     }
 
+//    out_light = vec4(linear_depth);
     out_light = vec4(1.0 - (dist / radius));
-//    out_light = vec4(pos, 1.0);
-//    out_light = vec4(viewRay, 1.0);
 }
 
 #endif
