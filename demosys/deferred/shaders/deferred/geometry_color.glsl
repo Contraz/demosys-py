@@ -11,11 +11,9 @@ uniform mat4 m_proj;
 uniform mat3 m_normal;
 
 out vec3 normal;
-out vec2 uv;
 
 void main() {
     normal = m_normal * in_normal;
-    uv = in_uv;
     gl_Position = m_proj * m_mv * vec4(in_position, 1.0);
 }
 
@@ -24,15 +22,13 @@ void main() {
 layout(location=0) out vec4 out_color;
 layout(location=1) out vec3 out_normal;
 
-uniform sampler2D texture0;
+uniform vec4 color;
 
 in vec3 normal;
-in vec2 uv;
 
 void main() {
     out_normal = normalize(normal);
-    out_color = texture(texture0, uv);
-//    out_color = vec4(1.0);
+    out_color = color;
 }
 
 #endif

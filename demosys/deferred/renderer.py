@@ -9,9 +9,18 @@ from demosys.opengl import geometry
 class PointLight:
     """A point light and its properties"""
     def __init__(self, position, radius):
-        self.position = position
+        self._position = position
         self.radius = radius
-        self.matrix = matrix44.create_from_translation(position)
+        self.matrix = None
+
+    @property
+    def position(self):
+        return self._position
+
+    @position.setter
+    def position(self, pos):
+        self._position = pos
+        self.matrix = matrix44.create_from_translation(pos)
 
 
 class DeferredRenderer:

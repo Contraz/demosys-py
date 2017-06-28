@@ -54,8 +54,8 @@ void main() {
     vec3 reflectDir = reflect(-lightDir, normal);
 
     float diffuse = max(dot(normal, lightDir), 0.0);
-//    float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.8);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 4.0);
+//    float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
 
     float l = diffuse * 0.5 + spec;
     // l *= (1.0 - dist / radius);
