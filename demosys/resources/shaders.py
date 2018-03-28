@@ -67,4 +67,5 @@ class Shaders:
         """
         self.load(reload=True)
 
+
 shaders = Shaders()
