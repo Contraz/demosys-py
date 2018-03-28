@@ -208,7 +208,7 @@ class Shader:
                 buff[i] = e.encode()
 
             c_text = ctypes.cast(ctypes.pointer(buff), ctypes.POINTER(ctypes.POINTER(GL.GLchar)))
-            GL.glTransformFeedbackVaryings(self.program, len(out_attribs), c_text, GL.GL_INTERLEAVED_ATTRIBS)
+            GL.glTransformFeedbackVaryings(program, len(out_attribs), c_text, GL.GL_INTERLEAVED_ATTRIBS)
 
         GL.glLinkProgram(program)
 
