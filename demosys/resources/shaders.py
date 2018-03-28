@@ -46,7 +46,8 @@ class Shaders:
                 path = finder.find(name)
                 if path:
                     print(" - {}".format(path))
-                    shader.set_source(open(path, 'r').read())
+                    with open(path, 'r') as fd:
+                        shader.set_source(fd.read())
                     try:
                         shader.prepare()
                     except Exception as err:
