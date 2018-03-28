@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="demosys-py",
-    version="0.3.15",
+    version="0.3.16",
     description="Modern OpenGL 3.3+ Framework inspired by Django",
     long_description=open('README.rst').read(),
     url="https://github.com/Contraz/demosys-py",
