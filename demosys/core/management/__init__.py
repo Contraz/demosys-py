@@ -35,7 +35,7 @@ def project_settings_path():
         # If we can import settings, we should have a project
         from demosys.conf import settings
         return settings.SETTINGS_MODULE
-    except:
+    except Exception:
         return None
 
 
