@@ -29,4 +29,5 @@ class DefaultEffect(effect.Effect):
             shader.uniform_mat4("m_proj", self.sys_camera.projection.matrix)
             shader.uniform_mat4("m_mv", m_mv)
             shader.uniform_mat3("m_normal", m_normal)
+            shader.uniform_1f("time", time)
         self.cube.draw()
