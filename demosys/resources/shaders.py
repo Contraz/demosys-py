@@ -47,7 +47,10 @@ class Shaders:
                 if path:
                     print(" - {}".format(path))
                     shader.set_source(open(path, 'r').read())
-                    shader.prepare()
+                    try:
+                        shader.prepare()
+                    except Exception as err:
+                        print(err)
                     break
             else:
                 raise ImproperlyConfigured("Cannot find shader {}".format(name))
