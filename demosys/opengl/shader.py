@@ -146,9 +146,6 @@ class Shader:
         Compiles all the shaders and links the program.
         If the linking is successful, it builds the uniform and attribute map.
         """
-        # Attempt to delete the current shader in case we are re-loading
-        self.delete()
-
         # Compile the separate shaders
         self.vert_source.compile()
 
@@ -176,20 +173,21 @@ class Shader:
         """Frees the memory and invalidates the name associated with the program"""
         if self.program:
             GL.glDeleteProgram(self.program)
+            self.program = None
 
     def link(self):
         """
         Links the program.
         Raises ``ShaderError`` if the linker failed.
         """
-        self.program = GL.glCreateProgram()
-        GL.glAttachShader(self.program, self.vert_source.shader)
+        program = GL.glCreateProgram()
+        GL.glAttachShader(program, self.vert_source.shader)
 
         if self.geo_source:
-            GL.glAttachShader(self.program, self.geo_source.shader)
+            GL.glAttachShader(program, self.geo_source.shader)
 
         if self.frag_source:
-            GL.glAttachShader(self.program, self.frag_source.shader)
+            GL.glAttachShader(program, self.frag_source.shader)
 
         # If no fragment shader is present we are dealing with transform feedback
         if not self.frag_source:
@@ -210,15 +208,19 @@ class Shader:
                 buff[i] = e.encode()
 
             c_text = ctypes.cast(ctypes.pointer(buff), ctypes.POINTER(ctypes.POINTER(GL.GLchar)))
-            GL.glTransformFeedbackVaryings(self.program, len(out_attribs), c_text, GL.GL_INTERLEAVED_ATTRIBS)
+            GL.glTransformFeedbackVaryings(program, len(out_attribs), c_text, GL.GL_INTERLEAVED_ATTRIBS)
 
-        GL.glLinkProgram(self.program)
+        GL.glLinkProgram(program)
 
-        status = GL.glGetProgramiv(self.program, GL.GL_LINK_STATUS)
+        status = GL.glGetProgramiv(program, GL.GL_LINK_STATUS)
         if not status:
-            message = GL.glGetProgramInfoLog(self.program)
+            message = GL.glGetProgramInfoLog(program)
             print("M:", message)
             raise ShaderError("Failed to link shader {}: {}".format(self.name, message))
+
+        # Attempt to delete the current shader in case we are re-loading
+        self.delete()
+        self.program = program
 
     def build_uniform_map(self):
         """
@@ -871,6 +873,7 @@ class ShaderSource:
 
         # Make sure version is present
         if not self.lines[0].startswith("#version"):
+            self.print()
             raise ShaderError(
                 "Missing #version in shader {}. A version must be defined in the first line".format(self.name),
             )
