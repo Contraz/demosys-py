@@ -1,3 +1,4 @@
+import os
 from demosys import resources
 from pyrr import matrix44, Matrix33, Matrix44, Vector3
 
@@ -19,6 +20,31 @@ def bind_target(func):
     return func_wrapper
 
 
+def local_path(func):
+    """
+    Decorator modifying the `path` parameter depending
+    on the `local` parameter.
+    If `local` is `True` we prepend the current effect name to the path.
+    """
+    def local_wrapper(*args, **kwargs):
+        use_local = kwargs.get('local')
+
+        # If use_local is True or None we assume local loading
+        if use_local is not False:
+            # Don't mess with the path if path starts with local dir
+            if not args[1].startswith("{}/".format(args[0].effect_name)):
+                path = args[1]
+                path = os.path.join(args[0].effect_name, path)
+
+                # Replace path and rebuild tuple
+                args = list(args)
+                args[1] = path
+                args = tuple(args)
+
+        return func(*args, **kwargs)
+    return local_wrapper
+
+
 class Effect:
     """Effect base class.
 
@@ -29,12 +55,19 @@ class Effect:
     * window_aspect (float): Aspect ratio of the resolution
     * sys_camera (demosys.scene.camera.Camera): The system camera responding to inputs
     """
-    # Window properties set by controller on initialization
+    # Full python path to the effect (set per instance)
     name = ""
+
+    # Window properties set by controller on initialization (class vars)
     window_width = 0
     window_height = 0
     window_aspect = 0
     sys_camera = None
+
+    @property
+    def effect_name(self):
+        """Returns the package name for the effect"""
+        return self.name.split('.')[-1]
 
     # Methods to override
     def draw(self, time, frametime, target):
@@ -48,35 +81,41 @@ class Effect:
 
     # Methods for getting resources
 
-    def get_shader(self, path):
+    @local_path
+    def get_shader(self, path, local=True):
         """
         Get a shader or schedule the shader for loading.
         If the resource is not loaded yet, an empty shader object
         is returned that will be populated later.
 
         :param path: Path to the shader in the virtual shader directory
+        :param local: Auto-prepend the local effect path
         :return: Shader object
         """
         return resources.shaders.get(path, create=True)
 
-    def get_texture(self, path, **kwargs):
+    @local_path
+    def get_texture(self, path, local=True, **kwargs):
         """
         Get a shader or schedule the texture for loading.
         If the resource is not loaded yet, an empty texture object
         is returned that will be populated later.
 
         :param path: Path to the texture in the virtual texture directory
+        :param local: Auto-prepend the local effect path
         :return: Texture object
         """
         return resources.textures.get(path, create=True, **kwargs)
 
-    def get_track(self, name):
+    @local_path
+    def get_track(self, name, local=True):
         """
         Get or create a rocket track. This only makes sense when using rocket timers.
         If the resource is not loaded yet, an empty track object
         is returned that will be populated later.
 
         :param name: The rocket track name
+        :param local: Auto-prepend the local effect path
         :return: Track object
         """
         return resources.tracks.get(name)
