@@ -4,10 +4,10 @@ from OpenGL import GL
 # from pyrr import matrix44
 
 
-class DefaultEffect(effect.Effect):
+class SimpleCubeEffect(effect.Effect):
     """Generated default effect"""
     def __init__(self):
-        self.shader = self.get_shader("default/default.glsl")
+        self.shader = self.get_shader("cube_plain.glsl")
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
     @effect.bind_target
