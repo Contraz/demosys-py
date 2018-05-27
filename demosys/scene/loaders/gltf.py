@@ -7,7 +7,7 @@ import os
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
 
-from pyrr import matrix44, Matrix44
+from pyrr import matrix44, Matrix44, quaternion
 
 from demosys.opengl import VAO
 from demosys.opengl.constants import TYPE_INFO
@@ -116,7 +116,8 @@ class GLTF2:
 
         # Map to meshes
         for i, mesh in enumerate(self.meta.meshes):
-            self.meshes[i].material = self.materials[mesh.primitives[0].material]
+            if mesh.primitives[0].material is not None:
+                self.meshes[i].material = self.materials[mesh.primitives[0].material]
 
     def load_nodes(self):
         # Start with root nodes in the scene
@@ -373,6 +374,10 @@ class GLTFNode:
             self.matrix = matrix44.create_identity()
         if self.translation is not None:
             self.matrix = matrix44.create_from_translation(self.translation)
+        if self.rotation is not None:
+            q = quaternion.create(self.rotation[0], self.rotation[1], self.rotation[2], self.rotation[3])
+            m = matrix44.create_from_quaternion(q)
+            self.matrix = matrix44.multiply(m, self.matrix)
         if self.scale is not None:
             self.matrix = matrix44.multiply(matrix44.create_from_scale(self.scale), self.matrix)
 
