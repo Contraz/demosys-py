@@ -45,7 +45,7 @@ class Scenes:
                     scene.load(path)
                     break
             else:
-                raise ImproperlyConfigured("Cannot find texture {}".format(name))
+                raise ImproperlyConfigured("Cannot find scene {}".format(name))
 
 
 scenes = Scenes()
