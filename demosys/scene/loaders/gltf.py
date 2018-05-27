@@ -268,7 +268,6 @@ class GLTFMesh:
     def load_indices(self):
         """Loads the index buffer / polygon list"""
         _, component_type, vbo = self.primitives[0].indices.read(target=GL.GL_ELEMENT_ARRAY_BUFFER)
-        # print("vbo", vbo.__dict__)
         return component_type, vbo
 
     def prepare_attrib_mapping(self):
@@ -276,9 +275,13 @@ class GLTFMesh:
         """Pre-parse buffer mappings for each VBO to detect interleaved data"""
         for name, accessor in self.primitives[0].attributes.items():
             info = VBOInfo(*accessor.info(target=GL.GL_ARRAY_BUFFER))
-            # Check interleaved here
             info.attributes.append((name, info.components))
-            print(name, info)
+
+            if buffer_info and buffer_info[-1].buffer_view == info.buffer_view:
+                if buffer_info[-1].interleaves(info):
+                    buffer_info[-1].merge(info)
+                    continue
+
             buffer_info.append(info)
 
         return buffer_info
@@ -304,6 +307,15 @@ class VBOInfo:
         self.count = count  # number of elements of the component type size
         # list of (name, components) tuples
         self.attributes = []
+
+    def interleaves(self, info):
+        """Does the buffer interleave with this one?"""
+        return info.byte_offset == self.component_type.size * self.components
+
+    def merge(self, info):
+        # NOTE: byte length is the same
+        self.components += info.components
+        self.attributes += info.attributes
 
     def create(self):
         """Create the VBO"""
