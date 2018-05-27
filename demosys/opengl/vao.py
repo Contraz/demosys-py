@@ -151,12 +151,12 @@ class VAO:
         if self.element_buffer:
             if mode is not None:
                 GL.glDrawElements(mode,
-                                  self.element_buffer.elements,  # 4b per int
+                                  self.element_buffer.elements,
                                   self.element_buffer.format,
                                   self.element_buffer.vbo)
             else:
-                GL.glDrawElements(self.mode,
-                                  self.element_buffer.elements,  # 4b per int
+                GL.glDrawElements(self.mode or GL.GL_TRIANGLES,
+                                  self.element_buffer.elements,
                                   self.element_buffer.format,
                                   self.element_buffer.vbo)
         else:
@@ -196,8 +196,8 @@ class VAO:
         if vbo.target not in ["GL_ELEMENT_ARRAY_BUFFER"]:
             raise VAOError("Element buffers must have target=GL_ELEMENT_ARRAY_BUFFER")
 
-        if format not in [GL.GL_UNSIGNED_INT]:
-            raise VAOError("Format can currently only be GL_UNSIGNED_INT")
+        if format not in [GL.GL_UNSIGNED_INT, GL.GL_UNSIGNED_SHORT, GL.GL_UNSIGNED_BYTE]:
+            raise VAOError("Format can currently only be GL_UNSIGNED_INT, GL_UNSIGNED_SHORT", "GL_UNSIGNED_BYTE")
 
         self.element_buffer = ArrayBuffer(format, vbo)
 
@@ -335,4 +335,8 @@ def type_size(format):
         return 4
     if format == GL.GL_UNSIGNED_INT:
         return 4
+    if format == GL.GL_UNSIGNED_SHORT:
+        return 2
+    if format == GL.GL_UNSIGNED_BYTE:
+        return 1
     raise VAOError("Cannot determine byte size of {}".format(format))
