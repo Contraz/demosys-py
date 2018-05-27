@@ -25,9 +25,11 @@ BUFFER_TARGETS = {
 
 # numpy dtype mapping
 NP_COMPONENT_DTYPE = {
-    5121: numpy.dtype(numpy.uint8),
-    5123: numpy.dtype(numpy.uint16),
-    5126: numpy.dtype(numpy.float32),
+    5121: numpy.dtype(numpy.uint8),  # GL_UNSIGNED_BYTE
+    5123: numpy.dtype(numpy.uint16),  # GL_UNSIGNED_SHORT
+    5125: numpy.dtype(numpy.uint32),  # GL_UNSIGNED_INT
+    5126: numpy.dtype(numpy.float32),  # GL_FLOAT
+
 }
 
 ACCESSOR_TYPE = {
