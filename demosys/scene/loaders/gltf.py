@@ -245,6 +245,7 @@ class GLTFMesh:
             'TANGENT': 'in_tangent',
             'JOINTS_0': 'in_joints',
             'WEIGHTS_0': 'in_heights',
+            'COLOR_0': 'in_color0',
         }
 
         vao = VAO(self.name, mode=self.primitives[0].mode or GL.GL_TRIANGLES)
