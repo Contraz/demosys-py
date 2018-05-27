@@ -368,8 +368,12 @@ class GLTFNode:
         self.rotation = data.get('rotation')
         self.scale = data.get('scale')
 
+        if self.matrix is None:
+            self.matrix = matrix44.create_identity()
         if self.translation is not None:
             self.matrix = matrix44.create_from_translation(self.translation)
+        if self.scale is not None:
+            self.matrix = matrix44.multiply(matrix44.create_from_scale(self.scale), self.matrix)
 
     @property
     def has_children(self):
