@@ -14,12 +14,12 @@ class Node:
     def add_child(self, child):
         self.children.append(child)
 
-    def draw(self, m_mv, m_proj, shader):
+    def draw(self, m_mv, m_proj):
         if self.matrix is not None:
             m_mv = matrix44.multiply(self.matrix, m_mv)
 
         if self.mesh:
-            self.mesh.draw(m_mv, m_proj, shader)
+            self.mesh.draw(m_mv, m_proj)
 
         for child in self.children:
-            child.draw(m_mv, m_proj, shader)
+            child.draw(m_mv, m_proj)

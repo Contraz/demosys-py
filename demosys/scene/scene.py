@@ -5,7 +5,7 @@ Wrapper for a loaded scene with properties.
 
 class Scene:
     """Generic scene"""
-    def __init__(self, name, loader=None, **kwargs):
+    def __init__(self, name, loader=None, mesh_shaders=None, **kwargs):
         """
         :param name: Unique name or path for the scene
         :param loader: Loader class for the scene if relevant
@@ -19,10 +19,24 @@ class Scene:
         self.materials = []
         self.meshes = []
         self.cameras = []
+        self.mesh_shaders = mesh_shaders or []
 
-    def draw(self, m_mv, m_proj, shader):
+    def draw(self, m_mv, m_proj):
         for node in self.root_nodes:
-            node.draw(m_mv, m_proj, shader)
+            node.draw(m_mv, m_proj)
+
+    def apply_mesh_shaders(self, mesh_shaders):
+        """Applies mesh shaders to meshes"""
+        if mesh_shaders is None:
+            return
+
+        for mesh in self.meshes:
+            for ms in mesh_shaders:
+                if ms.apply(mesh):
+                    mesh.mesh_shader = ms
+                    continue
+            else:
+                print("WARING: No mesh shader applied to '{}'".format(mesh.name))
 
     def load(self, path):
         """Deferred loading if a loader is specified"""
@@ -31,6 +45,8 @@ class Scene:
 
         if self.loader:
             self.loader.load(self, file=path)
+
+        self.apply_mesh_shaders(self.mesh_shaders)
 
     def __str__(self):
         return "<Scene: {}>".format(self.name)
