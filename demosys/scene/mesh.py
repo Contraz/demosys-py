@@ -5,10 +5,22 @@ from pyrr import Matrix33
 
 
 class Mesh:
-    def __init__(self, name, vao=None, material=None):
+    def __init__(self, name, vao=None, material=None, attributes=None):
+        """
+        :param name: Name of the mesh
+        :param vao: VAO
+        :param material: Material
+        :param attributes: Details info about each mesh attribute (dict)
+            {
+                "NORMAL": {"name": "in_normal", "components": 3, "type": GL_FLOAT},
+                "POSITION": {"name": "in_position", "components": 3, "type": GL_FLOAT}
+            }
+        """
         self.name = name
         self.vao = vao
         self.material = material
+        self.attributes = attributes
+        self.shader = None
 
     def draw(self, m_mv, m_proj, shader):
         m_normal = self.create_normal_matrix(m_mv)
@@ -22,6 +34,12 @@ class Mesh:
         shader.uniform_mat4("m_mv", m_mv)
         shader.uniform_mat3("m_normal", m_normal)
         self.vao.draw()
+
+    def has_normals(self):
+        return "NORMAL" in self.attributes
+
+    def has_uvs(self, layer=0):
+        return "TEXCOORD_{}".format(layer) in self.attributes
 
     def create_normal_matrix(self, modelview):
         """

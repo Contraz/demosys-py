@@ -255,15 +255,22 @@ class GLTFMesh:
         vbos = self.prepare_attrib_mapping()
         vao = VAO(self.name, mode=self.primitives[0].mode or GL.GL_TRIANGLES)
         vao.set_element_buffer(component_type.value, index_vbo)
+        attributes = {}
 
         for vbo_info in vbos:
             vbo = vbo_info.create()
             vao.add_array_buffer(vbo_info.component_type.value, vbo)
+
             for attr in vbo_info.attributes:
                 vao.map_buffer(vbo, name_map[attr[0]], attr[1])
+                attributes[attr[0]] = {
+                    'name': name_map[attr[0]],
+                    'components': attr[1],
+                    'type': vbo_info.component_type.value,
+                }
 
         vao.build()
-        return Mesh(self.name, vao=vao)
+        return Mesh(self.name, vao=vao, attributes=attributes)
 
     def load_indices(self):
         """Loads the index buffer / polygon list"""
