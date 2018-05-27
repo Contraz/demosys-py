@@ -14,7 +14,7 @@ class Mesh:
         m_normal = self.create_normal_matrix(m_mv)
 
         self.vao.bind(shader)
-        if self.material.color:
+        if self.material and self.material.color:
             shader.uniform_4fv("color", self.material.color)
         else:
             shader.uniform_4fv("color", [1.0, 1.0, 1.0, 1.0])
