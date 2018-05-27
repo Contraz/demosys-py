@@ -36,6 +36,9 @@ class Sampler:
         self.wrap_r = wrap_r
         self.states()
 
+    def bind(self, unit):
+        GL.glBindSampler(unit, self.sid)
+
     def states(self):
         self.sid = GL.glGenSamplers(1)
 
