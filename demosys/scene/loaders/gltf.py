@@ -134,8 +134,6 @@ class GLTF2:
         if meta.matrix is not None:
             node.matrix = Matrix44(value=meta.matrix)
 
-        # FIXME: check for quaternions
-
         if meta.mesh is not None:
             node.mesh = self.meshes[meta.mesh]
 
@@ -168,9 +166,12 @@ class GLTFMeta:
         self.nodes = [GLTFNode(n) for n in data['nodes']] if data.get('nodes') else []
         self.meshes = [GLTFMesh(m) for m in data['meshes']] if data.get('meshes') else []
         self.cameras = [GLTFCamera(c) for c in data['cameras']] if data.get('cameras') else []
-        self.bufferViews = [GLTFBufferView(v) for v in data['bufferViews']] if data.get('bufferViews') else []
-        self.buffers = [GLTFBuffer(b, self.path) for b in data['buffers']] if data.get('buffers') else []
-        self.accessors = [GLTFAccessor(a) for a in data['accessors']] if data.get('accessors') else []
+        self.bufferViews = [GLTFBufferView(i, v) for i, v in enumerate(data['bufferViews'])] \
+            if data.get('bufferViews') else []
+        self.buffers = [GLTFBuffer(i, b, self.path) for i, b in enumerate(data['buffers'])] \
+            if data.get('buffers') else []
+        self.accessors = [GLTFAccessor(i, a) for i, a in enumerate(data['accessors'])] \
+            if data.get('accessors') else []
 
         self._link_data()
 
@@ -238,8 +239,8 @@ class GLTFMesh:
         self.primitives = [Primitives(p) for p in data.get('primitives')]
 
     def load(self):
+        self.prepare_attrib_mapping()
         component_type, index_vbo = self.load_indices()
-        attribs = self.load_attributes()
 
         name_map = {
             'POSITION': 'in_position',
@@ -251,11 +252,15 @@ class GLTFMesh:
             'COLOR_0': 'in_color0',
         }
 
+        vbos = self.prepare_attrib_mapping()
         vao = VAO(self.name, mode=self.primitives[0].mode or GL.GL_TRIANGLES)
         vao.set_element_buffer(component_type.value, index_vbo)
-        for name, components, component_type, vbo in attribs:
-            vao.add_array_buffer(component_type.value, vbo)
-            vao.map_buffer(vbo, name_map[name], components)
+
+        for vbo_info in vbos:
+            vbo = vbo_info.create()
+            vao.add_array_buffer(vbo_info.component_type.value, vbo)
+            for attr in vbo_info.attributes:
+                vao.map_buffer(vbo, name_map[attr[0]], attr[1])
 
         vao.build()
         return Mesh(self.name, vao=vao)
@@ -266,17 +271,17 @@ class GLTFMesh:
         # print("vbo", vbo.__dict__)
         return component_type, vbo
 
-    def load_attributes(self):
-        # figure out what buffers are interleaved
-        attribs = []
+    def prepare_attrib_mapping(self):
+        buffer_info = []
+        """Pre-parse buffer mappings for each VBO to detect interleaved data"""
         for name, accessor in self.primitives[0].attributes.items():
-            components, component_type, vbo = accessor.read(target=GL.GL_ARRAY_BUFFER)
-            attribs.append((name, components, component_type, vbo))
+            info = VBOInfo(*accessor.info(target=GL.GL_ARRAY_BUFFER))
+            # Check interleaved here
+            info.attributes.append((name, info.components))
+            print(name, info)
+            buffer_info.append(info)
 
-        return attribs
-
-    def is_interleaved(self):
-        pass
+        return buffer_info
 
     def get_bbox(self):
         """Get the bounding box for the mesh"""
@@ -284,8 +289,46 @@ class GLTFMesh:
         return accessor.min, accessor.max
 
 
+class VBOInfo:
+    """Resolved data about each VBO"""
+    def __init__(self, buffer=None, buffer_view=None, target=None,
+                 byte_length=None, byte_offset=None,
+                 component_type=None, components=None, count=None):
+        self.buffer = buffer  # reference to the buffer
+        self.buffer_view = buffer_view
+        self.target = target
+        self.byte_length = byte_length  # Raw byte buffer length
+        self.byte_offset = byte_offset  # Raw byte offset
+        self.component_type = component_type  # Datatype of each component
+        self.components = components
+        self.count = count  # number of elements of the component type size
+        # list of (name, components) tuples
+        self.attributes = []
+
+    def create(self):
+        """Create the VBO"""
+        dtype = NP_COMPONENT_DTYPE[self.component_type.value]
+        data = self.buffer.read(byte_length=self.byte_length, byte_offset=self.byte_offset)
+        return VBO(numpy.frombuffer(data, count=self.count * self.components, dtype=dtype),
+                   target=self.target)
+
+    def __str__(self):
+        return "VBOInfo<buffer={}, buffer_view={}, target={}, \n" \
+               "        length={}, offset={}, \n" \
+               "        component_type={}, components={}, count={}, \n" \
+               "        attribs={}".format(
+                            self.buffer.id, self.buffer_view.id, self.target,
+                            self.byte_length, self.byte_offset,
+                            self.component_type.value, self.components, self.count,
+                            self.attributes)
+
+    def __repr__(self):
+        return str(self)
+
+
 class GLTFAccessor:
-    def __init__(self, data):
+    def __init__(self, accessor_id, data):
+        self.id = accessor_id
         self.bufferViewId = data.get('bufferView')
         self.bufferView = None
         self.byteOffset = data.get('byteOffset') or 0
@@ -309,9 +352,20 @@ class GLTFAccessor:
             count=self.count * ACCESSOR_TYPE[self.type],
         )
 
+    def info(self, target=None):
+        """
+        Get underlying buffer info for this accessor
+        :return: buffer, byte_length, byte_offset, component_type, count
+        """
+        buffer, target, byte_length, byte_offset = self.bufferView.info(byte_offset=self.byteOffset, target=target)
+        return buffer, self.bufferView, target, \
+               byte_length, byte_offset, \
+               self.componentType, ACCESSOR_TYPE[self.type], self.count
+
 
 class GLTFBufferView:
-    def __init__(self, data):
+    def __init__(self, view_id, data):
+        self.id = view_id
         self.bufferId = data.get('buffer')
         self.buffer = None
         self.byteOffset = data.get('byteOffset') or 0
@@ -329,9 +383,19 @@ class GLTFBufferView:
                   target=BUFFER_TARGETS[target])
         return vbo
 
+    def info(self, byte_offset=0, target=None):
+        """
+        Get the underlying buffer info
+        :param byte_offset: byte offset from accessor
+        :param target: buffer target (elements or data array)
+        :return: buffer, target, byte_length, byte_offset
+        """
+        return self.buffer, BUFFER_TARGETS[target], self.byteLength, byte_offset + self.byteOffset
+
 
 class GLTFBuffer:
-    def __init__(self, data, path):
+    def __init__(self, buffer_id, data, path):
+        self.id = buffer_id
         self.path = path
         self.byteLength = data.get('byteLength')
         self.uri = data.get('uri')
