@@ -6,15 +6,19 @@ import os
 
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
+from PIL import Image
 
 from pyrr import matrix44, Matrix44, quaternion
 
 from demosys.opengl import VAO
+from demosys.opengl import Texture
+from demosys.opengl import samplers
 from demosys.opengl.constants import TYPE_INFO
 from demosys.scene import (
     Node,
     Mesh,
     Material,
+    MaterialTexture,
 )
 
 # Supported buffer targets
@@ -58,6 +62,9 @@ class GLTF2:
         self.nodes = []
         self.meshes = []
         self.materials = []
+        self.images = []
+        self.samplers = []
+        self.textures = []
 
         self.meta = None
         self.file = file_path
@@ -87,6 +94,8 @@ class GLTF2:
 
         self.meta.check_version()
         self.load_images()
+        self.load_samplers()
+        self.load_textures()
         self.load_meshes()
         self.load_materials()
         self.load_nodes()
@@ -102,7 +111,23 @@ class GLTF2:
 
     def load_images(self):
         for image in self.meta.images:
-            pass
+            self.images.append(image.load(self.path))
+
+    def load_samplers(self):
+        for sampler in self.meta.samplers:
+            self.samplers.append(sampler.create())
+
+    def load_textures(self):
+        for texture in self.meta.textures:
+            mt = MaterialTexture()
+
+            if texture.source is not None:
+                mt.texture = self.images[texture.source]
+
+            if texture.sampler is not None:
+                mt.sampler = self.samplers[texture.sampler]
+
+            self.textures.append(mt)
 
     def load_meshes(self):
         for mesh in self.meta.meshes:
@@ -115,6 +140,9 @@ class GLTF2:
         for mat in self.meta.materials:
             m = Material(mat.name)
             m.color = mat.baseColorFactor
+            if mat.baseColorTexture is not None:
+                m.mat_texture = self.textures[mat.baseColorTexture['index']]
+
             self.materials.append(m)
             self.scene.materials.append(m)
 
@@ -338,11 +366,10 @@ class VBOInfo:
         return "VBOInfo<buffer={}, buffer_view={}, target={}, \n" \
                "        length={}, offset={}, \n" \
                "        component_type={}, components={}, count={}, \n" \
-               "        attribs={}".format(
-                            self.buffer.id, self.buffer_view.id, self.target,
-                            self.byte_length, self.byte_offset,
-                            self.component_type.value, self.components, self.count,
-                            self.attributes)
+               "        attribs={}".format(self.buffer.id, self.buffer_view.id, self.target,
+                                           self.byte_length, self.byte_offset,
+                                           self.component_type.value, self.components, self.count,
+                                           self.attributes)
 
     def __repr__(self):
         return str(self)
@@ -381,8 +408,8 @@ class GLTFAccessor:
         """
         buffer, target, byte_length, byte_offset = self.bufferView.info(byte_offset=self.byteOffset, target=target)
         return buffer, self.bufferView, target, \
-               byte_length, byte_offset, \
-               self.componentType, ACCESSOR_TYPE[self.type], self.count
+            byte_length, byte_offset, \
+            self.componentType, ACCESSOR_TYPE[self.type], self.count
 
 
 class GLTFBufferView:
@@ -482,21 +509,25 @@ class GLTFNode:
 class GLTFMaterial:
     def __init__(self, data):
         self.name = data.get('name')
-        self.baseColorFactor = None
-        self.metallicFactor = None
-        self.emissiveFactor = None
 
-        pbr = data.get('pbrMetallicRoughness')
-        if pbr:
-            self.baseColorFactor = pbr.get('baseColorFactor')
-            self.metallicFactor = pbr.get('metallicFactor')
-
+        pbr = data['pbrMetallicRoughness']
+        self.baseColorFactor = pbr.get('baseColorFactor')
+        self.baseColorTexture = pbr.get('baseColorTexture')
+        self.metallicFactor = pbr.get('metallicFactor')
         self.emissiveFactor = data.get('emissiveFactor')
 
 
 class GLTFImage:
     def __init__(self, data):
         self.uri = data['uri']
+
+    def load(self, path):
+        # FIXME: Load embedded images
+        path = os.path.join(path, self.uri)
+        texture = Texture(self.uri, mipmap=True, anisotropy=8)
+        image = Image.open(path)
+        texture.set_image(image, flip=False)
+        return texture
 
 
 class GLTFTexture:
@@ -511,6 +542,16 @@ class GLTFSampler:
         self.minFilter = data.get('minFilter')
         self.wrapS = data.get('wrapS')
         self.wrapT = data.get('wrapT')
+
+    def create(self):
+        return samplers.create_sampler(
+            mipmap=True,
+            mag_filter=self.magFilter,
+            min_filter=self.minFilter,
+            anisotropy=8,
+            wrap_s=self.wrapS,
+            wrap_t=self.wrapT,
+        )
 
 
 class GLTFCamera:
