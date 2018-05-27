@@ -108,6 +108,7 @@ class GLTF2:
         for mesh in self.meta.meshes:
             m = mesh.load()
             self.meshes.append(m)
+            self.scene.meshes.append(m)
 
     def load_materials(self):
         # Create material objects
@@ -115,6 +116,7 @@ class GLTF2:
             m = Material(mat.name)
             m.color = mat.baseColorFactor
             self.materials.append(m)
+            self.scene.materials.append(m)
 
         # Map to meshes
         for i, mesh in enumerate(self.meta.meshes):
@@ -125,11 +127,12 @@ class GLTF2:
         # Start with root nodes in the scene
         for node_id in self.meta.scenes[0].nodes:
             node = self.load_node(self.meta.nodes[node_id])
-            self.scene.add_node(node)
+            self.scene.root_nodes.append(node)
 
     def load_node(self, meta, parent=None):
         # Create the node
         node = Node()
+        self.scene.nodes.append(node)
 
         if meta.matrix is not None:
             node.matrix = Matrix44(value=meta.matrix)

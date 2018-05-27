@@ -12,13 +12,16 @@ class Scene:
         """
         self.name = name
         self.loader = loader
-        self.nodes = []
+        self.root_nodes = []
 
-    def add_node(self, node):
-        self.nodes.append(node)
+        # References resources in the scene
+        self.nodes = []
+        self.materials = []
+        self.meshes = []
+        self.cameras = []
 
     def draw(self, m_mv, m_proj, shader):
-        for node in self.nodes:
+        for node in self.root_nodes:
             node.draw(m_mv, m_proj, shader)
 
     def load(self, path):
