@@ -813,7 +813,7 @@ class Shader:
     # --- Sampler ---
 
     @uniform_type(GL.GL_SAMPLER_1D, name_arg_index=2)
-    def uniform_sampler_1d(self, unit, name, texture, uniform=None):
+    def uniform_sampler_1d(self, unit, name, texture, sampler=None, uniform=None):
         """
         Sets a sampler1d
 
@@ -824,10 +824,12 @@ class Shader:
         """
         GL.glActiveTexture(GL.GL_TEXTURE0 + unit)
         texture.bind()
+        if sampler:
+            sampler.bind(unit)
         GL.glUniform1i(uniform.location, unit)
 
     @uniform_type(GL.GL_SAMPLER_2D, name_arg_index=2)
-    def uniform_sampler_2d(self, unit, name, texture, uniform=None):
+    def uniform_sampler_2d(self, unit, name, texture, sampler=None, uniform=None):
         """
         Sets a sampler2d
 
@@ -838,10 +840,12 @@ class Shader:
         """
         GL.glActiveTexture(GL.GL_TEXTURE0 + unit)
         texture.bind()
+        if sampler:
+            sampler.bind(unit)
         GL.glUniform1i(uniform.location, unit)
 
     @uniform_type(GL.GL_SAMPLER_3D, name_arg_index=2)
-    def uniform_sampler_3d(self, unit, name, texture, uniform=None):
+    def uniform_sampler_3d(self, unit, name, texture, sampler=None, uniform=None):
         """
         Sets a sampler3d
 
@@ -852,6 +856,8 @@ class Shader:
         """
         GL.glActiveTexture(GL.GL_TEXTURE0 + unit)
         texture.bind()
+        if sampler:
+            sampler.bind(unit)
         GL.glUniform1i(uniform.location, unit)
 
 
