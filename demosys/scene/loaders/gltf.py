@@ -619,7 +619,7 @@ class GLTFImage:
         if self.bufferView is not None:
             image = Image.open(io.BytesIO(self.bufferView.read_raw()))
         # Image is embedded
-        if self.uri.startswith('data:'):
+        elif self.uri and self.uri.startswith('data:'):
             data = self.uri[self.uri.find(',') + 1:]
             image = Image.open(io.BytesIO(base64.b64decode(data)))
         else:
