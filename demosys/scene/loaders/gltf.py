@@ -1,5 +1,6 @@
 # Spec: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#asset
 
+import base64
 import io
 import json
 import numpy
@@ -539,7 +540,8 @@ class GLTFBuffer:
             return
 
         if self.has_data_uri:
-            raise NotImplemented("data-uri resource loading not implemented")
+            self.data = base64.b64decode(self.uri[self.uri.find(',') + 1:])
+            return
 
         with open(os.path.join(self.path, self.uri), 'rb') as fd:
             self.data = fd.read()
@@ -609,10 +611,17 @@ class GLTFImage:
         self.mimeType = data.get('mimeType')
 
     def load(self, path):
-        # FIXME: Load embedded images
+        # data:image/png;base64,iVBOR
+
         texture = Texture(self.uri, mipmap=True, anisotropy=8)
+
+        # Image is stored in bufferView
         if self.bufferView is not None:
             image = Image.open(io.BytesIO(self.bufferView.read_raw()))
+        # Image is embedded
+        if self.uri.startswith('data:'):
+            data = self.uri[self.uri.find(',') + 1:]
+            image = Image.open(io.BytesIO(base64.b64decode(data)))
         else:
             path = os.path.join(path, self.uri)
             image = Image.open(path)
