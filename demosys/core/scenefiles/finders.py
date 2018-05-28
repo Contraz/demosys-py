@@ -5,7 +5,7 @@ from demosys.conf import settings
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.utils.module_loading import import_string
 
-TEXTURE_DIR = 'scenes'
+SCENE_DIR = 'scenes'
 
 
 class FileSystemFinder(finders.FileSystemFinder):
@@ -32,7 +32,7 @@ class EffectDirectoriesFinder(finders.FileSystemFinder):
 
     # TODO: Use values from settings to filter texture files
     def find(self, path):
-        return self._find(os.path.join(TEXTURE_DIR, path))
+        return self._find(os.path.join(SCENE_DIR, path))
 
 
 def get_finders():
