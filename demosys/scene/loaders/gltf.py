@@ -3,6 +3,7 @@
 import json
 import numpy
 import os
+import struct
 
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
@@ -20,6 +21,8 @@ from demosys.scene import (
     Material,
     MaterialTexture,
 )
+
+GLTF_MAGIC_HEADER = b'glTF'
 
 # Supported buffer targets
 BUFFER_TARGETS = {
@@ -110,7 +113,34 @@ class GLTF2:
 
     def load_glb(self):
         """Loads a binary gltf file"""
-        pass
+        with open(self.file, 'rb') as fd:
+            # Check header
+            magic = fd.read(4)
+            if magic != GLTF_MAGIC_HEADER:
+                raise ValueError("{} has incorrect header {} != {}".format(self.file, magic, GLTF_MAGIC_HEADER))
+
+            version = struct.unpack('<I', fd.read(4))[0]
+            if version != 2:
+                raise ValueError("{} has unsupported version {}".format(self.file, version))
+
+            # Total file size including headers
+            _ = struct.unpack('<I', fd.read(4))[0]
+
+            # Chunk 0 - json
+            chunk_0_length = struct.unpack('<I', fd.read(4))[0]
+            chunk_0_type = fd.read(4)
+            if chunk_0_type != b'JSON':
+                raise ValueError("Expected JSON chunk, not {} in file {}".format(chunk_0_type, self.file))
+
+            json_meta = fd.read(chunk_0_length).decode()
+
+            # chunk 1 - binary buffer
+            chunk_1_length = struct.unpack('<I', fd.read(4))[0]
+            chunk_1_type = fd.read(4)
+            if chunk_1_type != b'BIN\x00':
+                raise ValueError("Expected BIN chunk, not {} in file {}".format(chunk_1_type, self.file))
+
+            self.meta = GLTFMeta(self.file, json.loads(json_meta), binary_buffer=fd.read(chunk_1_length))
 
     def load_images(self):
         for image in self.meta.images:
@@ -188,7 +218,12 @@ class GLTF2:
 
 class GLTFMeta:
     """Container for gltf metadata"""
-    def __init__(self, file, data):
+    def __init__(self, file, data, binary_buffer=None):
+        """
+        :param file: GLTF file name loaded
+        :param data: Metadata (json loaded)
+        :param binary_buffer: Binary buffer when loading glb files
+        """
         self.data = data
         self.file = file
         self.path = os.path.dirname(self.file)
@@ -207,6 +242,10 @@ class GLTFMeta:
             if data.get('buffers') else []
         self.accessors = [GLTFAccessor(i, a) for i, a in enumerate(data['accessors'])] \
             if data.get('accessors') else []
+
+        # glb files can contain buffer 0 data
+        if binary_buffer:
+            self.buffers[0].data = binary_buffer
 
         self._link_data()
 
@@ -259,6 +298,9 @@ class GLTFMeta:
     def buffers_exist(self):
         """Checks if the bin files referenced exist"""
         for buff in self.buffers:
+            if not buff.is_separate_file:
+                continue
+
             path = os.path.join(self.path, buff.uri)
             if not os.path.exists(path):
                 raise FileNotFoundError("Buffer %s referenced in %s not found", path, self.file)
@@ -472,7 +514,16 @@ class GLTFBuffer:
 
     @property
     def has_data_uri(self):
+        """Is data embedded in json?"""
+        if not self.uri:
+            return False
+
         return self.uri.startswith("data:")
+
+    @property
+    def is_separate_file(self):
+        """Buffer represents an independent bin file?"""
+        return self.uri is not None and not self.has_data_uri
 
     def open(self):
         if self.data:
@@ -538,8 +589,16 @@ class GLTFMaterial:
 
 
 class GLTFImage:
+    """
+    Represent texture data.
+    May be a file, embedded data or pointer to data in bufferview
+    """
     def __init__(self, data):
         self.uri = data['uri']
+        # {
+        #     "bufferView": 8,
+        #     "mimeType": "image/jpeg"
+        # }
 
     def load(self, path):
         # FIXME: Load embedded images
