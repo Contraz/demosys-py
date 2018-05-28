@@ -3,6 +3,8 @@ from demosys.scene.loaders import gltf
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.scenefiles.finders import get_finders
 from demosys.scene import Scene
+from demosys.conf import settings
+from demosys.utils.module_loading import import_string
 
 
 class Scenes:
@@ -27,10 +29,16 @@ class Scenes:
         :param create: (bool) Create an empty scene object if it doesn't exist
         :return: Scene object
         """
-        # FIXME: Figure out what scene loader class should be used instead of hardcoding gltf
-        # FIXME: This should be configured in settings
-        if path not in self.scenes:
-            self.scenes[path] = Scene(path, loader=gltf.GLTF2(path), **kwargs)
+        # Figure out what scene loader class should be used
+        for loader_name in settings.SCENE_LOADERS:
+            loader_cls = import_string(loader_name)
+            if loader_cls.supports_file(path):
+                if path not in self.scenes:
+                    loader_cls = import_string(loader_name)
+                    self.scenes[path] = Scene(path, loader=loader_cls(path), **kwargs)
+                break
+        else:
+            raise ImproperlyConfigured("Scene {} has no loader class registered. Check settings.SCENE_LOADERS")
 
         return self.scenes[path]
 

@@ -19,6 +19,7 @@ __ORDER__ = (
     'TEXTURE_FINDERS',
     'SCENE_DIRS',
     'SCENE_FINDERS',
+    'SCENE_LOADERS',
 )
 
 DEBUG = False
@@ -92,4 +93,9 @@ SCENE_DIRS = ()
 SCENE_FINDERS = (
     "demosys.core.scenefiles.finders.FileSystemFinder",
     "demosys.core.scenefiles.finders.EffectDirectoriesFinder",
+)
+
+SCENE_LOADERS = (
+    'demosys.scene.loaders.gltf.GLTF2',
+    'demosys.scene.loaders.wavefront.ObjLoader',
 )
