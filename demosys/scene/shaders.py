@@ -3,7 +3,7 @@ from pyrr import Matrix33
 
 class MeshShader:
 
-    def __init__(self, shader):
+    def __init__(self, shader, **kwargs):
         self.shader = shader
 
     def draw(self, mesh, proj_mat, view_mat):
