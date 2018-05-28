@@ -40,7 +40,7 @@ class Mesh:
         shader.uniform_3fv("bb_max", self.bbox_max)
         vao.draw()
 
-    def calc_global_bbox(self, view_matrix, bbox_min=None, bbox_max=None):
+    def calc_global_bbox(self, view_matrix, bbox_min, bbox_max):
         bb1 = self.bbox_min[:]
         bb1.append(1.0)
         bb2 = self.bbox_max[:]
@@ -54,9 +54,6 @@ class Mesh:
 
         if bbox_min is None or bbox_max is None:
             return bmin[0:3], bmax[0:3]
-
-        bbox_min = bbox_min[:]
-        bbox_max = bbox_max[:]
 
         for i in range(3):
             bbox_min[i] = min(bbox_min[i], bmin[i])

@@ -45,8 +45,8 @@ class Scene:
         if not all:
             return
 
-        # for node in self.root_nodes:
-        #     node.draw_bbox(m_proj, m_mv, self.bbox_shader, self.bbox_vao)
+        for node in self.root_nodes:
+            node.draw_bbox(m_proj, m_mv, self.bbox_shader, self.bbox_vao)
 
     def apply_mesh_shaders(self, mesh_shaders):
         """Applies mesh shaders to meshes"""
@@ -71,8 +71,8 @@ class Scene:
         for node in self.root_nodes:
             bbox_min, bbox_max = node.calc_global_bbox(
                 matrix44.create_identity(),
-                bbox_min=bbox_min,
-                bbox_max=bbox_max
+                bbox_min,
+                bbox_max
             )
 
         self.bbox_min = bbox_min
