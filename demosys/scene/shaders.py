@@ -14,7 +14,10 @@ class MeshShader:
         mesh.vao.draw()
 
     def apply(self, mesh):
-        """Return true if this mesh shader should be applied to this mesh"""
+        """
+        Determine if this MeshShader should be applied to the mesh
+        Can return self or some MeshShader instance to support dynamic MeshShader creation
+        """
         raise NotImplementedError("apply is not implemented. Please override the MeshShader method")
 
     def create_normal_matrix(self, modelview):

@@ -1,7 +1,7 @@
 """
 Wrapper for a loaded scene with properties.
 """
-
+from .shaders import MeshShader
 
 class Scene:
     """Generic scene"""
@@ -32,9 +32,13 @@ class Scene:
 
         for mesh in self.meshes:
             for ms in mesh_shaders:
-                if ms.apply(mesh):
-                    mesh.mesh_shader = ms
-                    continue
+                instance = ms.apply(mesh)
+                if instance is not None:
+                    if isinstance(instance, MeshShader):
+                        mesh.mesh_shader = ms
+                        continue
+                    else:
+                        raise ValueError("apply() must return a MeshShader instance, not {}".format(type(instance)))
             else:
                 print("WARING: No mesh shader applied to '{}'".format(mesh.name))
 
