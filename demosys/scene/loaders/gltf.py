@@ -23,6 +23,7 @@ from demosys.scene import (
     Material,
     MaterialTexture,
 )
+from .base import SceneLoader
 
 GLTF_MAGIC_HEADER = b'glTF'
 
@@ -49,10 +50,11 @@ ACCESSOR_TYPE = {
 }
 
 
-class GLTF2:
+class GLTF2(SceneLoader):
     """
-    Represents a GLTF 2.0 file
+    Loader for GLTF 2.0 files
     """
+    file_extensions = ['.gltf', '.glb']
     supported_extensions = []
 
     def __init__(self, file_path):
@@ -65,6 +67,7 @@ class GLTF2:
         - gltf embedded buffers
         - glb Binary format
         """
+        super().__init__(file_path)
         self.scenes = []
         self.nodes = []
         self.meshes = []
