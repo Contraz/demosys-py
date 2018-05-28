@@ -62,7 +62,7 @@ class Scene:
                         continue
                     else:
                         raise ValueError("apply() must return a MeshShader instance, not {}".format(type(instance)))
-            else:
+            if not mesh.mesh_shader:
                 print("WARING: No mesh shader applied to '{}'".format(mesh.name))
 
     def calc_scene_bbox(self):
