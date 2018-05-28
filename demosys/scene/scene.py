@@ -24,6 +24,8 @@ class Scene:
         self.cameras = []
         self.mesh_shaders = mesh_shaders or [ColorShader(), TextureShader()]
 
+        self.bbox_min = None
+        self.bbox_max = None
         self.bbox_vao = geometry.bbox()
         self.bbox_shader = shaders.get('scene_default/bbox.glsl', create=True)
 
@@ -31,7 +33,18 @@ class Scene:
         for node in self.root_nodes:
             node.draw(m_proj, m_mv)
 
-    def draw_bbox(self, m_proj, m_mv):
+    def draw_bbox(self, m_proj, m_mv, all=True):
+        """Draw scene and mesh bounding boxes"""
+        self.bbox_vao.bind(self.bbox_shader)
+        self.bbox_shader.uniform_mat4("m_proj", m_proj)
+        self.bbox_shader.uniform_mat4("m_mv", m_mv)
+        self.bbox_shader.uniform_3fv("bb_min", self.bbox_min)
+        self.bbox_shader.uniform_3fv("bb_max", self.bbox_max)
+        self.bbox_vao.draw()
+
+        if not all:
+            return
+
         for node in self.root_nodes:
             node.draw_bbox(m_proj, m_mv, self.bbox_shader, self.bbox_vao)
 
@@ -51,6 +64,21 @@ class Scene:
                         raise ValueError("apply() must return a MeshShader instance, not {}".format(type(instance)))
             else:
                 print("WARING: No mesh shader applied to '{}'".format(mesh.name))
+
+    def calc_bbox(self):
+        """Calculate scene bbox"""
+        if len(self.meshes) == 0:
+            return
+
+        self.bbox_min = self.meshes[0].bbox_min
+        self.bbox_max = self.meshes[0].bbox_max
+
+        for mesh in self.meshes[1:]:
+            for i in range(3):
+                self.bbox_min[i] = min(self.bbox_min[i], mesh.bbox_min[i])
+
+            for i in range(3):
+                self.bbox_max[i] = max(self.bbox_max[i], mesh.bbox_max[i])
 
     def load(self, path):
         """Deferred loading if a loader is specified"""

@@ -108,6 +108,8 @@ class GLTF2:
         self.load_materials()
         self.load_nodes()
 
+        self.scene.calc_bbox()
+
     def load_gltf(self):
         """Loads a gltf json file"""
         with open(self.file) as fd:
