@@ -1,5 +1,6 @@
 # Spec: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#asset
 
+import io
 import json
 import numpy
 import os
@@ -261,12 +262,17 @@ class GLTFMeta:
         for bv in self.bufferViews:
             bv.buffer = self.buffers[bv.bufferId]
 
-        # Meshes
+        # Link accessors to mesh primitives
         for mesh in self.meshes:
             for p in mesh.primitives:
                 p.indices = self.accessors[p.indices]
                 for name, value in p.attributes.items():
                     p.attributes[name] = self.accessors[value]
+
+        # Link buffer views to images
+        for image in self.images:
+            if image.bufferViewId is not None:
+                image.bufferView = self.bufferViews[image.bufferViewId]
 
     @property
     def version(self):
@@ -494,6 +500,9 @@ class GLTFBufferView:
                   target=BUFFER_TARGETS[target])
         return vbo
 
+    def read_raw(self):
+        return self.buffer.read(byte_length=self.byteLength, byte_offset=self.byteOffset)
+
     def info(self, byte_offset=0, target=None):
         """
         Get the underlying buffer info
@@ -594,17 +603,20 @@ class GLTFImage:
     May be a file, embedded data or pointer to data in bufferview
     """
     def __init__(self, data):
-        self.uri = data['uri']
-        # {
-        #     "bufferView": 8,
-        #     "mimeType": "image/jpeg"
-        # }
+        self.uri = data.get('uri')
+        self.bufferViewId = data.get('bufferView')
+        self.bufferView = None
+        self.mimeType = data.get('mimeType')
 
     def load(self, path):
         # FIXME: Load embedded images
-        path = os.path.join(path, self.uri)
         texture = Texture(self.uri, mipmap=True, anisotropy=8)
-        image = Image.open(path)
+        if self.bufferView is not None:
+            image = Image.open(io.BytesIO(self.bufferView.read_raw()))
+        else:
+            path = os.path.join(path, self.uri)
+            image = Image.open(path)
+
         texture.set_image(image, flip=False)
         return texture
 
