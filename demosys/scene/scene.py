@@ -4,7 +4,7 @@ Wrapper for a loaded scene with properties.
 from .shaders import MeshShader, ColorShader, TextureShader
 from demosys.opengl import geometry
 from demosys.resources import shaders
-
+from pyrr import matrix44
 
 class Scene:
     """Generic scene"""
@@ -45,8 +45,8 @@ class Scene:
         if not all:
             return
 
-        for node in self.root_nodes:
-            node.draw_bbox(m_proj, m_mv, self.bbox_shader, self.bbox_vao)
+        # for node in self.root_nodes:
+        #     node.draw_bbox(m_proj, m_mv, self.bbox_shader, self.bbox_vao)
 
     def apply_mesh_shaders(self, mesh_shaders):
         """Applies mesh shaders to meshes"""
@@ -65,20 +65,18 @@ class Scene:
             else:
                 print("WARING: No mesh shader applied to '{}'".format(mesh.name))
 
-    def calc_bbox(self):
+    def calc_scene_bbox(self):
         """Calculate scene bbox"""
-        if len(self.meshes) == 0:
-            return
+        bbox_min, bbox_max = None, None
+        for node in self.root_nodes:
+            bbox_min, bbox_max = node.calc_global_bbox(
+                matrix44.create_identity(),
+                bbox_min=bbox_min,
+                bbox_max=bbox_max
+            )
 
-        self.bbox_min = self.meshes[0].bbox_min
-        self.bbox_max = self.meshes[0].bbox_max
-
-        for mesh in self.meshes[1:]:
-            for i in range(3):
-                self.bbox_min[i] = min(self.bbox_min[i], mesh.bbox_min[i])
-
-            for i in range(3):
-                self.bbox_max[i] = max(self.bbox_max[i], mesh.bbox_max[i])
+        self.bbox_min = bbox_min
+        self.bbox_max = bbox_max
 
     def load(self, path):
         """Deferred loading if a loader is specified"""

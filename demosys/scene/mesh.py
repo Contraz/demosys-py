@@ -1,6 +1,8 @@
 """
 Mesh class containing geometry information
 """
+from pyrr import matrix44
+import numpy
 
 
 class Mesh:
@@ -37,6 +39,32 @@ class Mesh:
         shader.uniform_3fv("bb_min", self.bbox_min)
         shader.uniform_3fv("bb_max", self.bbox_max)
         vao.draw()
+
+    def calc_global_bbox(self, view_matrix, bbox_min=None, bbox_max=None):
+        bb1 = self.bbox_min[:]
+        bb1.append(1.0)
+        bb2 = self.bbox_max[:]
+        bb2.append(1.0)
+
+        bmin = matrix44.apply_to_vector(view_matrix, bb1),
+        bmax = matrix44.apply_to_vector(view_matrix, bb2),
+
+        bmin = numpy.asarray(bmin)[0]
+        bmax = numpy.asarray(bmax)[0]
+
+        if bbox_min is None or bbox_max is None:
+            return bmin[0:3], bmax[0:3]
+
+        bbox_min = bbox_min[:]
+        bbox_max = bbox_max[:]
+
+        for i in range(3):
+            bbox_min[i] = min(bbox_min[i], bmin[i])
+
+        for i in range(3):
+            bbox_max[i] = max(bbox_max[i], bmax[i])
+
+        return bbox_min, bbox_max
 
     def has_normals(self):
         return "NORMAL" in self.attributes
