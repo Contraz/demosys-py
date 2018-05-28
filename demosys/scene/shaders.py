@@ -40,7 +40,9 @@ class MeshShader:
 
 
 class ColorShader(MeshShader):
-
+    """
+    Simple color shader
+    """
     def __init__(self, shader=None, **kwargs):
         super().__init__(shader=shaders.get("scene_default/color.glsl", create=True))
 
@@ -61,13 +63,18 @@ class ColorShader(MeshShader):
         mesh.vao.draw()
 
     def apply(self, mesh):
+        if not mesh.material:
+            return None
+
         if mesh.material.mat_texture is None:
             return self
         return None
 
 
 class TextureShader(MeshShader):
-
+    """
+    Simple texture shader
+    """
     def __init__(self, shader=None, **kwargs):
         super().__init__(shader=shaders.get("scene_default/texture.glsl", create=True))
 
@@ -84,6 +91,27 @@ class TextureShader(MeshShader):
         mesh.vao.draw()
 
     def apply(self, mesh):
+        if not mesh.material:
+            return None
+
         if mesh.material.mat_texture is not None:
             return self
+
         return None
+
+
+class FallbackShader(MeshShader):
+    """
+    Fallback shader only rendering positions in white
+    """
+    def __init__(self, shader=None, **kwargs):
+        super().__init__(shader=shaders.get("scene_default/fallback.glsl", create=True))
+
+    def draw(self, mesh, proj_mat, view_mat):
+        mesh.vao.bind(self.shader)
+        self.shader.uniform_mat4("m_proj", proj_mat)
+        self.shader.uniform_mat4("m_mv", view_mat)
+        mesh.vao.draw()
+
+    def apply(self, mesh):
+        return self
