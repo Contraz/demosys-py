@@ -370,7 +370,12 @@ class GLTFMesh:
                 }
 
         vao.build()
-        return Mesh(self.name, vao=vao, attributes=attributes)
+
+        bbox_min, bbox_max = self.get_bbox()
+        return Mesh(
+            self.name, vao=vao, attributes=attributes,
+            bbox_min=bbox_min, bbox_max=bbox_max,
+        )
 
     def load_indices(self):
         """Loads the index buffer / polygon list"""
