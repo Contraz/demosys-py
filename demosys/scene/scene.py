@@ -1,7 +1,7 @@
 """
 Wrapper for a loaded scene with properties.
 """
-from .shaders import MeshShader, ColorShader, TextureShader
+from .shaders import MeshShader, ColorShader, TextureShader, FallbackShader
 from demosys.opengl import geometry
 from demosys.resources import shaders
 from pyrr import matrix44
@@ -23,7 +23,7 @@ class Scene:
         self.materials = []
         self.meshes = []
         self.cameras = []
-        self.mesh_shaders = mesh_shaders or [ColorShader(), TextureShader()]
+        self.mesh_shaders = mesh_shaders or [ColorShader(), TextureShader(), FallbackShader()]
 
         self.bbox_min = None
         self.bbox_max = None
@@ -49,13 +49,13 @@ class Scene:
         for node in self.root_nodes:
             node.draw_bbox(m_proj, m_mv, self.bbox_shader, self.bbox_vao)
 
-    def apply_mesh_shaders(self, mesh_shaders):
+    def apply_mesh_shaders(self):
         """Applies mesh shaders to meshes"""
-        if mesh_shaders is None:
+        if self.mesh_shaders is None:
             return
 
         for mesh in self.meshes:
-            for ms in mesh_shaders:
+            for ms in self.mesh_shaders:
                 instance = ms.apply(mesh)
                 if instance is not None:
                     if isinstance(instance, MeshShader):
@@ -87,7 +87,7 @@ class Scene:
         if self.loader:
             self.loader.load(self, file=path)
 
-        self.apply_mesh_shaders(self.mesh_shaders)
+        self.apply_mesh_shaders()
 
     def __str__(self):
         return "<Scene: {}>".format(self.name)
