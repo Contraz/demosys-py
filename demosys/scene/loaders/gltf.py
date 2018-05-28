@@ -48,6 +48,8 @@ class GLTF2:
     """
     Represents a GLTF 2.0 file
     """
+    supported_extensions = []
+
     def __init__(self, file_path):
         """
         Parse the json file and validate its contents.
@@ -93,6 +95,7 @@ class GLTF2:
             self.load_glb()
 
         self.meta.check_version()
+        self.meta.check_extensions(self.supported_extensions)
         self.load_images()
         self.load_samplers()
         self.load_textures()
@@ -186,6 +189,7 @@ class GLTF2:
 class GLTFMeta:
     """Container for gltf metadata"""
     def __init__(self, file, data):
+        self.data = data
         self.file = file
         self.path = os.path.dirname(self.file)
         self.asset = GLTFAsset(data['asset'])
@@ -214,6 +218,7 @@ class GLTFMeta:
         # accessors -> bufferViews -> buffers
         for acc in self.accessors:
             acc.bufferView = self.bufferViews[acc.bufferViewId]
+
         for bv in self.bufferViews:
             bv.buffer = self.buffers[bv.bufferId]
 
@@ -235,6 +240,21 @@ class GLTFMeta:
                 self.file
             )
             raise ValueError(msg)
+
+    def check_extensions(self, supported):
+        """
+        "extensionsRequired": ["KHR_draco_mesh_compression"],
+        "extensionsUsed": ["KHR_draco_mesh_compression"]
+        """
+        if self.data.get('extensionsRequired'):
+            for ext in self.data.get('extensionsRequired'):
+                if ext not in supported:
+                    raise ValueError("Extension {} not supported".format(ext))
+
+        if self.data.get('extensionsUsed'):
+            for ext in self.data.get('extensionsUsed'):
+                if ext not in supported:
+                    raise ValueError("Extension {} not supported".format(ext))
 
     def buffers_exist(self):
         """Checks if the bin files referenced exist"""
@@ -378,7 +398,7 @@ class VBOInfo:
 class GLTFAccessor:
     def __init__(self, accessor_id, data):
         self.id = accessor_id
-        self.bufferViewId = data.get('bufferView')
+        self.bufferViewId = data.get('bufferView') or 0
         self.bufferView = None
         self.byteOffset = data.get('byteOffset') or 0
         self.componentType = TYPE_INFO[data['componentType']]
