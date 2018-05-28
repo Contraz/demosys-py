@@ -6,6 +6,7 @@ from demosys.opengl import geometry
 from demosys.resources import shaders
 from pyrr import matrix44
 
+
 class Scene:
     """Generic scene"""
     def __init__(self, name, loader=None, mesh_shaders=None, **kwargs):

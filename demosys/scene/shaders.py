@@ -75,7 +75,8 @@ class TextureShader(MeshShader):
         m_normal = self.create_normal_matrix(view_mat)
 
         mesh.vao.bind(self.shader)
-        self.shader.uniform_sampler_2d(0, "texture0", mesh.material.mat_texture.texture, sampler=mesh.material.mat_texture.sampler)
+        self.shader.uniform_sampler_2d(0, "texture0", mesh.material.mat_texture.texture,
+                                       sampler=mesh.material.mat_texture.sampler)
         self.shader.uniform_mat4("m_proj", proj_mat)
         self.shader.uniform_mat4("m_mv", view_mat)
         self.shader.uniform_mat3("m_normal", m_normal)
