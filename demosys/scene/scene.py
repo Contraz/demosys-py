@@ -3,6 +3,7 @@ Wrapper for a loaded scene with properties.
 """
 from .shaders import MeshShader
 
+
 class Scene:
     """Generic scene"""
     def __init__(self, name, loader=None, mesh_shaders=None, **kwargs):
