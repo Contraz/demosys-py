@@ -1,5 +1,4 @@
 """Scene Regisry"""
-from demosys.scene.loaders import gltf
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.scenefiles.finders import get_finders
 from demosys.scene import Scene
