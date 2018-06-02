@@ -601,6 +601,7 @@ class GLTFNode:
 class GLTFMaterial:
     def __init__(self, data):
         self.name = data.get('name')
+        self.doubleSided = data.get('doubleSided') or False
 
         pbr = data['pbrMetallicRoughness']
         self.baseColorFactor = pbr.get('baseColorFactor')
