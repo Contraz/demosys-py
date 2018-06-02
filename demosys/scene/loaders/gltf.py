@@ -462,8 +462,8 @@ class GLTFAccessor:
         self.byteOffset = data.get('byteOffset') or 0
         self.componentType = TYPE_INFO[data['componentType']]
         self.count = data.get('count')
-        self.max = data.get('max')
-        self.min = data.get('min')
+        self.min = numpy.array(data.get('min') or [-0.5, -0.5, -0.5], dtype=numpy.float32)
+        self.max = numpy.array(data.get('max') or [0.5, 0.5, 0.5], dtype=numpy.float32)
         self.type = data.get('type')
 
     def read(self, target=None):

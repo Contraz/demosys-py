@@ -42,16 +42,20 @@ class Mesh:
         vao.draw()
 
     def calc_global_bbox(self, view_matrix, bbox_min, bbox_max):
-        bb1 = self.bbox_min[:]
-        bb1.append(1.0)
-        bb2 = self.bbox_max[:]
-        bb2.append(1.0)
+        # Copy and extend to vec4
+        bb1 = numpy.append(self.bbox_min[:], 1.0)
+        bb2 = numpy.append(self.bbox_max[:], 1.0)
 
+        # Transform the bbox values
         bmin = matrix44.apply_to_vector(view_matrix, bb1),
         bmax = matrix44.apply_to_vector(view_matrix, bb2),
-
         bmin = numpy.asarray(bmin)[0]
         bmax = numpy.asarray(bmax)[0]
+
+        # If a rotation happened there is an axis change and we have to ensure max-min is positive
+        for i in range(3):
+            if bmax[i] - bmin[i] < 0:
+                bmin[i], bmax[i] = bmax[i], bmin[i]
 
         if bbox_min is None or bbox_max is None:
             return bmin[0:3], bmax[0:3]
