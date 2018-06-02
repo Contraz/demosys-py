@@ -60,7 +60,7 @@ class Scene:
                 if instance is not None:
                     if isinstance(instance, MeshShader):
                         mesh.mesh_shader = ms
-                        continue
+                        break
                     else:
                         raise ValueError("apply() must return a MeshShader instance, not {}".format(type(instance)))
             if not mesh.mesh_shader:
