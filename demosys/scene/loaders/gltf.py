@@ -107,8 +107,8 @@ class GLTF2(SceneLoader):
         self.load_images()
         self.load_samplers()
         self.load_textures()
-        self.load_meshes()
         self.load_materials()
+        self.load_meshes()
         self.load_nodes()
 
         self.scene.calc_scene_bbox()
@@ -170,10 +170,12 @@ class GLTF2(SceneLoader):
             self.textures.append(mt)
 
     def load_meshes(self):
-        for mesh in self.meta.meshes:
-            m = mesh.load()
-            self.meshes.append(m)
-            self.scene.meshes.append(m)
+        for meta_mesh in self.meta.meshes:
+            # Returns a list of meshes
+            meshes = meta_mesh.load(self.materials)
+            self.meshes.append(meshes)
+            for m in meshes:
+                self.scene.meshes.append(m)
 
     def load_materials(self):
         # Create material objects
@@ -186,11 +188,6 @@ class GLTF2(SceneLoader):
 
             self.materials.append(m)
             self.scene.materials.append(m)
-
-        # Map to meshes
-        for i, mesh in enumerate(self.meta.meshes):
-            if mesh.primitives[0].material is not None:
-                self.meshes[i].material = self.materials[mesh.primitives[0].material]
 
     def load_nodes(self):
         # Start with root nodes in the scene
@@ -207,7 +204,14 @@ class GLTF2(SceneLoader):
             node.matrix = Matrix44(value=meta.matrix)
 
         if meta.mesh is not None:
-            node.mesh = self.meshes[meta.mesh]
+            # Since we split up meshes with multiple primitives, this can be a list
+            # If only one mesh we set it on the node as normal
+            if len(self.meshes[meta.mesh]) == 1:
+                node.mesh = self.meshes[meta.mesh][0]
+            # If multiple meshes we add them as new child node
+            elif len(self.meshes[meta.mesh]) > 1:
+                for mesh in self.meshes[meta.mesh]:
+                    node.add_child(Node(mesh=mesh))
 
         if meta.camera is not None:
             # FIXME: Use a proper camera class
@@ -345,9 +349,7 @@ class GLTFMesh:
         self.name = data.get('name')
         self.primitives = [Primitives(p) for p in data.get('primitives')]
 
-    def load(self):
-        self.prepare_attrib_mapping()
-
+    def load(self, materials):
         name_map = {
             'POSITION': 'in_position',
             'NORMAL': 'in_normal',
@@ -358,48 +360,58 @@ class GLTFMesh:
             'COLOR_0': 'in_color0',
         }
 
-        vbos = self.prepare_attrib_mapping()
-        vao = VAO(self.name, mode=self.primitives[0].mode or GL.GL_TRIANGLES)
+        meshes = []
 
-        # Index buffer
-        component_type, index_vbo = self.load_indices()
-        if index_vbo:
-            vao.set_element_buffer(component_type.value, index_vbo)
+        # Read all primitives as separate meshes for now
+        # According to the spec they can have different materials and vertex format
+        for primitive in self.primitives:
 
-        attributes = {}
+            vao = VAO(self.name, mode=primitive.mode or GL.GL_TRIANGLES)
 
-        for vbo_info in vbos:
-            vbo = vbo_info.create()
-            vao.add_array_buffer(vbo_info.component_type.value, vbo)
+            # Index buffer
+            component_type, index_vbo = self.load_indices(primitive)
+            if index_vbo:
+                vao.set_element_buffer(component_type.value, index_vbo)
 
-            for attr in vbo_info.attributes:
-                vao.map_buffer(vbo, name_map[attr[0]], attr[1])
-                attributes[attr[0]] = {
-                    'name': name_map[attr[0]],
-                    'components': attr[1],
-                    'type': vbo_info.component_type.value,
-                }
+            attributes = {}
 
-        vao.build()
+            vbos = self.prepare_attrib_mapping(primitive)
 
-        bbox_min, bbox_max = self.get_bbox()
-        return Mesh(
-            self.name, vao=vao, attributes=attributes,
-            bbox_min=bbox_min, bbox_max=bbox_max,
-        )
+            for vbo_info in vbos:
+                vbo = vbo_info.create()
+                vao.add_array_buffer(vbo_info.component_type.value, vbo)
 
-    def load_indices(self):
-        """Loads the index buffer / polygon list"""
-        if getattr(self.primitives[0], "indices") is None:
+                for attr in vbo_info.attributes:
+                    vao.map_buffer(vbo, name_map[attr[0]], attr[1])
+                    attributes[attr[0]] = {
+                        'name': name_map[attr[0]],
+                        'components': attr[1],
+                        'type': vbo_info.component_type.value,
+                    }
+
+            vao.build()
+
+            bbox_min, bbox_max = self.get_bbox(primitive)
+            meshes.append(Mesh(
+                self.name, vao=vao, attributes=attributes,
+                material=materials[primitive.material],
+                bbox_min=bbox_min, bbox_max=bbox_max,
+            ))
+
+        return meshes
+
+    def load_indices(self, primitive):
+        """Loads the index buffer / polygon list for a primitive"""
+        if getattr(primitive, "indices") is None:
             return None, None
 
-        _, component_type, vbo = self.primitives[0].indices.read(target=GL.GL_ELEMENT_ARRAY_BUFFER)
+        _, component_type, vbo = primitive.indices.read(target=GL.GL_ELEMENT_ARRAY_BUFFER)
         return component_type, vbo
 
-    def prepare_attrib_mapping(self):
+    def prepare_attrib_mapping(self, primitive):
+        """Pre-parse buffer mappings for each VBO to detect interleaved data for a primitive"""
         buffer_info = []
-        """Pre-parse buffer mappings for each VBO to detect interleaved data"""
-        for name, accessor in self.primitives[0].attributes.items():
+        for name, accessor in primitive.attributes.items():
             info = VBOInfo(*accessor.info(target=GL.GL_ARRAY_BUFFER))
             info.attributes.append((name, info.components))
 
@@ -412,9 +424,9 @@ class GLTFMesh:
 
         return buffer_info
 
-    def get_bbox(self):
+    def get_bbox(self, primitive):
         """Get the bounding box for the mesh"""
-        accessor = self.primitives[0].attributes.get('POSITION')
+        accessor = primitive.attributes.get('POSITION')
         return accessor.min, accessor.max
 
 
@@ -610,7 +622,8 @@ class GLTFNode:
 class GLTFMaterial:
     def __init__(self, data):
         self.name = data.get('name')
-        self.doubleSided = data.get('doubleSided') or False
+        # Defaults to true if not defined
+        self.doubleSided = data.get('doubleSided') or True
 
         pbr = data['pbrMetallicRoughness']
         self.baseColorFactor = pbr.get('baseColorFactor')
