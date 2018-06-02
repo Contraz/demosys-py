@@ -180,6 +180,7 @@ class GLTF2(SceneLoader):
         for mat in self.meta.materials:
             m = Material(mat.name)
             m.color = mat.baseColorFactor
+            m.double_sided = mat.doubleSided
             if mat.baseColorTexture is not None:
                 m.mat_texture = self.textures[mat.baseColorTexture['index']]
 

@@ -1,7 +1,11 @@
 import os
+
 from pyrr import Matrix33
+
 from demosys.conf import settings
 from demosys.resources import shaders
+
+from OpenGL import GL
 
 settings.add_shader_dir(os.path.join(os.path.dirname(__file__), 'shaders'))
 
@@ -51,10 +55,16 @@ class ColorShader(MeshShader):
 
         mesh.vao.bind(self.shader)
 
-        if mesh.material and mesh.material.color:
-            self.shader.uniform_4fv("color", mesh.material.color)
-        else:
-            self.shader.uniform_4fv("color", [1.0, 1.0, 1.0, 1.0])
+        if mesh.material:
+            if mesh.material.double_sided:
+                GL.glDisable(GL.GL_CULL_FACE)
+            else:
+                GL.glEnable(GL.GL_CULL_FACE)
+
+            if mesh.material.color:
+                self.shader.uniform_4fv("color", mesh.material.color)
+            else:
+                self.shader.uniform_4fv("color", [1.0, 1.0, 1.0, 1.0])
 
         self.shader.uniform_mat4("m_proj", proj_mat)
         self.shader.uniform_mat4("m_mv", view_mat)
@@ -80,6 +90,11 @@ class TextureShader(MeshShader):
 
     def draw(self, mesh, proj_mat, view_mat):
         m_normal = self.create_normal_matrix(view_mat)
+
+        if mesh.material.double_sided:
+            GL.glDisable(GL.GL_CULL_FACE)
+        else:
+            GL.glEnable(GL.GL_CULL_FACE)
 
         mesh.vao.bind(self.shader)
         self.shader.uniform_sampler_2d(0, "texture0", mesh.material.mat_texture.texture,
