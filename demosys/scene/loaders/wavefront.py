@@ -10,7 +10,7 @@ from demosys.scene import Mesh, Node
 
 class ObjLoader(SceneLoader):
     """Loade obj files"""
-    file_extensions = ['.obj', '.obj.gz']
+    file_extensions = ['.obj']
 
     def __init__(self, file_path):
         super().__init__(file_path)
@@ -23,7 +23,7 @@ class ObjLoader(SceneLoader):
             for mat in mesh.materials:
                 vbo = VBO(numpy.array(mat.vertices, dtype=numpy.dtype(numpy.float32)))
 
-                vao = VAO(mesh.name, mode=GL.GL_TRIANGLES)
+                vao = VAO("moo", mode=GL.GL_TRIANGLES)
                 vao.add_array_buffer(GL.GL_FLOAT, vbo)
                 vao.map_buffer(vbo, "in_uv", 2)
                 vao.map_buffer(vbo, "in_normal", 3)
