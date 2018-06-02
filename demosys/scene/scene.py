@@ -4,7 +4,7 @@ Wrapper for a loaded scene with properties.
 from .shaders import MeshShader, ColorShader, TextureShader, FallbackShader
 from demosys.opengl import geometry
 from demosys.resources import shaders
-from pyrr import matrix44
+from pyrr import matrix44, vector3
 
 
 class Scene:
@@ -27,6 +27,8 @@ class Scene:
 
         self.bbox_min = None
         self.bbox_max = None
+        self.diagonal_size = 1.0
+
         self.bbox_vao = geometry.bbox()
         self.bbox_shader = shaders.get('scene_default/bbox.glsl', create=True)
 
@@ -78,6 +80,8 @@ class Scene:
 
         self.bbox_min = bbox_min
         self.bbox_max = bbox_max
+
+        self.diagonal_size = vector3.length(self.bbox_max - self.bbox_min)
 
     def load(self, path):
         """Deferred loading if a loader is specified"""
