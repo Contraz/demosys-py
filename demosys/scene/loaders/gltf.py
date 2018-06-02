@@ -272,7 +272,8 @@ class GLTFMeta:
         # Link accessors to mesh primitives
         for mesh in self.meshes:
             for p in mesh.primitives:
-                p.indices = self.accessors[p.indices]
+                if getattr(p, "indices", None) is not None:
+                    p.indices = self.accessors[p.indices]
                 for name, value in p.attributes.items():
                     p.attributes[name] = self.accessors[value]
 
@@ -346,7 +347,6 @@ class GLTFMesh:
 
     def load(self):
         self.prepare_attrib_mapping()
-        component_type, index_vbo = self.load_indices()
 
         name_map = {
             'POSITION': 'in_position',
@@ -360,7 +360,12 @@ class GLTFMesh:
 
         vbos = self.prepare_attrib_mapping()
         vao = VAO(self.name, mode=self.primitives[0].mode or GL.GL_TRIANGLES)
-        vao.set_element_buffer(component_type.value, index_vbo)
+
+        # Index buffer
+        component_type, index_vbo = self.load_indices()
+        if index_vbo:
+            vao.set_element_buffer(component_type.value, index_vbo)
+
         attributes = {}
 
         for vbo_info in vbos:
@@ -385,6 +390,9 @@ class GLTFMesh:
 
     def load_indices(self):
         """Loads the index buffer / polygon list"""
+        if getattr(self.primitives[0], "indices") is None:
+            return None, None
+
         _, component_type, vbo = self.primitives[0].indices.read(target=GL.GL_ELEMENT_ARRAY_BUFFER)
         return component_type, vbo
 
