@@ -38,6 +38,7 @@ class Mesh:
         shader.uniform_mat4("m_mv", view_matrix)
         shader.uniform_3fv("bb_min", self.bbox_min)
         shader.uniform_3fv("bb_max", self.bbox_max)
+        shader.uniform_3fv("color", [0.75, 0.75, 0.75])
         vao.draw()
 
     def calc_global_bbox(self, view_matrix, bbox_min, bbox_max):

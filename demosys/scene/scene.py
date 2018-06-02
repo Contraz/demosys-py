@@ -38,16 +38,19 @@ class Scene:
 
     def draw_bbox(self, m_proj, m_mv, all=True):
         """Draw scene and mesh bounding boxes"""
+        # Scene bounding box
         self.bbox_vao.bind(self.bbox_shader)
         self.bbox_shader.uniform_mat4("m_proj", m_proj)
         self.bbox_shader.uniform_mat4("m_mv", m_mv)
         self.bbox_shader.uniform_3fv("bb_min", self.bbox_min)
         self.bbox_shader.uniform_3fv("bb_max", self.bbox_max)
+        self.bbox_shader.uniform_3fv("color", [1.0, 0.0, 0.0])
         self.bbox_vao.draw()
 
         if not all:
             return
 
+        # Draw bounding box for children
         for node in self.root_nodes:
             node.draw_bbox(m_proj, m_mv, self.bbox_shader, self.bbox_vao)
 
