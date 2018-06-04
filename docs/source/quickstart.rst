@@ -29,7 +29,7 @@ We require glfw 3.2.1 or later.
 
 .. code-block:: shell
 
-    brew install gflw
+    brew install glfw
 
 **Linux**
 
