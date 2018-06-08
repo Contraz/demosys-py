@@ -5,6 +5,7 @@ class Material:
         self.name = name
         self.color = None
         self.mat_texture = None
+        self.double_sided = True
 
 
 class MaterialTexture:

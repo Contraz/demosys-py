@@ -5,7 +5,9 @@ import pywavefront
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
 from demosys.opengl import VAO
-from demosys.scene import Mesh, Node
+from demosys.scene import Mesh, Node, Material, MaterialTexture
+from demosys.resources import textures
+from demosys.opengl import samplers
 
 
 class ObjLoader(SceneLoader):
@@ -26,12 +28,23 @@ class ObjLoader(SceneLoader):
                 vao = VAO(mesh.name, mode=GL.GL_TRIANGLES)
                 vao.add_array_buffer(GL.GL_FLOAT, vbo)
                 vao.map_buffer(vbo, "in_uv", 2)
-                vao.map_buffer(vbo, "in_normal", 3)
+                if "N3F" in mat.vertex_format:
+                    vao.map_buffer(vbo, "in_normal", 3)
                 vao.map_buffer(vbo, "in_position", 3)
                 vao.build()
 
                 mesh = Mesh("moo", vao=vao)
                 scene.meshes.append(mesh)
+
+                mesh.material = Material(mat.name)
+                mesh.material.color = mat.diffuse
+                if mat.texture:
+                    mesh.material.mat_texture = MaterialTexture(
+                        texture=textures.get(mat.texture.image_name, create=True, mipmap=True),
+                        sampler=samplers.create_sampler(wrap_s=GL.GL_CLAMP_TO_EDGE,
+                                                        wrap_t=GL.GL_CLAMP_TO_EDGE)
+                    )
+
                 node = Node(mesh=mesh)
                 scene.root_nodes.append(node)
 
