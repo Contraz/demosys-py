@@ -68,6 +68,8 @@ def run(manager=None):
     TIMER = timer_cls()
     TIMER.start()
 
+    GL.glClearColor(0.0, 0.0, 0.0, 0.0)
+
     # Main loop
     frames, ft = 0, 0
     prev_time = TIMER.get_time()
@@ -80,7 +82,6 @@ def run(manager=None):
         GL.glViewport(0, 0, WINDOW.buffer_width, WINDOW.buffer_height)
 
         # Clear the buffer
-        GL.glClearColor(0.0, 0.0, 0.0, 0.0)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
 
         # Tell the manager to draw stuff
