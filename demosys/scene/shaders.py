@@ -76,8 +76,12 @@ class ColorShader(MeshShader):
         if not mesh.material:
             return None
 
+        if not mesh.attributes.get("NORMAL"):
+            return None
+
         if mesh.material.mat_texture is None:
             return self
+
         return None
 
 
@@ -109,6 +113,9 @@ class TextureShader(MeshShader):
         if not mesh.material:
             return None
 
+        if not mesh.attributes.get("NORMAL"):
+            return None
+
         if mesh.material.mat_texture is not None:
             return self
 
@@ -126,6 +133,10 @@ class FallbackShader(MeshShader):
         mesh.vao.bind(self.shader)
         self.shader.uniform_mat4("m_proj", proj_mat)
         self.shader.uniform_mat4("m_mv", view_mat)
+        if mesh.material:
+            self.shader.uniform_3fv("color", mesh.material.color)
+        else:
+            self.shader.uniform_3fv("color", [1.0, 1.0, 1.0])
         mesh.vao.draw()
 
     def apply(self, mesh):
