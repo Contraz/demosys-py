@@ -21,31 +21,38 @@ class ObjLoader(SceneLoader):
         """Deferred loading"""
         data = pywavefront.Wavefront(file)
 
-        for mesh in data.mesh_list:
-            for mat in mesh.materials:
-                vbo = VBO(numpy.array(mat.vertices, dtype=numpy.dtype(numpy.float32)))
+        for name, mat in data.materials.items():
+            vbo = VBO(numpy.array(mat.vertices, dtype=numpy.dtype(numpy.float32)))
 
-                vao = VAO(mesh.name, mode=GL.GL_TRIANGLES)
-                vao.add_array_buffer(GL.GL_FLOAT, vbo)
+            vao = VAO(mat.name, mode=GL.GL_TRIANGLES)
+            vao.add_array_buffer(GL.GL_FLOAT, vbo)
+            mesh = Mesh(mat.name, vao=vao)
+
+            if "T2F" in mat.vertex_format:
                 vao.map_buffer(vbo, "in_uv", 2)
-                if "N3F" in mat.vertex_format:
-                    vao.map_buffer(vbo, "in_normal", 3)
-                vao.map_buffer(vbo, "in_position", 3)
-                vao.build()
+                mesh.add_attribute("TEXCOORD_0", "in_uv", 2)
 
-                mesh = Mesh("moo", vao=vao)
-                scene.meshes.append(mesh)
+            if "N3F" in mat.vertex_format:
+                vao.map_buffer(vbo, "in_normal", 3)
+                mesh.add_attribute("NORMAL", "in_normal", 3)
 
-                mesh.material = Material(mat.name)
-                mesh.material.color = mat.diffuse
-                if mat.texture:
-                    mesh.material.mat_texture = MaterialTexture(
-                        texture=textures.get(mat.texture.image_name, create=True, mipmap=True),
-                        sampler=samplers.create_sampler(wrap_s=GL.GL_CLAMP_TO_EDGE,
-                                                        wrap_t=GL.GL_CLAMP_TO_EDGE)
-                    )
+            vao.map_buffer(vbo, "in_position", 3)
+            mesh.add_attribute("POSITION", "in_position", 3)
 
-                node = Node(mesh=mesh)
-                scene.root_nodes.append(node)
+            vao.build()
+
+            scene.meshes.append(mesh)
+
+            mesh.material = Material(mat.name)
+            mesh.material.color = mat.diffuse
+            if mat.texture:
+                mesh.material.mat_texture = MaterialTexture(
+                    texture=textures.get(mat.texture.image_name, create=True, mipmap=True),
+                    sampler=samplers.create_sampler(wrap_s=GL.GL_CLAMP_TO_EDGE,
+                                                    wrap_t=GL.GL_CLAMP_TO_EDGE)
+                )
+
+            node = Node(mesh=mesh)
+            scene.root_nodes.append(node)
 
         return scene
