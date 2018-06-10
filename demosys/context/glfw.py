@@ -11,7 +11,7 @@ PROFILES = {
 }
 
 
-class Window:
+class GLTFWindow:
     min_glfw_version = (3, 2, 1)
 
     def __init__(self):

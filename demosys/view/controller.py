@@ -4,7 +4,7 @@ Thins needs to be improved once more pieces fall in place.
 """
 from OpenGL import GL
 import glfw
-from demosys.view.window import Window
+from demosys.context.glfw import GLTFWindow
 from demosys.effects.registry import Effect
 from demosys.opengl import fbo
 from demosys import resources
@@ -29,7 +29,7 @@ def run(manager=None):
     MANAGER = manager
 
     global WINDOW
-    WINDOW = Window()
+    WINDOW = GLTFWindow()
 
     fbo.WINDOW_FBO = fbo.WindowFBO(WINDOW)
 
