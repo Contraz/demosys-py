@@ -22,7 +22,7 @@ class Mesh:
         self.name = name
         self.vao = vao
         self.material = material
-        self.attributes = attributes
+        self.attributes = attributes or {}
         self.bbox_min = bbox_min
         self.bbox_max = bbox_max
         self.mesh_shader = None
@@ -40,6 +40,15 @@ class Mesh:
         shader.uniform_3fv("bb_max", self.bbox_max)
         shader.uniform_3fv("color", [0.75, 0.75, 0.75])
         vao.draw()
+
+    def add_attribute(self, attr_type, name, components):
+        """
+        Add metadata about the mesh
+        :param attr_type: POSITION, NORMAL ec
+        :param name: The attribute name used in the shader
+        :param components: Number of floats
+        """
+        self.attributes[attr_type] = {"name": name, "components": components}
 
     def calc_global_bbox(self, view_matrix, bbox_min, bbox_max):
         # Copy and extend to vec4
