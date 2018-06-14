@@ -3,8 +3,12 @@
 class Context:
 
     def __init__(self, width=0, height=0):
+        # window size
         self.width = width
         self.height = height
+        # Actual window buffer size. Needs adjustment for retina and 4k resolution by child
+        self.buffer_width = width
+        self.buffer_height = height
 
     def swap_buffers(self):
         """Swap frame buffer"""
