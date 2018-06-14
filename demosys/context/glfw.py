@@ -2,7 +2,7 @@ import glfw
 from OpenGL import GL
 from demosys.conf import settings
 from demosys.core.exceptions import ImproperlyConfigured
-
+from .base import Context
 
 PROFILES = {
     'any': glfw.OPENGL_ANY_PROFILE,
@@ -11,12 +11,14 @@ PROFILES = {
 }
 
 
-class GLTFWindow:
+class GLTFWindow(Context):
     min_glfw_version = (3, 2, 1)
 
     def __init__(self):
-        self.width = settings.WINDOW['size'][0]
-        self.height = settings.WINDOW['size'][1]
+        super().__init__(
+            width=settings.WINDOW['size'][0],
+            height=settings.WINDOW['size'][1],
+        )
         self.resizable = settings.WINDOW.get('resizable') or False
         self.title = settings.WINDOW.get('title') or "demosys-py"
         self.aspect_ratio = settings.WINDOW.get('aspect_ratio', 16 / 9)
@@ -87,18 +89,11 @@ class GLTFWindow:
         if settings.WINDOW.get('vsync'):
             glfw.swap_interval(1)
 
-    @property
-    def instance(self):
-        return self.window
-
     def should_close(self):
         return glfw.window_should_close(self.window)
 
-    def set_should_close(self):
+    def close(self):
         glfw.set_window_should_close(self.window, True)
-
-    def poll_events(self):
-        glfw.poll_events()
 
     def swap_buffers(self):
         glfw.swap_buffers(self.window)
@@ -111,7 +106,12 @@ class GLTFWindow:
     def terminate(self):
         glfw.terminate()
 
+    def poll_events(self):
+        """Poll events from glfw"""
+        glfw.poll_events()
+
     def check_glfw_version(self):
+        """Ensure glfw version is compatible"""
         print("glfw version: {} (python wrapper version {})".format(glfw.get_version(), glfw.__version__))
         if glfw.get_version() < self.min_glfw_version:
             raise ValueError("Please update glfw binaries to version {} or later".format(self.min_glfw_version))

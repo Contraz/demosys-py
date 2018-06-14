@@ -118,7 +118,7 @@ def key_event_callback(window, key, scancode, action, mods):
 
     # The well-known standard key for quick exit
     if key == glfw.KEY_ESCAPE:
-        WINDOW.set_should_close()
+        WINDOW.close()
         return
 
     # Toggle pause time

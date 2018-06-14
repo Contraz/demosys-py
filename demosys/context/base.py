@@ -1,0 +1,26 @@
+
+
+class Context:
+
+    def __init__(self, width=0, height=0):
+        self.width = width
+        self.height = height
+
+    def swap_buffers(self):
+        """Swap frame buffer"""
+        raise NotImplementedError()
+
+    def resize(self, width, height):
+        """Resize window"""
+        raise NotImplementedError()
+
+    def close(self):
+        """Hits the window to close"""
+        raise NotImplementedError()
+
+    def should_close(self):
+        """Check if window should close"""
+        raise NotImplementedError()
+
+    def terminate(self):
+        raise NotImplementedError()
