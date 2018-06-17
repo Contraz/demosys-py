@@ -1,9 +1,11 @@
-import os
-from OpenGL import GL
 import ctypes
+import os
 from functools import wraps
+
+from OpenGL import GL
 from demosys.conf import settings
 from .constants import TYPE_INFO
+from demosys import context
 
 
 def uniform_type(uniform_type, name_arg_index=1):
@@ -59,9 +61,12 @@ class Attribute:
         """
         self.name = name.decode()
         self.location = location
+
         type_info = TYPE_INFO.get(type)
+
         if not type_info:
             raise ShaderError("Attribute type {} not supported".format(self.type.name))
+
         self.type = type_info
 
     def __repr__(self):
@@ -80,14 +85,18 @@ class Shader:
         """
         if not path and not name:
             raise ShaderError("Shader must have a path or a name")
+
         self.path = path
+
         if not name:
             self.name = os.path.basename(path)
         else:
             self.name = name
-        self.vert_source = None
+
+        self.vertex_source = None
         self.frag_source = None
         self.geo_source = None
+
         self.program = None
         # Shader inputs
         self.uniform_map = {}
@@ -124,7 +133,7 @@ class Shader:
 
         :param source: (string) Vertex shader source
         """
-        self.vert_source = ShaderSource(GL.GL_VERTEX_SHADER, self.name, source)
+        self.vertex_source = ShaderSource(GL.GL_VERTEX_SHADER, self.name, source)
 
     def set_fragment_source(self, source):
         """
@@ -147,8 +156,7 @@ class Shader:
         Compiles all the shaders and links the program.
         If the linking is successful, it builds the uniform and attribute map.
         """
-        # Compile the separate shaders
-        self.vert_source.compile()
+        self.vertex_source.compile()
 
         if self.geo_source:
             self.geo_source.compile()
@@ -163,10 +171,12 @@ class Shader:
         self.build_attribute_map()
 
         # We only need the programs for linking
-        if self.vert_source:
-            self.vert_source.delete(self.program)
+        if self.vertex_source:
+            self.vertex_source.delete(self.program)
+
         if self.frag_source:
             self.frag_source.delete(self.program)
+
         if self.geo_source:
             self.geo_source.delete(self.program)
 
@@ -182,7 +192,7 @@ class Shader:
         Raises ``ShaderError`` if the linker failed.
         """
         program = GL.glCreateProgram()
-        GL.glAttachShader(program, self.vert_source.shader)
+        GL.glAttachShader(program, self.vertex_source.shader)
 
         if self.geo_source:
             GL.glAttachShader(program, self.geo_source.shader)
@@ -198,7 +208,7 @@ class Shader:
                 out_attribs = self.geo_source.find_out_attribs()
             # Otherwise they are specified in vertex shader
             else:
-                out_attribs = self.vert_source.find_out_attribs()
+                out_attribs = self.vertex_source.find_out_attribs()
 
             print("Transform feedback attribs:", out_attribs)
 
@@ -232,9 +242,11 @@ class Shader:
         print("Shader {} has {} uniform(s)".format(self.name, uniform_count))
         for i in range(uniform_count):
             info = GL.glGetActiveUniform(self.program, i)
+
             # Get the actual location of the uniform as types over a certain size span several locations
             location = GL.glGetUniformLocation(self.program, info[0])
             uniform = Uniform(info[0], info[1], info[2], location)
+
             self.uniform_map[uniform.name] = uniform
             print(" - {}".format(uniform))
 
@@ -256,8 +268,10 @@ class Shader:
             # Get the actual location. Do not trust the original order
             location = GL.glGetAttribLocation(self.program, name.value)
             attribute = Attribute(name.value, type.value, location)
+
             self.attribute_map[attribute.name] = attribute
             self.attribute_list.append(attribute)
+
             print(" - {}".format(attribute))
 
         self.attribute_key = ','.join(name for name in sorted(self.attribute_map.keys()))
@@ -884,6 +898,7 @@ class ShaderSource:
             raise ShaderError(
                 "Missing #version in shader {}. A version must be defined in the first line".format(self.name),
             )
+
         # Add preprocessors to source
         if self.type == GL.GL_VERTEX_SHADER:
             self.lines.insert(1, "#define VERTEX_SHADER 1")
@@ -891,13 +906,16 @@ class ShaderSource:
             self.lines.insert(1, "#define FRAGMENT_SHADER 1")
         elif self.type == GL.GL_GEOMETRY_SHADER:
             self.lines.insert(1, "#define GEOMETRY_SHADER 1")
+
         self.source = '\n'.join(self.lines)
 
     def compile(self):
         """Compile the shader"""
         self.shader = GL.glCreateShader(self.type)
+
         GL.glShaderSource(self.shader, self.source)
         GL.glCompileShader(self.shader)
+
         message = GL.glGetShaderInfoLog(self.shader)
         if message:
             self.print()
@@ -908,6 +926,7 @@ class ShaderSource:
         # The shader will not be deleted if attached
         if program:
             GL.glDetachShader(program, self.shader)
+
         # Now we can delete it
         GL.glDeleteShader(self.shader)
 
@@ -925,8 +944,10 @@ class ShaderSource:
     def print(self):
         """Print the shader lines"""
         print("---[ START {} ]---".format(self.name))
+
         for i, line in enumerate(self.lines):
             print("{}: {}".format(str(i).zfill(3), line))
+
         print("---[ END {} ]---".format(self.name))
 
     def type_name(self):
