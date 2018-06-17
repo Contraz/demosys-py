@@ -1,5 +1,8 @@
 import glfw
+import moderngl
+
 from OpenGL import GL
+
 from demosys.conf import settings
 from demosys.core.exceptions import ImproperlyConfigured
 from .base import Context
@@ -88,6 +91,9 @@ class GLTFWindow(Context):
         # was called before swapping the buffers and returning
         if settings.WINDOW.get('vsync'):
             glfw.swap_interval(1)
+
+        # Create mederngl context from existing context
+        self.ctx = moderngl.create_context()
 
     def should_close(self):
         return glfw.window_should_close(self.window)

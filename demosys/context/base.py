@@ -9,6 +9,8 @@ class Context:
         # Actual window buffer size. Needs adjustment for retina and 4k resolution by child
         self.buffer_width = width
         self.buffer_height = height
+        # ModernGL context
+        self.ctx = None
 
     def swap_buffers(self):
         """Swap frame buffer"""
