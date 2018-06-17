@@ -220,7 +220,7 @@ Same principle as ``SHADER_DIRS`` and ``SHADER_FINDERS``.
 
     # Absolute path to a project-global texture directory
     TEXTURE_DIRS = (
-        os.path.join(PROJECT_DIR, 'resource/textures'),
+        os.path.join(PROJECT_DIR, 'resources/textures'),
     )
 
     # Finder classes
@@ -228,6 +228,26 @@ Same principle as ``SHADER_DIRS`` and ``SHADER_FINDERS``.
         'demosys.core.texturefiles.finders.FileSystemFinder',
         'demosys.core.texturefiles.finders.EffectDirectoriesFinder'
     )
+
+SCENE_DIRS/FINDERS
+^^^^^^^^^^^^^^^^^^
+
+Same principle as ``SHADER_DIRS`` and ``SHADER_FINDERS``.
+This is where scene files such as wavefront and gltf files are loaded from.
+
+.. code:: python
+
+    # Absolute path to a project-global scene directory
+    SCENE_DIRS = (
+        os.path.join(PROJECT_DIR, 'resources/scenes'),
+    )
+
+    # Finder classes
+    SCENE_FINDERS = (
+        'demosys.core.scenefiles.finders.FileSystemFinder',
+        'demosys.core.scenefiles.finders.EffectDirectoriesFinder'
+    )
+
 
 SCREENSHOT_PATH
 ^^^^^^^^^^^^^^^
