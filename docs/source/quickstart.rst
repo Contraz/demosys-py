@@ -8,20 +8,15 @@ Python 3
 Make sure you have Python 3 installed. On Windows and OS X you can simply install
 the latest Python 3 by downloading an installer from the official_ Python site.
 
-.. Note:: We recommend Python 3.6 or higher because of general **speed improvements**
-    of the language, but Python versions down to 3.4 should work.
-
-Most linux distributions already have at least Python 3.4 installed thought ``python3``.
-See documentation for your distribution on how to install a newer versions.
-
-It's common to have multiple versions of Python installed on all operating systems.
+.. Note:: We recommend Python 3.6 or higher because of general speed improvements
+    of the language.
 
 Binary Dependencies
 ^^^^^^^^^^^^^^^^^^^
 
 We use glfw_ for creating an OpenGL context, windows and handling keyboard and mouse events.
-This is done though the pyGLFW_ package that is a ``ctype`` wrapper over the original glfw
-api. You will have to install the actual library yourself.
+This is done though the pyGLFW_ package that is wrapper over the original glfw library.
+You will have to install the actual library yourself.
 
 We require glfw 3.2.1 or later.
 
@@ -37,7 +32,7 @@ glfw should be present in the vast majority of the package managers.
 
 **Windows**
 
-Download binaries from the glfw_ website.
+Download binaries from the glfw_ website. You can drop the dll in the root of your project.
 
 We do also support audio playback that will need additional dependencies, but this
 is covered in a different section.
@@ -126,8 +121,8 @@ The ``cube`` directory is a template for an effect:
 - A local ``textures`` directory for texture files specific to the effect
 
 Notice that the ``shaders`` and ``textures`` directory also has a sub-folder with the same name
-as the effect. This is because these directories are added to a global virtual directory
-and the only way to make these resources unique is to put it in a directory that is *hopefully* unique.
+as the effect. This is because these directories are added to a global virtual directory,
+and the only way to make these resources unique is to put them in a directory.
 
 This can of course be used in creative ways to also override resources on purpose.
 
