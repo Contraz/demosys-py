@@ -6,6 +6,7 @@ __pycache__
 /demosys_py.egg-info
 /dist
 /docs/build
+/screenshots
 
 # Libraries
 *.a
