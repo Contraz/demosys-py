@@ -1,8 +1,11 @@
-import os
 from datetime import datetime
-from PIL import Image
+import os
+
 from OpenGL import GL
+from PIL import Image
+
 from demosys.conf import settings
+from demosys import context
 
 
 def create(format='png', name=None):
@@ -10,9 +13,6 @@ def create(format='png', name=None):
     Create a screenshot
     :param format: formats supported by PIL (png, jpeg etc)
     """
-    # Avoid circular import
-    from demosys.view.controller import WINDOW
-
     dest = ""
     if settings.SCREENSHOT_PATH:
         if not os.path.exists(settings.SCREENSHOT_PATH):
@@ -23,7 +23,7 @@ def create(format='png', name=None):
         print("SCREENSHOT_PATH not defined in settings. Using cwd as fallback.")
 
     # x, y, width, height = GL.glGetIntegerv(GL.GL_VIEWPORT)
-    x, y, width, height = 0, 0, WINDOW.buffer_width, WINDOW.buffer_height
+    x, y, width, height = 0, 0, context.WINDOW.buffer_width, context.WINDOW.buffer_height
 
     GL.glPixelStorei(GL.GL_PACK_ALIGNMENT, 1)
 
