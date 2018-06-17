@@ -3,9 +3,7 @@ Settings
 ========
 
 
-The ``settings.py`` file must be present in your project and contains
-(you guessed right!) settings for the project. This is pretty much
-identical in Django.
+The ``settings.py`` file must be present in your project containing settings for the project.
 
 When running your project with ``manage.py``, the script will set
 the ``DEMOSYS_SETTINGS_MODULE`` environment variable. This tells
@@ -15,12 +13,12 @@ variable is not set the project cannot start.
 OPENGL
 ^^^^^^
 
-.. Warning:: We cannot guarantee that the framework will work properly for non-default values,
-   and you should assume severe a performance hit if backwards compatibility is enabled.
+.. Warning:: We cannot guarantee the framework will work properly for non-default values.
+   We strongly discourage enabling backwards compatibility.
    It might of curse make sense in some cases if you bring in existing draw
    code from older projects. Be extra careful when using deprecated OpenGL states.
 
-Using these values we can be more confident that cross-platform support is upheld.
+Using default values we can be more confident that cross-platform support is upheld.
 Remember that some platforms/drivers such as on OS X, core profiles can only be forward
 compatible or the context creation will simply fail.
 
