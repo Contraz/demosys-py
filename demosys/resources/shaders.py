@@ -1,5 +1,7 @@
 """Shader Registry"""
-from demosys.opengl import (Shader, ShaderError)
+import moderngl
+
+from demosys.opengl import (ShaderProgram, ShaderError)
 from demosys.core.shaderfiles.finders import get_finders
 from demosys.core.exceptions import ImproperlyConfigured
 
@@ -31,7 +33,7 @@ class Shaders:
         """
         shader = self.shaders.get(path)
         if create and not shader:
-            shader = Shader(path)
+            shader = ShaderProgram(path)
             self.shaders[path] = shader
         return shader
 
@@ -48,15 +50,17 @@ class Shaders:
                     print(" - {}".format(path))
                     with open(path, 'r') as fd:
                         shader.set_source(fd.read())
+
                     try:
                         shader.prepare()
-                    except ShaderError as err:
+                    except (ShaderError, moderngl.Error) as err:
                         print("ShaderError: ", err)
                         if not reload:
                             raise
                     except Exception as err:
                         print(err)
                         raise
+
                     break
             else:
                 raise ImproperlyConfigured("Cannot find shader {}".format(name))

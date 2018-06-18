@@ -1,4 +1,5 @@
 import ctypes
+import moderngl
 import os
 from functools import wraps
 
@@ -31,49 +32,52 @@ class ShaderError(Exception):
     pass
 
 
-class Uniform:
-    """Stores information about a uniform"""
-    def __init__(self, name, size, type, location):
-        """
-        :param name: Name of the uniform
-        :param size: Size if the uniform (1 if not an array)
-        :param type: Data type of a uniform
-        """
-        self.name = name.decode()
-        self.size = size
-        type_info = TYPE_INFO.get(type)
-        if not type_info:
-            raise ShaderError("Uniform type {} not supported".format(self.type.name))
-        self.type = type_info
-        self.location = location
-
-    def __repr__(self):
-        return "Uniform[{}] {}[{}] {} ({})".format(self.location, self.name, self.size, self.type.name, self.type.value)
-
-
-class Attribute:
-    """Stores information about a shader attribute"""
-    def __init__(self, name, type, location):
-        """
-        :param name: Name of the attribute
-        :param type: Data type of the attribute
-        :param location: Location in the shader
-        """
-        self.name = name.decode()
-        self.location = location
-
-        type_info = TYPE_INFO.get(type)
-
-        if not type_info:
-            raise ShaderError("Attribute type {} not supported".format(self.type.name))
-
-        self.type = type_info
-
-    def __repr__(self):
-        return "Attribute[{}] {} {} ({})".format(self.location, self.name, self.type.name, self.type.value)
+# class Uniform:
+#     """Stores information about a uniform"""
+#     def __init__(self, name, size, type, location):
+#         """
+#         :param name: Name of the uniform
+#         :param size: Size if the uniform (1 if not an array)
+#         :param type: Data type of a uniform
+#         """
+#         self.name = name.decode()
+#         self.size = size
+#         type_info = TYPE_INFO.get(type)
+#
+#         if not type_info:
+#             raise ShaderError("Uniform type {} not supported".format(self.type.name))
+#
+#         self.type = type_info
+#         self.location = location
+#
+#     def __repr__(self):
+#         return "Uniform[{}] {}[{}] {} ({})".format(
+#             self.location, self.name, self.size, self.type.name, self.type.value)
 
 
-class Shader:
+# class Attribute:
+#     """Stores information about a shader attribute"""
+#     def __init__(self, name, type, location):
+#         """
+#         :param name: Name of the attribute
+#         :param type: Data type of the attribute
+#         :param location: Location in the shader
+#         """
+#         self.name = name.decode()
+#         self.location = location
+#
+#         type_info = TYPE_INFO.get(type)
+#
+#         if not type_info:
+#             raise ShaderError("Attribute type {} not supported".format(self.type.name))
+#
+#         self.type = type_info
+#
+#     def __repr__(self):
+#         return "Attribute[{}] {} {} ({})".format(self.location, self.name, self.type.name, self.type.value)
+
+
+class ShaderProgram:
     """
     Represents a shader program
     """
@@ -110,7 +114,7 @@ class Shader:
         """
         Bind the shader
         """
-        GL.glUseProgram(self.program)
+        GL.glUseProgram(self.program.glo)
 
     def set_source(self, source):
         """
@@ -156,99 +160,88 @@ class Shader:
         Compiles all the shaders and links the program.
         If the linking is successful, it builds the uniform and attribute map.
         """
-        self.vertex_source.compile()
+        params = {'vertex_shader': self.vertex_source.source}
 
         if self.geo_source:
-            self.geo_source.compile()
+            params.update({'geometry_shader': self.geo_source.source})
 
         if self.frag_source:
-            self.frag_source.compile()
+            params.update({'fragment_shader': self.frag_source.source})
 
-        self.link()
+        # TODO: varyings for transform feedback
+
+        # Raises mgl.Error
+        self.program = context.ctx().program(**params)
 
         # Build internal lookups
         self.build_uniform_map()
         self.build_attribute_map()
 
-        # We only need the programs for linking
-        if self.vertex_source:
-            self.vertex_source.delete(self.program)
+    # def delete(self):
+    #     """Frees the memory and invalidates the name associated with the program"""
+    #     if self.program:
+    #         GL.glDeleteProgram(self.program)
+    #         self.program = None
 
-        if self.frag_source:
-            self.frag_source.delete(self.program)
-
-        if self.geo_source:
-            self.geo_source.delete(self.program)
-
-    def delete(self):
-        """Frees the memory and invalidates the name associated with the program"""
-        if self.program:
-            GL.glDeleteProgram(self.program)
-            self.program = None
-
-    def link(self):
-        """
-        Links the program.
-        Raises ``ShaderError`` if the linker failed.
-        """
-        program = GL.glCreateProgram()
-        GL.glAttachShader(program, self.vertex_source.shader)
-
-        if self.geo_source:
-            GL.glAttachShader(program, self.geo_source.shader)
-
-        if self.frag_source:
-            GL.glAttachShader(program, self.frag_source.shader)
-
-        # If no fragment shader is present we are dealing with transform feedback
-        if not self.frag_source:
-            # Find out attributes
-            # Out attribs is present in geometry shader if present
-            if self.geo_source:
-                out_attribs = self.geo_source.find_out_attribs()
-            # Otherwise they are specified in vertex shader
-            else:
-                out_attribs = self.vertex_source.find_out_attribs()
-
-            print("Transform feedback attribs:", out_attribs)
-
-            # Prepare ctypes data containing attrib names
-            array_type = ctypes.c_char_p * len(out_attribs)
-            buff = array_type()
-            for i, e in enumerate(out_attribs):
-                buff[i] = e.encode()
-
-            c_text = ctypes.cast(ctypes.pointer(buff), ctypes.POINTER(ctypes.POINTER(GL.GLchar)))
-            GL.glTransformFeedbackVaryings(program, len(out_attribs), c_text, GL.GL_INTERLEAVED_ATTRIBS)
-
-        GL.glLinkProgram(program)
-
-        status = GL.glGetProgramiv(program, GL.GL_LINK_STATUS)
-        if not status:
-            message = GL.glGetProgramInfoLog(program)
-            print("M:", message)
-            raise ShaderError("Failed to link shader {}: {}".format(self.name, message))
-
-        # Attempt to delete the current shader in case we are re-loading
-        self.delete()
-        self.program = program
+    # def link(self):
+    #     """
+    #     Links the program.
+    #     Raises ``ShaderError`` if the linker failed.
+    #     """
+    #     program = GL.glCreateProgram()
+    #     GL.glAttachShader(program, self.vertex_source.shader)
+    #
+    #     if self.geo_source:
+    #         GL.glAttachShader(program, self.geo_source.shader)
+    #
+    #     if self.frag_source:
+    #         GL.glAttachShader(program, self.frag_source.shader)
+    #
+    #     # If no fragment shader is present we are dealing with transform feedback
+    #     if not self.frag_source:
+    #         # Find out attributes
+    #         # Out attribs is present in geometry shader if present
+    #         if self.geo_source:
+    #             out_attribs = self.geo_source.find_out_attribs()
+    #         # Otherwise they are specified in vertex shader
+    #         else:
+    #             out_attribs = self.vertex_source.find_out_attribs()
+    #
+    #         print("Transform feedback attribs:", out_attribs)
+    #
+    #         # Prepare ctypes data containing attrib names
+    #         # array_type = ctypes.c_char_p * len(out_attribs)
+    #         # buff = array_type()
+    #         # for i, e in enumerate(out_attribs):
+    #         #     buff[i] = e.encode()
+    #         #
+    #         # c_text = ctypes.cast(ctypes.pointer(buff), ctypes.POINTER(ctypes.POINTER(GL.GLchar)))
+    #         # GL.glTransformFeedbackVaryings(program, len(out_attribs), c_text, GL.GL_INTERLEAVED_ATTRIBS)
+    #
+    #     GL.glLinkProgram(program)
+    #
+    #     status = GL.glGetProgramiv(program, GL.GL_LINK_STATUS)
+    #     if not status:
+    #         message = GL.glGetProgramInfoLog(program)
+    #         print("M:", message)
+    #         raise ShaderError("Failed to link shader {}: {}".format(self.name, message))
+    #
+    #     # Attempt to delete the current shader in case we are re-loading
+    #     self.delete()
+    #     self.program = program
 
     def build_uniform_map(self):
         """
         Builds an internal uniform map by querying the program.
         This way we don't have to query OpenGL (can cause slowdowns)
         """
-        uniform_count = GL.glGetProgramiv(self.program, GL.GL_ACTIVE_UNIFORMS)
-        print("Shader {} has {} uniform(s)".format(self.name, uniform_count))
-        for i in range(uniform_count):
-            info = GL.glGetActiveUniform(self.program, i)
+        self.uniform_map = {k: v for k, v in self.program._members.items() if isinstance(v, moderngl.Uniform)}
+        print("ShaderProgram {} has {} uniform(s)".format(self.name, len(self.uniform_map)))
 
-            # Get the actual location of the uniform as types over a certain size span several locations
-            location = GL.glGetUniformLocation(self.program, info[0])
-            uniform = Uniform(info[0], info[1], info[2], location)
-
-            self.uniform_map[uniform.name] = uniform
-            print(" - {}".format(uniform))
+        for name, uniform in self.uniform_map.items():
+            print(" - Uniform[{}] {} {} {}".format(
+                uniform.location, uniform.name, uniform.dimension, uniform.array_length
+            ))
 
     def build_attribute_map(self):
         """
@@ -256,23 +249,16 @@ class Shader:
         This way we don't have to query OpenGL (can cause slowdowns)
         This information is also used when the shader and VAO negotiates the buffer binding.
         """
-        attribute_count = GL.glGetProgramiv(self.program, GL.GL_ACTIVE_ATTRIBUTES)
-        bufsize = GL.glGetProgramiv(self.program, GL.GL_ACTIVE_ATTRIBUTE_MAX_LENGTH)
-        print("Shader {} has {} attribute(s)".format(self.name, attribute_count))
-        for i in range(attribute_count):
-            # Unlike glGetActiveUniform the attrib version do not return a convenient tuple
-            # and we'll have to use to ugly version. (Most people make wrappers for this one)
-            length, size, type, name = GL.GLsizei(), GL.GLint(), GL.GLenum(), (GL.GLchar * bufsize)()
-            GL.glGetActiveAttrib(self.program, i, bufsize, length, size, type, name)
+        for name, attribute in self.program._members.items():
+            if not isinstance(attribute, moderngl.Attribute):
+                continue
 
-            # Get the actual location. Do not trust the original order
-            location = GL.glGetAttribLocation(self.program, name.value)
-            attribute = Attribute(name.value, type.value, location)
-
-            self.attribute_map[attribute.name] = attribute
             self.attribute_list.append(attribute)
+            self.attribute_map[name] = attribute
 
-            print(" - {}".format(attribute))
+            print(" - Attribute[{}] {} {} ({})".format(
+                attribute.location, attribute.name, attribute.array_length, attribute.dimension
+            ))
 
         self.attribute_key = ','.join(name for name in sorted(self.attribute_map.keys()))
         print("Shader attribute key:", self.attribute_key)
@@ -287,13 +273,16 @@ class Shader:
         :return: Uniform object
         """
         uniform = self.uniform_map.get(name)
+
         if not uniform:
             msg = "Uniform '{}' not found in shader {}".format(name, self.name)
+
             if raise_on_error:
                 raise ShaderError(msg)
             else:
                 print(msg)
                 return None
+
         return uniform
 
     def uniform_check(self, name, expected_type, raise_on_error=True):
@@ -311,13 +300,16 @@ class Shader:
         uniform = self.uniform(name, raise_on_error=raise_on_error)
         if not uniform:
             return None
-        if uniform.type.value != expected_type:
-            msg = "Incorrect data type: Uniform '{}' is of type {}".format(name, uniform.type.name)
-            if raise_on_error:
-                raise ShaderError(msg)
-            else:
-                print(msg)
-                return None
+
+        # if uniform.type.value != expected_type:
+        #     msg = "Incorrect data type: Uniform '{}' is of type {}".format(name, uniform.type.name)
+        #
+        #     if raise_on_error:
+        #         raise ShaderError(msg)
+        #     else:
+        #         print(msg)
+        #         return None
+
         return uniform
 
     # --- Float uniforms ---
