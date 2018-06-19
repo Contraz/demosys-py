@@ -133,19 +133,23 @@ class Texture:
             self.anisotropy = min(max_ani, self.anisotropy)
             GL.glTexParameterf(self.target, tfa.GL_TEXTURE_MAX_ANISOTROPY_EXT, self.anisotropy)
 
-    def set_image(self, image):
+    def set_image(self, image, flip=True):
         """
         Set pixel data using a image file with PIL/Pillow.
 
         :param image: The PIL/Pillow image object
         """
-        image_flipped = image.transpose(Image.FLIP_TOP_BOTTOM)
-        data = image_flipped.convert("RGBA").tobytes()
+        if flip:
+            image = image.transpose(Image.FLIP_TOP_BOTTOM)
+
+        data = image.convert("RGBA").tobytes()
         self.width, self.height = image.size
+
         if self.width == 1 or self.height == 1:
             self.target = GL.GL_TEXTURE_1D
         else:
             self.target = GL.GL_TEXTURE_2D
+
         self._build(data=data)
 
     def set_texture_repeat(self, wrap_s, wrap_t, wrap_r):

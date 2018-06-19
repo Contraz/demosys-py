@@ -4,7 +4,7 @@ Thins needs to be improved once more pieces fall in place.
 """
 from OpenGL import GL
 import glfw
-from demosys.view.window import Window
+from demosys.context.glfw import GLTFWindow
 from demosys.effects.registry import Effect
 from demosys.opengl import fbo
 from demosys import resources
@@ -12,8 +12,8 @@ from demosys.conf import settings
 from demosys.scene import camera
 from demosys.utils import module_loading
 from . import screenshot
+from demosys import context
 
-WINDOW = None
 TIMER = None
 CAMERA = None
 MANAGER = None
@@ -28,21 +28,20 @@ def run(manager=None):
     global MANAGER
     MANAGER = manager
 
-    global WINDOW
-    WINDOW = Window()
+    context.WINDOW = GLTFWindow()
 
-    fbo.WINDOW_FBO = fbo.WindowFBO(WINDOW)
+    fbo.WINDOW_FBO = fbo.WindowFBO(context.WINDOW)
 
     print("Loader started at", glfw.get_time())
 
     # Inject attributes into the base Effect class
-    Effect.window_width = WINDOW.buffer_width
-    Effect.window_height = WINDOW.buffer_height
-    Effect.window_aspect = WINDOW.aspect_ratio
+    Effect.window_width = context.WINDOW.buffer_width
+    Effect.window_height = context.WINDOW.buffer_height
+    Effect.window_aspect = context.WINDOW.aspect_ratio
 
     # Set up the default system camera
     global CAMERA
-    CAMERA = camera.SystemCamera(aspect=WINDOW.aspect_ratio, fov=60.0, near=1, far=1000)
+    CAMERA = camera.SystemCamera(aspect=context.WINDOW.aspect_ratio, fov=60.0, near=1, far=1000)
     Effect.sys_camera = CAMERA
 
     # Initialize Effects
@@ -58,9 +57,9 @@ def run(manager=None):
     if not manager.post_load():
         return
 
-    glfw.set_key_callback(WINDOW.window, key_event_callback)
-    glfw.set_cursor_pos_callback(WINDOW.window, mouse_event_callback)
-    glfw.set_window_size_callback(WINDOW.window, window_resize_callback)
+    glfw.set_key_callback(context.WINDOW.window, key_event_callback)
+    glfw.set_cursor_pos_callback(context.WINDOW.window, mouse_event_callback)
+    glfw.set_window_size_callback(context.WINDOW.window, window_resize_callback)
 
     # Initialize timer
     global TIMER
@@ -68,33 +67,35 @@ def run(manager=None):
     TIMER = timer_cls()
     TIMER.start()
 
+    GL.glClearColor(0.0, 0.0, 0.0, 0.0)
+
     # Main loop
     frames, ft = 0, 0
     prev_time = TIMER.get_time()
     time_start = glfw.get_time()
-    while not WINDOW.should_close():
+    while not context.WINDOW.should_close():
         # Immediately get control of the current time
         t = TIMER.get_time()
 
         # Set the viewport as FBOs will change the values
-        GL.glViewport(0, 0, WINDOW.buffer_width, WINDOW.buffer_height)
+        GL.glViewport(0, 0, context.WINDOW.buffer_width, context.WINDOW.buffer_height)
 
         # Clear the buffer
-        GL.glClearColor(0.0, 0.0, 0.0, 0.0)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
 
         # Tell the manager to draw stuff
         manager.draw(t, ft, fbo.WINDOW_FBO)
 
         # Swap buffers and deal with events and statistics
-        WINDOW.swap_buffers()
-        WINDOW.poll_events()
+        context.WINDOW.swap_buffers()
+        context.WINDOW.poll_events()
         frames += 1
         ft = t - prev_time
         prev_time = t
 
     duration_timer = TIMER.stop()
     duration = glfw.get_time() - time_start
+
     if duration > 0:
         fps = round(frames / duration, 2)
         print("Duration: {}s rendering {} frames at {} fps".format(duration, frames, fps))
@@ -117,7 +118,7 @@ def key_event_callback(window, key, scancode, action, mods):
 
     # The well-known standard key for quick exit
     if key == glfw.KEY_ESCAPE:
-        WINDOW.set_should_close()
+        context.WINDOW.close()
         return
 
     # Toggle pause time
@@ -194,4 +195,4 @@ def window_resize_callback(window, width, height):
     :param width: New width
     :param height: New height
     """
-    WINDOW.resize(width, height)
+    context.WINDOW.resize(width, height)

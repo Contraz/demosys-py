@@ -3,8 +3,24 @@ Default settings for demosys. Override using a settings module.
 """
 
 # What attributes should be used when generating a settings file
-__ORDER__ = ('DEBUG', 'SCREENSHOT_PATH', 'OPENGL', 'WINDOW', 'MUSIC', 'TIMER', 'ROCKET', 'EFFECTS',
-             'EFFECT_MANAGER', 'SHADER_DIRS', 'SHADER_FINDERS', 'TEXTURE_DIRS', 'TEXTURE_FINDERS')
+__ORDER__ = (
+    'DEBUG',
+    'SCREENSHOT_PATH',
+    'OPENGL',
+    'WINDOW',
+    'MUSIC',
+    'TIMER',
+    'ROCKET',
+    'EFFECTS',
+    'EFFECT_MANAGER',
+    'SHADER_DIRS',
+    'SHADER_FINDERS',
+    'TEXTURE_DIRS',
+    'TEXTURE_FINDERS',
+    'SCENE_DIRS',
+    'SCENE_FINDERS',
+    'SCENE_LOADERS',
+)
 
 DEBUG = False
 
@@ -51,6 +67,12 @@ EFFECT_MANAGER = 'demosys.effects.managers.SingleEffectManager'
 # Otherwise just print the errors to terminal
 SHADER_STRICT_VALIDATION = True
 
+SHADERS = {
+    'vertex_shader_suffix': ('vert', '_vs.glsl', '.glslv'),
+    'fragment_shader_suffix': ('frag', '_fs.glsl', '.glslf'),
+    'geometry_shader_suffix': ('geom', '_gs.glsl', '.glslg'),
+}
+
 # Additional directories shaders can be found
 SHADER_DIRS = ()
 
@@ -67,12 +89,13 @@ TEXTURE_FINDERS = (
     'demosys.core.texturefiles.finders.EffectDirectoriesFinder'
 )
 
-SHADERS = {
-    'vertex_shader_suffix': ('vert', '_vs.glsl', '.glslv'),
-    'fragment_shader_suffix': ('frag', '_fs.glsl', '.glslf'),
-    'geometry_shader_suffix': ('geom', '_gs.glsl', '.glslg'),
-}
+SCENE_DIRS = ()
+SCENE_FINDERS = (
+    "demosys.core.scenefiles.finders.FileSystemFinder",
+    "demosys.core.scenefiles.finders.EffectDirectoriesFinder",
+)
 
-SCENE_LOADERS = {
-    'obj': 'demosys.scene.loaders.obj.'
-}
+SCENE_LOADERS = (
+    'demosys.scene.loaders.gltf.GLTF2',
+    'demosys.scene.loaders.wavefront.ObjLoader',
+)

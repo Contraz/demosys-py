@@ -1,11 +1,28 @@
 __pycache__
-/.idea
+
+# Build and test directories
 /.tox
-/env
 /build
 /demosys_py.egg-info
 /dist
-.DS_Store
+/docs/build
+/screenshots
+
+# Libraries
+*.a
+*.DLL
+
+# virtual envs
+/env/
+/.env/
+/.venv/
+
+# Local dev project
 /manage.py
 /testdemo
-/docs/build
+
+# IDE files
+/.idea
+
+# Misc
+.DS_Store

@@ -3,6 +3,7 @@ from OpenGL import GL
 import ctypes
 from functools import wraps
 from demosys.conf import settings
+from .constants import TYPE_INFO
 
 
 def uniform_type(uniform_type, name_arg_index=1):
@@ -812,7 +813,7 @@ class Shader:
     # --- Sampler ---
 
     @uniform_type(GL.GL_SAMPLER_1D, name_arg_index=2)
-    def uniform_sampler_1d(self, unit, name, texture, uniform=None):
+    def uniform_sampler_1d(self, unit, name, texture, sampler=None, uniform=None):
         """
         Sets a sampler1d
 
@@ -823,10 +824,12 @@ class Shader:
         """
         GL.glActiveTexture(GL.GL_TEXTURE0 + unit)
         texture.bind()
+        if sampler:
+            sampler.bind(unit)
         GL.glUniform1i(uniform.location, unit)
 
     @uniform_type(GL.GL_SAMPLER_2D, name_arg_index=2)
-    def uniform_sampler_2d(self, unit, name, texture, uniform=None):
+    def uniform_sampler_2d(self, unit, name, texture, sampler=None, uniform=None):
         """
         Sets a sampler2d
 
@@ -837,10 +840,12 @@ class Shader:
         """
         GL.glActiveTexture(GL.GL_TEXTURE0 + unit)
         texture.bind()
+        if sampler:
+            sampler.bind(unit)
         GL.glUniform1i(uniform.location, unit)
 
     @uniform_type(GL.GL_SAMPLER_3D, name_arg_index=2)
-    def uniform_sampler_3d(self, unit, name, texture, uniform=None):
+    def uniform_sampler_3d(self, unit, name, texture, sampler=None, uniform=None):
         """
         Sets a sampler3d
 
@@ -851,6 +856,8 @@ class Shader:
         """
         GL.glActiveTexture(GL.GL_TEXTURE0 + unit)
         texture.bind()
+        if sampler:
+            sampler.bind(unit)
         GL.glUniform1i(uniform.location, unit)
 
 
@@ -932,128 +939,3 @@ class ShaderSource:
             return 'GEOMETRY_SHADER'
         else:
             raise ShaderError("Unknown shader type")
-
-
-SIZE_OF_FLOAT = 4
-SIZE_OF_DOUBLE = 8
-SIZE_OF_INT = 4
-
-
-class TypeInfo:
-    """
-    Information about a data type in a glsl shader.
-
-    Example: "GL_FLOAT_VEC3" is a GL.GL_FLOAT_VEC3 of byte size 12
-    """
-    def __init__(self, name, value, size):
-        """
-        :param name: Name of the type (ex 'GL_FLOAT_VEC4')
-        :param value: Enum value in OpenGL
-        :param size:  Size in bytes
-        """
-        self.name = name
-        self.value = value
-        self.size = size
-
-
-# Information about data types
-# TODO: May contain deprecated types. Needs cleanup.
-# TODO: Types may be missing past GL 3.3
-TYPE_INFO = {
-    # Floats
-    GL.GL_FLOAT: TypeInfo("GL_FLOAT", GL.GL_FLOAT, SIZE_OF_FLOAT),
-    GL.GL_FLOAT_VEC2: TypeInfo("GL_FLOAT_VEC2", GL.GL_FLOAT_VEC2, SIZE_OF_FLOAT * 2),
-    GL.GL_FLOAT_VEC3: TypeInfo("GL_FLOAT_VEC3", GL.GL_FLOAT_VEC3, SIZE_OF_FLOAT * 3),
-    GL.GL_FLOAT_VEC4: TypeInfo("GL_FLOAT_VEC4", GL.GL_FLOAT_VEC4, SIZE_OF_FLOAT * 3),
-    # Doubles
-    GL.GL_DOUBLE: TypeInfo("GL_DOUBLE", GL.GL_DOUBLE, SIZE_OF_DOUBLE),
-    GL.GL_DOUBLE_VEC2: TypeInfo("GL_DOUBLE_VEC2", GL.GL_DOUBLE_VEC2, SIZE_OF_DOUBLE * 2),
-    GL.GL_DOUBLE_VEC3: TypeInfo("GL_DOUBLE_VEC3", GL.GL_DOUBLE_VEC3, SIZE_OF_DOUBLE * 3),
-    GL.GL_DOUBLE_VEC4: TypeInfo("GL_DOUBLE_VEC4", GL.GL_DOUBLE_VEC4, SIZE_OF_DOUBLE * 4),
-    # Samplers
-    GL.GL_SAMPLER_1D: TypeInfo("GL_SAMPLER_1D", GL.GL_SAMPLER_1D, SIZE_OF_INT),
-    GL.GL_SAMPLER_2D: TypeInfo("GL_SAMPLER_2D", GL.GL_SAMPLER_2D, SIZE_OF_INT),
-    GL.GL_SAMPLER_3D: TypeInfo("GL_SAMPLER_3D", GL.GL_SAMPLER_3D, SIZE_OF_INT),
-    GL.GL_SAMPLER_CUBE: TypeInfo("GL_SAMPLER_CUBE", GL.GL_SAMPLER_CUBE, SIZE_OF_INT),
-    GL.GL_SAMPLER_1D_SHADOW: TypeInfo("GL_SAMPLER_1D_SHADOW", GL.GL_SAMPLER_CUBE, SIZE_OF_INT),
-    GL.GL_SAMPLER_2D_SHADOW: TypeInfo("GL_SAMPLER_2D_SHADOW", GL.GL_SAMPLER_2D_SHADOW, SIZE_OF_INT),
-    GL.GL_SAMPLER_1D_ARRAY: TypeInfo("GL_SAMPLER_1D_ARRAY", GL.GL_SAMPLER_1D_ARRAY, SIZE_OF_INT),
-    GL.GL_SAMPLER_2D_ARRAY: TypeInfo("GL_SAMPLER_2D_ARRAY", GL.GL_SAMPLER_2D_ARRAY, SIZE_OF_INT),
-    GL.GL_SAMPLER_1D_ARRAY_SHADOW: TypeInfo("GL_SAMPLER_1D_ARRAY_SHADOW", GL.GL_SAMPLER_1D_ARRAY_SHADOW, SIZE_OF_INT),
-    GL.GL_SAMPLER_2D_ARRAY_SHADOW: TypeInfo("GL_SAMPLER_2D_ARRAY_SHADOW", GL.GL_SAMPLER_2D_ARRAY_SHADOW, SIZE_OF_INT),
-    GL.GL_SAMPLER_2D_MULTISAMPLE: TypeInfo("GL_SAMPLER_2D_MULTISAMPLE", GL.GL_SAMPLER_2D_MULTISAMPLE, SIZE_OF_INT),
-    GL.GL_SAMPLER_2D_MULTISAMPLE_ARRAY: TypeInfo("GL_SAMPLER_2D_MULTISAMPLE_ARRAY", GL.GL_SAMPLER_2D_MULTISAMPLE_ARRAY,
-                                                 SIZE_OF_INT),
-    GL.GL_SAMPLER_CUBE_SHADOW: TypeInfo("GL_SAMPLER_CUBE_SHADOW", GL.GL_SAMPLER_CUBE_SHADOW, SIZE_OF_INT),
-    GL.GL_SAMPLER_BUFFER: TypeInfo("GL_SAMPLER_BUFFER", GL.GL_SAMPLER_BUFFER, SIZE_OF_INT),
-    GL.GL_SAMPLER_2D_RECT: TypeInfo("GL_SAMPLER_2D_RECT", GL.GL_SAMPLER_2D_RECT, SIZE_OF_INT),
-    GL.GL_SAMPLER_2D_RECT_SHADOW: TypeInfo("GL_SAMPLER_2D_RECT_SHADOW", GL.GL_SAMPLER_2D_RECT_SHADOW, SIZE_OF_INT),
-    # Integer samplers
-    GL.GL_INT_SAMPLER_1D: TypeInfo("GL_INT_SAMPLER_1D", GL.GL_INT_SAMPLER_1D, SIZE_OF_INT),
-    GL.GL_INT_SAMPLER_2D: TypeInfo("GL_INT_SAMPLER_2D", GL.GL_INT_SAMPLER_2D, SIZE_OF_INT),
-    GL.GL_INT_SAMPLER_3D: TypeInfo("GL_INT_SAMPLER_3D", GL.GL_INT_SAMPLER_3D, SIZE_OF_INT),
-    GL.GL_INT_SAMPLER_CUBE: TypeInfo("GL_INT_SAMPLER_CUBE", GL.GL_INT_SAMPLER_CUBE, SIZE_OF_INT),
-    GL.GL_INT_SAMPLER_1D_ARRAY: TypeInfo("GL_INT_SAMPLER_1D_ARRAY", GL.GL_INT_SAMPLER_1D_ARRAY, SIZE_OF_INT),
-    GL.GL_INT_SAMPLER_2D_ARRAY: TypeInfo("GL_INT_SAMPLER_2D_ARRAY", GL.GL_INT_SAMPLER_2D_ARRAY, SIZE_OF_INT),
-    GL.GL_INT_SAMPLER_2D_MULTISAMPLE: TypeInfo("GL_INT_SAMPLER_2D_MULTISAMPLE", GL.GL_INT_SAMPLER_2D_MULTISAMPLE,
-                                               SIZE_OF_INT),
-    GL.GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY: TypeInfo("GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY",
-                                                     GL.GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, SIZE_OF_INT),
-    GL.GL_INT_SAMPLER_BUFFER: TypeInfo("GL_INT_SAMPLER_BUFFER", GL.GL_INT_SAMPLER_BUFFER, SIZE_OF_INT),
-    GL.GL_INT_SAMPLER_2D_RECT: TypeInfo("GL_INT_SAMPLER_2D_RECT", GL.GL_INT_SAMPLER_2D_RECT, SIZE_OF_INT),
-    # Unsigned integer samplers
-    GL.GL_UNSIGNED_INT_SAMPLER_1D: TypeInfo("GL_UNSIGNED_INT_SAMPLER_1D", GL.GL_UNSIGNED_INT_SAMPLER_1D, SIZE_OF_INT),
-    GL.GL_UNSIGNED_INT_SAMPLER_2D: TypeInfo("GL_UNSIGNED_INT_SAMPLER_2D", GL.GL_UNSIGNED_INT_SAMPLER_2D, SIZE_OF_INT),
-    GL.GL_UNSIGNED_INT_SAMPLER_3D: TypeInfo("GL_UNSIGNED_INT_SAMPLER_3D", GL.GL_UNSIGNED_INT_SAMPLER_3D, SIZE_OF_INT),
-    GL.GL_UNSIGNED_INT_SAMPLER_CUBE: TypeInfo("GL_UNSIGNED_INT_SAMPLER_CUBE", GL.GL_UNSIGNED_INT_SAMPLER_CUBE,
-                                              SIZE_OF_INT),
-    GL.GL_UNSIGNED_INT_SAMPLER_1D_ARRAY: TypeInfo("GL_UNSIGNED_INT_SAMPLER_1D_ARRAY",
-                                                  GL.GL_UNSIGNED_INT_SAMPLER_1D_ARRAY, SIZE_OF_INT),
-    GL.GL_UNSIGNED_INT_SAMPLER_2D_ARRAY: TypeInfo("GL_UNSIGNED_INT_SAMPLER_2D_ARRAY",
-                                                  GL.GL_UNSIGNED_INT_SAMPLER_2D_ARRAY, SIZE_OF_INT),
-    GL.GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE: TypeInfo("GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE",
-                                                        GL.GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE, SIZE_OF_INT),
-    GL.GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY: TypeInfo("GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY",
-                                                              GL.GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY,
-                                                              SIZE_OF_INT),
-    GL.GL_UNSIGNED_INT_SAMPLER_BUFFER: TypeInfo("GL_UNSIGNED_INT_SAMPLER_BUFFER",
-                                                GL.GL_UNSIGNED_INT_SAMPLER_BUFFER, SIZE_OF_INT),
-    GL.GL_UNSIGNED_INT_SAMPLER_2D_RECT: TypeInfo("GL_UNSIGNED_INT_SAMPLER_2D_RECT",
-                                                 GL.GL_UNSIGNED_INT_SAMPLER_2D_RECT, SIZE_OF_INT),
-    # Booleans
-    GL.GL_BOOL: TypeInfo("GL_BOOL", GL.GL_BOOL, SIZE_OF_INT),
-    GL.GL_BOOL_VEC2: TypeInfo("GL_BOOL_VEC2", GL.GL_BOOL_VEC2, SIZE_OF_INT * 2),
-    GL.GL_BOOL_VEC3: TypeInfo("GL_BOOL_VEC3", GL.GL_BOOL_VEC3, SIZE_OF_INT * 3),
-    GL.GL_BOOL_VEC4: TypeInfo("GL_BOOL_VEC4", GL.GL_BOOL_VEC4, SIZE_OF_INT * 4),
-    # Integers
-    GL.GL_INT: TypeInfo("GL_INT", GL.GL_INT, SIZE_OF_INT),
-    GL.GL_INT_VEC2: TypeInfo("GL_INT_VEC2", GL.GL_INT_VEC2, SIZE_OF_INT * 2),
-    GL.GL_INT_VEC3: TypeInfo("GL_INT_VEC3", GL.GL_INT_VEC3, SIZE_OF_INT * 3),
-    GL.GL_INT_VEC4: TypeInfo("GL_INT_VEC4", GL.GL_INT_VEC4, SIZE_OF_INT * 4),
-    # Unsigned Integers
-    GL.GL_UNSIGNED_INT: TypeInfo("GL_UNSIGNED_INT", GL.GL_UNSIGNED_INT, SIZE_OF_INT),
-    GL.GL_UNSIGNED_INT_VEC2: TypeInfo("GL_UNSIGNED_INT_VEC2", GL.GL_UNSIGNED_INT_VEC2, SIZE_OF_INT * 2),
-    GL.GL_UNSIGNED_INT_VEC3: TypeInfo("GL_UNSIGNED_INT_VEC3", GL.GL_UNSIGNED_INT_VEC3, SIZE_OF_INT * 3),
-    GL.GL_UNSIGNED_INT_VEC4: TypeInfo("GL_UNSIGNED_INT_VEC4", GL.GL_UNSIGNED_INT_VEC4, SIZE_OF_INT * 4),
-    # Byte
-    GL.GL_BYTE: TypeInfo("GL_BYTE", GL.GL_BYTE, 1),
-    # Matrices (FLOAT)
-    GL.GL_FLOAT_MAT2: TypeInfo("GL_FLOAT_MAT2", GL.GL_FLOAT_MAT2, SIZE_OF_FLOAT * 2 * 2),
-    GL.GL_FLOAT_MAT3: TypeInfo("GL_FLOAT_MAT3", GL.GL_FLOAT_MAT3, SIZE_OF_FLOAT * 3 * 3),
-    GL.GL_FLOAT_MAT4: TypeInfo("GL_FLOAT_MAT4", GL.GL_FLOAT_MAT4, SIZE_OF_FLOAT * 4 * 4),
-    GL.GL_FLOAT_MAT2x3: TypeInfo("GL_FLOAT_MAT2x3", GL.GL_FLOAT_MAT2x3, SIZE_OF_FLOAT * 2 * 3),
-    GL.GL_FLOAT_MAT2x4: TypeInfo("GL_FLOAT_MAT2x4", GL.GL_FLOAT_MAT2x4, SIZE_OF_FLOAT * 2 * 4),
-    GL.GL_FLOAT_MAT3x2: TypeInfo("GL_FLOAT_MAT3x2", GL.GL_FLOAT_MAT3x2, SIZE_OF_FLOAT * 3 * 2),
-    GL.GL_FLOAT_MAT3x4: TypeInfo("GL_FLOAT_MAT3x4", GL.GL_FLOAT_MAT3x4, SIZE_OF_FLOAT * 3 * 4),
-    GL.GL_FLOAT_MAT4x2: TypeInfo("GL_FLOAT_MAT4x2", GL.GL_FLOAT_MAT4x2, SIZE_OF_FLOAT * 4 * 2),
-    GL.GL_FLOAT_MAT4x3: TypeInfo("GL_FLOAT_MAT4x3", GL.GL_FLOAT_MAT4x3, SIZE_OF_FLOAT * 4 * 3),
-    # Matrices (DOUBLE)
-    GL.GL_DOUBLE_MAT2: TypeInfo("GL_DOUBLE_MAT2", GL.GL_DOUBLE_MAT2, SIZE_OF_DOUBLE * 2 * 2),
-    GL.GL_DOUBLE_MAT3: TypeInfo("GL_DOUBLE_MAT3", GL.GL_DOUBLE_MAT3, SIZE_OF_DOUBLE * 3 * 3),
-    GL.GL_DOUBLE_MAT4: TypeInfo("GL_DOUBLE_MAT4", GL.GL_DOUBLE_MAT4, SIZE_OF_DOUBLE * 4 * 4),
-    GL.GL_DOUBLE_MAT2x3: TypeInfo("GL_DOUBLE_MAT2x3", GL.GL_DOUBLE_MAT2x3, SIZE_OF_DOUBLE * 2 * 3),
-    GL.GL_DOUBLE_MAT2x4: TypeInfo("GL_DOUBLE_MAT2x4", GL.GL_DOUBLE_MAT2x4, SIZE_OF_DOUBLE * 2 * 4),
-    GL.GL_DOUBLE_MAT3x2: TypeInfo("GL_DOUBLE_MAT3x2", GL.GL_DOUBLE_MAT3x2, SIZE_OF_DOUBLE * 3 * 2),
-    GL.GL_DOUBLE_MAT3x4: TypeInfo("GL_DOUBLE_MAT3x4", GL.GL_DOUBLE_MAT3x4, SIZE_OF_DOUBLE * 3 * 4),
-    GL.GL_DOUBLE_MAT4x3: TypeInfo("GL_DOUBLE_MAT4x3", GL.GL_DOUBLE_MAT4x3, SIZE_OF_DOUBLE * 4 * 3),
-}

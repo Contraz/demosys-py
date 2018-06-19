@@ -52,6 +52,7 @@ Features
 
 - A simple effect system based on python packages
 - Well documented
+- Supports loading GLTF and obj files/scenes
 - Support for the rocket sync-tracker system to create interesting keyframe data (Using pyrocket_)
 - Management commands to create new projects and effects
 - Convenient wrappers for VAO, Shader, Texture, FBO

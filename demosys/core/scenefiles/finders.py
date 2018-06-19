@@ -5,20 +5,20 @@ from demosys.conf import settings
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.utils.module_loading import import_string
 
-TEXTURE_DIR = 'textures'
+SCENE_DIR = 'scenes'
 
 
 class FileSystemFinder(finders.FileSystemFinder):
-    """Find textures in ``TEXTURE_DIRS``"""
+    """Find textures in ``SCENE_DIRS``"""
     def __init__(self):
-        if not hasattr(settings, 'TEXTURE_DIRS'):
+        if not hasattr(settings, 'SCENE_DIRS'):
             raise ImproperlyConfigured(
-                "Settings module don't define TEXTURE_DIRS."
+                "Settings module don't define SCENE_DIRS."
                 "This is required when using a FileSystemFinder."
             )
         super().__init__(settings.TEXTURE_DIRS)
 
-    # TODO: Use values from settings to filter texture files
+    # TODO: Use values from settings to filter files
     # def find(self, path):
     #     pass
 
@@ -32,11 +32,11 @@ class EffectDirectoriesFinder(finders.FileSystemFinder):
 
     # TODO: Use values from settings to filter texture files
     def find(self, path):
-        return self._find(os.path.join(TEXTURE_DIR, path))
+        return self._find(os.path.join(SCENE_DIR, path))
 
 
 def get_finders():
-    for finder in settings.TEXTURE_FINDERS:
+    for finder in settings.SCENE_FINDERS:
         yield get_finder(finder)
 
 

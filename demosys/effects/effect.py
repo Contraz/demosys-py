@@ -120,6 +120,17 @@ class Effect:
         """
         return resources.tracks.get(name)
 
+    @local_path
+    def get_scene(self, path, local=True, **kwargs):
+        """
+        Get or create a scene.
+        :param path: Path to the scene
+        :param local: Auto-prepend the local effect path
+        :param kwargs: Generic paramters passed to scene loaders
+        :return: Scene object
+        """
+        return resources.scenes.get(path, create=True, **kwargs)
+
     # Utility methods for matrices
 
     def create_projection(self, fov=75.0, near=1.0, far=100.0, ratio=None):
