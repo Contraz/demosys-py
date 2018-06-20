@@ -177,11 +177,10 @@ class ShaderProgram:
         self.build_uniform_map()
         self.build_attribute_map()
 
-    # def delete(self):
-    #     """Frees the memory and invalidates the name associated with the program"""
-    #     if self.program:
-    #         GL.glDeleteProgram(self.program)
-    #         self.program = None
+    def delete(self):
+        """Frees the memory and invalidates the name associated with the program"""
+        if self.program:
+            self.program.release()
 
     # def link(self):
     #     """
