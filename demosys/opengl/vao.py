@@ -1,5 +1,19 @@
+import moderngl as mgl
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
+
+DRAW_MODES = {
+    mgl.TRIANGLES: 'TRIANGLES',
+    mgl.TRIANGLE_FAN: 'TRIANGLE_FAN',
+    mgl.TRIANGLE_STRIP: 'TRIANGLE_STRIP',
+    mgl.TRIANGLES_ADJACENCY: 'TRIANGLES_ADJACENCY',
+    mgl.TRIANGLE_STRIP_ADJACENCY: 'TRIANGLE_STRIP_ADJACENCY',
+    mgl.POINTS: 'POINTS',
+    mgl.LINES: 'LINES',
+    mgl.LINE_STRIP: 'LINE_STRIP',
+    mgl.LINE_LOOP: 'LINE_LOOP',
+    mgl.LINES_ADJACENCY: 'LINES_ADJACENCY',
+}
 
 
 class VAOError(Exception):
@@ -103,7 +117,7 @@ class VAOCombo:
 
 class VAO:
     """Vertex Array Object"""
-    def __init__(self, name, mode=GL.GL_TRIANGLES):
+    def __init__(self, name, mode=mgl.TRIANGLES):
         """
         Create and empty VAO
 
@@ -112,6 +126,12 @@ class VAO:
         """
         self.name = name
         self.mode = mode
+
+        try:
+            DRAW_MODES[self.mode]
+        except KeyError:
+            raise VAOError("Invalid draw mode. Options are {}".format(DRAW_MODES.values()))
+
         self.array_buffer_map = {}
 
         self.array_mapping = []
@@ -136,6 +156,7 @@ class VAO:
         shader.bind()
         combo = self.generate_vao_combo(shader)
         combo.bind()
+
         # Return context manager
         self.bind_context.shader = shader
         return self.bind_context
@@ -165,23 +186,23 @@ class VAO:
             else:
                 GL.glDrawArrays(self.mode, 0, self.vertex_count)
 
-    def add_array_buffer(self, format, vbo):
+    def add_array_buffer(self, format, buffer: mgl.Buffer):
         """
-        Register a vbo in the VAO. This can be called multiple times.
-        This can be one or multiple buffers (interleaved or not)
+        Register a buffer for the VAO. This can be called multiple times.
+        adding multiple buffers (interleaved or not)
 
         :param format: The format of the buffer
-        :param vbo: The vbo object
+        :param buffer: The buffer object
         """
-        if not isinstance(vbo, VBO):
-            raise VAOError("vbo parameter must be an OpenGL.arrays.vbo.VBO instance")
+        if not isinstance(buffer, mgl.Buffer):
+            raise VAOError("buffer parameter must be a moderngl.Buffer instance")
 
         # Check that the buffer target is sane
-        if vbo.target not in ["GL_ARRAY_BUFFER", "GL_TRANSFORM_FEEDBACK_BUFFER"]:
-            raise VAOError("VBO must have target GL_ARRAY_BUFFER or GL_TRANSFORM_FEEDBACK_BUFFER, "
-                           "not {}".format(vbo.target))
+        # if vbo.target not in ["GL_ARRAY_BUFFER", "GL_TRANSFORM_FEEDBACK_BUFFER"]:
+        #     raise VAOError("VBO must have target GL_ARRAY_BUFFER or GL_TRANSFORM_FEEDBACK_BUFFER, "
+        #                    "not {}".format(vbo.target))
 
-        self.array_buffer_map[id(vbo)] = ArrayBuffer(format, vbo)
+        self.array_buffer_map[id(buffer)] = ArrayBuffer(format, buffer)
 
     def set_element_buffer(self, format, vbo):
         """
