@@ -2,6 +2,9 @@ import moderngl as mgl
 from OpenGL import GL
 from OpenGL.arrays.vbo import VBO
 
+from demosys.opengl import types
+from demosys.opengl import ShaderProgram
+
 DRAW_MODES = {
     mgl.TRIANGLES: 'TRIANGLES',
     mgl.TRIANGLE_FAN: 'TRIANGLE_FAN',
@@ -22,34 +25,28 @@ class VAOError(Exception):
 
 class ArrayBuffer:
     """Container for a vbo with additional information"""
-    def __init__(self, format, vbo):
+    def __init__(self, buffer_format: str, vbo: mgl.Buffer):
         """
         :param format: The format of the buffer
         :param vbo: The vbo object
         """
-        self.format = format
+        self.format = types.buffer_format(buffer_format)
         self.vbo = vbo
+
+        # Calculated during VAO build()
         self.stride = 0
-        self.element_size = type_size(self.format)
+
+        # Sanity check byte size
         if self.size % self.element_size != 0:
             raise VAOError("Buffer with type {} has size not aligning with {}. Remainder: ".format(
                 self.format, self.element_size, self.size % self.element_size,
             ))
+
         self.elements = self.size // self.element_size
 
     @property
-    def target(self):
-        """
-        :return: Returns the trarget of the vbo. GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER etc
-        """
-        return self.vbo.target
-
-    @property
-    def usage(self):
-        """
-        :return: The usage of the vbo. GL_DYNAMIC_DRAW / GL_STATIC_DRAW
-        """
-        return self.usage
+    def element_size(self):
+        return self.format.bytes_per_component
 
     @property
     def size(self):
@@ -70,7 +67,7 @@ class ArrayBuffer:
 
 class ArrayMapping:
     """Keeps track of vbo to attribute mapping"""
-    def __init__(self, array_buffer, attrib_name, components, offset):
+    def __init__(self, array_buffer, attrib_name, components, byte_offset):
         """
         :param array_buffer: The array buffer
         :param attrib_name: Name of the attribute
@@ -80,12 +77,12 @@ class ArrayMapping:
         self.array_buffer = array_buffer
         self.attrib_name = attrib_name
         self.components = components
-        self.offset = offset
+        self.byte_offset = byte_offset
 
 
 class VAOCombo:
     """
-    VAO of a specific attribute configuration.
+    VAO of a specific attribute and shader configuration.
     These are the actual VAOs used when drawing.
     """
     def __init__(self, key):
@@ -143,7 +140,7 @@ class VAO:
 
         self.bind_context = VAOBindContext(self)
 
-    def bind(self, shader):
+    def bind(self, shader: ShaderProgram):
         """
         Bind the VAO using a shader.
         This is the standard way of binding so the shader and VAO can negotiate
@@ -186,64 +183,53 @@ class VAO:
             else:
                 GL.glDrawArrays(self.mode, 0, self.vertex_count)
 
-    def add_array_buffer(self, format, buffer: mgl.Buffer):
+    def add_buffer(self, format, buffer: mgl.Buffer):
         """
-        Register a buffer for the VAO. This can be called multiple times.
+        Register a buffer/vbo for the VAO. This can be called multiple times.
         adding multiple buffers (interleaved or not)
 
-        :param format: The format of the buffer
+        :param format: The format of the buffer ('f', 'u', 'i')
         :param buffer: The buffer object
         """
         if not isinstance(buffer, mgl.Buffer):
             raise VAOError("buffer parameter must be a moderngl.Buffer instance")
 
-        # Check that the buffer target is sane
-        # if vbo.target not in ["GL_ARRAY_BUFFER", "GL_TRANSFORM_FEEDBACK_BUFFER"]:
-        #     raise VAOError("VBO must have target GL_ARRAY_BUFFER or GL_TRANSFORM_FEEDBACK_BUFFER, "
-        #                    "not {}".format(vbo.target))
+        self.array_buffer_map[buffer.glo] = ArrayBuffer(format, buffer)
 
-        self.array_buffer_map[id(buffer)] = ArrayBuffer(format, buffer)
-
-    def set_element_buffer(self, format, vbo):
+    def set_element_buffer(self, buffer_format: str, buffer: mgl.Buffer):
         """
         Set the index buffer for this VAO
 
-        :param format: The format of the element buffer
-        :param vbo: the vbo object
+        :param buffer_format: The format of the element buffer ('u', 'u1', 'u2', 'u4' etc)
+        :param buffer: the vbo object
         """
-        if not isinstance(vbo, VBO):
-            raise VAOError("vbo parameter must be an OpenGL.arrays.vbo.VBO instance")
+        if not isinstance(buffer, mgl.Buffer):
+            raise VAOError("buffer parameter must be a moderngl.Buffer instance")
 
-        if vbo.target not in ["GL_ELEMENT_ARRAY_BUFFER"]:
-            raise VAOError("Element buffers must have target=GL_ELEMENT_ARRAY_BUFFER")
+        self.element_buffer = ArrayBuffer(buffer_format, buffer)
 
-        if format not in [GL.GL_UNSIGNED_INT, GL.GL_UNSIGNED_SHORT, GL.GL_UNSIGNED_BYTE]:
-            raise VAOError("Format can currently only be GL_UNSIGNED_INT, GL_UNSIGNED_SHORT", "GL_UNSIGNED_BYTE")
-
-        self.element_buffer = ArrayBuffer(format, vbo)
-
-    def map_buffer(self, vbo, attrib_name, components):
+    def map_buffer(self, buffer: mgl.Buffer, attrib_name: str, components: int):
         """
         Map parts of the vbos to an attribute name.
         This can be called multiple times to describe hos the buffers map to attribute names.
         If the same vbo is passed more than once it must be an interleaved buffer.
 
-        :param vbo: The vbo
+        :param buffer: The vbo/buffer
         :param attrib_name: Name of the attribute in the shader
         :param components: Number of components (for example 3 for a x, y, x position)
         """
-        if not isinstance(vbo, VBO):
-            raise VAOError("vbo parameter must be an OpenGL.arrays.vbo.VBO instance")
+        if not isinstance(buffer, mgl.Buffer):
+            raise VAOError("buffer parameter must be an mgl.Buffer instance")
 
-        ab = self.array_buffer_map.get(id(vbo))
+        ab = self.array_buffer_map.get(buffer.glo)
         if not ab:
-            raise VAOError("VBO {} not previously added as an array map. "
-                           "Forgot to call add_arrray_buffer(..)?".format(id(vbo)))
+            raise VAOError("buffer {} not unknown. "
+                           "Forgot to call add_buffer(..)?".format(buffer.glo))
 
         # FIXME: Determine byte size based on data type in VBO
-        offset = ab.stride
-        ab.stride += components * type_size(ab.format)
-        am = ArrayMapping(ab, attrib_name, components, offset)
+        byte_offset = ab.stride
+        ab.stride += components * ab.element_size
+        am = ArrayMapping(ab, attrib_name, components, byte_offset)
 
         self.array_mapping.append(am)
         self.array_mapping_map[attrib_name] = am
@@ -258,7 +244,7 @@ class VAO:
 
         for key, buff in self.array_buffer_map.items():
             if buff.stride == 0:
-                raise VAOError("Buffer {} was never mapped in VAO {}".format(key, self.name))
+                raise VAOError("Buffers {} was never mapped to attributes in VAO {}".format(key, self.name))
 
         # Check that all buffers have the same number of units
         last_vertices = -1
@@ -280,13 +266,16 @@ class VAO:
         :param shader: The shader we are generating the combo for
         :return: A new VAOCombo object with the correct attribute binding
         """
+        # ModernGL creates a VAO for each shader
+        instance_key = "{}:{}".format(shader.program.glo, shader.attribute_key)
+
         # Return the combo if already generated
-        combo = self.combos.get(shader.attribute_key)
+        combo = self.combos.get(instance_key)
         if combo:
             return combo
 
-        print("Generating VAO Combo for {} using key {}".format(self.name, shader.attribute_key))
-        combo = VAOCombo(shader.attribute_key)
+        print("Generating VAO Combo for {} using key {}".format(self.name, instance_key))
+        combo = VAOCombo(instance_key)
         combo.bind()
 
         # Build the vao according to the shader's attribute specifications
@@ -350,14 +339,14 @@ class VAOBindContext:
         pass
 
 
-def type_size(format):
-    """Determines the byte size of a format"""
-    if format == GL.GL_FLOAT:
-        return 4
-    if format == GL.GL_UNSIGNED_INT:
-        return 4
-    if format == GL.GL_UNSIGNED_SHORT:
-        return 2
-    if format == GL.GL_UNSIGNED_BYTE:
-        return 1
-    raise VAOError("Cannot determine byte size of {}".format(format))
+# def type_size(format):
+#     """Determines the byte size of a format"""
+#     if format == GL.GL_FLOAT:
+#         return 4
+#     if format == GL.GL_UNSIGNED_INT:
+#         return 4
+#     if format == GL.GL_UNSIGNED_SHORT:
+#         return 2
+#     if format == GL.GL_UNSIGNED_BYTE:
+#         return 1
+#     raise VAOError("Cannot determine byte size of {}".format(format))
