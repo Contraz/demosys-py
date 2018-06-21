@@ -1,11 +1,9 @@
-import ctypes
 import moderngl
 import os
 from functools import wraps
 
 from OpenGL import GL
 from demosys.conf import settings
-from .constants import TYPE_INFO
 from demosys import context
 
 
@@ -112,7 +110,7 @@ class ShaderProgram:
 
     def bind(self):
         """
-        Bind the shader
+        Bind the shader. Ideally we should never need to use this as programs are bound to VAOs directly
         """
         GL.glUseProgram(self.program.glo)
 
@@ -168,7 +166,16 @@ class ShaderProgram:
         if self.frag_source:
             params.update({'fragment_shader': self.frag_source.source})
 
-        # TODO: varyings for transform feedback
+        # If no fragment shader is present we are doing transform feedback
+        if not self.frag_source:
+            # Out attributes is present in geometry shader if present
+            if self.geo_source:
+                out_attribs = self.geo_source.find_out_attribs()
+            # Otherwise they are specified in vertex shader
+            else:
+                out_attribs = self.vertex_source.find_out_attribs()
+
+            params.update({'varyings': out_attribs})
 
         # Raises mgl.Error
         self.program = context.ctx().program(**params)
