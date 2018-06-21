@@ -140,11 +140,11 @@ def cube(width, height, depth, normals=True, uvs=True):
     vao = VAO("geometry:cube")
 
     # Add buffers
-    vao.add_array_buffer(GL.GL_FLOAT, pos)
+    vao.add_buffer('f', pos)
     if normals:
-        vao.add_array_buffer(GL.GL_FLOAT, normals)
+        vao.add_buffer('f', normals)
     if uvs:
-        vao.add_array_buffer(GL.GL_FLOAT, uvs)
+        vao.add_buffer('f', uvs)
 
     # Map buffers
     vao.map_buffer(pos, "in_position", 3)
