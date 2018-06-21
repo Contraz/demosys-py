@@ -107,6 +107,8 @@ class ShaderProgram:
         self.attribute_map = {}
         # A string of concatenated attribute names
         self.attribute_key = None
+        # Unique key for VAO instances containing shader id and attributes
+        self.vao_key = None
 
     def bind(self):
         """
@@ -189,53 +191,6 @@ class ShaderProgram:
         if self.program:
             self.program.release()
 
-    # def link(self):
-    #     """
-    #     Links the program.
-    #     Raises ``ShaderError`` if the linker failed.
-    #     """
-    #     program = GL.glCreateProgram()
-    #     GL.glAttachShader(program, self.vertex_source.shader)
-    #
-    #     if self.geo_source:
-    #         GL.glAttachShader(program, self.geo_source.shader)
-    #
-    #     if self.frag_source:
-    #         GL.glAttachShader(program, self.frag_source.shader)
-    #
-    #     # If no fragment shader is present we are dealing with transform feedback
-    #     if not self.frag_source:
-    #         # Find out attributes
-    #         # Out attribs is present in geometry shader if present
-    #         if self.geo_source:
-    #             out_attribs = self.geo_source.find_out_attribs()
-    #         # Otherwise they are specified in vertex shader
-    #         else:
-    #             out_attribs = self.vertex_source.find_out_attribs()
-    #
-    #         print("Transform feedback attribs:", out_attribs)
-    #
-    #         # Prepare ctypes data containing attrib names
-    #         # array_type = ctypes.c_char_p * len(out_attribs)
-    #         # buff = array_type()
-    #         # for i, e in enumerate(out_attribs):
-    #         #     buff[i] = e.encode()
-    #         #
-    #         # c_text = ctypes.cast(ctypes.pointer(buff), ctypes.POINTER(ctypes.POINTER(GL.GLchar)))
-    #         # GL.glTransformFeedbackVaryings(program, len(out_attribs), c_text, GL.GL_INTERLEAVED_ATTRIBS)
-    #
-    #     GL.glLinkProgram(program)
-    #
-    #     status = GL.glGetProgramiv(program, GL.GL_LINK_STATUS)
-    #     if not status:
-    #         message = GL.glGetProgramInfoLog(program)
-    #         print("M:", message)
-    #         raise ShaderError("Failed to link shader {}: {}".format(self.name, message))
-    #
-    #     # Attempt to delete the current shader in case we are re-loading
-    #     self.delete()
-    #     self.program = program
-
     def build_uniform_map(self):
         """
         Builds an internal uniform map by querying the program.
@@ -268,6 +223,9 @@ class ShaderProgram:
 
         self.attribute_key = ','.join(name for name in sorted(self.attribute_map.keys()))
         print("Shader attribute key:", self.attribute_key)
+
+        self.vao_key = "{}:{}".format(self.program.glo, self.attribute_key)
+        print("Shader VAO key:", self.vao_key)
 
     def uniform(self, name, raise_on_error=True):
         """
