@@ -1,3 +1,17 @@
+"""
+The vao_content is a list of 3-tuples (buffer, format, attribs)
+the format can have an empty or '/v', '/i', '/r' ending.
+'/v' attributes are the default
+'/i` attributes are per instance attributes
+'/r' attributes are default values for the attributes (per render attributes)
+
+Example:
+    vao_content = [
+        (self.position_vertex_buffer, '2f', 'in_vert'),
+        (self.color_buffer, '3f', 'in_color'),
+        (self.pos_scale_buffer, '2f 1f/i', 'in_pos', 'in_scale'),
+    ]
+"""
 
 
 class BufferFormat:
@@ -8,7 +22,7 @@ class BufferFormat:
         :param components: components
         :param byte_size: byte per component
         """
-        self.format = "{}{}".format(components, format_string)
+        self.format = format_string
         self.components = components
         self.bytes_per_component = bytes_per_component
 
@@ -30,7 +44,7 @@ class BufferFormat:
 def buffer_format(frmt: str) -> BufferFormat:
     """
     Look up info about a buffer format
-    :param frmt: format string such as '3f'
+    :param frmt: format string such as 'f', 'i' and 'u'
     :return: BufferFormat instance
     """
     try:
@@ -38,6 +52,20 @@ def buffer_format(frmt: str) -> BufferFormat:
     except KeyError:
         raise ValueError("Buffer format '{}' unknown. Valid formats: {}".format(
             frmt, BUFFER_FORMATS.keys()
+        ))
+
+
+def attribute_format(frmt: str) -> BufferFormat:
+    """
+    Look up info about an attribute format
+    :param frmt: Format of an
+    :return: BufferFormat instance
+    """
+    try:
+        return ATTRIBUTE_FORMATS[frmt]
+    except KeyError:
+        raise ValueError("Buffer format '{}' unknown. Valid formats: {}".format(
+            frmt, ATTRIBUTE_FORMATS.keys()
         ))
 
 
@@ -145,3 +173,15 @@ ATTRIBUTE_FORMATS = {
 # static int i1_internal_format[5] = {0, GL_R8I, GL_RG8I, GL_RGB8I, GL_RGBA8I};
 # static int i2_internal_format[5] = {0, GL_R16I, GL_RG16I, GL_RGB16I, GL_RGBA16I};
 # static int i4_internal_format[5] = {0, GL_R32I, GL_RG32I, GL_RGB32I, GL_RGBA32I};
+
+# def type_size(format):
+#     """Determines the byte size of a format"""
+#     if format == GL.GL_FLOAT:
+#         return 4
+#     if format == GL.GL_UNSIGNED_INT:
+#         return 4
+#     if format == GL.GL_UNSIGNED_SHORT:
+#         return 2
+#     if format == GL.GL_UNSIGNED_BYTE:
+#         return 1
+#     raise VAOError("Cannot determine byte size of {}".format(format))
