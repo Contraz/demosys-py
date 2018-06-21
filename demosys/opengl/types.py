@@ -12,7 +12,12 @@ class BufferFormat:
         self.components = components
         self.bytes_per_component = bytes_per_component
 
+    @property
+    def bytes_total(self):
+        return self.components * self.bytes_per_component
+
     def pad_str(self) -> str:
+        """Padding string used my moderngl in interleaved buffers"""
         return "{}x{}".format(self.components, self.bytes_per_component)
 
     def __str__(self) -> str:
@@ -36,7 +41,25 @@ def buffer_format(frmt: str) -> BufferFormat:
         ))
 
 
-BUFFER_FORMATS  = {
+BUFFER_FORMATS = {
+    # Floats
+    'f': BufferFormat('f', 1, 4),
+    'f1': BufferFormat('f1', 1, 1),
+    'f2': BufferFormat('f2', 1, 2),
+    'f4': BufferFormat('f4', 1, 4),
+    # Unsigned Integers
+    'u': BufferFormat('u', 1, 4),
+    'u1': BufferFormat('u1', 1, 1),
+    'u2': BufferFormat('u2', 1, 2),
+    'u4': BufferFormat('u4', 1, 4),
+    # Signed Integer
+    'i': BufferFormat('i', 1, 4),
+    'i1': BufferFormat('i1', 1, 1),
+    'i2': BufferFormat('i2', 1, 2),
+    'i4': BufferFormat('i4', 1, 4),
+}
+
+ATTRIBUTE_FORMATS = {
     # f4 32 bit float - short version
     '1f': BufferFormat('f4', 1, 4),
     '2f': BufferFormat('f4', 2, 4),
