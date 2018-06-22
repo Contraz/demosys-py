@@ -1,10 +1,7 @@
-import moderngl
 import numpy
 
 from demosys.opengl import VAO
 from demosys import context
-from OpenGL import GL
-# from OpenGL.arrays.vbo import VBO
 
 
 def cube(width, height, depth, normals=True, uvs=True):
