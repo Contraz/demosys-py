@@ -12,6 +12,7 @@ Example:
         (self.pos_scale_buffer, '2f 1f/i', 'in_pos', 'in_scale'),
     ]
 """
+from typing import List
 
 
 class BufferFormat:
@@ -69,6 +70,14 @@ def attribute_format(frmt: str) -> BufferFormat:
         ))
 
 
+def parse_attribute_formats(frmt: str) -> List[BufferFormat]:
+    formats = []
+    for attrib in frmt.split():
+        formats.append(attribute_format(attrib))
+
+    return formats
+
+
 BUFFER_FORMATS = {
     # Floats
     'f': BufferFormat('f', 1, 4),
@@ -89,76 +98,76 @@ BUFFER_FORMATS = {
 
 ATTRIBUTE_FORMATS = {
     # f4 32 bit float - short version
-    '1f': BufferFormat('f4', 1, 4),
-    '2f': BufferFormat('f4', 2, 4),
-    '3f': BufferFormat('f4', 3, 4),
-    '4f': BufferFormat('f4', 4, 4),
+    '1f': BufferFormat('1f', 1, 4),
+    '2f': BufferFormat('2f', 2, 4),
+    '3f': BufferFormat('3f', 3, 4),
+    '4f': BufferFormat('4f', 4, 4),
 
     # u4 unsigned int - short version
-    '1u': BufferFormat('u4', 1, 4),
-    '2u': BufferFormat('u4', 2, 4),
-    '3u': BufferFormat('u4', 3, 4),
-    '4u': BufferFormat('u4', 4, 4),
+    '1u': BufferFormat('1u4', 1, 4),
+    '2u': BufferFormat('2u4', 2, 4),
+    '3u': BufferFormat('3u4', 3, 4),
+    '4u': BufferFormat('4u4', 4, 4),
 
     # i4 signed 32bit integer - short version
-    '1i': BufferFormat('i4', 1, 4),
-    '2i': BufferFormat('i4', 2, 4),
-    '3i': BufferFormat('i4', 3, 4),
-    '4i': BufferFormat('i4', 4, 4),
+    '1i': BufferFormat('1i4', 1, 4),
+    '2i': BufferFormat('2i4', 2, 4),
+    '3i': BufferFormat('3i4', 3, 4),
+    '4i': BufferFormat('4i4', 4, 4),
 
     # f1 unsigned byte - short version
-    '1f1': BufferFormat('f1', 1, 1),
-    '2f1': BufferFormat('f1', 2, 1),
-    '3f1': BufferFormat('f1', 3, 1),
-    '4f1': BufferFormat('f1', 4, 1),
+    '1f1': BufferFormat('1f1', 1, 1),
+    '2f1': BufferFormat('2f1', 2, 1),
+    '3f1': BufferFormat('3f1', 3, 1),
+    '4f1': BufferFormat('4f1', 4, 1),
 
     # f2 half float (16 bit)
-    '1f2': BufferFormat('f2', 1, 2),
-    '2f2': BufferFormat('f2', 2, 2),
-    '3f2': BufferFormat('f2', 3, 2),
-    '4f2': BufferFormat('f2', 4, 2),
+    '1f2': BufferFormat('1f2', 1, 2),
+    '2f2': BufferFormat('2f2', 2, 2),
+    '3f2': BufferFormat('3f2', 3, 2),
+    '4f2': BufferFormat('4f2', 4, 2),
 
     # f4 32 bit float
-    '1f4': BufferFormat('f4', 1, 4),
-    '2f4': BufferFormat('f4', 2, 4),
-    '3f4': BufferFormat('f4', 3, 4),
-    '4f4': BufferFormat('f4', 4, 4),
+    '1f4': BufferFormat('1f4', 1, 4),
+    '2f4': BufferFormat('2f4', 2, 4),
+    '3f4': BufferFormat('3f4', 3, 4),
+    '4f4': BufferFormat('4f4', 4, 4),
 
     # u1 unsigned byte
-    '1u1': BufferFormat('u1', 1, 1),
-    '2u1': BufferFormat('u1', 2, 1),
-    '3u1': BufferFormat('u1', 3, 1),
-    '4u1': BufferFormat('u1', 4, 1),
+    '1u1': BufferFormat('1u1', 1, 1),
+    '2u1': BufferFormat('2u1', 2, 1),
+    '3u1': BufferFormat('3u1', 3, 1),
+    '4u1': BufferFormat('4u1', 4, 1),
 
     # u2 unsigned short
-    '1u2': BufferFormat('u2', 1, 2),
-    '2u2': BufferFormat('u2', 2, 2),
-    '3u2': BufferFormat('u2', 3, 2),
-    '4u2': BufferFormat('u2', 4, 2),
+    '1u2': BufferFormat('1u2', 1, 2),
+    '2u2': BufferFormat('2u2', 2, 2),
+    '3u2': BufferFormat('3u2', 3, 2),
+    '4u2': BufferFormat('4u2', 4, 2),
 
     # u4 unsigned int
-    '1u4': BufferFormat('u4', 1, 4),
-    '2u4': BufferFormat('u4', 2, 4),
-    '3u4': BufferFormat('u4', 3, 4),
-    '4u4': BufferFormat('u4', 4, 4),
+    '1u4': BufferFormat('1u4', 1, 4),
+    '2u4': BufferFormat('2u4', 2, 4),
+    '3u4': BufferFormat('3u4', 3, 4),
+    '4u4': BufferFormat('4u4', 4, 4),
 
     # i1 signed byte
-    '1i1': BufferFormat('i1', 1, 1),
-    '2i1': BufferFormat('i1', 2, 1),
-    '3i1': BufferFormat('i1', 3, 1),
-    '4i1': BufferFormat('i1', 4, 1),
+    '1i1': BufferFormat('1i1', 1, 1),
+    '2i1': BufferFormat('2i1', 2, 1),
+    '3i1': BufferFormat('3i1', 3, 1),
+    '4i1': BufferFormat('4i1', 4, 1),
 
     # i2 signed short
-    '1i2': BufferFormat('i2', 1, 2),
-    '2i2': BufferFormat('i2', 2, 2),
-    '3i2': BufferFormat('i2', 3, 2),
-    '4i2': BufferFormat('i2', 4, 2),
+    '1i2': BufferFormat('1i2', 1, 2),
+    '2i2': BufferFormat('2i2', 2, 2),
+    '3i2': BufferFormat('3i2', 3, 2),
+    '4i2': BufferFormat('4i2', 4, 2),
 
     # i4 signed 32bit integer
-    '1i4': BufferFormat('i4', 1, 4),
-    '2i4': BufferFormat('i4', 2, 4),
-    '3i4': BufferFormat('i4', 3, 4),
-    '4i4': BufferFormat('i4', 4, 4),
+    '1i4': BufferFormat('1i4', 1, 4),
+    '2i4': BufferFormat('2i4', 2, 4),
+    '3i4': BufferFormat('3i4', 3, 4),
+    '4i4': BufferFormat('4i4', 4, 4),
 }
 
 
@@ -173,15 +182,3 @@ ATTRIBUTE_FORMATS = {
 # static int i1_internal_format[5] = {0, GL_R8I, GL_RG8I, GL_RGB8I, GL_RGBA8I};
 # static int i2_internal_format[5] = {0, GL_R16I, GL_RG16I, GL_RGB16I, GL_RGBA16I};
 # static int i4_internal_format[5] = {0, GL_R32I, GL_RG32I, GL_RGB32I, GL_RGBA32I};
-
-# def type_size(format):
-#     """Determines the byte size of a format"""
-#     if format == GL.GL_FLOAT:
-#         return 4
-#     if format == GL.GL_UNSIGNED_INT:
-#         return 4
-#     if format == GL.GL_UNSIGNED_SHORT:
-#         return 2
-#     if format == GL.GL_UNSIGNED_BYTE:
-#         return 1
-#     raise VAOError("Cannot determine byte size of {}".format(format))
