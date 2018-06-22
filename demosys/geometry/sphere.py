@@ -62,7 +62,7 @@ def sphere(radius=0.5, sectors=32, rings=16):
     vbo_uvs = context.ctx().buffer(numpy.array(uvs, dtype=numpy.float32).tobytes())
     vbo_elements = context.ctx().buffer(numpy.array(indices, dtype=numpy.uint32).tobytes())
 
-    vao = VAO("sphere")
+    vao = VAO("sphere", mode=mlg.TRIANGLES)
     # VBOs
     vao.buffer(vbo_vertices, '3f', ['in_position'])
     vao.buffer(vbo_normals, '3f', ['in_normal'])
