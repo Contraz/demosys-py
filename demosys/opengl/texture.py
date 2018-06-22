@@ -84,10 +84,11 @@ class Texture:
         t._build()
         return t
 
-    def bind(self):
+    def bind(self, unit=0):
         """
         Binds the texture to the currently active texture unit
         """
+        GL.glActiveTexture(GL.GL_TEXTURE0 + unit)
         GL.glBindTexture(self.target, self.texture)
 
     def draw(self, shader=None, pos=(0.0, 0.0), scale=(1.0, 1.0)):
