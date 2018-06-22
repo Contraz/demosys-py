@@ -2,7 +2,7 @@
 Wrapper for a loaded scene with properties.
 """
 from .shaders import MeshShader, ColorShader, TextureShader, FallbackShader
-from demosys.opengl import geometry
+from demosys import geometry
 from demosys.resources import shaders
 from pyrr import matrix44, vector3
 

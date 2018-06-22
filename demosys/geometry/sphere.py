@@ -1,8 +1,9 @@
 import math
-from OpenGL import GL
-from OpenGL.arrays.vbo import VBO
-from demosys.opengl import VAO
+import moderngl as mlg
 import numpy
+
+from demosys import context
+from demosys.opengl import VAO
 
 
 def sphere(radius=0.5, sectors=32, rings=16):
@@ -56,21 +57,16 @@ def sphere(radius=0.5, sectors=32, rings=16):
             indices[i + 5] = (r + 1) * sectors + (s + 1)
             i += 6
 
-    vbo_vertices = VBO(numpy.array(vertices, dtype=numpy.float32))
-    vbo_normals = VBO(numpy.array(normals, dtype=numpy.float32))
-    vbo_uvs = VBO(numpy.array(uvs, dtype=numpy.float32))
-    vbo_element = VBO(numpy.array(indices, dtype=numpy.uint32), target="GL_ELEMENT_ARRAY_BUFFER")
+    vbo_vertices = context.ctx().buffer(numpy.array(vertices, dtype=numpy.float32).tobytes())
+    vbo_normals = context.ctx().buffer(numpy.array(normals, dtype=numpy.float32).tobytes())
+    vbo_uvs = context.ctx().buffer(numpy.array(uvs, dtype=numpy.float32).tobytes())
+    vbo_elements = context.ctx().buffer(numpy.array(indices, dtype=numpy.uint32).tobytes())
 
     vao = VAO("sphere")
     # VBOs
-    vao.add_array_buffer(GL.GL_FLOAT, vbo_vertices)
-    vao.add_array_buffer(GL.GL_FLOAT, vbo_normals)
-    vao.add_array_buffer(GL.GL_FLOAT, vbo_uvs)
-    # Mapping
-    vao.map_buffer(vbo_vertices, "in_position", 3)
-    vao.map_buffer(vbo_normals, "in_normal", 3)
-    vao.map_buffer(vbo_uvs, "in_uv", 2)
-    # Index
-    vao.set_element_buffer(GL.GL_UNSIGNED_INT, vbo_element)
-    vao.build()
+    vao.buffer(vbo_vertices, '3f', ['in_position'])
+    vao.buffer(vbo_normals, '3f', ['in_normal'])
+    vao.buffer(vbo_uvs, '2f', ['in_uv'])
+    vao.index_buffer('u', vbo_elements)
+
     return vao

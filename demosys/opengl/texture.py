@@ -185,8 +185,8 @@ class Texture:
 
 def _init_texture_draw():
     """Initialize geometry and shader for drawing FBO layers"""
-    from demosys.opengl import Shader
-    from demosys.opengl import geometry
+    from demosys.opengl import ShaderProgram
+    from demosys import geometry
 
     if Texture.quad:
         return
@@ -216,6 +216,6 @@ def _init_texture_draw():
         "}",
         "#endif",
     ]
-    Texture.shader_2d = Shader(name="fbo_shader")
+    Texture.shader_2d = ShaderProgram(name="fbo_shader")
     Texture.shader_2d.set_source("\n".join(src))
     Texture.shader_2d.prepare()
