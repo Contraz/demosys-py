@@ -1,4 +1,4 @@
-from pyrr import matrix44
+from pyrr import Matrix44
 
 
 class Projection:
@@ -29,12 +29,10 @@ class Projection:
         self.near = near or self.near
         self.far = far or self.far
 
-        self.matrix = matrix44.create_perspective_projection_matrix(
-            self.fov,
-            self.aspect_ratio,
-            self.near,
-            self.far
-        )
+        self.matrix = Matrix44.perspective_projection(self.fov, self.aspect_ratio, self.near, self.far)
+
+    def tobytes(self):
+        return self.matrix.astype('f4').tobytes()
 
     @property
     def projection_constants(self):
