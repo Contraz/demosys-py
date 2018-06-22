@@ -1,5 +1,5 @@
+from typing import List
 import moderngl as mgl
-from OpenGL import GL
 
 from demosys.opengl import types
 from demosys.opengl import ShaderProgram
@@ -23,64 +23,59 @@ class VAOError(Exception):
     pass
 
 
-class ArrayBuffer:
+class BufferInfo:
     """Container for a vbo with additional information"""
-    def __init__(self, buffer_format: str, vbo: mgl.Buffer):
+    def __init__(self, buffer: mgl.Buffer, buffer_format: str, attributes):
         """
+        :param buffer: The vbo object
         :param format: The format of the buffer
-        :param vbo: The vbo object
         """
-        self.buffer_format = types.buffer_format(buffer_format)
-        self.vbo = vbo
-        self.array_maps = []
-
-        # Calculated during VAO creation
-        self.stride = 0
-        self.vertex_format = []
+        self.buffer = buffer
+        self.attrib_formats = types.parse_attribute_formats(buffer_format)
+        self.attributes = attributes
 
         # Sanity check byte size
-        if self.size % self.element_size != 0:
+        if self.buffer.size % self.element_size != 0:
             raise VAOError("Buffer with type {} has size not aligning with {}. Remainder: ".format(
-                self.buffer_format, self.element_size, self.size % self.element_size,
+                buffer_format, self.element_size, self.buffer.size % self.element_size,
             ))
 
-        self.elements = self.size // self.element_size
+        self.elements = self.buffer.size // self.element_size
 
     @property
-    def element_size(self):
-        return self.buffer_format.bytes_per_component
+    def element_size(self) -> int:
+        return sum(f.bytes_per_component for f in self.attrib_formats)
 
     @property
-    def size(self):
-        """
-        :return: Size of the vbo in bytes
-        """
-        return self.vbo.size
-
-    @property
-    def vertices(self):
+    def vertices(self) -> int:
         """
         :return: The number of vertices based on the current stride
         """
-        if self.size % self.stride != 0:
-            raise VAOError("size % stride != 0")
-        return self.size // self.stride
+        return self.buffer.size // self.element_size
 
+    def content(self, attributes: List[str]):
+        """Build content tuple for the buffer"""
+        formats = []
+        attrs = []
+        for i, attrib in enumerate(self.attributes):
+            if attrib not in attributes:
+                continue
 
-class ArrayMapping:
-    """Keeps track of vbo to attribute mapping"""
-    def __init__(self, array_buffer, attrib_name, components, byte_offset):
-        """
-        :param array_buffer: The array buffer
-        :param attrib_name: Name of the attribute
-        :param components: Number of components
-        :param offset: Byte offset in the buffer
-        """
-        array_buffer.array_maps.append(self)
-        self.array_buffer = array_buffer
-        self.attrib_name = attrib_name
-        self.components = components
-        self.byte_offset = byte_offset
+            formats.append(self.attrib_formats[i])
+            attrs.append(attrib)
+            attributes.remove(attrib)
+
+        if len(attrs) == 0:
+            return None
+
+        return (
+            self.buffer,
+            *(f.format for f in formats),
+            *attrs
+        )
+
+    def has_attribute(self, name):
+        return name in self.attributes
 
 
 class VAO:
@@ -100,16 +95,13 @@ class VAO:
         except KeyError:
             raise VAOError("Invalid draw mode. Options are {}".format(DRAW_MODES.values()))
 
-        self.array_buffer_map = {}
-
-        self.array_mapping = []
-        self.array_mapping_map = {}
-
+        self.buffers = []
         self.element_buffer = None
+
         self.vertex_count = 0
         self.vaos = {}
 
-    def draw(self, shader, mode=None):
+    def draw(self, shader: ShaderProgram, mode=None):
         """
         Draw the VAO.
         Will use ``glDrawElements`` if an element buffer is present
@@ -117,39 +109,30 @@ class VAO:
 
         :param mode: Override the draw mode (GL_TRIANGLES etc)
         """
-        vao = self.generate_vao_combo(shader)
+        vao = self._create_vao_instance(shader)
 
-        # if self.element_buffer:
-        #     if mode is not None:
-        #         GL.glDrawElements(mode,
-        #                           self.element_buffer.elements,
-        #                           self.element_buffer.format,
-        #                           self.element_buffer.vbo)
-        #     else:
-        #         GL.glDrawElements(self.mode or GL.GL_TRIANGLES,
-        #                           self.element_buffer.elements,
-        #                           self.element_buffer.format,
-        #                           self.element_buffer.vbo)
-        # else:
-        #     if mode is not None:
-        #         GL.glDrawArrays(mode, 0, self.vertex_count)
-        #     else:
-        #         GL.glDrawArrays(self.mode, 0, self.vertex_count)
+        mode = self.mode or mgl.TRIANGLES
+        vao.render(mode)
 
-    def add_buffer(self, format: str, buffer: mgl.Buffer):
+    def buffer(self, buffer: mgl.Buffer, buffer_format: str, attribute_names):
         """
         Register a buffer/vbo for the VAO. This can be called multiple times.
         adding multiple buffers (interleaved or not)
 
-        :param format: The format of the buffer ('f', 'u', 'i')
         :param buffer: The buffer object
+        :param buffer_format: The format of the buffer ('f', 'u', 'i')
         """
         if not isinstance(buffer, mgl.Buffer):
             raise VAOError("buffer parameter must be a moderngl.Buffer instance")
 
-        self.array_buffer_map[buffer.glo] = ArrayBuffer(format, buffer)
+        formats = buffer_format.split()
+        if len(formats) != len(attribute_names):
+            raise VAOError("Format '{}' does not describe attributes {}".format(buffer_format, attribute_names))
 
-    def set_element_buffer(self, buffer_format: str, buffer: mgl.Buffer):
+        self.buffers.append(BufferInfo(buffer, buffer_format, attribute_names))
+        self.vertex_count = self.buffers[-1].vertices
+
+    def element_buffer(self, buffer_format: str, buffer: mgl.Buffer):
         """
         Set the index buffer for this VAO
 
@@ -159,58 +142,9 @@ class VAO:
         if not isinstance(buffer, mgl.Buffer):
             raise VAOError("buffer parameter must be a moderngl.Buffer instance")
 
-        self.element_buffer = ArrayBuffer(buffer_format, buffer)
+        self.element_buffer = BufferInfo(buffer, buffer_format)
 
-    def map_buffer(self, buffer: mgl.Buffer, attrib_name: str, components: int):
-        """
-        Map parts of the vbos to an attribute name.
-        This can be called multiple times to describe hos the buffers map to attribute names.
-        If the same vbo is passed more than once it must be an interleaved buffer.
-
-        :param buffer: The vbo/buffer
-        :param attrib_name: Name of the attribute in the shader
-        :param components: Number of components (for example 3 for a x, y, x position)
-        """
-        if not isinstance(buffer, mgl.Buffer):
-            raise VAOError("buffer parameter must be an mgl.Buffer instance")
-
-        ab = self.array_buffer_map.get(buffer.glo)
-        if not ab:
-            raise VAOError("buffer {} not unknown. "
-                           "Forgot to call add_buffer(..)?".format(buffer.glo))
-
-        # FIXME: Determine byte size based on data type in VBO
-        byte_offset = ab.stride
-        ab.stride += components * ab.element_size
-        am = ArrayMapping(ab, attrib_name, components, byte_offset)
-
-        self.array_mapping.append(am)
-        self.array_mapping_map[attrib_name] = am
-
-    def build(self):
-        """
-        Finalize the VAO.
-        This runs various sanity checks on the input data.
-        """
-        if len(self.array_buffer_map) == 0:
-            raise VAOError("VAO has no buffers")
-
-        for key, buff in self.array_buffer_map.items():
-            if buff.stride == 0:
-                raise VAOError("Buffers {} was never mapped to attributes in VAO {}".format(key, self.name))
-
-        # Check that all buffers have the same number of units
-        last_vertices = -1
-        for name, buf in self.array_buffer_map.items():
-            vertices = buf.vertices
-            if last_vertices > -1:
-                if last_vertices != vertices:
-                    raise VAOError("{} num_vertices {} != {}".format(name, last_vertices, vertices))
-
-        self.vertex_count = vertices
-        print("VAO {} has {} vertices".format(self.name, self.vertex_count))
-
-    def generate_vao_combo(self, shader):
+    def _create_vao_instance(self, shader):
         """
         Create a VAO based on the shader's attribute specification.
         This is called by ``bind(shader)`` and should not be messed with
@@ -224,41 +158,24 @@ class VAO:
         if vao:
             return vao
 
-        print("Generating VAO Combo for {} using key {}".format(self.name, shader.vao_key))
+        # Make sure all attributes are covered
+        for attrib in shader.attribute_list:
+            if not sum(b.has_attribute(attrib.name) for b in self.buffers):
+                raise VAOError("VAO {} doesn't have attribute {} for program {}".format(
+                    self.name, attrib.name, shader.name))
 
-        array_mapping_list = []
-        # Build the vao according to the shader's attribute specifications
-        for attribute in shader.attribute_list:
-            # Do we actually have an array mapping with this attribute name?
-            mapping = self.array_mapping_map.get(attribute.name)
-            if not mapping:
-                raise VAOError("VAO {} don't know about the attribute '{}'".format(self.name, attribute.name))
+        attributes = [a.name for a in shader.attribute_list]
+        vao_content = []
 
-            array_mapping_list.append(mapping)
+        for buffer in self.buffers:
+            content = buffer.content(attributes)
+            if content:
+                vao_content.append(content)
 
-        # Do the data binding for this VAO: Order is the same as the attribList
-        for i, mapping in enumerate(array_mapping_list):
-            print(" - > [{name}] loc {loc} components={comp} format={frmt} stride={stride} offset={offset}".format(
-                name=shader.attribute_list[i].name,
-                loc=shader.attribute_list[i].location,
-                comp=mapping.components,
-                frmt=mapping.array_buffer.buffer_format,
-                stride=mapping.array_buffer.stride,
-                offset=mapping.byte_offset,
-            ))
+        if len(attributes) > 0:
+            raise VAOError("Did not find a buffer mapping for {}".format([n.name for n in attributes]))
 
-            format = types.attribute_format("{}{}".format(
-                mapping.components,
-                mapping.array_buffer.buffer_format.format
-            ))
-            mapping.array_buffer.vertex_format.append(format)
-
-        vao = "Dummy"
-        # if self.element_buffer:
-        #     self.element_buffer.vbo.bind()
-        # else:
-        #     context.ctx().vertex_array()
-
+        vao = context.ctx().vertex_array(shader.program, vao_content)
         self.vaos[shader.vao_key] = vao
 
         return vao
