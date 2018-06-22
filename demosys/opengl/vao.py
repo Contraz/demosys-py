@@ -25,7 +25,7 @@ class VAOError(Exception):
 
 class BufferInfo:
     """Container for a vbo with additional information"""
-    def __init__(self, buffer: mgl.Buffer, buffer_format: str, attributes):
+    def __init__(self, buffer: mgl.Buffer, buffer_format: str, attributes=None):
         """
         :param buffer: The vbo object
         :param format: The format of the buffer
@@ -96,7 +96,8 @@ class VAO:
             raise VAOError("Invalid draw mode. Options are {}".format(DRAW_MODES.values()))
 
         self.buffers = []
-        self.element_buffer = None
+        self._index_buffer = None
+        self._index_buffer_format = None
 
         self.vertex_count = 0
         self.vaos = {}
@@ -107,6 +108,7 @@ class VAO:
         Will use ``glDrawElements`` if an element buffer is present
         and ``glDrawArrays`` if no element array is present.
 
+        :param shader: The shader to draw with
         :param mode: Override the draw mode (GL_TRIANGLES etc)
         """
         vao = self._create_vao_instance(shader)
@@ -132,7 +134,7 @@ class VAO:
         self.buffers.append(BufferInfo(buffer, buffer_format, attribute_names))
         self.vertex_count = self.buffers[-1].vertices
 
-    def element_buffer(self, buffer_format: str, buffer: mgl.Buffer):
+    def index_buffer(self, buffer_format: str, buffer: mgl.Buffer):
         """
         Set the index buffer for this VAO
 
@@ -142,7 +144,8 @@ class VAO:
         if not isinstance(buffer, mgl.Buffer):
             raise VAOError("buffer parameter must be a moderngl.Buffer instance")
 
-        self.element_buffer = BufferInfo(buffer, buffer_format)
+        self._index_buffer = buffer
+        self._index_buffer_format = buffer_format
 
     def _create_vao_instance(self, shader):
         """
@@ -175,7 +178,10 @@ class VAO:
         if len(attributes) > 0:
             raise VAOError("Did not find a buffer mapping for {}".format([n.name for n in attributes]))
 
-        vao = context.ctx().vertex_array(shader.program, vao_content)
+        if self._index_buffer:
+            vao = context.ctx().vertex_array(shader.program, vao_content, self._index_buffer)
+        else:
+            vao = context.ctx().vertex_array(shader.program, vao_content)
         self.vaos[shader.vao_key] = vao
 
         return vao
