@@ -140,18 +140,10 @@ def cube(width, height, depth, normals=True, uvs=True):
     vao = VAO("geometry:cube")
 
     # Add buffers
-    vao.add_buffer('f', pos)
+    vao.buffer(pos, '3f', ['in_position'])
     if normals:
-        vao.add_buffer('f', normals)
+        vao.buffer(normals, '3f', ['in_normal'])
     if uvs:
-        vao.add_buffer('f', uvs)
+        vao.buffer(uvs, '2f', ['in_uv'])
 
-    # Map buffers
-    vao.map_buffer(pos, "in_position", 3)
-    if normals:
-        vao.map_buffer(normals, "in_normal", 3)
-    if uvs:
-        vao.map_buffer(uvs, "in_uv", 2)
-
-    vao.build()
     return vao
