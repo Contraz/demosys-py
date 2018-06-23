@@ -155,13 +155,14 @@ class FBO:
         :param pos: (tuple) offset x, y
         :param scale: (tuple) scale x, y
         """
-        with self.quad.bind(self.depth_shader) as s:
-            s.uniform_2f("offset", pos[0] - 1.0, pos[1] - 1.0)
-            s.uniform_2f("scale", scale[0], scale[1])
-            s.uniform_1f("near", near)
-            s.uniform_1f("far", far)
-            s.uniform_sampler_2d(0, "texture0", self.depth_buffer)
-        self.quad.draw()
+        self.depth_shader.uniform("offset", (pos[0] - 1.0, pos[1] - 1.0))
+        self.depth_shader.uniform("scale", (scale[0], scale[1]))
+        self.depth_shader.uniform("near", near)
+        self.depth_shader.uniform("far", far)
+        self.depth_buffer.bind(unit=0)
+        self.depth_shader.uniform("texture0", 0)
+
+        self.quad.draw(self.depth_shader)
 
     @classmethod
     def create(cls, width, height, depth=False,
@@ -275,8 +276,8 @@ class FBOError(Exception):
 
 def _init_fbo_draw():
     """Initialize geometry and shader for drawing FBO layers"""
-    from demosys.opengl import Shader
-    from demosys.opengl import geometry
+    from demosys.opengl import ShaderProgram
+    from demosys import geometry
 
     if FBO.quad:
         return
@@ -310,6 +311,6 @@ def _init_fbo_draw():
         "}",
         "#endif",
     ]
-    FBO.depth_shader = Shader(name="depth_shader")
+    FBO.depth_shader = ShaderProgram(name="depth_shader")
     FBO.depth_shader.set_source("\n".join(src))
     FBO.depth_shader.prepare()
