@@ -98,11 +98,11 @@ class Texture:
         :param pos: (tuple) offset x, y
         :param scale: (tuple) scale x, y
         """
-        with self.quad.bind(self.shader_2d) as s:
-            s.uniform_2f("offset", pos[0] - 1.0, pos[1] - 1.0)
-            s.uniform_2f("scale", scale[0], scale[1])
-            s.uniform_sampler_2d(0, "texture0", self)
-        self.quad.draw()
+        self.shader_2d.uniform("offset", (pos[0] - 1.0, pos[1] - 1.0))
+        self.shader_2d.uniform("scale", (scale[0], scale[1]))
+        self.bind(unit=0)
+        self.shader_2d.uniform("texture0", 0)
+        self.quad.draw(self.shader_2d)
 
     def _build(self, data=None):
         """Internal method for building the texture"""
