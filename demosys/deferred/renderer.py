@@ -3,7 +3,7 @@ from demosys.opengl import FBO
 from demosys.opengl import Texture
 from OpenGL import GL
 from demosys import resources
-from demosys.opengl import geometry
+from demosys import geometry
 
 
 class PointLight:
@@ -120,15 +120,16 @@ class DeferredRenderer:
                 light_size = light.radius
                 m_light = matrix44.multiply(light.matrix, camera_matrix)
                 # Draw the light volume
-                with self.unit_cube.bind(self.point_light_shader) as s:
-                    s.uniform_mat4("m_proj", projection.matrix)
-                    s.uniform_mat4("m_light", m_light)
-                    s.uniform_sampler_2d(0, "g_normal", self.gbuffer.color_buffers[1])
-                    s.uniform_sampler_2d(1, "g_depth", self.gbuffer.depth_buffer)
-                    s.uniform_2f("screensize", self.width, self.height)
-                    s.uniform_2f("proj_const", *projection.projection_constants)
-                    s.uniform_1f("radius", light_size)
-                self.unit_cube.draw()
+                self.point_light_shader.uniform("m_proj", projection.tobytes())
+                self.point_light_shader.uniform("m_light", m_light.astype('f4').tobytes())
+                self.gbuffer.color_buffers[1].bind(unit=0)
+                self.point_light_shader.uniform("g_normal", 0)
+                self.gbuffer.depth_buffer.bind(unit=1)
+                self.point_light_shader.uniform("g_depth", 1)
+                self.point_light_shader.uniform("screensize", (self.width, self.height))
+                self.point_light_shader.uniform("proj_const", projection.projection_constants)
+                self.point_light_shader.uniform("radius", light_size)
+                self.unit_cube.draw(self.point_light_shader)
 
         GL.glDisable(GL.GL_BLEND)
         GL.glDisable(GL.GL_CULL_FACE)
@@ -141,11 +142,10 @@ class DeferredRenderer:
         for light in self.point_lights:
             m_mv = matrix44.multiply(light.matrix, camera_matrix)
             light_size = light.radius
-            with self.unit_cube.bind(self.debug_shader) as s:
-                s.uniform_mat4("m_proj", projection.matrix)
-                s.uniform_mat4("m_mv", m_mv)
-                s.uniform_1f("size", light_size)
-            self.unit_cube.draw(GL.GL_LINE_STRIP)
+            self.debug_shader.uniform("m_proj", projection.tobytes())
+            self.debug_shader.uniform("m_mv", m_mv.astype('f4'))
+            self.debug_shader.uniform("size", light_size)
+            self.unit_cube.draw(self.debug_shader, mode=GL.GL_LINE_STRIP)
 
         GL.glDisable(GL.GL_BLEND)
 
@@ -154,10 +154,11 @@ class DeferredRenderer:
 
     def combine(self):
         """Combine diffuse and light buffer"""
-        with self.quad.bind(self.combine_shader) as s:
-            s.uniform_sampler_2d(0, "diffuse_buffer", self.gbuffer.color_buffers[0])
-            s.uniform_sampler_2d(1, "light_buffer", self.lightbuffer.color_buffers[0])
-        self.quad.draw()
+        self.gbuffer.color_buffers[0].bind(unit=0)
+        self.combine_shader.uniform("diffuse_buffer", 0)
+        self.lightbuffer.color_buffers[0].bind(unit=1)
+        self.combine_shader.uniform("light_buffer", 1)
+        self.quad.draw(self.combine_shader)
 
     def clear(self):
         """clear all buffers"""
