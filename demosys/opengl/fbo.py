@@ -1,21 +1,17 @@
 from OpenGL import GL
 from demosys.opengl import Texture
+from demosys import context
 
 WINDOW_FBO = None
 
 
 class WindowFBO:
-    """
-    Fake FBO representing default render target
-    """
+    """Fake FBO representing default render target"""
     def __init__(self, window):
         self.window = window
 
     def bind(self):
-        """
-        Sets the viewport back to the buffer size of the screen/window
-        """
-        # FIXME: Should we round up before converting to int?
+        """Sets the viewport back to the buffer size of the screen/window"""
         # The expected height with the current viewport width
         expected_height = int(self.window.buffer_width / self.window.aspect_ratio)
         # How much positive or negative y padding
@@ -25,32 +21,61 @@ class WindowFBO:
                       self.window.buffer_width, expected_height)
 
     def release(self):
-        """
-        Dummy release method.
-        """
+        """Dummy release method"""
         pass
 
     def clear(self):
-        """
-        Dummy clear method.
-        """
+        """Dummy clear method"""
         pass
 
 
 class FBO:
     """Frame buffer object"""
-    # VAO and shaders for drawing FBO layers
     quad = None
     depth_shader = None
-    # The FBO stack
     stack = []
 
     def __init__(self):
         self.color_buffers = []
         self.color_buffers_ids = []
         self.depth_buffer = None
-        self.fbo = GL.glGenFramebuffers(1)
+        self.fbo = None
         _init_fbo_draw()
+
+    @classmethod
+    def create(cls, width, height, depth=False,
+               internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE, layers=1):
+        """
+        Create a single or multi layer FBO
+
+        :param width: buffer width
+        :param height: buffer height
+        :param depth: (bool) Create a depth attachment
+        :param internal_format: The internalformat of the color buffer
+        :param format: The format of the color buffer
+        :param type: The type of the color buffer
+
+        :return: A new FBO
+        """
+        fbo = FBO()
+
+        # Add N layers of color attachments
+        for layer in range(layers):
+            c = Texture.create_2d(width=width, height=height, internal_format=internal_format, format=format, type=type,
+                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
+            fbo.color_buffers.append(c)
+            fbo.color_buffers_ids.append()
+
+        # Set depth attachment is specified
+        if depth:
+            d = Texture.create_2d(width=width, height=height,
+                                  internal_format=GL.GL_DEPTH24_STENCIL8, format=GL.GL_DEPTH_COMPONENT,
+                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
+            fbo.depth_buffer = d
+
+        fbo.fbo = context.ctx().framebuffer(fbo.color_buffers, fbo.depth_buffer)
+
+        return fbo
 
     @property
     def size(self):
@@ -65,8 +90,10 @@ class FBO:
         # FIXME: How do we deal with attachments of different sizes?
         if self.color_buffers:
             return self.color_buffers[0].size
+
         if self.depth_buffer:
             return self.depth_buffer.size
+
         raise FBOError("Cannot determine size of FBO. No attachments.")
 
     def __enter__(self):
@@ -98,11 +125,13 @@ class FBO:
         if len(FBO.stack) > 8:
             raise FBOError("FBO stack overflow. You probably forgot to release a bind somewhere.")
 
-        if len(self.color_buffers) > 1:
-            GL.glDrawBuffers(len(self.color_buffers), self.color_buffers_ids)
+        # if len(self.color_buffers) > 1:
+        #     GL.glDrawBuffers(len(self.color_buffers), self.color_buffers_ids)
 
-        w, h = self.size
-        GL.glViewport(0, 0, w, h)
+        self.fbo.use()
+
+        # w, h = self.size
+        # GL.glViewport(0, 0, w, h)
 
     def release(self, stack=True):
         """
@@ -118,14 +147,17 @@ class FBO:
         if not FBO.stack:
             raise FBOError("FBO stack is already empty. You are probably releasing a FBO twice or forgot to bind.")
         fbo_out = FBO.stack.pop()
+
         # Make sure we released this FBO and not some other random one
         if fbo_out != self:
             raise FBOError("Incorrect FBO release order")
+
         # Find the parent fbo
         if FBO.stack:
             parent = FBO.stack[-1]
         else:
             parent = WINDOW_FBO
+
         # Bind the parent FBO
         if parent:
             parent.bind()
@@ -134,9 +166,10 @@ class FBO:
         """
         Clears the FBO using ``glClear``.
         """
-        self.bind()
-        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
-        self.release()
+        self.fbo.clear()
+        # self.bind()
+        # GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
+        # self.release()
 
     def draw_color_layer(self, layer=0, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
@@ -163,84 +196,6 @@ class FBO:
         self.depth_shader.uniform("texture0", 0)
 
         self.quad.draw(self.depth_shader)
-
-    @classmethod
-    def create(cls, width, height, depth=False,
-               internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE, layers=1):
-        """
-        Convenient shortcut for creating single color attachment FBOs
-
-        :param width: Color buffer width
-        :param height: Coller buffer height
-        :param depth: (bool) Create a depth attachment
-        :param internal_format: The internalformat of the color buffer
-        :param format: The format of the color buffer
-        :param type: The type of the color buffer
-        :return: A new FBO
-        """
-        fbo = FBO()
-        fbo.bind(stack=False)
-
-        # Add N layers of color attachments
-        for layer in range(layers):
-            c = Texture.create_2d(width=width, height=height, internal_format=internal_format, format=format, type=type,
-                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
-            fbo.add_color_attachment(c)
-
-        # Set depth attachment is specified
-        if depth:
-            d = Texture.create_2d(width=width, height=height,
-                                  internal_format=GL.GL_DEPTH24_STENCIL8, format=GL.GL_DEPTH_COMPONENT,
-                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
-            fbo.set_depth_attachment(d)
-
-        fbo.check_status()
-        fbo.release(stack=False)
-        return fbo
-
-    def add_color_attachment(self, texture):
-        """
-        Add a texture as a color attachment.
-
-        :param texture: The Texture object
-        """
-        # Internal states
-        self.color_buffers_ids.append(GL.GL_COLOR_ATTACHMENT0 + len(self.color_buffers))
-        self.color_buffers.append(texture)
-
-        # Make sure the FBO is bound
-        self.bind(stack=False)
-
-        # Attach to fbo
-        GL.glFramebufferTexture2D(
-            GL.GL_FRAMEBUFFER,
-            self.color_buffers_ids[-1],
-            GL.GL_TEXTURE_2D,
-            self.color_buffers[-1].texture,
-            0
-        )
-        self.release(stack=False)
-
-    def set_depth_attachment(self, texture):
-        """
-        Set a texture as depth attachment.
-
-        :param texture: The Texture object
-        """
-        self.depth_buffer = texture
-
-        # Make sure the FBO is bound
-        self.bind(stack=False)
-
-        # Attach to fbo
-        GL.glFramebufferTexture2D(
-            GL.GL_FRAMEBUFFER,
-            GL.GL_DEPTH_ATTACHMENT,
-            GL.GL_TEXTURE_2D,
-            self.depth_buffer.texture,
-            0
-        )
-        self.release(stack=False)
 
     def check_status(self):
         """
