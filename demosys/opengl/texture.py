@@ -44,6 +44,10 @@ class BaseTexture:
         """Is this a depth texture?"""
         return self.depth
 
+    @property
+    def mgl_instance(self):
+        return self._texture
+
     def read(self, level: int=0, alignment: int=1) -> bytes:
         """
         Read the content of the texture into a buffer.
@@ -190,6 +194,7 @@ class DepthTexture(BaseTexture):
         """
         super().__init__()
         self._texture = context.ctx().depth_texture(size, data=data, samples=samples, alignment=alignment)
+        _init_depth_texture_draw()
 
     def draw(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
@@ -242,9 +247,11 @@ def _init_texture2d_draw():
         "}",
         "#endif",
     ]
-    Texture2D.shader_2d = ShaderProgram(name="fbo_shader")
-    Texture2D.shader_2d.set_source("\n".join(src))
-    Texture2D.shader_2d.prepare()
+    program = ShaderProgram(name="fbo_shader")
+    program.set_source("\n".join(src))
+    program.prepare()
+
+    Texture2D.shader = program
 
 
 def _init_depth_texture_draw():
@@ -284,6 +291,8 @@ def _init_depth_texture_draw():
         "}",
         "#endif",
     ]
-    DepthTexture.depth_shader = ShaderProgram(name="depth_shader")
-    DepthTexture.depth_shader.set_source("\n".join(src))
-    DepthTexture.depth_shader.prepare()
+    program = ShaderProgram(name="depth_shader")
+    program.set_source("\n".join(src))
+    program.prepare()
+
+    DepthTexture.shader = program

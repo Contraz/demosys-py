@@ -1,5 +1,5 @@
 """Shader Registry"""
-from demosys.opengl import Texture
+from demosys.opengl import Texture2D
 from demosys.core.texturefiles.finders import get_finders
 from demosys.core.exceptions import ImproperlyConfigured
 from PIL import Image
@@ -32,7 +32,7 @@ class Textures:
         """
         texture = self.textures.get(path)
         if create and not texture:
-            texture = Texture.from_image(path, **kwargs)
+            texture = Texture2D.from_image(path, **kwargs)
             self.textures[path] = texture
         return texture
 

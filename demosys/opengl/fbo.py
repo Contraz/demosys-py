@@ -1,5 +1,6 @@
+from typing import List
 from OpenGL import GL
-from demosys.opengl import Texture
+from demosys.opengl import Texture2D, DepthTexture
 from demosys import context
 
 WINDOW_FBO = None
@@ -35,44 +36,59 @@ class FBO:
 
     def __init__(self):
         self.color_buffers = []
-        self.color_buffers_ids = []
         self.depth_buffer = None
         self.fbo = None
 
-    @classmethod
-    def create(cls, width, height, depth=False,
-               internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE, layers=1):
+    @staticmethod
+    def create_from_textures(color_buffers: List[Texture2D], depth_buffer: DepthTexture=None):
+        """
+        Create FBO from existing textures
+
+        :param color_buffers: List of textures
+        :param depth_buffer: Depth texture
+
+        :return: FBO instance
+        """
+        instance = FBO()
+        instance.color_buffers = color_buffers
+        instance.depth_buffer = depth_buffer
+
+        instance.fbo = context.ctx().framebuffer(
+            [b.mgl_instance for b in color_buffers],
+            depth_buffer.mgl_instance
+        )
+
+        return instance
+
+    @staticmethod
+    def create(size, components, depth=False, dtype='f1', layers=1):
         """
         Create a single or multi layer FBO
 
-        :param width: buffer width
-        :param height: buffer height
+        :param size: (tuple) with and height
+        :param components: (tuple) number of components. 1, 2, 3, 4
         :param depth: (bool) Create a depth attachment
-        :param internal_format: The internalformat of the color buffer
-        :param format: The format of the color buffer
-        :param type: The type of the color buffer
+        :param layers: (int) number of color attachments
 
         :return: A new FBO
         """
-        fbo = FBO()
+        instance = FBO()
 
         # Add N layers of color attachments
         for layer in range(layers):
-            c = Texture.create_2d(width=width, height=height, internal_format=internal_format, format=format, type=type,
-                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
-            fbo.color_buffers.append(c)
-            fbo.color_buffers_ids.append()
+            c = Texture2D.create(size, components, dtype=dtype)
+            instance.color_buffers.append(c)
 
         # Set depth attachment is specified
         if depth:
-            d = Texture.create_2d(width=width, height=height,
-                                  internal_format=GL.GL_DEPTH24_STENCIL8, format=GL.GL_DEPTH_COMPONENT,
-                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
-            fbo.depth_buffer = d
+            instance.depth_buffer = DepthTexture(size)
 
-        fbo.fbo = context.ctx().framebuffer(fbo.color_buffers, fbo.depth_buffer)
+        instance.fbo = context.ctx().framebuffer(
+            [b.mgl_instance for b in instance.color_buffers],
+            instance.depth_buffer.mgl_instance
+        )
 
-        return fbo
+        return instance
 
     @property
     def size(self):
@@ -114,21 +130,15 @@ class FBO:
 
         :param stack: (bool) If the bind should push the current FBO on the stack.
         """
-        GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, self.fbo)
+        self.fbo.use()
+
         if not stack:
             return
 
         FBO.stack.append(self)
+
         if len(FBO.stack) > 8:
             raise FBOError("FBO stack overflow. You probably forgot to release a bind somewhere.")
-
-        # if len(self.color_buffers) > 1:
-        #     GL.glDrawBuffers(len(self.color_buffers), self.color_buffers_ids)
-
-        self.fbo.use()
-
-        # w, h = self.size
-        # GL.glViewport(0, 0, w, h)
 
     def release(self, stack=True):
         """
@@ -177,24 +187,35 @@ class FBO:
         """
         self.color_buffers[layer].draw(pos=pos, scale=scale)
 
-    def check_status(self):
+    def draw_depth(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
-        Checks the completeness of the FBO
+        Draw a depth buffer in the FBO.
+
+        :param near: projection near.
+        :param far: projection far.
+        :param pos: (tuple) offset x, y
+        :param scale: (tuple) scale x, y
         """
-        status = GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)
-        incomplete_states = {
-            GL.GL_FRAMEBUFFER_UNSUPPORTED: "Framebuffer unsupported. Try another format.",
-            GL.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: "Framebuffer incomplete attachment",
-            GL.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: "Framebuffer missing attachment",
-            GL.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS: "Framebuffer unsupported dimension.",
-            GL.GL_FRAMEBUFFER_INCOMPLETE_FORMATS: "Framebuffer incoplete formats.",
-            GL.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER: "Framebuffer incomplete draw buffer.",
-            GL.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER: "Framebuffer incomplete read buffer",
-        }
-        if status == GL.GL_FRAMEBUFFER_COMPLETE:
-            return
-        s = incomplete_states.get(status, "Unknown error")
-        raise FBOError(s)
+        self.depth_buffer.draw(near, far, pos=pos, scale=scale)
+
+    # def check_status(self):
+    #     """
+    #     Checks the completeness of the FBO
+    #     """
+    #     status = GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)
+    #     incomplete_states = {
+    #         GL.GL_FRAMEBUFFER_UNSUPPORTED: "Framebuffer unsupported. Try another format.",
+    #         GL.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: "Framebuffer incomplete attachment",
+    #         GL.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: "Framebuffer missing attachment",
+    #         GL.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS: "Framebuffer unsupported dimension.",
+    #         GL.GL_FRAMEBUFFER_INCOMPLETE_FORMATS: "Framebuffer incoplete formats.",
+    #         GL.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER: "Framebuffer incomplete draw buffer.",
+    #         GL.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER: "Framebuffer incomplete read buffer",
+    #     }
+    #     if status == GL.GL_FRAMEBUFFER_COMPLETE:
+    #         return
+    #     s = incomplete_states.get(status, "Unknown error")
+    #     raise FBOError(s)
 
     def __repr__(self):
         return "<FBO {} color_attachments={} depth_attachement={}".format(
