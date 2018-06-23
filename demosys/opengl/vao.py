@@ -35,34 +35,29 @@ class BufferInfo:
         self.attributes = attributes
 
         # Sanity check byte size
-        if self.buffer.size % self.element_size != 0:
+        if self.buffer.size % self.vertex_size != 0:
             raise VAOError("Buffer with type {} has size not aligning with {}. Remainder: ".format(
-                buffer_format, self.element_size, self.buffer.size % self.element_size,
+                buffer_format, self.vertex_size, self.buffer.size % self.vertex_size,
             ))
 
-        self.elements = self.buffer.size // self.element_size
+        self.vertices = self.buffer.size // self.vertex_size
 
     @property
-    def element_size(self) -> int:
-        return sum(f.bytes_per_component for f in self.attrib_formats)
-
-    @property
-    def vertices(self) -> int:
-        """
-        :return: The number of vertices based on the current stride
-        """
-        return self.buffer.size // self.element_size
+    def vertex_size(self) -> int:
+        return sum(f.bytes_total for f in self.attrib_formats)
 
     def content(self, attributes: List[str]):
         """Build content tuple for the buffer"""
         formats = []
         attrs = []
-        for i, attrib in enumerate(self.attributes):
+        for attrib_format, attrib in zip(self.attrib_formats, self.attributes):
             if attrib not in attributes:
+                formats.append(attrib_format.pad_str())
                 continue
 
-            formats.append(self.attrib_formats[i])
+            formats.append(attrib_format.format)
             attrs.append(attrib)
+
             attributes.remove(attrib)
 
         if len(attrs) == 0:
@@ -70,7 +65,7 @@ class BufferInfo:
 
         return (
             self.buffer,
-            *(f.format for f in formats),
+            " ".join(formats),
             *attrs
         )
 
