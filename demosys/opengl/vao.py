@@ -1,3 +1,4 @@
+import numpy
 from typing import List
 import moderngl as mgl
 
@@ -111,16 +112,19 @@ class VAO:
         mode = self.mode or mgl.TRIANGLES
         vao.render(mode)
 
-    def buffer(self, buffer: mgl.Buffer, buffer_format: str, attribute_names):
+    def buffer(self, buffer, buffer_format: str, attribute_names):
         """
         Register a buffer/vbo for the VAO. This can be called multiple times.
         adding multiple buffers (interleaved or not)
 
-        :param buffer: The buffer object
+        :param buffer: The buffer object. Can be ndarray or Buffer
         :param buffer_format: The format of the buffer ('f', 'u', 'i')
         """
-        if not isinstance(buffer, mgl.Buffer):
+        if not isinstance(buffer, mgl.Buffer) and not isinstance(buffer, numpy.ndarray):
             raise VAOError("buffer parameter must be a moderngl.Buffer instance")
+
+        if isinstance(buffer, numpy.ndarray):
+            buffer = context.ctx().buffer(buffer.tobytes())
 
         formats = buffer_format.split()
         if len(formats) != len(attribute_names):
