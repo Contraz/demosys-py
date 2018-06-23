@@ -31,8 +31,6 @@ class WindowFBO:
 
 class FBO:
     """Frame buffer object"""
-    quad = None
-    depth_shader = None
     stack = []
 
     def __init__(self):
@@ -40,7 +38,6 @@ class FBO:
         self.color_buffers_ids = []
         self.depth_buffer = None
         self.fbo = None
-        _init_fbo_draw()
 
     @classmethod
     def create(cls, width, height, depth=False,
@@ -180,23 +177,6 @@ class FBO:
         """
         self.color_buffers[layer].draw(pos=pos, scale=scale)
 
-    def draw_depth(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
-        """
-        Draw depth buffer linearized.
-        :param near: Near plane in projection
-        :param far: Far plane in projection
-        :param pos: (tuple) offset x, y
-        :param scale: (tuple) scale x, y
-        """
-        self.depth_shader.uniform("offset", (pos[0] - 1.0, pos[1] - 1.0))
-        self.depth_shader.uniform("scale", (scale[0], scale[1]))
-        self.depth_shader.uniform("near", near)
-        self.depth_shader.uniform("far", far)
-        self.depth_buffer.bind(unit=0)
-        self.depth_shader.uniform("texture0", 0)
-
-        self.quad.draw(self.depth_shader)
-
     def check_status(self):
         """
         Checks the completeness of the FBO
@@ -227,45 +207,3 @@ class FBO:
 class FBOError(Exception):
     """Generic FBO Error"""
     pass
-
-
-def _init_fbo_draw():
-    """Initialize geometry and shader for drawing FBO layers"""
-    from demosys.opengl import ShaderProgram
-    from demosys import geometry
-
-    if FBO.quad:
-        return
-
-    FBO.quad = geometry.quad_fs()
-    # Shader for drawing depth layers
-    src = [
-        "#version 330",
-        "#if defined VERTEX_SHADER",
-        "in vec3 in_position;",
-        "in vec2 in_uv;",
-        "out vec2 uv;",
-        "uniform vec2 offset;",
-        "uniform vec2 scale;",
-        "",
-        "void main() {",
-        "    uv = in_uv;"
-        "    gl_Position = vec4((in_position.xy + vec2(1.0, 1.0)) * scale + offset, 0.0, 1.0);",
-        "}",
-        "",
-        "#elif defined FRAGMENT_SHADER",
-        "out vec4 out_color;",
-        "in vec2 uv;",
-        "uniform sampler2D texture0;",
-        "uniform float near;"
-        "uniform float far;"
-        "void main() {",
-        "    float z = texture(texture0, uv).x;"
-        "    float d = (2.0 * near) / (far + near - z * (far - near));"
-        "    out_color = vec4(d);",
-        "}",
-        "#endif",
-    ]
-    FBO.depth_shader = ShaderProgram(name="depth_shader")
-    FBO.depth_shader.set_source("\n".join(src))
-    FBO.depth_shader.prepare()
