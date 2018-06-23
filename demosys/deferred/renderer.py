@@ -1,6 +1,6 @@
 from pyrr import matrix44
 from demosys.opengl import FBO
-from demosys.opengl import Texture
+from demosys.opengl import Texture2D, DepthTexture
 from OpenGL import GL
 from demosys import resources
 from demosys import geometry
@@ -28,52 +28,32 @@ class DeferredRenderer:
     def __init__(self, width, height, gbuffer=None, lightbuffer=None):
         self.width = width
         self.height = height
+        self.size = (width, height)
+
         # FBOs
         self.gbuffer = gbuffer
         self.lightbuffer = lightbuffer
+
         # Light Info
         self.point_lights = []
 
-        # FIXME: We might want double buffering here as well
         # Create geometry buffer if not supplied
+        depth_buffer = DepthTexture(self.size)
+
         if not self.gbuffer:
-            self.gbuffer = FBO()
-            # RGBA color attachment
-            self.gbuffer.add_color_attachment(
-                Texture.create_2d(width=width, height=height,
-                                  internal_format=GL.GL_RGBA8, format=GL.GL_RGBA,
-                                  min_filter=GL.GL_NEAREST, mag_filter=GL.GL_NEAREST,
-                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE)
+            self.gbuffer = FBO.create_from_textures(
+                [
+                    Texture2D.create(self.size, 4, dtype='f1'),
+                    Texture2D.create(self.size, 3, dtype='f2'),
+                ],
+                depth_buffer=depth_buffer,
             )
-            # 16 bit RGB float buffer for normals
-            self.gbuffer.add_color_attachment(
-                Texture.create_2d(width=width, height=height,
-                                  format=GL.GL_RGB, internal_format=GL.GL_RGB16F, type=GL.GL_FLOAT,
-                                  min_filter=GL.GL_NEAREST, mag_filter=GL.GL_NEAREST,
-                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE)
-            )
-            # 24 bit depth, 8 bit stencil
-            self.gbuffer.set_depth_attachment(
-                Texture.create_2d(width=width, height=height,
-                                  internal_format=GL.GL_DEPTH24_STENCIL8, format=GL.GL_DEPTH_COMPONENT,
-                                  min_filter=GL.GL_NEAREST, mag_filter=GL.GL_NEAREST,
-                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE)
-            )
+
         if not self.lightbuffer:
-            self.lightbuffer = FBO()
-            # 8 bit light accumulation buffer
-            self.lightbuffer.add_color_attachment(
-                # Texture.create_2d(width=width, height=height,
-                #                   internal_format=GL.GL_RED, format=GL.GL_RED, type=GL.GL_UNSIGNED_BYTE,
-                #                   min_filter=GL.GL_NEAREST, mag_filter=GL.GL_NEAREST,
-                #                   wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE)
-                Texture.create_2d(width=width, height=height,
-                                  internal_format=GL.GL_RGBA8, format=GL.GL_RGBA,
-                                  min_filter=GL.GL_NEAREST, mag_filter=GL.GL_NEAREST,
-                                  wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE)
+            self.lightbuffer = FBO.create_from_textures(
+                [Texture2D.create(self.size, 1)],
+                depth_buffer=depth_buffer,
             )
-            # Attach the same depth buffer as the geometry buffer
-            self.lightbuffer.set_depth_attachment(self.gbuffer.depth_buffer)
 
         # Unit cube for point lights (cube with radius 1.0)
         self.unit_cube = geometry.cube(width=2, height=2, depth=2)
@@ -122,9 +102,9 @@ class DeferredRenderer:
                 # Draw the light volume
                 self.point_light_shader.uniform("m_proj", projection.tobytes())
                 self.point_light_shader.uniform("m_light", m_light.astype('f4').tobytes())
-                self.gbuffer.color_buffers[1].bind(unit=0)
+                self.gbuffer.color_buffers[1].use(location=0)
                 self.point_light_shader.uniform("g_normal", 0)
-                self.gbuffer.depth_buffer.bind(unit=1)
+                self.gbuffer.depth_buffer.use(location=1)
                 self.point_light_shader.uniform("g_depth", 1)
                 self.point_light_shader.uniform("screensize", (self.width, self.height))
                 self.point_light_shader.uniform("proj_const", projection.projection_constants)
@@ -154,9 +134,9 @@ class DeferredRenderer:
 
     def combine(self):
         """Combine diffuse and light buffer"""
-        self.gbuffer.color_buffers[0].bind(unit=0)
+        self.gbuffer.color_buffers[0].use(location=0)
         self.combine_shader.uniform("diffuse_buffer", 0)
-        self.lightbuffer.color_buffers[0].bind(unit=1)
+        self.lightbuffer.color_buffers[0].use(location=1)
         self.combine_shader.uniform("light_buffer", 1)
         self.quad.draw(self.combine_shader)
 
