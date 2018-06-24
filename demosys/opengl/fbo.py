@@ -61,13 +61,14 @@ class FBO:
         return instance
 
     @staticmethod
-    def create(size, components, depth=False, dtype='f1', layers=1):
+    def create(size, components=4, depth=False, dtype='f1', layers=1):
         """
         Create a single or multi layer FBO
 
         :param size: (tuple) with and height
         :param components: (tuple) number of components. 1, 2, 3, 4
         :param depth: (bool) Create a depth attachment
+        :param dtype: (string) data type per r, g, b, a ...
         :param layers: (int) number of color attachments
 
         :return: A new FBO
