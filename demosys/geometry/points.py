@@ -1,6 +1,5 @@
 import moderngl as mgl
 from demosys.opengl import VAO
-from OpenGL import GL
 import numpy
 import random
 
