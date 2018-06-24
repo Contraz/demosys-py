@@ -38,6 +38,7 @@ def run(manager=None):
     Effect.window_width = context.WINDOW.buffer_width
     Effect.window_height = context.WINDOW.buffer_height
     Effect.window_aspect = context.WINDOW.aspect_ratio
+    Effect.ctx = context.ctx()
 
     # Set up the default system camera
     global CAMERA

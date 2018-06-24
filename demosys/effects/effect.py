@@ -62,6 +62,11 @@ class Effect:
     window_width = 0
     window_height = 0
     window_aspect = 0
+
+    # ModernGL context
+    ctx = None
+
+    # System camera
     sys_camera = None
 
     @property
