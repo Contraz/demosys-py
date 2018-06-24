@@ -36,10 +36,18 @@ BUFFER_TARGETS = {
 
 # numpy dtype mapping
 NP_COMPONENT_DTYPE = {
-    5121: numpy.dtype(numpy.uint8),  # GL_UNSIGNED_BYTE
-    5123: numpy.dtype(numpy.uint16),  # GL_UNSIGNED_SHORT
-    5125: numpy.dtype(numpy.uint32),  # GL_UNSIGNED_INT
-    5126: numpy.dtype(numpy.float32),  # GL_FLOAT
+    5121: numpy.uint8,  # GL_UNSIGNED_BYTE
+    5123: numpy.uint16,  # GL_UNSIGNED_SHORT
+    5125: numpy.uint32,  # GL_UNSIGNED_INT
+    5126: numpy.float32,  # GL_FLOAT
+}
+
+# dtype to moderngl buffer format
+DTYPE_BUFFER_TYPE = {
+    numpy.uint8: 'u1',  # GL_UNSIGNED_BYTE
+    numpy.uint16: 'u2',  # GL_UNSIGNED_SHORT
+    numpy.uint32: 'u4',  # GL_UNSIGNED_INT
+    numpy.float32: 'f4',  # GL_FLOAT
 }
 
 ACCESSOR_TYPE = {
@@ -381,7 +389,7 @@ class GLTFMesh:
                 dtype, buffer = vbo_info.create()
                 vao.buffer(
                     buffer,
-                    " ".join(["{}f".format(attr[1]) for attr in vbo_info.attributes]),
+                    " ".join(["{}{}".format(attr[1], DTYPE_BUFFER_TYPE[dtype]) for attr in vbo_info.attributes]),
                     [name_map[attr[0]] for attr in vbo_info.attributes],
                 )
 
@@ -444,6 +452,7 @@ class VBOInfo:
         self.component_type = component_type  # Datatype of each component
         self.components = components
         self.count = count  # number of elements of the component type size
+
         # list of (name, components) tuples
         self.attributes = []
 
