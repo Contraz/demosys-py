@@ -195,4 +195,5 @@ def window_resize_callback(window, width, height):
     :param width: New width
     :param height: New height
     """
+    print("Resize", width, height)
     context.WINDOW.resize(width, height)
