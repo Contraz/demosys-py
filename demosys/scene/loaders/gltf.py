@@ -7,15 +7,16 @@ import numpy
 import os
 import struct
 
+import moderngl as mgl
 from OpenGL import GL
-from OpenGL.arrays.vbo import VBO
 from PIL import Image
 
 from pyrr import matrix44, Matrix44, quaternion
 
-from demosys.opengl import VAO
+from demosys import context
 from demosys.opengl import Texture2D
 from demosys.opengl import samplers
+from demosys.opengl import VAO
 from demosys.opengl.constants import TYPE_INFO
 from demosys.scene import (
     Node,
@@ -39,7 +40,6 @@ NP_COMPONENT_DTYPE = {
     5123: numpy.dtype(numpy.uint16),  # GL_UNSIGNED_SHORT
     5125: numpy.dtype(numpy.uint32),  # GL_UNSIGNED_INT
     5126: numpy.dtype(numpy.float32),  # GL_FLOAT
-
 }
 
 ACCESSOR_TYPE = {
@@ -366,30 +366,31 @@ class GLTFMesh:
         # According to the spec they can have different materials and vertex format
         for primitive in self.primitives:
 
-            vao = VAO(self.name, mode=primitive.mode or GL.GL_TRIANGLES)
+            vao = VAO(self.name, mode=primitive.mode or mgl.TRIANGLES)
 
             # Index buffer
             component_type, index_vbo = self.load_indices(primitive)
-            if index_vbo:
-                vao.set_element_buffer(component_type.value, index_vbo)
+            if index_vbo is not None:
+                # FIXME: Support u1 and u2 buffers
+                vao.index_buffer('u', context.ctx().buffer(index_vbo.astype('u4').tobytes()))
 
             attributes = {}
-
             vbos = self.prepare_attrib_mapping(primitive)
 
             for vbo_info in vbos:
-                vbo = vbo_info.create()
-                vao.add_array_buffer(vbo_info.component_type.value, vbo)
+                dtype, buffer = vbo_info.create()
+                vao.buffer(
+                    buffer,
+                    " ".join(["{}f".format(attr[1]) for attr in vbo_info.attributes]),
+                    [name_map[attr[0]] for attr in vbo_info.attributes],
+                )
 
                 for attr in vbo_info.attributes:
-                    vao.map_buffer(vbo, name_map[attr[0]], attr[1])
                     attributes[attr[0]] = {
                         'name': name_map[attr[0]],
                         'components': attr[1],
                         'type': vbo_info.component_type.value,
                     }
-
-            vao.build()
 
             bbox_min, bbox_max = self.get_bbox(primitive)
             meshes.append(Mesh(
@@ -405,8 +406,8 @@ class GLTFMesh:
         if getattr(primitive, "indices") is None:
             return None, None
 
-        _, component_type, vbo = primitive.indices.read(target=GL.GL_ELEMENT_ARRAY_BUFFER)
-        return component_type, vbo
+        _, component_type, buffer = primitive.indices.read()
+        return component_type, buffer
 
     def prepare_attrib_mapping(self, primitive):
         """Pre-parse buffer mappings for each VBO to detect interleaved data for a primitive"""
@@ -458,9 +459,12 @@ class VBOInfo:
     def create(self):
         """Create the VBO"""
         dtype = NP_COMPONENT_DTYPE[self.component_type.value]
-        data = self.buffer.read(byte_length=self.byte_length, byte_offset=self.byte_offset)
-        return VBO(numpy.frombuffer(data, count=self.count * self.components, dtype=dtype),
-                   target=self.target)
+        data = numpy.frombuffer(
+            self.buffer.read(byte_length=self.byte_length, byte_offset=self.byte_offset),
+            count=self.count * self.components,
+            dtype=dtype,
+        )
+        return dtype, data
 
     def __str__(self):
         return "VBOInfo<buffer={}, buffer_view={}, target={}, \n" \
@@ -487,7 +491,7 @@ class GLTFAccessor:
         self.max = numpy.array(data.get('max') or [0.5, 0.5, 0.5], dtype=numpy.float32)
         self.type = data.get('type')
 
-    def read(self, target=None):
+    def read(self):
         """
         Reads buffer data
         :return: component count, component type, data
@@ -495,7 +499,6 @@ class GLTFAccessor:
         # ComponentType helps us determine the datatype
         dtype = NP_COMPONENT_DTYPE[self.componentType.value]
         return ACCESSOR_TYPE[self.type], self.componentType, self.bufferView.read(
-            target=target,
             byte_offset=self.byteOffset,
             dtype=dtype,
             count=self.count * ACCESSOR_TYPE[self.type],
@@ -523,13 +526,12 @@ class GLTFBufferView:
         # Valid: 34962 (ARRAY_BUFFER) and 34963 (ELEMENT_ARRAY_BUFFER) or None
         self.target = data.get('target')
 
-    def read(self, byte_offset=0, dtype=None, count=0, target=None):
+    def read(self, byte_offset=0, dtype=None, count=0):
         data = self.buffer.read(
             byte_offset=byte_offset + self.byteOffset,
             byte_length=self.byteLength,
         )
-        vbo = VBO(numpy.frombuffer(data, count=count, dtype=dtype),
-                  target=BUFFER_TARGETS[target])
+        vbo = numpy.frombuffer(data, count=count, dtype=dtype)
         return vbo
 
     def read_raw(self):
