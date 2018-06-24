@@ -132,6 +132,7 @@ class ShaderProgram:
             else:
                 out_attribs = self.vertex_source.find_out_attribs()
 
+            print("Out attributes for transform feedback", out_attribs)
             params.update({'varyings': out_attribs})
 
         # Raises mgl.Error
