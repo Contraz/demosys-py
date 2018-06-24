@@ -1,5 +1,5 @@
 from demosys.effects import effect
-from demosys.opengl import geometry
+from demosys import geometry
 from OpenGL import GL
 # from pyrr import matrix44
 
@@ -25,9 +25,8 @@ class SimpleCubeEffect(effect.Effect):
         m_normal = self.create_normal_matrix(m_mv)
 
         # Draw the cube
-        with self.cube.bind(self.shader) as shader:
-            shader.uniform_mat4("m_proj", self.sys_camera.projection.matrix)
-            shader.uniform_mat4("m_mv", m_mv)
-            shader.uniform_mat3("m_normal", m_normal)
-            shader.uniform_1f("time", time)
-        self.cube.draw()
+        self.shader.uniform("m_proj", self.sys_camera.projection.tobytes())
+        self.shader.uniform("m_mv", m_mv.astype('f4').tobytes())
+        self.shader.uniform("m_normal", m_normal.astype('f4').tobytes())
+        self.shader.uniform("time", time)
+        self.cube.draw(self.shader)
