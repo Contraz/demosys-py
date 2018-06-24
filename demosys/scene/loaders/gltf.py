@@ -403,7 +403,7 @@ class GLTFMesh:
             bbox_min, bbox_max = self.get_bbox(primitive)
             meshes.append(Mesh(
                 self.name, vao=vao, attributes=attributes,
-                material=materials[primitive.material],
+                material=materials[primitive.material] if primitive.material else None,
                 bbox_min=bbox_min, bbox_max=bbox_max,
             ))
 
