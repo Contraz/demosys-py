@@ -2,7 +2,9 @@ import moderngl
 import os
 
 from OpenGL import GL
+
 from demosys import context
+from demosys.conf import settings
 
 
 class ShaderError(Exception):
@@ -48,7 +50,12 @@ class ShaderProgram:
     def uniform(self, name, value=None):
         uniform = self.uniform_map.get(name)
         if not uniform:
-            raise ShaderError("Uniform '{}' not found in shader {}".format(name, self.name))
+            msg = "Uniform '{}' not found in shader {}".format(name, self.name)
+            if settings.SHADER_STRICT_VALIDATION:
+                raise ShaderError(msg)
+            else:
+                print(msg)
+            return None
 
         if value is None:
             return uniform
