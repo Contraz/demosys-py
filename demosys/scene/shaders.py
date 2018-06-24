@@ -17,10 +17,9 @@ class MeshShader:
 
     def draw(self, mesh, proj_mat, view_mat):
         """Minimal draw function. Should be overridden"""
-        mesh.vao.bind(self.shader)
-        self.shader.uniform_mat4("m_proj", proj_mat)
-        self.shader.uniform_mat4("m_mv", view_mat)
-        mesh.vao.draw()
+        self.shader.uniform("m_proj", proj_mat.astype('f4').tobytes())
+        self.shader.uniform("m_mv", view_mat.astype('f4').tobytes())
+        mesh.vao.draw(self.shader)
 
     def apply(self, mesh):
         """
@@ -53,8 +52,6 @@ class ColorShader(MeshShader):
     def draw(self, mesh, proj_mat, view_mat):
         m_normal = self.create_normal_matrix(view_mat)
 
-        mesh.vao.bind(self.shader)
-
         if mesh.material:
             if mesh.material.double_sided:
                 GL.glDisable(GL.GL_CULL_FACE)
@@ -66,11 +63,11 @@ class ColorShader(MeshShader):
             else:
                 self.shader.uniform_4fv("color", [1.0, 1.0, 1.0, 1.0])
 
-        self.shader.uniform_mat4("m_proj", proj_mat)
-        self.shader.uniform_mat4("m_mv", view_mat)
-        self.shader.uniform_mat3("m_normal", m_normal)
+        self.shader.uniform("m_proj", proj_mat.astype('f4').tobytes())
+        self.shader.uniform("m_mv", view_mat.astype('f4').tobytes())
+        self.shader.uniform("m_normal", m_normal.astype('f4').tobytes())
 
-        mesh.vao.draw()
+        mesh.vao.draw(self.shader)
 
     def apply(self, mesh):
         if not mesh.material:
@@ -100,14 +97,14 @@ class TextureShader(MeshShader):
         else:
             GL.glEnable(GL.GL_CULL_FACE)
 
-        mesh.vao.bind(self.shader)
-        self.shader.uniform_sampler_2d(0, "texture0", mesh.material.mat_texture.texture,
-                                       sampler=mesh.material.mat_texture.sampler)
-        self.shader.uniform_mat4("m_proj", proj_mat)
-        self.shader.uniform_mat4("m_mv", view_mat)
-        self.shader.uniform_mat3("m_normal", m_normal)
+        mesh.material.mat_texture.texture.use()
+        self.shader.uniform("texture0", 0)
 
-        mesh.vao.draw()
+        self.shader.uniform("m_proj", proj_mat.astype('f4').tobytes())
+        self.shader.uniform("m_mv", view_mat.astype('f4').tobytes())
+        self.shader.uniform("m_normal", m_normal.astype('f4').tobytes())
+
+        mesh.vao.draw(self.shader)
 
     def apply(self, mesh):
         if not mesh.material:
@@ -130,14 +127,16 @@ class FallbackShader(MeshShader):
         super().__init__(shader=shaders.get("scene_default/fallback.glsl", create=True))
 
     def draw(self, mesh, proj_mat, view_mat):
-        mesh.vao.bind(self.shader)
-        self.shader.uniform_mat4("m_proj", proj_mat)
-        self.shader.uniform_mat4("m_mv", view_mat)
+
+        self.shader.uniform("m_proj", proj_mat.astype('f4').tobytes())
+        self.shader.uniform("m_mv", view_mat.astype('f4').tobytes())
+
         if mesh.material:
-            self.shader.uniform_3fv("color", mesh.material.color)
+            self.shader.uniform("color", tuple(mesh.material.color[0:3]))
         else:
-            self.shader.uniform_3fv("color", [1.0, 1.0, 1.0])
-        mesh.vao.draw()
+            self.shader.uniform("color", (1.0, 1.0, 1.0))
+
+        mesh.vao.draw(self.shader)
 
     def apply(self, mesh):
         return self
