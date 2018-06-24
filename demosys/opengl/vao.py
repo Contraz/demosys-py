@@ -109,7 +109,9 @@ class VAO:
         """
         vao = self._create_vao_instance(shader)
 
-        mode = self.mode or mgl.TRIANGLES
+        if mode is None:
+            mode = self.mode
+
         vao.render(mode)
 
     def buffer(self, buffer, buffer_format: str, attribute_names):
