@@ -33,13 +33,12 @@ class Mesh:
             self.mesh_shader.draw(self, proj_mat, view_mat)
 
     def draw_bbox(self, proj_matrix, view_matrix, shader, vao):
-        vao.bind(shader)
-        shader.uniform_mat4("m_proj", proj_matrix)
-        shader.uniform_mat4("m_mv", view_matrix)
-        shader.uniform_3fv("bb_min", self.bbox_min)
-        shader.uniform_3fv("bb_max", self.bbox_max)
-        shader.uniform_3fv("color", [0.75, 0.75, 0.75])
-        vao.draw()
+        shader.uniform("m_proj", proj_matrix.astype('f4').tobytes())
+        shader.uniform("m_mv", view_matrix.astype('f4').tobytes())
+        shader.uniform("bb_min", self.bbox_min.astype('f4').tobytes())
+        shader.uniform("bb_max", self.bbox_max.astype('f4').tobytes())
+        shader.uniform("color", (0.75, 0.75, 0.75))
+        vao.draw(shader)
 
     def add_attribute(self, attr_type, name, components):
         """
