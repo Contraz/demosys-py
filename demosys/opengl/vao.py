@@ -123,7 +123,7 @@ class VAO:
         :param buffer_format: The format of the buffer ('f', 'u', 'i')
         """
         if not isinstance(buffer, mgl.Buffer) and not isinstance(buffer, numpy.ndarray):
-            raise VAOError("buffer parameter must be a moderngl.Buffer instance")
+            raise VAOError("buffer parameter must be a moderngl.Buffer or numpy.ndarray instance")
 
         if isinstance(buffer, numpy.ndarray):
             buffer = context.ctx().buffer(buffer.tobytes())
@@ -135,15 +135,18 @@ class VAO:
         self.buffers.append(BufferInfo(buffer, buffer_format, attribute_names))
         self.vertex_count = self.buffers[-1].vertices
 
-    def index_buffer(self, buffer_format: str, buffer: mgl.Buffer):
+    def index_buffer(self, buffer_format: str, buffer):
         """
         Set the index buffer for this VAO
 
         :param buffer_format: The format of the element buffer ('u', 'u1', 'u2', 'u4' etc)
-        :param buffer: the vbo object
+        :param buffer: Buffer object or ndarray
         """
-        if not isinstance(buffer, mgl.Buffer):
-            raise VAOError("buffer parameter must be a moderngl.Buffer instance")
+        if not isinstance(buffer, mgl.Buffer) and not isinstance(buffer, numpy.ndarray):
+            raise VAOError("buffer parameter must be a moderngl.Buffer or numpy.ndarray instance")
+
+        if isinstance(buffer, numpy.ndarray):
+            buffer = context.ctx().buffer(buffer.tobytes())
 
         self._index_buffer = buffer
         self._index_buffer_format = buffer_format
