@@ -58,13 +58,16 @@ class GLTFWindow(Context):
         if settings.WINDOW.get('fullscreen'):
             monitor = glfw.get_primary_monitor()
             modes = glfw.get_video_modes(monitor)
-            print(modes)
+
+            print("Supported fullscreen resolutions:")
+            print("\n".join(str(m) for m in modes))
+
             # Pick a mode close to the configured one
             for mode in modes:
-                w, h = mode[0]
-                if self.width <= w:
+                if self.width <= mode[0][0]:
+                    self.width, self.height = mode[0]
+                    print("picked fullscreen mode:", mode)
                     break
-            self.width, self.height = mode[0]
 
         print("Window size:", self.width, self.height)
         self.window = glfw.create_window(self.width, self.height, self.title, monitor, None)
@@ -81,8 +84,7 @@ class GLTFWindow(Context):
         self.buffer_width, self.buffer_height = glfw.get_framebuffer_size(self.window)
         print("Frame buffer size:", self.buffer_width, self.buffer_height)
 
-        w, h = glfw.get_window_size(self.window)
-        print("Actual window size:", w, h)
+        print("Actual window size:", glfw.get_window_size(self.window))
 
         glfw.make_context_current(self.window)
         print("Context Version:", GL.glGetString(GL.GL_VERSION).decode())
@@ -108,6 +110,7 @@ class GLTFWindow(Context):
         self.width = width
         self.height = height
         self.buffer_width, self.buffer_height = glfw.get_framebuffer_size(self.window)
+        print("Resize:", self.width, self.height, self.buffer_width, self.buffer_height)
 
     def terminate(self):
         glfw.terminate()
