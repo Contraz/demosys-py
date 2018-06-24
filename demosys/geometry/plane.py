@@ -39,12 +39,12 @@ def plane_xz(size=(10, 10), resolution=(10, 10)):
         for z in range(rz - 1):
             for x in range(rx - 1):
                 # quad poly left
-                yield z * rz + x
                 yield z * rz + x + 1
+                yield z * rz + x
                 yield z * rz + x + rx
                 # quad poly right
-                yield z * rz + x + rx
                 yield z * rz + x + 1
+                yield z * rz + x + rx
                 yield z * rz + x + rx + 1
 
     pos_data = numpy.fromiter(gen_pos(), dtype=numpy.float32)
