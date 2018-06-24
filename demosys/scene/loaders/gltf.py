@@ -14,7 +14,7 @@ from PIL import Image
 from pyrr import matrix44, Matrix44, quaternion
 
 from demosys.opengl import VAO
-from demosys.opengl import Texture
+from demosys.opengl import Texture2D
 from demosys.opengl import samplers
 from demosys.opengl.constants import TYPE_INFO
 from demosys.scene import (
@@ -646,7 +646,7 @@ class GLTFImage:
     def load(self, path):
         # data:image/png;base64,iVBOR
 
-        texture = Texture(self.uri, mipmap=True, anisotropy=8)
+        texture = Texture2D(self.uri, mipmap=True)
 
         # Image is stored in bufferView
         if self.bufferView is not None:
