@@ -1,5 +1,5 @@
 PyOpenGL==3.1.0
-glfw==1.4.0
+glfw==1.6.0
 moderngl==5.2.1
 pyrr==0.8.3
 Pillow==4.1.1
