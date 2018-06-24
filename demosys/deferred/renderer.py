@@ -51,7 +51,7 @@ class DeferredRenderer:
 
         if not self.lightbuffer:
             self.lightbuffer = FBO.create_from_textures(
-                [Texture2D.create(self.size, 1)],
+                [Texture2D.create(self.size, 4)],
                 depth_buffer=depth_buffer,
             )
 
