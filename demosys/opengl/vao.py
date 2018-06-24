@@ -114,6 +114,24 @@ class VAO:
 
         vao.render(mode)
 
+    def transform(self, shader, buffer: mgl.Buffer, mode=None, vertices=-1, first=0, instances=1):
+        """
+        Transform vertices. Stores the output in a single buffer.
+
+        :param buffer: The buffer to store the output
+        :param mode: Draw mode (for example `POINTS`
+        :param vertices: The number of vertices to transform
+        :param first: The index of the first vertex to start with
+        :param instances: The number of instances
+        :return:
+        """
+        vao = self._create_vao_instance(shader)
+
+        if mode is None:
+            mode = self.mode
+
+        vao.transform(buffer, mode=mode, vertices=vertices, first=first, instances=instances)
+
     def buffer(self, buffer, buffer_format: str, attribute_names):
         """
         Register a buffer/vbo for the VAO. This can be called multiple times.
