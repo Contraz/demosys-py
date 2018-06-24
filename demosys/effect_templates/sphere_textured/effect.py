@@ -7,9 +7,9 @@ from pyrr import matrix44
 class TexturedSphere(effect.Effect):
     """Generated default effect"""
     def __init__(self):
-        self.shader = self.get_shader("default.glsl")
+        self.shader = self.get_shader("default.glsl", local=True)
         self.sphere = geometry.sphere(4.0, sectors=32, rings=16)
-        self.texture = self.get_texture("wood.jpg")
+        self.texture = self.get_texture("wood.jpg", local=True)
 
     @effect.bind_target
     def draw(self, time, frametime, target):

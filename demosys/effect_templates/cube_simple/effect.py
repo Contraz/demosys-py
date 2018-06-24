@@ -7,7 +7,7 @@ from OpenGL import GL
 class SimpleCubeEffect(effect.Effect):
     """Generated default effect"""
     def __init__(self):
-        self.shader = self.get_shader("cube_plain.glsl")
+        self.shader = self.get_shader("cube_plain.glsl", local=True)
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
     @effect.bind_target
