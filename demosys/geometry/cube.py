@@ -1,7 +1,6 @@
 import numpy
 
 from demosys.opengl import VAO
-from demosys import context
 
 
 def cube(width, height, depth, normals=True, uvs=True):
@@ -17,7 +16,7 @@ def cube(width, height, depth, normals=True, uvs=True):
     """
     width, height, depth = width / 2.0, height / 2.0, depth / 2.0
 
-    pos = context.ctx().buffer(numpy.array([
+    pos = numpy.array([
         width, -height, depth,
         width, height, depth,
         -width, -height, depth,
@@ -54,9 +53,10 @@ def cube(width, height, depth, normals=True, uvs=True):
         -width, height, -depth,
         -width, height, depth,
         width, height, depth,
-    ], dtype=numpy.float32).tobytes())
+    ], dtype=numpy.float32)
+
     if normals:
-        normals = context.ctx().buffer(numpy.array([
+        normal_data = numpy.array([
             -0, 0, 1,
             -0, 0, 1,
             -0, 0, 1,
@@ -93,9 +93,10 @@ def cube(width, height, depth, normals=True, uvs=True):
             0, 1, 0,
             0, 1, 0,
             0, 1, 0,
-        ], dtype=numpy.float32).tobytes())
+        ], dtype=numpy.float32)
+
     if uvs:
-        uvs = context.ctx().buffer(numpy.array([
+        uvs_data = numpy.array([
             1, 0,
             1, 1,
             0, 0,
@@ -132,15 +133,15 @@ def cube(width, height, depth, normals=True, uvs=True):
             0, 1,
             0, 0,
             1, 0
-        ], dtype=numpy.float32).tobytes())
+        ], dtype=numpy.float32)
 
     vao = VAO("geometry:cube")
 
     # Add buffers
     vao.buffer(pos, '3f', ['in_position'])
     if normals:
-        vao.buffer(normals, '3f', ['in_normal'])
+        vao.buffer(normal_data, '3f', ['in_normal'])
     if uvs:
-        vao.buffer(uvs, '2f', ['in_uv'])
+        vao.buffer(uvs_data, '2f', ['in_uv'])
 
     return vao
