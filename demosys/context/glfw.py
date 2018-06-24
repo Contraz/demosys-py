@@ -56,18 +56,23 @@ class GLTFWindow(Context):
 
         monitor = None
         if settings.WINDOW.get('fullscreen'):
+            # Use the primary monitors current resolution
             monitor = glfw.get_primary_monitor()
-            modes = glfw.get_video_modes(monitor)
+            mode = glfw.get_video_mode(monitor)
 
-            print("Supported fullscreen resolutions:")
-            print("\n".join(str(m) for m in modes))
+            self.width, self.height = mode.size.width, mode.size.height
+            print("picked fullscreen mode:", mode)
 
-            # Pick a mode close to the configured one
-            for mode in modes:
-                if self.width <= mode[0][0]:
-                    self.width, self.height = mode[0]
-                    print("picked fullscreen mode:", mode)
-                    break
+            # modes = glfw.get_video_modes(monitor)
+            # print("Supported fullscreen resolutions:")
+            # print("\n".join(str(m) for m in modes))
+            #
+            # # Pick a mode close to the configured one
+            # for mode in modes:
+            #     if self.width <= mode[0][0]:
+            #         self.width, self.height = mode[0]
+            #         print("picked fullscreen mode:", mode)
+            #         break
 
         print("Window size:", self.width, self.height)
         self.window = glfw.create_window(self.width, self.height, self.title, monitor, None)
