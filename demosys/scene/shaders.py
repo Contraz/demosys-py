@@ -59,9 +59,9 @@ class ColorShader(MeshShader):
                 GL.glEnable(GL.GL_CULL_FACE)
 
             if mesh.material.color:
-                self.shader.uniform_4fv("color", mesh.material.color)
+                self.shader.uniform("color", tuple(mesh.material.color))
             else:
-                self.shader.uniform_4fv("color", [1.0, 1.0, 1.0, 1.0])
+                self.shader.uniform("color", [1.0, 1.0, 1.0, 1.0])
 
         self.shader.uniform("m_proj", proj_mat.astype('f4').tobytes())
         self.shader.uniform("m_mv", view_mat.astype('f4').tobytes())
