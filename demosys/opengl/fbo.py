@@ -86,7 +86,7 @@ class FBO:
 
         instance.fbo = context.ctx().framebuffer(
             [b.mgl_instance for b in instance.color_buffers],
-            instance.depth_buffer.mgl_instance
+            instance.depth_buffer.mgl_instance if instance.depth_buffer is not None else None
         )
 
         return instance
@@ -154,6 +154,7 @@ class FBO:
         # Are we trying to release an FBO that is not bound?
         if not FBO.stack:
             raise FBOError("FBO stack is already empty. You are probably releasing a FBO twice or forgot to bind.")
+
         fbo_out = FBO.stack.pop()
 
         # Make sure we released this FBO and not some other random one
@@ -170,14 +171,13 @@ class FBO:
         if parent:
             parent.bind()
 
-    def clear(self):
+    def clear(self, red=0.0, green=0.0, blue=0.0, alpha=0.0, depth=1.0):
         """
         Clears the FBO using ``glClear``.
         """
-        self.fbo.clear()
-        # self.bind()
-        # GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
-        # self.release()
+        self.bind()
+        self.fbo.clear(red=red, green=green, blue=blue, alpha=alpha, depth=depth)
+        self.release()
 
     def draw_color_layer(self, layer=0, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
@@ -198,25 +198,6 @@ class FBO:
         :param scale: (tuple) scale x, y
         """
         self.depth_buffer.draw(near, far, pos=pos, scale=scale)
-
-    # def check_status(self):
-    #     """
-    #     Checks the completeness of the FBO
-    #     """
-    #     status = GL.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER)
-    #     incomplete_states = {
-    #         GL.GL_FRAMEBUFFER_UNSUPPORTED: "Framebuffer unsupported. Try another format.",
-    #         GL.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: "Framebuffer incomplete attachment",
-    #         GL.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: "Framebuffer missing attachment",
-    #         GL.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS: "Framebuffer unsupported dimension.",
-    #         GL.GL_FRAMEBUFFER_INCOMPLETE_FORMATS: "Framebuffer incoplete formats.",
-    #         GL.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER: "Framebuffer incomplete draw buffer.",
-    #         GL.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER: "Framebuffer incomplete read buffer",
-    #     }
-    #     if status == GL.GL_FRAMEBUFFER_COMPLETE:
-    #         return
-    #     s = incomplete_states.get(status, "Unknown error")
-    #     raise FBOError(s)
 
     def __repr__(self):
         return "<FBO {} color_attachments={} depth_attachement={}".format(
