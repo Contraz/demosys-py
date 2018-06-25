@@ -62,7 +62,7 @@ class ObjLoader(SceneLoader):
             mesh.material.color = mat.diffuse
             if mat.texture:
                 mesh.material.mat_texture = MaterialTexture(
-                    texture=textures.get(mat.texture.image_name, create=True, mipmap=True),
+                    texture=textures.get(mat.texture.path, create=True, mipmap=True),
                     sampler=samplers.create_sampler(wrap_s=GL.GL_CLAMP_TO_EDGE,
                                                     wrap_t=GL.GL_CLAMP_TO_EDGE)
                 )
