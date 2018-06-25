@@ -1,5 +1,7 @@
+import moderngl as mgl
 from typing import Tuple
 from PIL import Image
+
 from demosys import context
 
 
@@ -124,9 +126,19 @@ class Texture2D(BaseTexture):
         )
 
         if mipmap:
-            t._texture.build_mipmaps()
+            t.build_mipmaps()
 
         return t
+
+    def build_mipmaps(self, base=0, max_level=1000):
+        """
+        Build mipmaps for this texture
+
+        :param base: Level to build from
+        :param max_level: Max levels
+        """
+        self._texture.build_mipmaps(base=base, max_level=max_level)
+        self._texture.filter = (mgl.LINEAR_MIPMAP_LINEAR, mgl.LINEAR)
 
     @classmethod
     def from_image(cls, path, image=None, **kwargs):
@@ -160,7 +172,7 @@ class Texture2D(BaseTexture):
         )
 
         if self.mipmap:
-            self._texture.build_mipmaps()
+            self.build_mipmaps()
 
     def draw(self, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
