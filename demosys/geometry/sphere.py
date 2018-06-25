@@ -67,6 +67,6 @@ def sphere(radius=0.5, sectors=32, rings=16):
     vao.buffer(vbo_vertices, '3f', ['in_position'])
     vao.buffer(vbo_normals, '3f', ['in_normal'])
     vao.buffer(vbo_uvs, '2f', ['in_uv'])
-    vao.index_buffer('u', vbo_elements)
+    vao.index_buffer(vbo_elements, index_element_size=4)
 
     return vao

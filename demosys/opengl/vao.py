@@ -93,7 +93,7 @@ class VAO:
 
         self.buffers = []
         self._index_buffer = None
-        self._index_buffer_format = None
+        self._index_element_size = None
 
         self.vertex_count = 0
         self.vaos = {}
@@ -153,12 +153,12 @@ class VAO:
         self.buffers.append(BufferInfo(buffer, buffer_format, attribute_names))
         self.vertex_count = self.buffers[-1].vertices
 
-    def index_buffer(self, buffer_format: str, buffer):
+    def index_buffer(self, buffer, index_element_size=4):
         """
         Set the index buffer for this VAO
 
-        :param buffer_format: The format of the element buffer ('u', 'u1', 'u2', 'u4' etc)
         :param buffer: Buffer object or ndarray
+        :param index_element_size: Byte size of each element. 1, 2 or 4
         """
         if not isinstance(buffer, mgl.Buffer) and not isinstance(buffer, numpy.ndarray):
             raise VAOError("buffer parameter must be a moderngl.Buffer or numpy.ndarray instance")
@@ -167,7 +167,7 @@ class VAO:
             buffer = context.ctx().buffer(buffer.tobytes())
 
         self._index_buffer = buffer
-        self._index_buffer_format = buffer_format
+        self._index_element_size = index_element_size
 
     def _create_vao_instance(self, shader):
         """
@@ -201,7 +201,8 @@ class VAO:
             raise VAOError("Did not find a buffer mapping for {}".format([n.name for n in attributes]))
 
         if self._index_buffer:
-            vao = context.ctx().vertex_array(shader.program, vao_content, self._index_buffer)
+            vao = context.ctx().vertex_array(shader.program, vao_content,
+                                             self._index_buffer, self._index_element_size)
         else:
             vao = context.ctx().vertex_array(shader.program, vao_content)
         self.vaos[shader.vao_key] = vao

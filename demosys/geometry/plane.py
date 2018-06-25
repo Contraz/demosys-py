@@ -58,7 +58,7 @@ def plane_xz(size=(10, 10), resolution=(10, 10)):
     vao.buffer(uv_data, '2f', ['in_uv'])
     vao.buffer(normal_data, '3f', ['in_normal'])
 
-    vao.index_buffer('u1', index_data)
+    vao.index_buffer(index_data, index_element_size=4)
 
     return vao
 
