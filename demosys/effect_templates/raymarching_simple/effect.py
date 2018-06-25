@@ -4,6 +4,7 @@ from pyrr import Vector3
 from OpenGL import GL
 import math
 
+
 class SimpleRaymarchEffect(effect.Effect):
     """Generated raymarching effect"""
     def __init__(self):
@@ -23,7 +24,9 @@ class SimpleRaymarchEffect(effect.Effect):
         fov = 0.60
         alpha = 1.0
         modifier = -0.6
-        cPosition = Vector3([(math.sin(time / 6.0) * 16.0), (math.sin(time / 12.0) * 16.0), (math.cos(time / 3.0) * 16.0)])
+        cPosition = Vector3([(math.sin(time / 6.0) * 16.0),
+                             (math.sin(time / 12.0) * 16.0),
+                             (math.cos(time / 3.0) * 16.0)])
         cLookAt = Vector3([0.0, 0.0, 0.0])
         lPosition = Vector3([0.0, 17.0, 0.0])
         lItensity = 2.6
@@ -48,4 +51,3 @@ class SimpleRaymarchEffect(effect.Effect):
 
             shader.uniform_2f("resolution", self.window_width, self.window_height)
         self.plane.draw()
-
