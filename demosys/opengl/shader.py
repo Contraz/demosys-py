@@ -65,12 +65,6 @@ class ShaderProgram:
         else:
             uniform.value = value
 
-    def bind(self):
-        """
-        Bind the shader. Ideally we should never need to use this as programs are bound to VAOs directly
-        """
-        GL.glUseProgram(self.program.glo)
-
     def set_source(self, source):
         """
         Set a single source file.
