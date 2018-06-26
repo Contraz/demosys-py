@@ -1,10 +1,12 @@
-import moderngl
+import moderngl as mgl
 import os
-
-from OpenGL import GL
 
 from demosys import context
 from demosys.conf import settings
+
+VERTEX_SHADER = 'VERTEX_SHADER'
+GEOMETRY_SHADER = 'GEOMETRY_SHADER'
+FRAGMENT_SHADER = 'FRAGMENT_SHADER'
 
 
 class ShaderError(Exception):
@@ -21,6 +23,7 @@ class ShaderProgram:
         :param path: Full file path to the shader
         :param name: Name of the shader (debug purposes)
         """
+        self.ctx = context.ctx()
         if not path and not name:
             raise ShaderError("Shader must have a path or a name")
 
@@ -86,7 +89,7 @@ class ShaderProgram:
 
         :param source: (string) Vertex shader source
         """
-        self.vertex_source = ShaderSource(GL.GL_VERTEX_SHADER, self.name, source)
+        self.vertex_source = ShaderSource(VERTEX_SHADER, self.name, source)
 
     def set_fragment_source(self, source):
         """
@@ -94,7 +97,7 @@ class ShaderProgram:
 
         :param source: (string) Fragment shader source
         """
-        self.frag_source = ShaderSource(GL.GL_FRAGMENT_SHADER, self.name, source)
+        self.frag_source = ShaderSource(FRAGMENT_SHADER, self.name, source)
 
     def set_geometry_source(self, source):
         """
@@ -102,7 +105,7 @@ class ShaderProgram:
 
         :param source: (string) Geometry shader source
         """
-        self.geo_source = ShaderSource(GL.GL_GEOMETRY_SHADER, self.name, source)
+        self.geo_source = ShaderSource(GEOMETRY_SHADER, self.name, source)
 
     def prepare(self):
         """
@@ -130,7 +133,7 @@ class ShaderProgram:
             params.update({'varyings': out_attribs})
 
         # Raises mgl.Error
-        self.program = context.ctx().program(**params)
+        self.program = self.ctx.program(**params)
 
         # Build internal lookups
         self.build_uniform_map()
@@ -146,7 +149,7 @@ class ShaderProgram:
         Builds an internal uniform map by querying the program.
         This way we don't have to query OpenGL (can cause slowdowns)
         """
-        self.uniform_map = {k: v for k, v in self.program._members.items() if isinstance(v, moderngl.Uniform)}
+        self.uniform_map = {k: v for k, v in self.program._members.items() if isinstance(v, mgl.Uniform)}
         print("ShaderProgram {} has {} uniform(s)".format(self.name, len(self.uniform_map)))
 
         for name, uniform in self.uniform_map.items():
@@ -161,7 +164,7 @@ class ShaderProgram:
         This information is also used when the shader and VAO negotiates the buffer binding.
         """
         for name, attribute in self.program._members.items():
-            if not isinstance(attribute, moderngl.Attribute):
+            if not isinstance(attribute, mgl.Attribute):
                 continue
 
             self.attribute_list.append(attribute)
@@ -203,11 +206,11 @@ class ShaderSource:
             )
 
         # Add preprocessors to source
-        if self.type == GL.GL_VERTEX_SHADER:
+        if self.type == VERTEX_SHADER:
             self.lines.insert(1, "#define VERTEX_SHADER 1")
-        elif self.type == GL.GL_FRAGMENT_SHADER:
+        elif self.type == FRAGMENT_SHADER:
             self.lines.insert(1, "#define FRAGMENT_SHADER 1")
-        elif self.type == GL.GL_GEOMETRY_SHADER:
+        elif self.type == GEOMETRY_SHADER:
             self.lines.insert(1, "#define GEOMETRY_SHADER 1")
 
         self.source = '\n'.join(self.lines)
@@ -231,14 +234,3 @@ class ShaderSource:
             print("{}: {}".format(str(i).zfill(3), line))
 
         print("---[ END {} ]---".format(self.name))
-
-    def type_name(self):
-        """Returns a string representation of the shader type"""
-        if self.type == GL.GL_VERTEX_SHADER:
-            return 'VERTEX_SHADER'
-        if self.type == GL.GL_FRAGMENT_SHADER:
-            return 'FRAGMENT_SHADER'
-        if self.type == GL.GL_GEOMETRY_SHADER:
-            return 'GEOMETRY_SHADER'
-        else:
-            raise ShaderError("Unknown shader type")
