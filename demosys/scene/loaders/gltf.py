@@ -382,7 +382,6 @@ class GLTFMesh:
                 # FIXME: Support u1 and u2 buffers
                 vao.index_buffer(context.ctx().buffer(index_vbo.tobytes()),
                                  index_element_size=component_type.size)
-                print(component_type.size)
 
             attributes = {}
             vbos = self.prepare_attrib_mapping(primitive)
