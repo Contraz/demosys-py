@@ -1,7 +1,7 @@
-from demosys.opengl import VAO
-from OpenGL import GL
-from OpenGL.arrays.vbo import VBO
+import moderngl as mgl
 import numpy
+from demosys.opengl import VAO
+from demosys import context
 
 # Cache fullscreen quad
 QUAD_FS = None
@@ -26,36 +26,36 @@ def quad_2d(width, height, xpos=0.0, ypos=0.0):
     :param xpos: Center position x
     :param ypos: Center position y
     """
-    pos = VBO(numpy.array([
+    pos = context.ctx().buffer(numpy.array([
         xpos - width / 2.0, ypos + height / 2.0, 0.0,
         xpos - width / 2.0, ypos - height / 2.0, 0.0,
         xpos + width / 2.0, ypos - height / 2.0, 0.0,
         xpos - width / 2.0, ypos + height / 2.0, 0.0,
         xpos + width / 2.0, ypos - height / 2.0, 0.0,
         xpos + width / 2.0, ypos + height / 2.0, 0.0,
-    ], dtype=numpy.float32))
-    normals = VBO(numpy.array([
+    ], dtype=numpy.float32).tobytes())
+
+    normals = context.ctx().buffer(numpy.array([
         0.0, 0.0, 1.0,
         0.0, 0.0, 1.0,
         0.0, 0.0, 1.0,
         0.0, 0.0, 1.0,
         0.0, 0.0, 1.0,
         0.0, 0.0, 1.0,
-    ], dtype=numpy.float32))
-    uvs = VBO(numpy.array([
+    ], dtype=numpy.float32).tobytes())
+
+    uvs = context.ctx().buffer(numpy.array([
         0.0, 1.0,
         0.0, 0.0,
         1.0, 0.0,
         0.0, 1.0,
         1.0, 0.0,
         1.0, 1.0,
-    ], dtype=numpy.float32))
-    vao = VAO("geometry:quad", mode=GL.GL_TRIANGLES)
-    vao.add_array_buffer(GL.GL_FLOAT, pos)
-    vao.add_array_buffer(GL.GL_FLOAT, normals)
-    vao.add_array_buffer(GL.GL_FLOAT, uvs)
-    vao.map_buffer(pos, "in_position", 3)
-    vao.map_buffer(normals, "in_normal", 3)
-    vao.map_buffer(uvs, "in_uv", 2)
-    vao.build()
+    ], dtype=numpy.float32).tobytes())
+
+    vao = VAO("geometry:quad", mode=mgl.TRIANGLES)
+    vao.buffer(pos, '3f', ["in_position"])
+    vao.buffer(normals, '3f', ["in_normal"])
+    vao.buffer(uvs, '2f', ["in_uv"])
+
     return vao

@@ -127,6 +127,7 @@ class SystemCamera(Camera):
         self._zdir = STILL
         self._ydir = STILL
         self._last_time = 0
+
         # Velocity in axis units per second
         self.velocity = 10.0
         self.mouse_sensitivity = 0.5

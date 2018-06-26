@@ -1,7 +1,7 @@
+import moderngl as mgl
 import numpy
+
 from demosys.opengl import VAO
-from OpenGL import GL
-from OpenGL.arrays.vbo import VBO
 
 
 def bbox(width=1.0, height=1.0, depth=1.0):
@@ -16,7 +16,7 @@ def bbox(width=1.0, height=1.0, depth=1.0):
     :return: VAO representing the cube
     """
     width, height, depth = width / 2.0, height / 2.0, depth / 2.0
-    pos = VBO(numpy.array([
+    pos = numpy.array([
         width, -height, depth,
         width, height, depth,
         -width, -height, depth,
@@ -53,11 +53,9 @@ def bbox(width=1.0, height=1.0, depth=1.0):
         -width, height, -depth,
         -width, height, depth,
         width, height, depth,
-    ], dtype=numpy.float32))
+    ], dtype=numpy.float32)
 
-    vao = VAO("geometry:cube", mode=GL.GL_LINE_STRIP)
-    vao.add_array_buffer(GL.GL_FLOAT, pos)
-    vao.map_buffer(pos, "in_position", 3)
+    vao = VAO("geometry:cube", mode=mgl.LINE_STRIP)
+    vao.buffer(pos, '3f', ["in_position"])
 
-    vao.build()
     return vao

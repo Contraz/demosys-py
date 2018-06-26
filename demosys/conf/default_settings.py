@@ -31,7 +31,7 @@ SCREENSHOT_PATH = None
 # profile: any, core, compat
 # forward_compat: Whether we should drop fixed pipeline and only support core
 OPENGL = {
-    "version": (4, 1),
+    "version": (3, 3),
     "profile": "core",
     "forward_compat": True,
 }
@@ -65,7 +65,7 @@ EFFECT_MANAGER = 'demosys.effects.managers.SingleEffectManager'
 
 # Raise errors when uniforms are assigned with incorrect type
 # Otherwise just print the errors to terminal
-SHADER_STRICT_VALIDATION = True
+SHADER_STRICT_VALIDATION = False
 
 SHADERS = {
     'vertex_shader_suffix': ('vert', '_vs.glsl', '.glslv'),

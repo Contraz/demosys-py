@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="demosys-py",
-    version="0.4.0",
+    version="1.0.0",
     description="Modern OpenGL 3.3+ Framework inspired by Django",
     long_description=open('README.rst').read(),
     url="https://github.com/Contraz/demosys-py",
@@ -26,11 +26,12 @@ setup(
     ],
     install_requires=[
         'PyOpenGL==3.1.0',
-        'glfw==1.4.0',
-        'pyrr==0.8.3',
-        'Pillow==4.1.1',
+        'glfw==1.6.0',
+        'moderngl==5.2.1',
+        'pyrr==0.9.2',
+        'Pillow==5.1.0',
         'pyrocket==0.2.5',
-        'PyWavefront==0.2.0',
+        'PyWavefront==0.3.2',
         # 'pygame==1.9.3',
     ],
     entry_points={'console_scripts': [

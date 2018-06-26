@@ -1,197 +1,240 @@
-import os
-from OpenGL import GL
-from OpenGL.GL.EXT import texture_filter_anisotropic as tfa
+import moderngl as mgl
+from typing import Tuple
 from PIL import Image
 
+from demosys import context
 
-class Texture:
-    """Represents a texture"""
-    # Class attributes for drawing textures
-    quad = None
-    shader_2d = None
 
-    def __init__(self, name=None, path=None, width=0, height=0, depth=0, lod=0, target=GL.GL_TEXTURE_2D,
-                 internal_format=GL.GL_RGBA8, format=GL.GL_RGBA, type=GL.GL_UNSIGNED_BYTE,
-                 mipmap=False, anisotropy=0, min_filter=GL.GL_LINEAR, mag_filter=GL.GL_LINEAR,
-                 wrap_s=GL.GL_CLAMP_TO_EDGE, wrap_t=GL.GL_CLAMP_TO_EDGE, wrap_r=GL.GL_CLAMP_TO_EDGE,
-                 ):
-        """Initialize texture without allocating data using default values"""
-        self.texture = GL.glGenTextures(1)
-        # dimensions
-        self.width = width
-        self.height = height
-        self.depth = depth
-        # format / type
-        self.target = target
-        self.lod = lod
-        self.internal_format = internal_format
-        self.format = format
-        self.type = type
-        self.wrap_s = wrap_s
-        self.wrap_t = wrap_t
-        self.wrap_r = wrap_r
-        # filters
-        self.min_filter = min_filter
-        self.mag_filter = mag_filter
-        self.anisotropy = float(anisotropy)
-        self.mipmap = mipmap
-        # Force mipmaps if anisotropy is specified
-        if self.anisotropy > 0:
-            self.mipmap = True
-        # Ensure we are using the right interpolation modes
-        if self.mipmap:
-            self.min_filter = GL.GL_LINEAR_MIPMAP_LINEAR
-            self.mag_filter = GL.GL_LINEAR
-        # For pre-loading files
-        self.name = name
-        self.path = path
-        _init_texture_draw()
+class BaseTexture:
+    """
+    Wraps the basic functionality of the ModernGL methods
+    """
+
+    def __init__(self):
+        self._texture = None
+
+    def use(self, location=0):
+        """
+        Bind the texture.
+
+        :param location: The texture location. (GL_TEXTURE0 + location)
+        """
+        self._texture.use(location)
 
     @property
-    def size(self):
-        """
-        Get the dimensions of the texture
+    def size(self) -> Tuple:
+        """The size of the texture"""
+        return self._texture.size
 
-        :return: (w, h) tuple
+    @property
+    def width(self) -> int:
+        """Width of the texture"""
+        return self._texture.width
+
+    @property
+    def height(self) -> int:
+        """Height of the texture"""
+        return self._texture.height
+
+    @property
+    def dtype(self) -> str:
+        """The data type of the texture"""
+        return self._texture.dtype
+
+    @property
+    def depth(self) -> bool:
+        """Is this a depth texture?"""
+        return self.depth
+
+    @property
+    def mgl_instance(self):
+        return self._texture
+
+    def read(self, level: int=0, alignment: int=1) -> bytes:
         """
-        return self.width, self.height
+        Read the content of the texture into a buffer.
+
+        :param level: The mipmap level.
+        :param alignment: The byte alignment of the pixels.
+        :return: bytes
+        """
+        return self._texture.read(level=level, alignment=alignment)
+
+    def read_into(self, buffer: bytearray, level: int=0, alignment: int=1, write_offset: int=0):
+        """
+        Read the content of the texture into a buffer.
+
+        :param buffer: (bytearray) The buffer that will receive the pixels.
+        :param level: (int) The mipmap level.
+        :param alignment: (int) The byte alignment of the pixels.
+        :param write_offset: (int) The write offset.
+        """
+        self._texture.read_into(buffer, level=level, alignment=alignment, write_offset=write_offset)
+
+    def write(self, data: bytes, viewport=None, level: int=0, alignment: int=1):
+        """
+        Update the content of the texture.
+
+        :param data: (bytes) – The pixel data.
+        :param viewport: (tuple) – The viewport.
+        :param level: (int) – The mipmap level.
+        :param alignment: (int) – The byte alignment of the pixels.
+        """
+        self._texture.write(data, viewport=viewport, level=level, alignment=alignment)
+
+
+class Texture2D(BaseTexture):
+    """2D Texture"""
+
+    # Class attributes for drawing the texture
+    quad = None
+    shader = None
+
+    def __init__(self, path: str=None, mipmap: bool=False):
+        """
+        Initialize configuration for this texture.
+        This doesn't create the OpenGL texture objects itself
+        and is mostly used by the resource loading system.
+
+        :param path: The global resource path for the texture to load
+        :param mipmap: (bool) Should we generate mipmaps?
+        """
+        super().__init__()
+        # Info for resource loader
+        self.path = path
+        self.mipmap = mipmap
+
+        _init_texture2d_draw()
 
     @classmethod
-    def from_image(cls, path, image=None, **kwargs):
-        """
-        Creates and image from a image file using Pillow/PIL.
-        Additional parameters is passed to the texture initializer.
-
-        :param path: The path to the file
-        :param image: The PIL/Pillow image object (Can be None)
-        :return: Texture object
-        """
-        t = Texture(path=path, name=os.path.basename(path), **kwargs)
-        if image:
-            t.set_image(image)
-        return t
-
-    @classmethod
-    def create_2d(cls, **kwargs):
+    def create(cls, size, components, data=None, samples=0, alignment=1, dtype='f1', mipmap=False) -> 'Texture2D':
         """
         Creates a 2d texture.
         All parameters are passed on the texture initializer.
 
         :return: Texture object
         """
-        kwargs['target'] = GL.GL_TEXTURE_2D
-        t = Texture(**kwargs)
-        t._build()
+        t = Texture2D(path="dynamic", mipmap=mipmap)
+
+        t._texture = context.ctx().texture(
+            size,
+            components,
+            data=data,
+            samples=samples,
+            alignment=alignment,
+            dtype=dtype,
+        )
+
+        if mipmap:
+            t.build_mipmaps()
+
         return t
 
-    def bind(self):
+    def build_mipmaps(self, base=0, max_level=1000):
         """
-        Binds the texture to the currently active texture unit
+        Build mipmaps for this texture
+
+        :param base: Level to build from
+        :param max_level: Max levels
         """
-        GL.glBindTexture(self.target, self.texture)
+        self._texture.build_mipmaps(base=base, max_level=max_level)
+        self._texture.filter = (mgl.LINEAR_MIPMAP_LINEAR, mgl.LINEAR)
 
-    def draw(self, shader=None, pos=(0.0, 0.0), scale=(1.0, 1.0)):
+    @classmethod
+    def from_image(cls, path, image=None, **kwargs):
         """
-        Draw texture
-        :param shader: override shader
-        :param pos: (tuple) offset x, y
-        :param scale: (tuple) scale x, y
+        Creates a texture from a image file using Pillow/PIL.
+        Additional parameters is passed to the texture initializer.
+
+        :param path: The path to the file
+        :param image: The PIL/Pillow image object (Can be None)
+        :return: Texture object
         """
-        with self.quad.bind(self.shader_2d) as s:
-            s.uniform_2f("offset", pos[0] - 1.0, pos[1] - 1.0)
-            s.uniform_2f("scale", scale[0], scale[1])
-            s.uniform_sampler_2d(0, "texture0", self)
-        self.quad.draw()
-
-    def _build(self, data=None):
-        """Internal method for building the texture"""
-        self.bind()
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MIN_FILTER, self.min_filter)
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MAG_FILTER, self.mag_filter)
-
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_S, self.wrap_s)
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_T, self.wrap_t)
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_R, self.wrap_r)
-
-        if self.target == GL.GL_TEXTURE_2D:
-            GL.glTexImage2D(self.target, self.lod, self.internal_format,
-                            self.width, self.height, 0,
-                            self.format, self.type, data)
-        elif self.target == GL.GL_TEXTURE_1D:
-            if self.width > self.height:
-                GL.glTexImage1D(self.target, self.lod, self.internal_format,
-                                self.width, 0, self.format, self.type, data)
-            else:
-                GL.glTexImage1D(self.target, self.lod, self.internal_format,
-                                self.height, 0, self.format, self.type, data)
-
-        if self.mipmap:
-            GL.glGenerateMipmap(self.target)
-
-        if self.anisotropy > 0:
-            max_ani = GL.glGetFloatv(tfa.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT)
-            self.anisotropy = min(max_ani, self.anisotropy)
-            GL.glTexParameterf(self.target, tfa.GL_TEXTURE_MAX_ANISOTROPY_EXT, self.anisotropy)
+        t = Texture2D(path=path, **kwargs)
+        if image:
+            t.set_image(image)
+        return t
 
     def set_image(self, image, flip=True):
         """
         Set pixel data using a image file with PIL/Pillow.
 
         :param image: The PIL/Pillow image object
+        :param flip: Flip the image top to bottom
         """
         if flip:
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
-        data = image.convert("RGBA").tobytes()
-        self.width, self.height = image.size
+        self._texture = context.ctx().texture(
+            image.size,
+            4,
+            image.convert("RGBA").tobytes(),
+        )
 
-        if self.width == 1 or self.height == 1:
-            self.target = GL.GL_TEXTURE_1D
-        else:
-            self.target = GL.GL_TEXTURE_2D
+        if self.mipmap:
+            self.build_mipmaps()
 
-        self._build(data=data)
-
-    def set_texture_repeat(self, wrap_s, wrap_t, wrap_r):
+    def draw(self, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
-        Sets the texture repeat mode
-
-        :param wrap_s: Repeat mode S (glenum)
-        :param wrap_t: Repeat mode T (glenum)
-        :param wrap_r: Repeat mode R (glenum)
+        Draw texture
+        :param shader: override shader
+        :param pos: (tuple) offset x, y
+        :param scale: (tuple) scale x, y
         """
-        self.wrap_s = wrap_s
-        self.wrap_t = wrap_t
-        self.wrap_r = wrap_r
+        self.shader.uniform("offset", (pos[0] - 1.0, pos[1] - 1.0))
+        self.shader.uniform("scale", (scale[0], scale[1]))
+        self.use(location=0)
+        self.shader.uniform("texture0", 0)
+        self.quad.draw(self.shader)
 
-        self.bind()
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_S, self.wrap_s)
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_T, self.wrap_t)
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_WRAP_R, self.wrap_r)
 
-    def set_interpolation(self, min_filter, mag_filter):
+class DepthTexture(BaseTexture):
+    """Depth Texture"""
+
+    # Class attributes for drawing the texture
+    quad = None
+    shader = None
+
+    def __init__(self, size, data=None, samples=0, alignment=4):
         """
-        Sets the texture interpolation mode
+        Create a depth texture
 
-        :param min_filter: Min filter mode (glenum)
-        :param mag_filter: Max filter mode (glenum)
+        :param size: (tuple) The width and height of the texture.
+        :param data: (bytes) Content of the texture.
+        :param samples: The number of samples. Value 0 means no multisample format.
+        :param alignment: The byte alignment 1, 2, 4 or 8.
         """
-        self.min_filter = min_filter
-        self.mag_filter = mag_filter
-        self.bind()
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MIN_FILTER, self.min_filter)
-        GL.glTexParameteri(self.target, GL.GL_TEXTURE_MAG_FILTER, self.mag_filter)
+        super().__init__()
+        self._texture = context.ctx().depth_texture(size, data=data, samples=samples, alignment=alignment)
+        _init_depth_texture_draw()
+
+    def draw(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
+        """
+        Draw depth buffer linearized.
+        :param near: Near plane in projection
+        :param far: Far plane in projection
+        :param pos: (tuple) offset x, y
+        :param scale: (tuple) scale x, y
+        """
+        self.shader.uniform("offset", (pos[0] - 1.0, pos[1] - 1.0))
+        self.shader.uniform("scale", (scale[0], scale[1]))
+        self.shader.uniform("near", near)
+        self.shader.uniform("far", far)
+        self._texture.use(location=0)
+        self.shader.uniform("texture0", 0)
+
+        self.quad.draw(self.shader)
 
 
-def _init_texture_draw():
+def _init_texture2d_draw():
     """Initialize geometry and shader for drawing FBO layers"""
-    from demosys.opengl import Shader
-    from demosys.opengl import geometry
+    from demosys.opengl import ShaderProgram
+    from demosys import geometry
 
-    if Texture.quad:
+    if Texture2D.quad:
         return
 
-    Texture.quad = geometry.quad_fs()
+    Texture2D.quad = geometry.quad_fs()
     # Shader for drawing color layers
     src = [
         "#version 330",
@@ -216,6 +259,52 @@ def _init_texture_draw():
         "}",
         "#endif",
     ]
-    Texture.shader_2d = Shader(name="fbo_shader")
-    Texture.shader_2d.set_source("\n".join(src))
-    Texture.shader_2d.prepare()
+    program = ShaderProgram(name="fbo_shader")
+    program.set_source("\n".join(src))
+    program.prepare()
+
+    Texture2D.shader = program
+
+
+def _init_depth_texture_draw():
+    """Initialize geometry and shader for drawing FBO layers"""
+    from demosys.opengl import ShaderProgram
+    from demosys import geometry
+
+    if DepthTexture.quad:
+        return
+
+    DepthTexture.quad = geometry.quad_fs()
+    # Shader for drawing depth layers
+    src = [
+        "#version 330",
+        "#if defined VERTEX_SHADER",
+        "in vec3 in_position;",
+        "in vec2 in_uv;",
+        "out vec2 uv;",
+        "uniform vec2 offset;",
+        "uniform vec2 scale;",
+        "",
+        "void main() {",
+        "    uv = in_uv;"
+        "    gl_Position = vec4((in_position.xy + vec2(1.0, 1.0)) * scale + offset, 0.0, 1.0);",
+        "}",
+        "",
+        "#elif defined FRAGMENT_SHADER",
+        "out vec4 out_color;",
+        "in vec2 uv;",
+        "uniform sampler2D texture0;",
+        "uniform float near;"
+        "uniform float far;"
+        "void main() {",
+        "    float z = texture(texture0, uv).x;"
+        "    float d = (2.0 * near) / (far + near - z * (far - near));"
+        "    out_color = vec4(d);",
+        "}",
+        "#endif",
+    ]
+    program = ShaderProgram(name="depth_shader")
+    program.set_source("\n".join(src))
+    program.prepare()
+
+    DepthTexture.shader = program

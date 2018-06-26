@@ -1,3 +1,4 @@
+import moderngl as mgl  # noqa
 import os
 from demosys import resources
 from pyrr import matrix44, Matrix33, Matrix44, Vector3
@@ -29,10 +30,8 @@ def local_path(func):
     def local_wrapper(*args, **kwargs):
         use_local = kwargs.get('local')
 
-        # If use_local is True or None we assume local loading
-        if use_local is not False:
-            # Don't mess with the path if path starts with local dir
-            if not args[1].startswith("{}/".format(args[0].effect_name)):
+        # If use_local is True prepend the package name to the path
+        if use_local is True:
                 path = args[1]
                 path = os.path.join(args[0].effect_name, path)
 
@@ -62,6 +61,11 @@ class Effect:
     window_width = 0
     window_height = 0
     window_aspect = 0
+
+    # ModernGL context
+    ctx = None  # type: mgl.Context
+
+    # System camera
     sys_camera = None
 
     @property
@@ -82,7 +86,7 @@ class Effect:
     # Methods for getting resources
 
     @local_path
-    def get_shader(self, path, local=True):
+    def get_shader(self, path, local=False):
         """
         Get a shader or schedule the shader for loading.
         If the resource is not loaded yet, an empty shader object
@@ -95,7 +99,7 @@ class Effect:
         return resources.shaders.get(path, create=True)
 
     @local_path
-    def get_texture(self, path, local=True, **kwargs):
+    def get_texture(self, path, local=False, **kwargs):
         """
         Get a shader or schedule the texture for loading.
         If the resource is not loaded yet, an empty texture object
@@ -108,7 +112,7 @@ class Effect:
         return resources.textures.get(path, create=True, **kwargs)
 
     @local_path
-    def get_track(self, name, local=True):
+    def get_track(self, name, local=False):
         """
         Get or create a rocket track. This only makes sense when using rocket timers.
         If the resource is not loaded yet, an empty track object
@@ -121,7 +125,7 @@ class Effect:
         return resources.tracks.get(name)
 
     @local_path
-    def get_scene(self, path, local=True, **kwargs):
+    def get_scene(self, path, local=False, **kwargs):
         """
         Get or create a scene.
         :param path: Path to the scene

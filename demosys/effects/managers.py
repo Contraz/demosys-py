@@ -65,6 +65,8 @@ class SingleEffectManager(BaseEffectManger):
         Initialize the effect that should run.
         """
         effect_list = [cfg.cls() for name, cfg in effects.effects.items()]
+        if not effect_list:
+            raise ValueError("settings.EFFECTS list is empty. No effect to run.")
 
         # If an effect was specified in the initializer, find it
         if self.effect_module:

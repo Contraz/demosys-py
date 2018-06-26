@@ -34,8 +34,7 @@ class TypeInfo:
         return str(self)
 
 
-# Information about data types
-# TODO: Types may be missing
+# Information about each GL enum type
 TYPE_INFO = {
     # Floats
     GL.GL_FLOAT: TypeInfo("GL_FLOAT", GL.GL_FLOAT, SIZE_OF_FLOAT),

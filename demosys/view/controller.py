@@ -38,6 +38,7 @@ def run(manager=None):
     Effect.window_width = context.WINDOW.buffer_width
     Effect.window_height = context.WINDOW.buffer_height
     Effect.window_aspect = context.WINDOW.aspect_ratio
+    Effect.ctx = context.ctx()
 
     # Set up the default system camera
     global CAMERA
@@ -195,4 +196,5 @@ def window_resize_callback(window, width, height):
     :param width: New width
     :param height: New height
     """
+    print("Resize", width, height)
     context.WINDOW.resize(width, height)

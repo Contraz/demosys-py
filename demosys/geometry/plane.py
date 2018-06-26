@@ -1,7 +1,6 @@
+import moderngl as mgl
 import numpy
 from demosys.opengl import VAO
-from OpenGL import GL
-from OpenGL.arrays.vbo import VBO
 
 
 def plane_xz(size=(10, 10), resolution=(10, 10)):
@@ -40,38 +39,27 @@ def plane_xz(size=(10, 10), resolution=(10, 10)):
         for z in range(rz - 1):
             for x in range(rx - 1):
                 # quad poly left
-                yield z * rz + x
                 yield z * rz + x + 1
+                yield z * rz + x
                 yield z * rz + x + rx
                 # quad poly right
-                yield z * rz + x + rx
                 yield z * rz + x + 1
+                yield z * rz + x + rx
                 yield z * rz + x + rx + 1
 
     pos_data = numpy.fromiter(gen_pos(), dtype=numpy.float32)
-    position_vbo = VBO(pos_data)
-
     uv_data = numpy.fromiter(gen_uv(), dtype=numpy.float32)
-    uv_vbo = VBO(uv_data)
-
     normal_data = numpy.fromiter(gen_normal(), dtype=numpy.float32)
-    normal_vbo = VBO(normal_data)
-
     index_data = numpy.fromiter(gen_index(), dtype=numpy.uint32)
-    index_vbo = VBO(index_data, target="GL_ELEMENT_ARRAY_BUFFER")
 
-    vao = VAO("plane_xz", mode=GL.GL_TRIANGLES)
+    vao = VAO("plane_xz", mode=mgl.TRIANGLES)
 
-    vao.add_array_buffer(GL.GL_FLOAT, position_vbo)
-    vao.add_array_buffer(GL.GL_FLOAT, uv_vbo)
-    vao.add_array_buffer(GL.GL_FLOAT, normal_vbo)
+    vao.buffer(pos_data, '3f', ['in_position'])
+    vao.buffer(uv_data, '2f', ['in_uv'])
+    vao.buffer(normal_data, '3f', ['in_normal'])
 
-    vao.map_buffer(position_vbo, "in_position", 3)
-    vao.map_buffer(uv_vbo, "in_uv", 2)
-    vao.map_buffer(normal_vbo, "in_normal", 3)
-    vao.set_element_buffer(GL.GL_UNSIGNED_INT, index_vbo)
+    vao.index_buffer(index_data, index_element_size=4)
 
-    vao.build()
     return vao
 
 

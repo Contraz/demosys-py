@@ -1,5 +1,5 @@
 from demosys.effects import effect
-from demosys.opengl import geometry
+from demosys import geometry
 from OpenGL import GL
 from pyrr import matrix44
 
@@ -7,9 +7,9 @@ from pyrr import matrix44
 class TexturedSphere(effect.Effect):
     """Generated default effect"""
     def __init__(self):
-        self.shader = self.get_shader("default.glsl")
+        self.shader = self.get_shader("default.glsl", local=True)
         self.sphere = geometry.sphere(4.0, sectors=32, rings=16)
-        self.texture = self.get_texture("wood.jpg")
+        self.texture = self.get_texture("wood.jpg", local=True)
 
     @effect.bind_target
     def draw(self, time, frametime, target):
@@ -28,9 +28,9 @@ class TexturedSphere(effect.Effect):
         m_normal = self.create_normal_matrix(m_mv)
 
         # Draw the cube
-        with self.sphere.bind(self.shader) as s:
-            s.uniform_mat4("m_proj", self.sys_camera.projection.matrix)
-            s.uniform_mat4("m_mv", m_mv)
-            s.uniform_mat3("m_normal", m_normal)
-            s.uniform_sampler_2d(0, "texture0", self.texture)
-        self.sphere.draw()
+        self.shader.uniform("m_proj", self.sys_camera.projection.tobytes())
+        self.shader.uniform("m_mv", m_mv.astype('f4').tobytes())
+        self.shader.uniform("m_normal", m_normal.astype('f4').tobytes())
+        self.texture.use(location=0)
+        self.shader.uniform("texture0", 0)
+        self.sphere.draw(self.shader)
