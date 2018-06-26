@@ -1,4 +1,4 @@
-import moderngl as mgl
+import moderngl as mgl  # noqa
 import os
 from demosys import resources
 from pyrr import matrix44, Matrix33, Matrix44, Vector3
