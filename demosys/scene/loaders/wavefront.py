@@ -1,12 +1,22 @@
 import numpy
 from .base import SceneLoader
 import pywavefront
+from pywavefront.material import Texture
 
 from OpenGL import GL
 from demosys.opengl import VAO
 from demosys.scene import Mesh, Node, Material, MaterialTexture
 from demosys.resources import textures
 from demosys.opengl import samplers
+
+
+# HACK: Mock the initializer to avoid the exist check
+def texture_init_mock(self, path):
+    self.path = path.replace('\\', '/')
+    self.image = None
+
+
+Texture.__init__ = texture_init_mock
 
 
 class ObjLoader(SceneLoader):
