@@ -1,3 +1,4 @@
+import moderngl as mgl
 import os
 from demosys import resources
 from pyrr import matrix44, Matrix33, Matrix44, Vector3
@@ -62,7 +63,7 @@ class Effect:
     window_aspect = 0
 
     # ModernGL context
-    ctx = None
+    ctx = None  # type: mgl.Context
 
     # System camera
     sys_camera = None
