@@ -1,5 +1,4 @@
 from typing import List
-from OpenGL import GL
 from demosys.opengl import Texture2D, DepthTexture
 from demosys import context
 
@@ -20,6 +19,7 @@ class WindowFBO:
         # How much positive or negative y padding
         blank_space = self.window.buffer_height - expected_height
 
+        self.ctx.screen.use()
         self.ctx.viewport = (0, blank_space // 2, self.window.buffer_width, expected_height)
 
     def release(self):
@@ -148,8 +148,8 @@ class FBO:
 
         :param stack: (bool) If the bind should be popped form the FBO stack.
         """
-        GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
         if not stack:
+            WINDOW_FBO.use()
             return
 
         # Are we trying to release an FBO that is not bound?
