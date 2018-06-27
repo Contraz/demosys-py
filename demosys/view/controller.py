@@ -80,7 +80,6 @@ def run(manager=None):
         t = TIMER.get_time()
 
         # Set the viewport as FBOs will change the values
-
         context.ctx().viewport = (0, 0, context.WINDOW.buffer_width, context.WINDOW.buffer_height)
 
         # Clear the buffer
