@@ -72,7 +72,7 @@ def run(manager=None):
     TIMER.start()
 
     # Main loop
-    frames, ft = 0, 0
+    frames, ft = 0, 16
     prev_time = TIMER.get_time()
     time_start = glfw.get_time()
     while not context.WINDOW.should_close():
