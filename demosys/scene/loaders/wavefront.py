@@ -1,3 +1,4 @@
+import moderngl as mgl
 import numpy
 from .base import SceneLoader
 import pywavefront
@@ -37,7 +38,7 @@ class ObjLoader(SceneLoader):
 
             vbo = numpy.array(mat.vertices, dtype=numpy.float32)
 
-            vao = VAO(mat.name, mode=GL.GL_TRIANGLES)
+            vao = VAO(mat.name, mode=mgl.TRIANGLES)
             mesh = Mesh(mat.name)
 
             # Order: T2F, C3F, N3F and V3F
