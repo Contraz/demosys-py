@@ -85,7 +85,7 @@ def run(manager=None):
 
         # Clear the buffer
         context.ctx().clear(
-            red=0.0, blue=0.0, green=0.0, alpha=0.0,  depth=1.0,
+            red=0.0, blue=0.0, green=0.0, alpha=0.0, depth=1.0,
             viewport=(0, 0, context.WINDOW.buffer_width, context.WINDOW.buffer_height)
         )
 
