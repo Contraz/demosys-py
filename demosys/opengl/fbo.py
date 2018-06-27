@@ -10,16 +10,17 @@ class WindowFBO:
     """Fake FBO representing default render target"""
     def __init__(self, window):
         self.window = window
+        self.ctx = context.ctx()
 
-    def bind(self):
+    def use(self):
         """Sets the viewport back to the buffer size of the screen/window"""
         # The expected height with the current viewport width
         expected_height = int(self.window.buffer_width / self.window.aspect_ratio)
+
         # How much positive or negative y padding
         blank_space = self.window.buffer_height - expected_height
 
-        GL.glViewport(0, int(blank_space / 2),
-                      self.window.buffer_width, expected_height)
+        self.ctx.viewport = (0, blank_space // 2, self.window.buffer_width, expected_height)
 
     def release(self):
         """Dummy release method"""
@@ -115,7 +116,7 @@ class FBO:
         Entering context manager.
         This will bind the FBO and return itself.
         """
-        self.bind()
+        self.use()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -125,7 +126,7 @@ class FBO:
         """
         self.release()
 
-    def bind(self, stack=True):
+    def use(self, stack=True):
         """
         Bind FBO adding it to the stack.
 
@@ -169,13 +170,13 @@ class FBO:
 
         # Bind the parent FBO
         if parent:
-            parent.bind()
+            parent.use()
 
     def clear(self, red=0.0, green=0.0, blue=0.0, alpha=0.0, depth=1.0):
         """
         Clears the FBO using ``glClear``.
         """
-        self.bind()
+        self.use()
         self.fbo.clear(red=red, green=green, blue=blue, alpha=alpha, depth=depth)
         self.release()
 
