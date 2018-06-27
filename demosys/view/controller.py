@@ -2,7 +2,6 @@
 Quick and dirty controller to get things up and running.
 Thins needs to be improved once more pieces fall in place.
 """
-from OpenGL import GL
 import glfw
 from demosys.context.glfw import GLTFWindow
 from demosys.effects.registry import Effect
@@ -13,6 +12,10 @@ from demosys.scene import camera
 from demosys.utils import module_loading
 from . import screenshot
 from demosys import context
+
+# We still use PyOpenGL for samplers and don't want it to halt on errors
+import OpenGL
+OpenGL.ERROR_CHECKING = False
 
 TIMER = None
 CAMERA = None
@@ -68,8 +71,6 @@ def run(manager=None):
     TIMER = timer_cls()
     TIMER.start()
 
-    GL.glClearColor(0.0, 0.0, 0.0, 0.0)
-
     # Main loop
     frames, ft = 0, 0
     prev_time = TIMER.get_time()
@@ -79,10 +80,14 @@ def run(manager=None):
         t = TIMER.get_time()
 
         # Set the viewport as FBOs will change the values
-        GL.glViewport(0, 0, context.WINDOW.buffer_width, context.WINDOW.buffer_height)
+
+        context.ctx().viewport = (0, 0, context.WINDOW.buffer_width, context.WINDOW.buffer_height)
 
         # Clear the buffer
-        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
+        context.ctx().clear(
+            red=0.0, blue=0.0, green=0.0, alpha=0.0,  depth=1.0,
+            viewport=(0, 0, context.WINDOW.buffer_width, context.WINDOW.buffer_height)
+        )
 
         # Tell the manager to draw stuff
         manager.draw(t, ft, fbo.WINDOW_FBO)
