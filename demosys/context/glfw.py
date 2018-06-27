@@ -46,13 +46,13 @@ class GLTFWindow(Context):
 
         glfw.window_hint(glfw.DOUBLEBUFFER, GL.GL_TRUE)
 
-        glfw.window_hint(glfw.RED_BITS, 8)
-        glfw.window_hint(glfw.GREEN_BITS, 8)
-        glfw.window_hint(glfw.BLUE_BITS, 8)
-        glfw.window_hint(glfw.ALPHA_BITS, 8)
+        # glfw.window_hint(glfw.RED_BITS, 8)
+        # glfw.window_hint(glfw.GREEN_BITS, 8)
+        # glfw.window_hint(glfw.BLUE_BITS, 8)
+        # glfw.window_hint(glfw.ALPHA_BITS, 8)
 
         glfw.window_hint(glfw.DEPTH_BITS, 24)
-        glfw.window_hint(glfw.STENCIL_BITS, 8)
+        # glfw.window_hint(glfw.STENCIL_BITS, 8)
 
         monitor = None
         if settings.WINDOW.get('fullscreen'):
