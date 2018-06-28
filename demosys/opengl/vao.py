@@ -26,7 +26,7 @@ class VAOError(Exception):
 
 class BufferInfo:
     """Container for a vbo with additional information"""
-    def __init__(self, buffer: mgl.Buffer, buffer_format: str, attributes=None):
+    def __init__(self, buffer: mgl.Buffer, buffer_format: str, attributes=None, per_instance=False):
         """
         :param buffer: The vbo object
         :param format: The format of the buffer
@@ -34,11 +34,12 @@ class BufferInfo:
         self.buffer = buffer
         self.attrib_formats = types.parse_attribute_formats(buffer_format)
         self.attributes = attributes
+        self.per_instance = per_instance
 
         # Sanity check byte size
         if self.buffer.size % self.vertex_size != 0:
-            raise VAOError("Buffer with type {} has size not aligning with {}. Remainder: ".format(
-                buffer_format, self.vertex_size, self.buffer.size % self.vertex_size,
+            raise VAOError("Buffer with type {} has size not aligning with {}. Remainder: {}".format(
+                buffer_format, self.vertex_size, self.buffer.size % self.vertex_size 
             ))
 
         self.vertices = self.buffer.size // self.vertex_size
@@ -61,12 +62,12 @@ class BufferInfo:
 
             attributes.remove(attrib)
 
-        if len(attrs) == 0:
+        if not attrs:
             return None
 
         return (
             self.buffer,
-            " ".join(formats),
+            "{}{}".format(" ".join(formats), '/i' if self.per_instance else ''),
             *attrs
         )
 
@@ -98,7 +99,7 @@ class VAO:
         self.vertex_count = 0
         self.vaos = {}
 
-    def draw(self, shader: ShaderProgram, mode=None):
+    def draw(self, shader: ShaderProgram, mode=None, vertices=-1, first=0, instances=1):
         """
         Draw the VAO.
         Will use ``glDrawElements`` if an element buffer is present
@@ -106,13 +107,16 @@ class VAO:
 
         :param shader: The shader to draw with
         :param mode: Override the draw mode (GL_TRIANGLES etc)
+        :param vertices: The number of vertices to transform
+        :param first: The index of the first vertex to start with
+        :param instances: The number of instances
         """
         vao = self._create_vao_instance(shader)
 
         if mode is None:
             mode = self.mode
 
-        vao.render(mode)
+        vao.render(mode, vertices=vertices, first=first, instances=instances)
 
     def transform(self, shader, buffer: mgl.Buffer, mode=None, vertices=-1, first=0, instances=1):
         """
@@ -132,14 +136,18 @@ class VAO:
 
         vao.transform(buffer, mode=mode, vertices=vertices, first=first, instances=instances)
 
-    def buffer(self, buffer, buffer_format: str, attribute_names):
+    def buffer(self, buffer, buffer_format: str, attribute_names, per_instance=False):
         """
         Register a buffer/vbo for the VAO. This can be called multiple times.
         adding multiple buffers (interleaved or not)
 
         :param buffer: The buffer object. Can be ndarray or Buffer
         :param buffer_format: The format of the buffer ('f', 'u', 'i')
+        :returns: The buffer object
         """
+        if not isinstance(attribute_names, list):
+            attribute_names = [attribute_names, ]
+
         if not isinstance(buffer, mgl.Buffer) and not isinstance(buffer, numpy.ndarray):
             raise VAOError("buffer parameter must be a moderngl.Buffer or numpy.ndarray instance")
 
@@ -150,8 +158,10 @@ class VAO:
         if len(formats) != len(attribute_names):
             raise VAOError("Format '{}' does not describe attributes {}".format(buffer_format, attribute_names))
 
-        self.buffers.append(BufferInfo(buffer, buffer_format, attribute_names))
+        self.buffers.append(BufferInfo(buffer, buffer_format, attribute_names, per_instance=per_instance))
         self.vertex_count = self.buffers[-1].vertices
+
+        return buffer
 
     def index_buffer(self, buffer, index_element_size=4):
         """
@@ -198,7 +208,7 @@ class VAO:
                 vao_content.append(content)
 
         if len(attributes) > 0:
-            raise VAOError("Did not find a buffer mapping for {}".format([n.name for n in attributes]))
+            raise VAOError("Did not find a buffer mapping for {}".format([n for n in attributes]))
 
         if self._index_buffer:
             vao = context.ctx().vertex_array(shader.program, vao_content,
