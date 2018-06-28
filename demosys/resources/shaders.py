@@ -52,7 +52,7 @@ class Shaders:
                         shader.set_source(fd.read())
 
                     try:
-                        shader.prepare()
+                        shader.prepare(reload=reload)
                     except (ShaderError, moderngl.Error) as err:
                         print("ShaderError: ", err)
                         if not reload:
