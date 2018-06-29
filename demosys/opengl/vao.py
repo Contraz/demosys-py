@@ -39,7 +39,7 @@ class BufferInfo:
         # Sanity check byte size
         if self.buffer.size % self.vertex_size != 0:
             raise VAOError("Buffer with type {} has size not aligning with {}. Remainder: {}".format(
-                buffer_format, self.vertex_size, self.buffer.size % self.vertex_size 
+                buffer_format, self.vertex_size, self.buffer.size % self.vertex_size
             ))
 
         self.vertices = self.buffer.size // self.vertex_size
