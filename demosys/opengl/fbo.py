@@ -77,9 +77,9 @@ class FBO:
         instance = FBO()
 
         # Add N layers of color attachments
-        for layer in range(layers):
-            c = Texture2D.create(size, components, dtype=dtype)
-            instance.color_buffers.append(c)
+        for _ in range(layers):
+            tex = Texture2D.create(size, components, dtype=dtype)
+            instance.color_buffers.append(tex)
 
         # Set depth attachment is specified
         if depth:
@@ -92,6 +92,24 @@ class FBO:
 
         return instance
 
+    def read(self, viewport=None, components=3, attachment=0, alignment=1, dtype='f1') -> bytes:
+        """
+        Read the content of the framebuffer.
+
+        :param viewport: (tuple) The viewport
+        :param components: The number of components to read.
+        :param attachment: The color attachment
+        :param alignment: The byte alignment of the pixels
+        :param dtype: (str) dtype
+        """
+        return self.fbo.read(
+            viewport=viewport,
+            components=components,
+            attachment=attachment,
+            alignment=alignment,
+            dtype=dtype,
+        )
+
     @property
     def size(self):
         """
@@ -102,7 +120,6 @@ class FBO:
 
         :return: (w, h) tuple representing the size in pixels
         """
-        # FIXME: How do we deal with attachments of different sizes?
         if self.color_buffers:
             return self.color_buffers[0].size
 
