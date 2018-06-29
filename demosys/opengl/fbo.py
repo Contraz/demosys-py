@@ -26,9 +26,9 @@ class WindowFBO:
         """Dummy release method"""
         pass
 
-    def clear(self):
+    def clear(self, red=0.0, green=0.0, blue=0.0, depth=1.0, viewport=None):
         """Dummy clear method"""
-        pass
+        self.ctx.screen.clear(red=red, green=green, blue=blue, depth=depth, viewport=viewport)
 
 
 class FBO:
@@ -41,7 +41,7 @@ class FBO:
         self.fbo = None
 
     @staticmethod
-    def create_from_textures(color_buffers: List[Texture2D], depth_buffer: DepthTexture=None):
+    def create_from_textures(color_buffers: List[Texture2D], depth_buffer: DepthTexture = None):
         """
         Create FBO from existing textures
 
