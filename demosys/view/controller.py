@@ -3,6 +3,8 @@ Quick and dirty controller to get things up and running.
 Thins needs to be improved once more pieces fall in place.
 """
 import glfw
+import OpenGL
+
 from demosys.context.glfw import GLTFWindow
 from demosys.effects.registry import Effect
 from demosys.opengl import fbo
@@ -10,11 +12,10 @@ from demosys import resources
 from demosys.conf import settings
 from demosys.scene import camera
 from demosys.utils import module_loading
-from . import screenshot
 from demosys import context
+from . import screenshot
 
 # We still use PyOpenGL for samplers and don't want it to halt on errors
-import OpenGL
 OpenGL.ERROR_CHECKING = False
 
 TIMER = None
@@ -72,12 +73,12 @@ def run(manager=None):
     TIMER.start()
 
     # Main loop
-    frames, ft = 0, 60.0 / 1000.0
+    frames, frame_time = 0, 60.0 / 1000.0
     prev_time = TIMER.get_time()
     time_start = glfw.get_time()
     while not context.WINDOW.should_close():
         # Immediately get control of the current time
-        t = TIMER.get_time()
+        current_time = TIMER.get_time()
 
         # Set the viewport as FBOs will change the values
         context.ctx().viewport = (0, 0, context.WINDOW.buffer_width, context.WINDOW.buffer_height)
@@ -89,14 +90,14 @@ def run(manager=None):
         )
 
         # Tell the manager to draw stuff
-        manager.draw(t, ft, fbo.WINDOW_FBO)
+        manager.draw(current_time, frame_time, fbo.WINDOW_FBO)
 
         # Swap buffers and deal with events and statistics
         context.WINDOW.swap_buffers()
         context.WINDOW.poll_events()
         frames += 1
-        ft = t - prev_time
-        prev_time = t
+        frame_time = current_time - prev_time
+        prev_time = current_time
 
     duration_timer = TIMER.stop()
     duration = glfw.get_time() - time_start
@@ -181,15 +182,15 @@ def key_event_callback(window, key, scancode, action, mods):
     MANAGER.key_event(key, scancode, action, mods)
 
 
-def mouse_event_callback(window, x, y):
+def mouse_event_callback(window, xpos, ypos):
     """
     Mouse event callback from glfw
 
     :param window: The window
-    :param x: viewport x pos
-    :param y: viewport y pos
+    :param xpos: viewport x pos
+    :param ypos: viewport y pos
     """
-    CAMERA.rot_state(x, y)
+    CAMERA.rot_state(xpos, ypos)
 
 
 def window_resize_callback(window, width, height):
