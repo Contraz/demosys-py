@@ -74,7 +74,7 @@ class ObjLoader(SceneLoader):
             if mat.texture:
                 mesh.material.mat_texture = MaterialTexture(
                     texture=textures.get(mat.texture.path, create=True, mipmap=True),
-                    sampler=samplers.create_sampler(
+                    sampler=samplers.create(
                         wrap_s=GL.GL_CLAMP_TO_EDGE,
                         wrap_t=GL.GL_CLAMP_TO_EDGE,
                         anisotropy=8,

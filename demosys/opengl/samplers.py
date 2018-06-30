@@ -5,9 +5,9 @@ from OpenGL import GL
 from OpenGL.GL.EXT import texture_filter_anisotropic as tfa
 
 
-def create_sampler(mipmap=None, anisotropy=None,
-                   min_filter=None, mag_filter=None,
-                   wrap_s=None, wrap_t=None, wrap_r=None):
+def create(mipmap=None, anisotropy=None,
+           min_filter=None, mag_filter=None,
+           wrap_s=None, wrap_t=None, wrap_r=None):
     """Create sampler or get from cache"""
     return Sampler(
         mipmap=mipmap,
@@ -36,8 +36,8 @@ class Sampler:
         self.wrap_r = wrap_r
         self.states()
 
-    def bind(self, unit):
-        GL.glBindSampler(unit, self.sid)
+    def use(self, location=0):
+        GL.glBindSampler(location, self.sid)
 
     def states(self):
         self.sid = GL.glGenSamplers(1)
