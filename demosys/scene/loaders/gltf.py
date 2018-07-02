@@ -131,7 +131,7 @@ class GLTF2(SceneLoader):
                 raise ValueError("{} has unsupported version {}".format(self.file, version))
 
             # Total file size including headers
-            _ = struct.unpack('<I', fd.read(4))[0]
+            _ = struct.unpack('<I', fd.read(4))[0]  # noqa
 
             # Chunk 0 - json
             chunk_0_length = struct.unpack('<I', fd.read(4))[0]
