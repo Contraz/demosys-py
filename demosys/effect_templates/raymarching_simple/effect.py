@@ -54,4 +54,3 @@ class SimpleRaymarchEffect(effect.Effect):
         self.shader.uniform("resolution", (self.window_width, self.window_height))
 
         self.plane.draw(self.shader)
-        
