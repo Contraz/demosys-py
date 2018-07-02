@@ -3,14 +3,13 @@
 
 # General
 
-- [**WIP**] Test migrating to ModernGL
 - Properly verify all settings
 - Make EffectControllers
   - Controller for capturing with ffmpeg
   - TrackSystemEffectController
   - SimpleTimeLineEffectManager
 - Shaders
-  - Improve error prints (use actual source from GL so we can see expanded typedefs)
+  - Improve error reporting (use actual source from GL so we can see expanded typedefs)
   - Core loader support for common formats
   - Custom loader support / less hacky loading
 - Generic Data:
@@ -19,7 +18,7 @@
   - FBOs
   - Textures
 - Settings configurable key bindings
-- [**WIP**] Font support 
+- [**WIP**] Font support
 
 # OpenGL Features
 
