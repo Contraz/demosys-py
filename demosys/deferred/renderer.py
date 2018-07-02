@@ -1,9 +1,11 @@
+import moderngl as mgl
+
 from pyrr import matrix44
 from demosys.opengl import FBO
 from demosys.opengl import Texture2D, DepthTexture
-from OpenGL import GL
 from demosys import resources
 from demosys import geometry
+from demosys import context
 
 
 class PointLight:
@@ -29,6 +31,7 @@ class DeferredRenderer:
         self.width = width
         self.height = height
         self.size = (width, height)
+        self.ctx = context.ctx()
 
         # FBOs
         self.gbuffer = gbuffer
@@ -86,13 +89,15 @@ class DeferredRenderer:
     def render_lights(self, camera_matrix, projection):
         """Render light volumes"""
         # Disable culling so lights can be rendered when inside volumes
-        GL.glEnable(GL.GL_CULL_FACE)
-        GL.glFrontFace(GL.GL_CW)
+        self.ctx.disable(mgl.CULL_FACE)
+        self.ctx.front_face = 'cw'
+
         # No depth testing
-        GL.glDisable(GL.GL_DEPTH_TEST)
+        self.ctx.disable(mgl.DEPTH_TEST)
+
         # Enable additive blending
-        GL.glEnable(GL.GL_BLEND)
-        GL.glBlendFunc(GL.GL_ONE, GL.GL_ONE)
+        self.ctx.enable(mgl.BLEND)
+        self.ctx.blend_func = mgl.ONE, mgl.ONE
 
         with self.lightbuffer:
             for light in self.point_lights:
@@ -111,13 +116,13 @@ class DeferredRenderer:
                 self.point_light_shader.uniform("radius", light_size)
                 self.unit_cube.draw(self.point_light_shader)
 
-        GL.glDisable(GL.GL_BLEND)
-        GL.glDisable(GL.GL_CULL_FACE)
+        self.ctx.disable(mgl.BLEND)
+        self.ctx.disable(mgl.CULL_FACE)
 
     def render_lights_debug(self, camera_matrix, projection):
         """Render outlines of light volumes"""
-        GL.glEnable(GL.GL_BLEND)
-        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        self.ctx.enable(mgl.BLEND)
+        self.ctx.blend_func = mgl.SRC_ALPHA, mgl.ONE_MINUS_SRC_ALPHA
 
         for light in self.point_lights:
             m_mv = matrix44.multiply(light.matrix, camera_matrix)
@@ -125,9 +130,9 @@ class DeferredRenderer:
             self.debug_shader.uniform("m_proj", projection.tobytes())
             self.debug_shader.uniform("m_mv", m_mv.astype('f4'))
             self.debug_shader.uniform("size", light_size)
-            self.unit_cube.draw(self.debug_shader, mode=GL.GL_LINE_STRIP)
+            self.unit_cube.draw(self.debug_shader, mode=mgl.LINE_STRIP)
 
-        GL.glDisable(GL.GL_BLEND)
+        self.ctx.disable(mgl.BLEND)
 
     def render_geometry(self, cam_matrix, projection):
         raise NotImplementedError("render_geometry() not implemented")

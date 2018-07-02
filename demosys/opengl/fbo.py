@@ -1,5 +1,4 @@
 from typing import List
-from OpenGL import GL
 from demosys.opengl import Texture2D, DepthTexture
 from demosys import context
 
@@ -10,24 +9,26 @@ class WindowFBO:
     """Fake FBO representing default render target"""
     def __init__(self, window):
         self.window = window
+        self.ctx = context.ctx()
 
-    def bind(self):
+    def use(self):
         """Sets the viewport back to the buffer size of the screen/window"""
         # The expected height with the current viewport width
         expected_height = int(self.window.buffer_width / self.window.aspect_ratio)
+
         # How much positive or negative y padding
         blank_space = self.window.buffer_height - expected_height
 
-        GL.glViewport(0, int(blank_space / 2),
-                      self.window.buffer_width, expected_height)
+        self.ctx.screen.use()
+        self.ctx.viewport = (0, blank_space // 2, self.window.buffer_width, expected_height)
 
     def release(self):
         """Dummy release method"""
         pass
 
-    def clear(self):
+    def clear(self, red=0.0, green=0.0, blue=0.0, depth=1.0, viewport=None):
         """Dummy clear method"""
-        pass
+        self.ctx.screen.clear(red=red, green=green, blue=blue, depth=depth, viewport=viewport)
 
 
 class FBO:
@@ -40,7 +41,7 @@ class FBO:
         self.fbo = None
 
     @staticmethod
-    def create_from_textures(color_buffers: List[Texture2D], depth_buffer: DepthTexture=None):
+    def create_from_textures(color_buffers: List[Texture2D], depth_buffer: DepthTexture = None):
         """
         Create FBO from existing textures
 
@@ -76,9 +77,9 @@ class FBO:
         instance = FBO()
 
         # Add N layers of color attachments
-        for layer in range(layers):
-            c = Texture2D.create(size, components, dtype=dtype)
-            instance.color_buffers.append(c)
+        for _ in range(layers):
+            tex = Texture2D.create(size, components, dtype=dtype)
+            instance.color_buffers.append(tex)
 
         # Set depth attachment is specified
         if depth:
@@ -91,6 +92,24 @@ class FBO:
 
         return instance
 
+    def read(self, viewport=None, components=3, attachment=0, alignment=1, dtype='f1') -> bytes:
+        """
+        Read the content of the framebuffer.
+
+        :param viewport: (tuple) The viewport
+        :param components: The number of components to read.
+        :param attachment: The color attachment
+        :param alignment: The byte alignment of the pixels
+        :param dtype: (str) dtype
+        """
+        return self.fbo.read(
+            viewport=viewport,
+            components=components,
+            attachment=attachment,
+            alignment=alignment,
+            dtype=dtype,
+        )
+
     @property
     def size(self):
         """
@@ -101,7 +120,6 @@ class FBO:
 
         :return: (w, h) tuple representing the size in pixels
         """
-        # FIXME: How do we deal with attachments of different sizes?
         if self.color_buffers:
             return self.color_buffers[0].size
 
@@ -115,7 +133,7 @@ class FBO:
         Entering context manager.
         This will bind the FBO and return itself.
         """
-        self.bind()
+        self.use()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -125,7 +143,7 @@ class FBO:
         """
         self.release()
 
-    def bind(self, stack=True):
+    def use(self, stack=True):
         """
         Bind FBO adding it to the stack.
 
@@ -147,8 +165,8 @@ class FBO:
 
         :param stack: (bool) If the bind should be popped form the FBO stack.
         """
-        GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
         if not stack:
+            WINDOW_FBO.use()
             return
 
         # Are we trying to release an FBO that is not bound?
@@ -169,13 +187,13 @@ class FBO:
 
         # Bind the parent FBO
         if parent:
-            parent.bind()
+            parent.use()
 
     def clear(self, red=0.0, green=0.0, blue=0.0, alpha=0.0, depth=1.0):
         """
         Clears the FBO using ``glClear``.
         """
-        self.bind()
+        self.use()
         self.fbo.clear(red=red, green=green, blue=blue, alpha=alpha, depth=depth)
         self.release()
 

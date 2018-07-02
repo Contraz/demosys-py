@@ -107,7 +107,7 @@ class ShaderProgram:
         """
         self.geo_source = ShaderSource(GEOMETRY_SHADER, self.name, source)
 
-    def prepare(self):
+    def prepare(self, reload=False):
         """
         Compiles all the shaders and links the program.
         If the linking is successful, it builds the uniform and attribute map.
@@ -133,7 +133,12 @@ class ShaderProgram:
             params.update({'varyings': out_attribs})
 
         # Raises mgl.Error
-        self.program = self.ctx.program(**params)
+        program = self.ctx.program(**params)
+
+        if reload:
+            self.program.release()
+
+        self.program = program
 
         # Build internal lookups
         self.build_uniform_map()
@@ -163,6 +168,10 @@ class ShaderProgram:
         This way we don't have to query OpenGL (can cause slowdowns)
         This information is also used when the shader and VAO negotiates the buffer binding.
         """
+        # Reset attribute storage to support reloading
+        self.attribute_list = []
+        self.attribute_map = {}
+
         for name, attribute in self.program._members.items():
             if not isinstance(attribute, mgl.Attribute):
                 continue

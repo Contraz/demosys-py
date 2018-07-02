@@ -1,6 +1,6 @@
+import moderngl as mgl
 from demosys.effects import effect
 from demosys import geometry
-from OpenGL import GL
 from pyrr import matrix44
 
 
@@ -13,9 +13,9 @@ class TexturedSphere(effect.Effect):
 
     @effect.bind_target
     def draw(self, time, frametime, target):
-        GL.glEnable(GL.GL_DEPTH_TEST)
-        GL.glEnable(GL.GL_CULL_FACE)
-        GL.glFrontFace(GL.GL_CCW)
+        self.ctx.enable(mgl.DEPTH_TEST)
+        self.ctx.enable(mgl.CULL_FACE)
+        self.ctx.front_face = 'ccw'
 
         # Rotate and translate
         m_mv = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),

@@ -1,7 +1,7 @@
 import glfw
-import moderngl
+import sys
 
-from OpenGL import GL
+import moderngl as mgl
 
 from demosys.conf import settings
 from demosys.core.exceptions import ImproperlyConfigured
@@ -40,19 +40,19 @@ class GLTFWindow(Context):
 
         glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
         if settings.OPENGL.get('forward_compat'):
-            glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL.GL_TRUE)
+            glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
         if not settings.WINDOW.get('resizable'):
-            glfw.window_hint(glfw.RESIZABLE, GL.GL_FALSE)
+            glfw.window_hint(glfw.RESIZABLE, False)
 
-        glfw.window_hint(glfw.DOUBLEBUFFER, GL.GL_TRUE)
+        glfw.window_hint(glfw.DOUBLEBUFFER, True)
 
-        glfw.window_hint(glfw.RED_BITS, 8)
-        glfw.window_hint(glfw.GREEN_BITS, 8)
-        glfw.window_hint(glfw.BLUE_BITS, 8)
-        glfw.window_hint(glfw.ALPHA_BITS, 8)
+        # glfw.window_hint(glfw.RED_BITS, 8)
+        # glfw.window_hint(glfw.GREEN_BITS, 8)
+        # glfw.window_hint(glfw.BLUE_BITS, 8)
+        # glfw.window_hint(glfw.ALPHA_BITS, 8)
 
         glfw.window_hint(glfw.DEPTH_BITS, 24)
-        glfw.window_hint(glfw.STENCIL_BITS, 8)
+        # glfw.window_hint(glfw.STENCIL_BITS, 8)
 
         monitor = None
         if settings.WINDOW.get('fullscreen'):
@@ -92,7 +92,6 @@ class GLTFWindow(Context):
         print("Actual window size:", glfw.get_window_size(self.window))
 
         glfw.make_context_current(self.window)
-        print("Context Version:", GL.glGetString(GL.GL_VERSION).decode())
 
         # The number of screen updates to wait from the time glfwSwapBuffers
         # was called before swapping the buffers and returning
@@ -100,7 +99,15 @@ class GLTFWindow(Context):
             glfw.swap_interval(1)
 
         # Create mederngl context from existing context
-        self.ctx = moderngl.create_context()
+        self.ctx = mgl.create_context()
+        print("Context Version:")
+        print('ModernGL:', mgl.__version__)
+        print('vendor:', self.ctx.info['GL_VENDOR'])
+        print('renderer:', self.ctx.info['GL_RENDERER'])
+        print('version:', self.ctx.info['GL_VERSION'])
+        print('python:', sys.version)
+        print('platform:', sys.platform)
+        print('code:', self.ctx.version_code)
 
     def should_close(self):
         return glfw.window_should_close(self.window)

@@ -3,14 +3,12 @@
 import base64
 import io
 import json
-import numpy
 import os
 import struct
+import numpy
 
-import moderngl as mgl
-from OpenGL import GL
 from PIL import Image
-
+import moderngl as mgl
 from pyrr import matrix44, Matrix44, quaternion
 
 from demosys import context
@@ -27,12 +25,6 @@ from demosys.scene import (
 from .base import SceneLoader
 
 GLTF_MAGIC_HEADER = b'glTF'
-
-# Supported buffer targets
-BUFFER_TARGETS = {
-    34962: "GL_ARRAY_BUFFER",
-    34963: "GL_ELEMENT_ARRAY_BUFFER",
-}
 
 # numpy dtype mapping
 NP_COMPONENT_DTYPE = {
@@ -139,7 +131,7 @@ class GLTF2(SceneLoader):
                 raise ValueError("{} has unsupported version {}".format(self.file, version))
 
             # Total file size including headers
-            struct.unpack('<I', fd.read(4))[0]
+            _ = struct.unpack('<I', fd.read(4))[0]
 
             # Chunk 0 - json
             chunk_0_length = struct.unpack('<I', fd.read(4))[0]
@@ -166,36 +158,38 @@ class GLTF2(SceneLoader):
             self.samplers.append(sampler.create())
 
     def load_textures(self):
-        for texture in self.meta.textures:
-            mt = MaterialTexture()
+        for texture_meta in self.meta.textures:
+            texture = MaterialTexture()
 
-            if texture.source is not None:
-                mt.texture = self.images[texture.source]
+            if texture_meta.source is not None:
+                texture.texture = self.images[texture_meta.source]
 
-            if texture.sampler is not None:
-                mt.sampler = self.samplers[texture.sampler]
+            if texture_meta.sampler is not None:
+                texture.sampler = self.samplers[texture_meta.sampler]
 
-            self.textures.append(mt)
+            self.textures.append(texture)
 
     def load_meshes(self):
         for meta_mesh in self.meta.meshes:
             # Returns a list of meshes
             meshes = meta_mesh.load(self.materials)
             self.meshes.append(meshes)
-            for m in meshes:
-                self.scene.meshes.append(m)
+
+            for mesh in meshes:
+                self.scene.meshes.append(mesh)
 
     def load_materials(self):
         # Create material objects
-        for mat in self.meta.materials:
-            m = Material(mat.name)
-            m.color = mat.baseColorFactor
-            m.double_sided = mat.doubleSided
-            if mat.baseColorTexture is not None:
-                m.mat_texture = self.textures[mat.baseColorTexture['index']]
+        for meta_mat in self.meta.materials:
+            mat = Material(meta_mat.name)
+            mat.color = meta_mat.baseColorFactor
+            mat.double_sided = meta_mat.doubleSided
 
-            self.materials.append(m)
-            self.scene.materials.append(m)
+            if meta_mat.baseColorTexture is not None:
+                mat.mat_texture = self.textures[meta_mat.baseColorTexture['index']]
+
+            self.materials.append(mat)
+            self.scene.materials.append(mat)
 
     def load_nodes(self):
         # Start with root nodes in the scene
@@ -256,7 +250,7 @@ class GLTFMeta:
         self.nodes = [GLTFNode(n) for n in data['nodes']] if data.get('nodes') else []
         self.meshes = [GLTFMesh(m) for m in data['meshes']] if data.get('meshes') else []
         self.cameras = [GLTFCamera(c) for c in data['cameras']] if data.get('cameras') else []
-        self.bufferViews = [GLTFBufferView(i, v) for i, v in enumerate(data['bufferViews'])] \
+        self.buffer_views = [GLTFBufferView(i, v) for i, v in enumerate(data['bufferViews'])] \
             if data.get('bufferViews') else []
         self.buffers = [GLTFBuffer(i, b, self.path) for i, b in enumerate(data['buffers'])] \
             if data.get('buffers') else []
@@ -274,25 +268,25 @@ class GLTFMeta:
 
     def _link_data(self):
         """Add references"""
-        # accessors -> bufferViews -> buffers
+        # accessors -> buffer_views -> buffers
         for acc in self.accessors:
-            acc.bufferView = self.bufferViews[acc.bufferViewId]
+            acc.bufferView = self.buffer_views[acc.bufferViewId]
 
-        for bv in self.bufferViews:
-            bv.buffer = self.buffers[bv.bufferId]
+        for buffer_view in self.buffer_views:
+            buffer_view.buffer = self.buffers[buffer_view.bufferId]
 
         # Link accessors to mesh primitives
         for mesh in self.meshes:
-            for p in mesh.primitives:
-                if getattr(p, "indices", None) is not None:
-                    p.indices = self.accessors[p.indices]
-                for name, value in p.attributes.items():
-                    p.attributes[name] = self.accessors[value]
+            for primitive in mesh.primitives:
+                if getattr(primitive, "indices", None) is not None:
+                    primitive.indices = self.accessors[primitive.indices]
+                for name, value in primitive.attributes.items():
+                    primitive.attributes[name] = self.accessors[value]
 
         # Link buffer views to images
         for image in self.images:
             if image.bufferViewId is not None:
-                image.bufferView = self.bufferViews[image.bufferViewId]
+                image.bufferView = self.buffer_views[image.bufferViewId]
 
     @property
     def version(self):
@@ -329,7 +323,7 @@ class GLTFMeta:
 
             path = os.path.join(self.path, buff.uri)
             if not os.path.exists(path):
-                raise FileNotFoundError("Buffer %s referenced in %s not found", path, self.file)
+                raise FileNotFoundError("Buffer {} referenced in {} not found".format(path, self.file))
 
     def images_exist(self):
         """checks if the images references in textures exist"""
@@ -379,7 +373,6 @@ class GLTFMesh:
             # Index buffer
             component_type, index_vbo = self.load_indices(primitive)
             if index_vbo is not None:
-                # FIXME: Support u1 and u2 buffers
                 vao.index_buffer(context.ctx().buffer(index_vbo.tobytes()),
                                  index_element_size=component_type.size)
 
@@ -422,7 +415,7 @@ class GLTFMesh:
         """Pre-parse buffer mappings for each VBO to detect interleaved data for a primitive"""
         buffer_info = []
         for name, accessor in primitive.attributes.items():
-            info = VBOInfo(*accessor.info(target=GL.GL_ARRAY_BUFFER))
+            info = VBOInfo(*accessor.info())
             info.attributes.append((name, info.components))
 
             if buffer_info and buffer_info[-1].buffer_view == info.buffer_view:
@@ -442,12 +435,11 @@ class GLTFMesh:
 
 class VBOInfo:
     """Resolved data about each VBO"""
-    def __init__(self, buffer=None, buffer_view=None, target=None,
+    def __init__(self, buffer=None, buffer_view=None,
                  byte_length=None, byte_offset=None,
                  component_type=None, components=None, count=None):
         self.buffer = buffer  # reference to the buffer
         self.buffer_view = buffer_view
-        self.target = target
         self.byte_length = byte_length  # Raw byte buffer length
         self.byte_offset = byte_offset  # Raw byte offset
         self.component_type = component_type  # Datatype of each component
@@ -477,7 +469,7 @@ class VBOInfo:
         return dtype, data
 
     def __str__(self):
-        return "VBOInfo<buffer={}, buffer_view={}, target={}, \n" \
+        return "VBOInfo<buffer={}, buffer_view={},\n" \
                "        length={}, offset={}, \n" \
                "        component_type={}, components={}, count={}, \n" \
                "        attribs={}".format(self.buffer.id, self.buffer_view.id, self.target,
@@ -514,13 +506,13 @@ class GLTFAccessor:
             count=self.count * ACCESSOR_TYPE[self.type],
         )
 
-    def info(self, target=None):
+    def info(self):
         """
         Get underlying buffer info for this accessor
         :return: buffer, byte_length, byte_offset, component_type, count
         """
-        buffer, target, byte_length, byte_offset = self.bufferView.info(byte_offset=self.byteOffset, target=target)
-        return buffer, self.bufferView, target, \
+        buffer, byte_length, byte_offset = self.bufferView.info(byte_offset=self.byteOffset)
+        return buffer, self.bufferView, \
             byte_length, byte_offset, \
             self.componentType, ACCESSOR_TYPE[self.type], self.count
 
@@ -534,7 +526,6 @@ class GLTFBufferView:
         self.byteLength = data.get('byteLength')
         self.byteStride = data.get('byteStride') or 0
         # Valid: 34962 (ARRAY_BUFFER) and 34963 (ELEMENT_ARRAY_BUFFER) or None
-        self.target = data.get('target')
 
     def read(self, byte_offset=0, dtype=None, count=0):
         data = self.buffer.read(
@@ -547,14 +538,13 @@ class GLTFBufferView:
     def read_raw(self):
         return self.buffer.read(byte_length=self.byteLength, byte_offset=self.byteOffset)
 
-    def info(self, byte_offset=0, target=None):
+    def info(self, byte_offset=0):
         """
         Get the underlying buffer info
         :param byte_offset: byte offset from accessor
-        :param target: buffer target (elements or data array)
-        :return: buffer, target, byte_length, byte_offset
+        :return: buffer, byte_length, byte_offset
         """
-        return self.buffer, BUFFER_TARGETS[target], self.byteLength, byte_offset + self.byteOffset
+        return self.buffer, self.byteLength, byte_offset + self.byteOffset
 
 
 class GLTFBuffer:
@@ -612,12 +602,15 @@ class GLTFNode:
 
         if self.matrix is None:
             self.matrix = matrix44.create_identity()
+
         if self.translation is not None:
             self.matrix = matrix44.create_from_translation(self.translation)
+
         if self.rotation is not None:
-            q = quaternion.create(self.rotation[0], self.rotation[1], self.rotation[2], self.rotation[3])
-            m = matrix44.create_from_quaternion(q)
-            self.matrix = matrix44.multiply(m, self.matrix)
+            quat = quaternion.create(self.rotation[0], self.rotation[1], self.rotation[2], self.rotation[3])
+            mat = matrix44.create_from_quaternion(quat)
+            self.matrix = matrix44.multiply(mat, self.matrix)
+
         if self.scale is not None:
             self.matrix = matrix44.multiply(matrix44.create_from_scale(self.scale), self.matrix)
 
@@ -689,7 +682,7 @@ class GLTFSampler:
         self.wrapT = data.get('wrapT')
 
     def create(self):
-        return samplers.create_sampler(
+        return samplers.create(
             mipmap=True,
             mag_filter=self.magFilter,
             min_filter=self.minFilter,

@@ -1,3 +1,4 @@
+import moderngl as mgl
 import numpy
 from .base import SceneLoader
 import pywavefront
@@ -37,7 +38,7 @@ class ObjLoader(SceneLoader):
 
             vbo = numpy.array(mat.vertices, dtype=numpy.float32)
 
-            vao = VAO(mat.name, mode=GL.GL_TRIANGLES)
+            vao = VAO(mat.name, mode=mgl.TRIANGLES)
             mesh = Mesh(mat.name)
 
             # Order: T2F, C3F, N3F and V3F
@@ -73,7 +74,7 @@ class ObjLoader(SceneLoader):
             if mat.texture:
                 mesh.material.mat_texture = MaterialTexture(
                     texture=textures.get(mat.texture.path, create=True, mipmap=True),
-                    sampler=samplers.create_sampler(
+                    sampler=samplers.create(
                         wrap_s=GL.GL_CLAMP_TO_EDGE,
                         wrap_t=GL.GL_CLAMP_TO_EDGE,
                         anisotropy=8,

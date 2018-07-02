@@ -15,7 +15,7 @@ def bind_target(func):
             # draw stuff
     """
     def func_wrapper(*args, **kwargs):
-        args[3].bind()
+        args[3].use()
         func(*args, **kwargs)
         args[3].release()
     return func_wrapper

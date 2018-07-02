@@ -1,7 +1,8 @@
+import moderngl as mgl
+
 from demosys.effects import effect
 from demosys.opengl import geometry
 from pyrr import Vector3
-from OpenGL import GL
 import math
 
 
@@ -14,7 +15,7 @@ class SimpleRaymarchEffect(effect.Effect):
 
     @effect.bind_target
     def draw(self, time, frametime, target):
-        GL.glEnable(GL.GL_DEPTH_TEST)
+        self.ctx.enable(mgl.DEPTH_TEST)
 
         # Rotate plane 90 degrees, and move plane back so it will fit correctly on to screen
         backoff = math.tan(math.radians(self.sys_camera.projection.fov / 2)) * (self.window_width / 2)

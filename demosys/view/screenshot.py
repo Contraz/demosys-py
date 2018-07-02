@@ -1,17 +1,16 @@
-from datetime import datetime
 import os
+from datetime import datetime
 
-from OpenGL import GL
 from PIL import Image
 
 from demosys.conf import settings
 from demosys import context
 
 
-def create(format='png', name=None):
+def create(file_format='png', name=None):
     """
     Create a screenshot
-    :param format: formats supported by PIL (png, jpeg etc)
+    :param file_format: formats supported by PIL (png, jpeg etc)
     """
     dest = ""
     if settings.SCREENSHOT_PATH:
@@ -22,17 +21,12 @@ def create(format='png', name=None):
     else:
         print("SCREENSHOT_PATH not defined in settings. Using cwd as fallback.")
 
-    # x, y, width, height = GL.glGetIntegerv(GL.GL_VIEWPORT)
-    x, y, width, height = 0, 0, context.WINDOW.buffer_width, context.WINDOW.buffer_height
-
-    GL.glPixelStorei(GL.GL_PACK_ALIGNMENT, 1)
-
-    data = GL.glReadPixels(x, y, width, height, GL.GL_RGB, GL.GL_UNSIGNED_BYTE)
-
-    image = Image.frombytes("RGB", (width, height), data)
+    fbo = context.ctx().screen
+    image = Image.frombytes("RGB", (fbo.width, fbo.height), fbo.read())
     image = image.transpose(Image.FLIP_TOP_BOTTOM)
+
     if not name:
-        name = "{}.{}".format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S"), format)
+        name = "{}.{}".format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f"), file_format)
 
     print("Creating screenshot:", name)
-    image.save(os.path.join(dest, name), format=format)
+    image.save(os.path.join(dest, name), format=file_format)
