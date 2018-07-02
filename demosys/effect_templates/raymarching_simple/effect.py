@@ -1,7 +1,7 @@
 import moderngl as mgl
 
 from demosys.effects import effect
-from demosys.opengl import geometry
+from demosys import geometry
 from pyrr import Vector3
 import math
 
@@ -9,7 +9,8 @@ import math
 class SimpleRaymarchEffect(effect.Effect):
     """Generated raymarching effect"""
     def __init__(self):
-        self.shader = self.get_shader("raymarching_simple.glsl")
+        self.shader = self.get_shader("raymarching_simple.glsl", local=True)
+
         # create plane to fit whole screen
         self.plane = geometry.plane.plane_xz(size=(self.window_width, self.window_height), resolution=(10, 10))
 
@@ -34,21 +35,22 @@ class SimpleRaymarchEffect(effect.Effect):
         color = Vector3([0.66, 0.96, 0.26])
 
         # Draw the plane
-        with self.plane.bind(self.shader) as shader:
-            # For vertex shader
-            shader.uniform_mat4("m_proj", self.sys_camera.projection.matrix)
-            shader.uniform_mat4("m_mv", m_mv)
 
-            # For fragment shader
-            shader.uniform_1f("fov", fov)
-            shader.uniform_1f("alpha", alpha)
-            shader.uniform_1f("modifier", modifier)
+        # For vertex shader
+        self.shader.uniform("m_proj", self.sys_camera.projection.tobytes())
+        self.shader.uniform("m_mv", m_mv.astype('f4').tobytes())
 
-            shader.uniform_3f("cPosition", cPosition.x, cPosition.y, cPosition.z)
-            shader.uniform_3f("cLookAt", cLookAt.x, cLookAt.y, cLookAt.z)
-            shader.uniform_3f("lPosition", lPosition.x, lPosition.y, lPosition.z)
-            shader.uniform_1f("lIntensity", lItensity)
-            shader.uniform_3f("color", color.x, color.y, color.z)
+        # For fragment shader
+        self.shader.uniform("fov", fov)
+        self.shader.uniform("alpha", alpha)
+        self.shader.uniform("modifier", modifier)
 
-            shader.uniform_2f("resolution", self.window_width, self.window_height)
-        self.plane.draw()
+        self.shader.uniform("cPosition", cPosition.astype('f4').tobytes())
+        self.shader.uniform("cLookAt", cLookAt.astype('f4').tobytes())
+        self.shader.uniform("lPosition", lPosition.astype('f4').tobytes())
+        self.shader.uniform("lIntensity", lItensity)
+        self.shader.uniform("color", color.astype('f4').tobytes())
+
+        self.shader.uniform("resolution", (self.window_width, self.window_height))
+
+        self.plane.draw(self.shader)
