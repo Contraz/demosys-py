@@ -55,8 +55,8 @@ class FBO:
         instance.depth_buffer = depth_buffer
 
         instance.fbo = context.ctx().framebuffer(
-            [b.mgl_instance for b in color_buffers],
-            depth_buffer.mgl_instance
+            color_attachments=[b.mgl_instance for b in color_buffers],
+            depth_attachment=depth_buffer.mgl_instance if depth_buffer is not None else None,
         )
 
         return instance
@@ -86,8 +86,8 @@ class FBO:
             instance.depth_buffer = DepthTexture(size)
 
         instance.fbo = context.ctx().framebuffer(
-            [b.mgl_instance for b in instance.color_buffers],
-            instance.depth_buffer.mgl_instance if instance.depth_buffer is not None else None
+            color_attachments=[b.mgl_instance for b in instance.color_buffers],
+            depth_attachment=instance.depth_buffer.mgl_instance if instance.depth_buffer is not None else None
         )
 
         return instance
