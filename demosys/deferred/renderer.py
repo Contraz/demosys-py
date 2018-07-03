@@ -31,6 +31,7 @@ class DeferredRenderer:
         self.width = width
         self.height = height
         self.size = (width, height)
+        print(self.size)
         self.ctx = context.ctx()
 
         # FBOs
@@ -55,7 +56,7 @@ class DeferredRenderer:
         if not self.lightbuffer:
             self.lightbuffer = FBO.create_from_textures(
                 [Texture2D.create(self.size, 4)],
-                depth_buffer=depth_buffer,
+                # depth_buffer=depth_buffer,
             )
 
         # Unit cube for point lights (cube with radius 1.0)
@@ -77,6 +78,8 @@ class DeferredRenderer:
         :param near: Projection near value
         :param far: Projection far value
         """
+        self.ctx.disable(mgl.DEPTH_TEST)
+
         self.gbuffer.draw_color_layer(layer=0, pos=(0.0, 0.0), scale=(0.25, 0.25))
         self.gbuffer.draw_color_layer(layer=1, pos=(0.5, 0.0), scale=(0.25, 0.25))
         self.gbuffer.draw_depth(near, far, pos=(1.0, 0.0), scale=(0.25, 0.25))
@@ -88,8 +91,8 @@ class DeferredRenderer:
 
     def render_lights(self, camera_matrix, projection):
         """Render light volumes"""
-        # Disable culling so lights can be rendered when inside volumes
-        self.ctx.disable(mgl.CULL_FACE)
+        # Draw light volumes from the inside
+        self.ctx.enable(mgl.CULL_FACE)
         self.ctx.front_face = 'cw'
 
         # No depth testing
@@ -128,7 +131,7 @@ class DeferredRenderer:
             m_mv = matrix44.multiply(light.matrix, camera_matrix)
             light_size = light.radius
             self.debug_shader.uniform("m_proj", projection.tobytes())
-            self.debug_shader.uniform("m_mv", m_mv.astype('f4'))
+            self.debug_shader.uniform("m_mv", m_mv.astype('f4').tobytes())
             self.debug_shader.uniform("size", light_size)
             self.unit_cube.draw(self.debug_shader, mode=mgl.LINE_STRIP)
 
