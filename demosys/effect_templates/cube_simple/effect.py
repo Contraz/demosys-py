@@ -1,7 +1,6 @@
 import moderngl as mgl
 from demosys.effects import effect
 from demosys import geometry
-from OpenGL import GL
 # from pyrr import matrix44
 
 
