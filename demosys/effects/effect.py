@@ -1,6 +1,7 @@
 import moderngl as mgl  # noqa
 import os
 from demosys import resources
+from demosys.scene import camera  # noqa
 from pyrr import matrix44, Matrix33, Matrix44, Vector3
 
 
@@ -62,11 +63,8 @@ class Effect:
     window_height = 0
     window_aspect = 0
 
-    # ModernGL context
     ctx = None  # type: mgl.Context
-
-    # System camera
-    sys_camera = None
+    sys_camera = None  # type: camera.SystemCamera
 
     @property
     def effect_name(self):
