@@ -3,6 +3,7 @@ from typing import Tuple
 from PIL import Image
 
 from demosys import context
+from demosys.opengl import samplers
 
 
 class BaseTexture:
@@ -200,6 +201,7 @@ class DepthTexture(BaseTexture):
     # Class attributes for drawing the texture
     quad = None
     shader = None
+    sampler = None
 
     def __init__(self, size, data=None, samples=0, alignment=8):
         """
@@ -212,6 +214,7 @@ class DepthTexture(BaseTexture):
         """
         super().__init__()
         self._texture = self.ctx.depth_texture(size, data=data, samples=samples, alignment=alignment)
+        self._texture.filter = mgl.LINEAR, mgl.LINEAR
         _init_depth_texture_draw()
 
     def draw(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
@@ -226,10 +229,12 @@ class DepthTexture(BaseTexture):
         self.shader.uniform("scale", (scale[0], scale[1]))
         self.shader.uniform("near", near)
         self.shader.uniform("far", far)
+        self.sampler.use(location=0)
         self._texture.use(location=0)
         self.shader.uniform("texture0", 0)
 
         self.quad.draw(self.shader)
+        self.sampler.release()
 
 
 def _init_texture2d_draw():
@@ -303,7 +308,7 @@ def _init_depth_texture_draw():
         "uniform float near;"
         "uniform float far;"
         "void main() {",
-        "    float z = texture(texture0, uv).x;"
+        "    float z = texture(texture0, uv).r;"
         "    float d = (2.0 * near) / (far + near - z * (far - near));"
         "    out_color = vec4(d);",
         "}",
@@ -313,4 +318,9 @@ def _init_depth_texture_draw():
     program.set_source("\n".join(src))
     program.prepare()
 
+    DepthTexture.sampler = samplers.create(
+        min_filter=mgl.LINEAR,
+        mag_filter=mgl.LINEAR,
+        texture_compare_mode=False,
+    )
     DepthTexture.shader = program

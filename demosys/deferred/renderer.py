@@ -1,8 +1,9 @@
 import moderngl as mgl
-
 from pyrr import matrix44
+
 from demosys.opengl import FBO
 from demosys.opengl import Texture2D, DepthTexture
+from demosys.opengl import samplers
 from demosys import resources
 from demosys import geometry
 from demosys import context
@@ -28,11 +29,15 @@ class PointLight:
 class DeferredRenderer:
 
     def __init__(self, width, height, gbuffer=None, lightbuffer=None):
+        self.ctx = context.ctx()
+
         self.width = width
         self.height = height
         self.size = (width, height)
-        print(self.size)
-        self.ctx = context.ctx()
+        self.depth_sampler = samplers.create(
+            texture_compare_mode=False,
+            min_filter=mgl.LINEAR, mag_filter=mgl.LINEAR
+        )
 
         # FBOs
         self.gbuffer = gbuffer
@@ -112,12 +117,15 @@ class DeferredRenderer:
                 self.point_light_shader.uniform("m_light", m_light.astype('f4').tobytes())
                 self.gbuffer.color_buffers[1].use(location=0)
                 self.point_light_shader.uniform("g_normal", 0)
+                self.depth_sampler.use(location=1)
                 self.gbuffer.depth_buffer.use(location=1)
                 self.point_light_shader.uniform("g_depth", 1)
                 self.point_light_shader.uniform("screensize", (self.width, self.height))
                 self.point_light_shader.uniform("proj_const", projection.projection_constants)
                 self.point_light_shader.uniform("radius", light_size)
                 self.unit_cube.draw(self.point_light_shader)
+
+                self.depth_sampler.release()
 
         self.ctx.disable(mgl.BLEND)
         self.ctx.disable(mgl.CULL_FACE)
