@@ -2,10 +2,10 @@
 Simple cached factory for creating samplers
 """
 import OpenGL
+OpenGL.ERROR_CHECKING = False  # noqa
+
 from OpenGL import GL
 from OpenGL.GL.EXT import texture_filter_anisotropic as tfa
-
-OpenGL.ERROR_CHECKING = False
 
 
 def create(mipmap=None, anisotropy=None,
