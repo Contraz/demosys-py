@@ -9,9 +9,11 @@ class BaseTexture:
     """
     Wraps the basic functionality of the ModernGL methods
     """
+    ctx = None  # type: mgl.Context
 
     def __init__(self):
         self._texture = None
+        BaseTexture.ctx = context.ctx()
 
     def use(self, location=0):
         """
@@ -44,7 +46,11 @@ class BaseTexture:
     @property
     def depth(self) -> bool:
         """Is this a depth texture?"""
-        return self.depth
+        return self._texture.depth
+
+    @property
+    def swizzle(self):
+        return self._texture.swizzle
 
     @property
     def mgl_instance(self):
@@ -114,9 +120,9 @@ class Texture2D(BaseTexture):
 
         :return: Texture object
         """
-        t = Texture2D(path="dynamic", mipmap=mipmap)
+        texture = Texture2D(path="dynamic", mipmap=mipmap)
 
-        t._texture = context.ctx().texture(
+        texture._texture = cls.ctx.texture(
             size,
             components,
             data=data,
@@ -126,9 +132,9 @@ class Texture2D(BaseTexture):
         )
 
         if mipmap:
-            t.build_mipmaps()
+            texture.build_mipmaps()
 
-        return t
+        return texture
 
     def build_mipmaps(self, base=0, max_level=1000):
         """
@@ -150,10 +156,10 @@ class Texture2D(BaseTexture):
         :param image: The PIL/Pillow image object (Can be None)
         :return: Texture object
         """
-        t = Texture2D(path=path, **kwargs)
+        texture = Texture2D(path=path, **kwargs)
         if image:
-            t.set_image(image)
-        return t
+            texture.set_image(image)
+        return texture
 
     def set_image(self, image, flip=True):
         """
@@ -165,7 +171,7 @@ class Texture2D(BaseTexture):
         if flip:
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
-        self._texture = context.ctx().texture(
+        self._texture = self.ctx.texture(
             image.size,
             4,
             image.convert("RGBA").tobytes(),
@@ -195,7 +201,7 @@ class DepthTexture(BaseTexture):
     quad = None
     shader = None
 
-    def __init__(self, size, data=None, samples=0, alignment=4):
+    def __init__(self, size, data=None, samples=0, alignment=8):
         """
         Create a depth texture
 
@@ -205,7 +211,7 @@ class DepthTexture(BaseTexture):
         :param alignment: The byte alignment 1, 2, 4 or 8.
         """
         super().__init__()
-        self._texture = context.ctx().depth_texture(size, data=data, samples=samples, alignment=alignment)
+        self._texture = self.ctx.depth_texture(size, data=data, samples=samples, alignment=alignment)
         _init_depth_texture_draw()
 
     def draw(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
