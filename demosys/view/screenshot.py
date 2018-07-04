@@ -7,6 +7,12 @@ from demosys.conf import settings
 from demosys import context
 
 
+class Config:
+    """Container for screenshot target"""
+    target = None
+    alignment = 1
+
+
 def create(file_format='png', name=None):
     """
     Create a screenshot
@@ -21,12 +27,18 @@ def create(file_format='png', name=None):
     else:
         print("SCREENSHOT_PATH not defined in settings. Using cwd as fallback.")
 
-    fbo = context.ctx().screen
-    image = Image.frombytes("RGB", (fbo.width, fbo.height), fbo.read())
+    if not Config.target:
+        Config.target = context.ctx().screen
+
+    image = Image.frombytes(
+        "RGB",
+        (Config.target.width, Config.target.height), Config.target.read(alignment=Config.alignment)
+    )
     image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
     if not name:
         name = "{}.{}".format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f"), file_format)
 
-    print("Creating screenshot:", name)
-    image.save(os.path.join(dest, name), format=file_format)
+    dest = os.path.join(dest, name)
+    print("Creating screenshot:", dest)
+    image.save(dest, format=file_format)
