@@ -5,23 +5,11 @@ demosys-py documentation
 demosys-py
 ==========
 
-A python 3 implementation of a C++ project used to create and
-prototype demos (see
-`demoscene <https://en.wikipedia.org/wiki/Demoscene>`__) in OpenGL. The
-design of this version is heavily inspired by the
-`Django <https://www.djangoproject.com/>`__ project.
-
-This is a cross platform project that should work on OS X, Linux and Windows.
+A Python 3 cross platform modern OpenGL 3.3+ core framework based on `ModernGL <https://github.com/cprogrammer1994/ModernGL>`_
 
 +-----------------+-----------------+
 | |screenshot1|   | |screenshot2|   |
 +-----------------+-----------------+
-
-This was originally made for for non-interactive real time graphics
-combined with music ("real time music videos"). It's made for people who
-enjoy playing around with modern OpenGL without having to spend lots of
-time creating all the tooling to get things up and running.
-
 
 .. toctree::
    :maxdepth: 2
