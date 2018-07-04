@@ -12,9 +12,10 @@ from demosys import context
 class PointLight:
     """A point light and its properties"""
     def __init__(self, position, radius):
-        self._position = position
-        self.radius = radius
         self.matrix = None
+        self._position = position
+        self.position = position
+        self.radius = radius
 
     @property
     def position(self):
