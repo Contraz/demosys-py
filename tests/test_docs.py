@@ -14,7 +14,7 @@ os.environ['DEMOSYS_SETTINGS_MODULE'] = 'tests.settings'
 
 import demosys
 from demosys import effects
-
+from demosys import opengl
 
 class TestCase(unittest.TestCase):
 
@@ -38,9 +38,16 @@ class TestCase(unittest.TestCase):
             sig = re.sub(r'-> \'(\w+)\'', r'-> \1', sig)
             self.assertEqual(docsig, sig, msg=filename + '::' + method)
 
-    def test_context_docs(self):
-        self.validate('reference/effect.rst', effects, 'Effect', [])
+    def test_effect_docs(self):
+        self.validate(os.path.join('reference', 'effect.rst'), effects, 'Effect', [])
 
+    def test_texture2d_docs(self):
+        self.validate(
+            os.path.join('reference', 'texture2d.rst'),
+            opengl,
+            'Texture2D',
+            ['quad', 'shader']
+        )
 
 if __name__ == '__main__':
     unittest.main()

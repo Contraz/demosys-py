@@ -5,3 +5,4 @@ Reference
     :maxdepth: 1
 
     effect.rst
+    texture2d.rst

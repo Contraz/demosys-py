@@ -10,11 +10,9 @@ class BaseTexture:
     """
     Wraps the basic functionality of the ModernGL methods
     """
-    ctx = None  # type: mgl.Context
-
     def __init__(self):
-        self._texture = None
-        BaseTexture.ctx = context.ctx()
+        self.mglo = None
+        BaseTexture._ctx = context.ctx()
 
     def use(self, location=0):
         """
@@ -22,40 +20,41 @@ class BaseTexture:
 
         :param location: The texture location. (GL_TEXTURE0 + location)
         """
-        self._texture.use(location)
+        self.mglo.use(location)
+
+    @property
+    def ctx(self) -> mgl.Context:
+        """ModernGL context"""
+        return self._ctx
 
     @property
     def size(self) -> Tuple:
         """The size of the texture"""
-        return self._texture.size
+        return self.mglo.size
 
     @property
     def width(self) -> int:
         """Width of the texture"""
-        return self._texture.width
+        return self.mglo.width
 
     @property
     def height(self) -> int:
         """Height of the texture"""
-        return self._texture.height
+        return self.mglo.height
 
     @property
     def dtype(self) -> str:
         """The data type of the texture"""
-        return self._texture.dtype
+        return self.mglo.dtype
 
     @property
     def depth(self) -> bool:
         """Is this a depth texture?"""
-        return self._texture.depth
+        return self.mglo.depth
 
     @property
     def swizzle(self):
-        return self._texture.swizzle
-
-    @property
-    def mgl_instance(self):
-        return self._texture
+        return self.mglo.swizzle
 
     def read(self, level: int=0, alignment: int=1) -> bytes:
         """
@@ -65,7 +64,7 @@ class BaseTexture:
         :param alignment: The byte alignment of the pixels.
         :return: bytes
         """
-        return self._texture.read(level=level, alignment=alignment)
+        return self.mglo.read(level=level, alignment=alignment)
 
     def read_into(self, buffer: bytearray, level: int=0, alignment: int=1, write_offset: int=0):
         """
@@ -76,7 +75,7 @@ class BaseTexture:
         :param alignment: (int) The byte alignment of the pixels.
         :param write_offset: (int) The write offset.
         """
-        self._texture.read_into(buffer, level=level, alignment=alignment, write_offset=write_offset)
+        self.mglo.read_into(buffer, level=level, alignment=alignment, write_offset=write_offset)
 
     def write(self, data: bytes, viewport=None, level: int=0, alignment: int=1):
         """
@@ -87,7 +86,7 @@ class BaseTexture:
         :param level: (int) – The mipmap level.
         :param alignment: (int) – The byte alignment of the pixels.
         """
-        self._texture.write(data, viewport=viewport, level=level, alignment=alignment)
+        self.mglo.write(data, viewport=viewport, level=level, alignment=alignment)
 
 
 class Texture2D(BaseTexture):
@@ -119,11 +118,18 @@ class Texture2D(BaseTexture):
         Creates a 2d texture.
         All parameters are passed on the texture initializer.
 
+        :param size: (tuple) Width and height of the texture
+        :param components: Number of components
+        :param data: Buffer data for the texture
+        :param samples: Number of samples when using multisaple texture
+        :param alignment: Data alignment (1, 2, 4 or 8)
+        :param dtype: Datatype for each component
+        :param mipmap: Generate mipmaps
         :return: Texture object
         """
         texture = Texture2D(path="dynamic", mipmap=mipmap)
 
-        texture._texture = cls.ctx.texture(
+        texture.mglo = cls.ctx.texture(
             size,
             components,
             data=data,
@@ -144,8 +150,8 @@ class Texture2D(BaseTexture):
         :param base: Level to build from
         :param max_level: Max levels
         """
-        self._texture.build_mipmaps(base=base, max_level=max_level)
-        self._texture.filter = (mgl.LINEAR_MIPMAP_LINEAR, mgl.LINEAR)
+        self.mglo.build_mipmaps(base=base, max_level=max_level)
+        self.mglo.filter = (mgl.LINEAR_MIPMAP_LINEAR, mgl.LINEAR)
 
     @classmethod
     def from_image(cls, path, image=None, **kwargs):
@@ -172,7 +178,7 @@ class Texture2D(BaseTexture):
         if flip:
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
-        self._texture = self.ctx.texture(
+        self.mglo = self.ctx.texture(
             image.size,
             4,
             image.convert("RGBA").tobytes(),
@@ -184,7 +190,7 @@ class Texture2D(BaseTexture):
     def draw(self, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
         Draw texture
-        :param shader: override shader
+
         :param pos: (tuple) offset x, y
         :param scale: (tuple) scale x, y
         """
@@ -213,8 +219,8 @@ class DepthTexture(BaseTexture):
         :param alignment: The byte alignment 1, 2, 4 or 8.
         """
         super().__init__()
-        self._texture = self.ctx.depth_texture(size, data=data, samples=samples, alignment=alignment)
-        self._texture.filter = mgl.LINEAR, mgl.LINEAR
+        self.mglo = self.ctx.depth_texture(size, data=data, samples=samples, alignment=alignment)
+        self.mglo.filter = mgl.LINEAR, mgl.LINEAR
         _init_depth_texture_draw()
 
     def draw(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
@@ -230,7 +236,7 @@ class DepthTexture(BaseTexture):
         self.shader.uniform("near", near)
         self.shader.uniform("far", far)
         self.sampler.use(location=0)
-        self._texture.use(location=0)
+        self.use(location=0)
         self.shader.uniform("texture0", 0)
 
         self.quad.draw(self.shader)
