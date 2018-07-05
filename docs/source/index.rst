@@ -16,17 +16,8 @@ A Python 3 cross platform modern OpenGL 3.3+ core framework based on `ModernGL <
    :caption: Contents:
 
    quickstart
-   controls
-   settings
-   project
-   effects
-   opengl
-   timers
-   effectmanagers
-   geometry
-   audio
-   pyrrmath
-   performance
+   reference/index.rst
+
 
 Indices and tables
 ==================
