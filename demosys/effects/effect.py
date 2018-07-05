@@ -1,8 +1,12 @@
-import moderngl as mgl  # noqa
 import os
+from typing import Tuple
+from functools import wraps
+
+import moderngl as mgl  # noqa
+from pyrr import matrix44, Matrix33, Matrix44, Vector3
+
 from demosys import resources
 from demosys.scene import camera  # noqa
-from pyrr import matrix44, Matrix33, Matrix44, Vector3
 
 
 def bind_target(func):
@@ -28,6 +32,7 @@ def local_path(func):
     on the `local` parameter.
     If `local` is `True` we prepend the current effect name to the path.
     """
+    @wraps(func)
     def local_wrapper(*args, **kwargs):
         use_local = kwargs.get('local')
 
@@ -46,37 +51,75 @@ def local_path(func):
 
 
 class Effect:
-    """Effect base class.
+    """
+    Effect base class.
 
     The following attributes are injected by demosys before initialization:
 
-    * window_width (int): Window width in pixels
-    * window_height (int): Window height in pixels
-    * window_aspect (float): Aspect ratio of the resolution
-    * sys_camera (demosys.scene.camera.Camera): The system camera responding to inputs
+    * ``window_width`` (int): Window width in pixels
+    * ``window_height`` (int): Window height in pixels
+    * ``window_aspect`` (float): Aspect ratio of the resolution
+    * ``sys_camera`` (demosys.scene.camera.Camera): The system camera responding to inputs
     """
     # Full python path to the effect (set per instance)
-    name = ""
+    _name = ""
 
     # Window properties set by controller on initialization (class vars)
-    window_width = 0
-    window_height = 0
-    window_aspect = 0
+    _window_width = 0
+    _window_height = 0
+    _window_aspect = 0
 
-    ctx = None  # type: mgl.Context
-    sys_camera = None  # type: camera.SystemCamera
+    _ctx = None  # type: mgl.Context
+    _sys_camera = None  # type: camera.SystemCamera
 
     @property
-    def effect_name(self):
+    def name(self) -> str:
+        """Full python path to the effect"""
+        return self._name
+
+    @property
+    def window_width(self) -> int:
+        """Window width in pixels"""
+        return self._window_width
+
+    @property
+    def window_height(self) -> int:
+        """Window height in pixels"""
+        return self._window_height
+
+    @property
+    def window_size(self) -> Tuple[int, int]:
+        """Window size tuple (width, height)"""
+        return self._window_width, self._window_height
+
+    @property
+    def window_aspect(self) -> float:
+        """Aspect ratio of the window"""
+        return self._window_aspect
+
+    @property
+    def ctx(self) -> mgl.Context:
+        """ModernGL context"""
+        return self._ctx
+
+    @property
+    def sys_camera(self) -> camera.SystemCamera:
+        """The system camera responding to input"""
+        return self._sys_camera
+
+    @property
+    def effect_name(self) -> str:
         """Returns the package name for the effect"""
         return self.name.split('.')[-1]
 
     # Methods to override
     def draw(self, time, frametime, target):
-        """Draw function called by the system every frame.
+        """
+        Draw function called by the system every frame when the effect is active.
+        You are supposed to override this method.
 
         :param time: The current time in seconds (float)
-        :param frametime: The number of milliseconds the frame is expected to take
+        :param frametime: The time the previous frame used to render in seconds (float)
         :param target: The target FBO for the effect
         """
         raise NotImplementedError("draw() is not implemented")
@@ -91,7 +134,7 @@ class Effect:
         is returned that will be populated later.
 
         :param path: Path to the shader in the virtual shader directory
-        :param local: Auto-prepend the local effect path
+        :param local: Auto-prepend the effect package name to the path
         :return: Shader object
         """
         return resources.shaders.get(path, create=True)
@@ -99,12 +142,12 @@ class Effect:
     @local_path
     def get_texture(self, path, local=False, **kwargs):
         """
-        Get a shader or schedule the texture for loading.
+        Get a texture or schedule the texture for loading.
         If the resource is not loaded yet, an empty texture object
         is returned that will be populated later.
 
         :param path: Path to the texture in the virtual texture directory
-        :param local: Auto-prepend the local effect path
+        :param local: Auto-prepend the effect package name to the path
         :return: Texture object
         """
         return resources.textures.get(path, create=True, **kwargs)
@@ -117,7 +160,7 @@ class Effect:
         is returned that will be populated later.
 
         :param name: The rocket track name
-        :param local: Auto-prepend the local effect path
+        :param local: Auto-prepend the effect package name to the path
         :return: Track object
         """
         return resources.tracks.get(name)
@@ -127,7 +170,7 @@ class Effect:
         """
         Get or create a scene.
         :param path: Path to the scene
-        :param local: Auto-prepend the local effect path
+        :param local: Auto-prepend the effect package name to the path
         :param kwargs: Generic paramters passed to scene loaders
         :return: Scene object
         """
