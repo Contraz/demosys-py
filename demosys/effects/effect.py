@@ -109,7 +109,7 @@ class Effect:
 
     @property
     def effect_name(self) -> str:
-        """Returns the package name for the effect"""
+        """Package name for the effect"""
         return self.name.split('.')[-1]
 
     # Methods to override
