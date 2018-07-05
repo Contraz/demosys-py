@@ -39,15 +39,15 @@ def run(manager=None):
     print("Loader started at", glfw.get_time())
 
     # Inject attributes into the base Effect class
-    Effect.window_width = context.WINDOW.buffer_width
-    Effect.window_height = context.WINDOW.buffer_height
-    Effect.window_aspect = context.WINDOW.aspect_ratio
-    Effect.ctx = context.ctx()
+    Effect._window_width = context.WINDOW.buffer_width
+    Effect._window_height = context.WINDOW.buffer_height
+    Effect._window_aspect = context.WINDOW.aspect_ratio
+    Effect._ctx = context.ctx()
 
     # Set up the default system camera
     global CAMERA
     CAMERA = camera.SystemCamera(aspect=context.WINDOW.aspect_ratio, fov=60.0, near=1, far=1000)
-    Effect.sys_camera = CAMERA
+    Effect._sys_camera = CAMERA
 
     # Initialize Effects
     if not manager.pre_load():
