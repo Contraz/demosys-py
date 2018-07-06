@@ -4,11 +4,6 @@ Effect
 .. py:module:: demosys
 .. py:currentmodule:: demosys.effects
 
-Class
------
-
-.. autoclass:: Effect
-
 Draw Methods
 ------------
 
@@ -29,8 +24,8 @@ Utility Methods
 .. automethod:: Effect.create_transformation(rotation=None, translation=None)
 .. automethod:: Effect.create_normal_matrix(modelview)
 
-Atrributes
-----------
+Atttributes
+-----------
 
 .. autoattribute:: Effect.ctx
 .. autoattribute:: Effect.sys_camera
