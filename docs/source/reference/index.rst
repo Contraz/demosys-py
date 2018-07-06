@@ -6,3 +6,4 @@ Reference
 
     effect.rst
     texture2d.rst
+    fbo.rst

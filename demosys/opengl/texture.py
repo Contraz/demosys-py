@@ -12,7 +12,7 @@ class BaseTexture:
     """
     def __init__(self):
         self.mglo = None
-        BaseTexture._ctx = context.ctx()
+        self._ctx = context.ctx()
 
     def use(self, location=0):
         """
@@ -129,7 +129,7 @@ class Texture2D(BaseTexture):
         """
         texture = Texture2D(path="dynamic", mipmap=mipmap)
 
-        texture.mglo = cls.ctx.texture(
+        texture.mglo = texture.ctx.texture(
             size,
             components,
             data=data,

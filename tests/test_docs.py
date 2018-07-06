@@ -33,21 +33,26 @@ class TestCase(unittest.TestCase):
         for method, docsig in methods:
             classname, methodname = method.split('.')
             sig = str(inspect.signature(getattr(getattr(module, classname), methodname)))
-            sig = sig.replace('self, ', '').replace('moderngl.', '').replace('typing.', '').replace(' -> None', '')
+            sig = sig.replace('self, ', '').replace('typing.', '').replace(' -> None', '')
+            sig = sig.replace('demosys.', '').replace('opengl.', '').replace('texture.', '')
             sig = sig.replace('(self)', '()').replace(', *,', ',').replace('(*, ', '(')
             sig = re.sub(r'-> \'(\w+)\'', r'-> \1', sig)
             self.assertEqual(docsig, sig, msg=filename + '::' + method)
 
     def test_effect_docs(self):
-        self.validate(os.path.join('reference', 'effect.rst'), effects, 'Effect', [])
+        self.validate(
+            os.path.join('reference', 'effect.rst'),
+            effects, 'Effect', [])
 
     def test_texture2d_docs(self):
         self.validate(
             os.path.join('reference', 'texture2d.rst'),
-            opengl,
-            'Texture2D',
-            ['quad', 'shader']
-        )
+            opengl, 'Texture2D', ['quad', 'shader'])
+
+    def test(self):
+        self.validate(
+            os.path.join('reference', 'fbo.rst'),
+            opengl, 'FBO', [])
 
 if __name__ == '__main__':
     unittest.main()

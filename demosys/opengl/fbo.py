@@ -33,7 +33,7 @@ class WindowFBO:
 
 class FBO:
     """Frame buffer object"""
-    stack = []
+    _stack = []
 
     def __init__(self):
         self.color_buffers = []
@@ -41,7 +41,7 @@ class FBO:
         self.fbo = None
 
     @staticmethod
-    def create_from_textures(color_buffers: List[Texture2D], depth_buffer: DepthTexture = None):
+    def create_from_textures(color_buffers: List[Texture2D], depth_buffer: DepthTexture = None) -> 'FBO':
         """
         Create FBO from existing textures
 
@@ -62,7 +62,7 @@ class FBO:
         return instance
 
     @staticmethod
-    def create(size, components=4, depth=False, dtype='f1', layers=1):
+    def create(size, components=4, depth=False, dtype='f1', layers=1) -> 'FBO':
         """
         Create a single or multi layer FBO
 
@@ -154,9 +154,9 @@ class FBO:
         if not stack:
             return
 
-        FBO.stack.append(self)
+        FBO._stack.append(self)
 
-        if len(FBO.stack) > 8:
+        if len(FBO._stack) > 8:
             raise FBOError("FBO stack overflow. You probably forgot to release a bind somewhere.")
 
     def release(self, stack=True):
@@ -170,18 +170,18 @@ class FBO:
             return
 
         # Are we trying to release an FBO that is not bound?
-        if not FBO.stack:
+        if not FBO._stack:
             raise FBOError("FBO stack is already empty. You are probably releasing a FBO twice or forgot to bind.")
 
-        fbo_out = FBO.stack.pop()
+        fbo_out = FBO._stack.pop()
 
         # Make sure we released this FBO and not some other random one
         if fbo_out != self:
             raise FBOError("Incorrect FBO release order")
 
         # Find the parent fbo
-        if FBO.stack:
-            parent = FBO.stack[-1]
+        if FBO._stack:
+            parent = FBO._stack[-1]
         else:
             parent = WINDOW_FBO
 
@@ -191,7 +191,7 @@ class FBO:
 
     def clear(self, red=0.0, green=0.0, blue=0.0, alpha=0.0, depth=1.0):
         """
-        Clears the FBO using ``glClear``.
+        Clears all FBO layers including depth
         """
         self.use()
         self.fbo.clear(red=red, green=green, blue=blue, alpha=alpha, depth=depth)
@@ -200,6 +200,7 @@ class FBO:
     def draw_color_layer(self, layer=0, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
         Draw a color layer in the FBO.
+
         :param layer: Layer ID
         :param pos: (tuple) offset x, y
         :param scale: (tuple) scale x, y
