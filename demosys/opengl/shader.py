@@ -99,7 +99,7 @@ class ShaderProgram:
         :param source: (string) Vertex shader source
         """
         self._vertex_source = ShaderSource(VERTEX_SHADER, self.name, source)
-    
+
     def set_fragment_source(self, source: str):
         """
         Set the fragment shader source
