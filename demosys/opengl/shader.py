@@ -30,9 +30,9 @@ class ShaderProgram:
         else:
             self.name = name
 
-        self.vertex_source = None
-        self.fragment_source = None
-        self.geometry_source = None
+        self._vertex_source = None
+        self._fragment_source = None
+        self._geometry_source = None
 
         self.program = None
         # Shader inputs
@@ -45,6 +45,11 @@ class ShaderProgram:
         self.attribute_key = None
         # Unique key for VAO instances containing shader id and attributes
         self.vao_key = None
+
+    @property
+    def mglo(self):
+        """The ModernGL Program object"""
+        return self.program
 
     def uniform(self, name, value=None):
         """
@@ -93,7 +98,7 @@ class ShaderProgram:
 
         :param source: (string) Vertex shader source
         """
-        self.vertex_source = ShaderSource(VERTEX_SHADER, self.name, source)
+        self._vertex_source = ShaderSource(VERTEX_SHADER, self.name, source)
     
     def set_fragment_source(self, source: str):
         """
@@ -101,7 +106,7 @@ class ShaderProgram:
 
         :param source: (string) Fragment shader source
         """
-        self.fragment_source = ShaderSource(FRAGMENT_SHADER, self.name, source)
+        self._fragment_source = ShaderSource(FRAGMENT_SHADER, self.name, source)
 
     def set_geometry_source(self, source: str):
         """
@@ -109,7 +114,7 @@ class ShaderProgram:
 
         :param source: (string) Geometry shader source
         """
-        self.geometry_source = ShaderSource(GEOMETRY_SHADER, self.name, source)
+        self._geometry_source = ShaderSource(GEOMETRY_SHADER, self.name, source)
 
     def prepare(self, reload=False):
         """
@@ -118,22 +123,22 @@ class ShaderProgram:
 
         :param reload: (boolean) Are we reloading this shader?
         """
-        params = {'vertex_shader': self.vertex_source.source}
+        params = {'vertex_shader': self._vertex_source.source}
 
-        if self.geometry_source:
-            params.update({'geometry_shader': self.geometry_source.source})
+        if self._geometry_source:
+            params.update({'geometry_shader': self._geometry_source.source})
 
-        if self.fragment_source:
-            params.update({'fragment_shader': self.fragment_source.source})
+        if self._fragment_source:
+            params.update({'fragment_shader': self._fragment_source.source})
 
         # If no fragment shader is present we are doing transform feedback
-        if not self.fragment_source:
+        if not self._fragment_source:
             # Out attributes is present in geometry shader if present
-            if self.geometry_source:
-                out_attribs = self.geometry_source.find_out_attribs()
+            if self._geometry_source:
+                out_attribs = self._geometry_source.find_out_attribs()
             # Otherwise they are specified in vertex shader
             else:
-                out_attribs = self.vertex_source.find_out_attribs()
+                out_attribs = self._vertex_source.find_out_attribs()
 
             print("Out attributes for transform feedback", out_attribs)
             params.update({'varyings': out_attribs})
