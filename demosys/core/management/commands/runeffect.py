@@ -13,6 +13,6 @@ class Command(CreateCommand):
         parser.add_argument("name", help="Name of the effect")
 
     def handle(self, *args, **options):
-        demosys.setup()
+        demosys.setup(settings_override={'EFFECTS': [options['name']]})
         manager = SingleEffectManager(effect_module=options['name'])
         demosys.run(manager=manager)

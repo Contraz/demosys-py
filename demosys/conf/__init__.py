@@ -38,6 +38,11 @@ class Settings:
                 # TODO: Add more validation here
                 setattr(self, setting, value)
 
+    def update(self, **kwargs):
+        """Override settings values"""
+        for name, value in kwargs.items():
+            setattr(self, name, value)
+
     def is_configured(self):
         return hasattr(self, 'SETTINGS_MODULE')
 

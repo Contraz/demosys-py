@@ -71,7 +71,7 @@ class SingleEffectManager(BaseEffectManger):
         # If an effect was specified in the initializer, find it
         if self.effect_module:
             for effect in effect_list:
-                if effect._name == self.effect_module:
+                if effect.name == self.effect_module:
                     self.active_effect = effect
         else:
             # Otherwise we look just grab the first effect
