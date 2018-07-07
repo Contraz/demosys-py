@@ -3,7 +3,7 @@ FBO
 
 Framebuffer Object for off-screen rendering
 
-.. py:module:: demosys.opengl.fbo
+.. py:module:: demosys.opengl
 .. py:currentmodule:: demosys.opengl
 
 Create

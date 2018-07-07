@@ -8,3 +8,4 @@ Reference
     texture2d.rst
     fbo.rst
     settings.rst
+    shaderprogram.rst

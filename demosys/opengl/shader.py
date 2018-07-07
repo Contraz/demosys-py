@@ -34,9 +34,9 @@ class ShaderProgram:
         else:
             self.name = name
 
-        self.vertex_source = None
-        self.frag_source = None
-        self.geo_source = None
+        self._vertex_source = None
+        self._frag_source = None
+        self._geo_source = None
 
         self.program = None
         # Shader inputs
@@ -51,6 +51,14 @@ class ShaderProgram:
         self.vao_key = None
 
     def uniform(self, name, value=None):
+        """
+        Set or get a uniform.
+        If no `value` is specificed, the unform will be returned
+
+        :param name: Name of the uniform
+        :param value: Value for the uniform
+        :return: (optional) Uniform objects
+        """
         uniform = self.uniform_map.get(name)
         if not uniform:
             msg = "Uniform '{}' not found in shader {}".format(name, self.name)
@@ -68,7 +76,7 @@ class ShaderProgram:
         else:
             uniform.value = value
 
-    def set_source(self, source):
+    def set_source(self, source: str):
         """
         Set a single source file.
         This is used when you have all shaders in one file separated by preprocessors.
@@ -83,7 +91,15 @@ class ShaderProgram:
         if 'FRAGMENT_SHADER' in source:
             self.set_fragment_source(source)
 
-    def set_vertex_source(self, source):
+    @property
+    def vertex_source(self):
+        """Vertex shader source (str).
+        This can also be used to set the source before calling ``prepare``.
+        """
+        return self._vertex_source
+
+    @vertex_source.setter
+    def vertex_source(self, source: str):
         """
         Set the vertex shader source
 
@@ -91,7 +107,15 @@ class ShaderProgram:
         """
         self.vertex_source = ShaderSource(VERTEX_SHADER, self.name, source)
 
-    def set_fragment_source(self, source):
+    @property
+    def fragment_source(self):
+        """Fragment shader source (str).
+        This can also be used to set the source before calling ``prepare``.
+        """
+        return self._frag_source
+    
+    @fragment_source.setter
+    def fragment_source(self, source: str):
         """
         Set the fragment shader source
 
@@ -99,18 +123,28 @@ class ShaderProgram:
         """
         self.frag_source = ShaderSource(FRAGMENT_SHADER, self.name, source)
 
-    def set_geometry_source(self, source):
+    @property
+    def geometry_source(self):
+        """Geometry shader source (str).
+        This can also be used to set the source before calling ``prepare``.
+        """
+        return self._geo_source
+
+    @geometry_source.setter
+    def geometry_source(self, source: str):
         """
         Set the geometry shader source
 
         :param source: (string) Geometry shader source
         """
-        self.geo_source = ShaderSource(GEOMETRY_SHADER, self.name, source)
+        self._geo_source = ShaderSource(GEOMETRY_SHADER, self.name, source)
 
     def prepare(self, reload=False):
         """
         Compiles all the shaders and links the program.
-        If the linking is successful, it builds the uniform and attribute map.
+        If the linking is successful it builds the uniform and attribute map.
+
+        :param reload: (boolean) Are we reloading this shader?
         """
         params = {'vertex_shader': self.vertex_source.source}
 
@@ -141,15 +175,15 @@ class ShaderProgram:
         self.program = program
 
         # Build internal lookups
-        self.build_uniform_map()
-        self.build_attribute_map()
+        self._build_uniform_map()
+        self._build_attribute_map()
 
     def _delete(self):
         """Frees the memory and invalidates the name associated with the program"""
         if self.program:
             self.program.release()
 
-    def build_uniform_map(self):
+    def _build_uniform_map(self):
         """
         Builds an internal uniform map by querying the program.
         This way we don't have to query OpenGL (can cause slowdowns)
@@ -162,7 +196,7 @@ class ShaderProgram:
                 uniform.location, uniform.name, uniform.dimension, uniform.array_length
             ))
 
-    def build_attribute_map(self):
+    def _build_attribute_map(self):
         """
         Builds an internal attribute map by querying the program.
         This way we don't have to query OpenGL (can cause slowdowns)

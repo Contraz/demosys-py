@@ -6,9 +6,11 @@ We proved some simple and powerful wrappers over OpenGL features in the
 ``demosys.opengl`` package.
 
 - **Texture**: Textures from images or manually constructed/generated
-- **Shader**: Shader programs currently supporting vertex/fragment/geometry shaders
+- **Shader**: Shader programs currently supporting vertex/fragment/geometry
+  shaders
 - **Frame Buffer Object**: Offscreen rendering targets represented as textures
-- **Vertex Array Object**: Represents the geometry we are drawing using a shader
+- **Vertex Array Object**: Represents the geometry we are drawing using a
+  shader
 
 
 Shader
@@ -54,7 +56,7 @@ Assuming we have a reference to a shader in ``s``:
 
     # Set the uniform (float) with name 'value' to 1.0
     s.uniform_1f("value", 1.0)
-    # Set the uniform (mat4) with name `m_view' to a 4x4 matrix
+    # Set the uniform (mat4) with name `m_view` to a 4x4 matrix
     s.uniform_mat4("m_view", view_matrix)
     # Set the sampler2d uniform to use a Texture object we have loaded
     s.sampler_2d(0, "texture0", texture)
@@ -85,7 +87,8 @@ VAOs and shaders interact in a very important way. The first time the VAO
 and shader interacts, they will figure out if they are compatible when it
 comes to the attributes in the shader and the buffers in the VAO.
 
-When we create VAOs we tell explicitly what attribute name each buffer belongs to.
+When we create VAOs we tell explicitly what attribute name each buffer belongs
+to.
 
 Example: I have three buffers representing positions, normals and uvs.
 

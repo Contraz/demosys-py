@@ -16,6 +16,13 @@ import demosys
 from demosys import effects
 from demosys import opengl
 
+# Modules we want to remove from types
+MODULES = [
+    'demosys',
+    'opengl',
+    'texture',
+]
+
 class TestCase(unittest.TestCase):
 
     def validate(self, filename, module, classname, ignore):
@@ -34,7 +41,8 @@ class TestCase(unittest.TestCase):
             classname, methodname = method.split('.')
             sig = str(inspect.signature(getattr(getattr(module, classname), methodname)))
             sig = sig.replace('self, ', '').replace('typing.', '').replace(' -> None', '')
-            sig = sig.replace('demosys.', '').replace('opengl.', '').replace('texture.', '')
+            for m in MODULES:
+                sig = sig.replace("{}.".format(m), '')
             sig = sig.replace('(self)', '()').replace(', *,', ',').replace('(*, ', '(')
             sig = re.sub(r'-> \'(\w+)\'', r'-> \1', sig)
             self.assertEqual(docsig, sig, msg=filename + '::' + method)
@@ -49,10 +57,16 @@ class TestCase(unittest.TestCase):
             os.path.join('reference', 'texture2d.rst'),
             opengl, 'Texture2D', ['quad', 'shader'])
 
-    def test(self):
+    def test_fbo_docs(self):
         self.validate(
             os.path.join('reference', 'fbo.rst'),
             opengl, 'FBO', [])
+
+    def test_shader_docs(self):
+        self.validate(
+            os.path.join('reference', 'shaderprogram.rst'),
+            opengl, 'ShaderProgram', []
+        )
 
 if __name__ == '__main__':
     unittest.main()
