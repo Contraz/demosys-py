@@ -21,6 +21,8 @@ MODULES = [
     'demosys',
     'opengl',
     'texture',
+    'shader',
+    'moderngl',
 ]
 
 class TestCase(unittest.TestCase):
@@ -66,6 +68,12 @@ class TestCase(unittest.TestCase):
         self.validate(
             os.path.join('reference', 'shaderprogram.rst'),
             opengl, 'ShaderProgram', []
+        )
+
+    def test_vao_docs(self):
+        self.validate(
+            os.path.join('reference', 'vao.rst'),
+            opengl, 'VAO', []
         )
 
 if __name__ == '__main__':

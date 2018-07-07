@@ -76,7 +76,11 @@ class BufferInfo:
 
 
 class VAO:
-    """Vertex Array Object"""
+    """
+    Represents a vertex array object.
+    A name must be provided for debug puporses.
+    The default draw mode is ``moderngl.TRIANGLES``
+    """
     def __init__(self, name, mode=mgl.TRIANGLES):
         """
         Create and empty VAO
