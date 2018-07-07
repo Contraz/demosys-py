@@ -3,8 +3,8 @@ Project
 =======
 
 Before we can do anything with the framework we need to create a project.
-A project is simply a package containing a ``settings.py`` module.
-In addition you need an entrypoint script.
+A project is simply a package containing a ``settings.py`` module
+and a ``manage.py`` entrypoint script.
 
 This can be auto-generated using the ``demosys-admin`` command:
 
@@ -20,13 +20,14 @@ This will generate the following structure:
     └── settings.py
     manage.py
 
-- ``settings.py`` is the settings for your project with good defaults. See :doc:`settings` for more info.
-- ``manage.py`` is an executable script for running your project
+- ``settings.py`` is the settings for your project with good defaults. See
+  ``settings`` for more info.
+- ``manage.py`` is the entrypoint for running your project
 
 Effects
 ^^^^^^^
 
-It's normally a good idea to put effect packages inside the project package as
+A good idea to put effect packages inside the project package as
 this protects you from package name collisions. It's of course also fine
 to put them at the same level as your project or even have them in separate
 repositories and install them as packages thought ``pip``.
@@ -38,6 +39,41 @@ The ``manage.py`` script is an alternative entry point to ``demosys-admin``.
 Both can perform the same commands. The main purpose of ``demosys-admin``
 is to initially have an entry point to the commands creating
 a projects and effects when we don't have a ``manage.py`` yet.
+
+Examples of ``manage.py`` usage:
+
+.. code-block:: shell
+
+    # Create effect inside a project
+    python manage.py createeffect myproject/myeffect
+    # Run a specific effect
+    python manage.py runeffect myproject.myeffect
+    # Run using the configured effect manager
+    python manage.py run
+    # Run a cusom command
+    python manage.py <cusom command>
+
+Effect Templates
+^^^^^^^^^^^^^^^^
+
+A collection of effect templates reside in ``effect_templates`` directory.
+To list the available templates:
+
+.. code-block:: shell
+
+    $ ./manage.py createeffect --template list
+    Available templates: cube_simple, sphere_textured, raymarching_simple
+
+To create a new effect with a specific template
+
+.. code-block:: shell
+
+    $ ./manage.py createeffect myproject/myeffect --template raymarching_simple
+
+.. Note::
+
+    If you find the current effect templates insufficent
+    please make a pull request or report the issue on github.
 
 Management Commands
 ^^^^^^^^^^^^^^^^^^^
@@ -59,8 +95,8 @@ The project structure (excluding effects) would look something like:
         └── commands
             └── test.py
 
-Notice we added a ``test`` module inside ``commands``. The name of the module will be
-name of the command. We can reach it by:
+Notice we added a ``test`` module inside ``commands``. The name of the module
+will be name of the command. We can reach it by:
 
 .. code-block:: shell
 
