@@ -2,11 +2,11 @@
 Effect Managers
 ===============
 
-An effect manager is responsible of:
+An effect manager is responsible for:
 
 - Instantiating effects
 - Knowing what effect should be drawn based in some internal state
-- Reading keyboard events if this is needed (optional)
+- Reading input events if this is needed (optional)
 
 You are fairly free to do what you want. Having control over
 effect instantiation also means you can make multiple instances
@@ -25,7 +25,8 @@ Some sane or insane examples to get started:
 - You could just put all your draw code in the manager and not use effects
 - Treat the manager as the main loop of a simple game
 
-This is an example of the default ``SingleEffectManager``.
+This is an example of the default ``SingleEffectManager``. Like the
+name suggests, it runs a single effect only.
 
 .. code-block:: python
 
