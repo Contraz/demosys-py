@@ -9,10 +9,6 @@ GEOMETRY_SHADER = 'GEOMETRY_SHADER'
 FRAGMENT_SHADER = 'FRAGMENT_SHADER'
 
 
-class ShaderError(Exception):
-    pass
-
-
 class ShaderProgram:
     """
     Represents a shader program
@@ -34,9 +30,9 @@ class ShaderProgram:
         else:
             self.name = name
 
-        self._vertex_source = None
-        self._frag_source = None
-        self._geo_source = None
+        self.vertex_source = None
+        self.fragment_source = None
+        self.geometry_source = None
 
         self.program = None
         # Shader inputs
@@ -85,59 +81,35 @@ class ShaderProgram:
         """
         self.set_vertex_source(source)
 
-        if 'GEOMETRY_SHADER' in source:
+        if GEOMETRY_SHADER in source:
             self.set_geometry_source(source)
 
-        if 'FRAGMENT_SHADER' in source:
+        if FRAGMENT_SHADER in source:
             self.set_fragment_source(source)
 
-    @property
-    def vertex_source(self):
-        """Vertex shader source (str).
-        This can also be used to set the source before calling ``prepare``.
-        """
-        return self._vertex_source
-
-    @vertex_source.setter
-    def vertex_source(self, source: str):
+    def set_vertex_source(self, source: str):
         """
         Set the vertex shader source
 
         :param source: (string) Vertex shader source
         """
         self.vertex_source = ShaderSource(VERTEX_SHADER, self.name, source)
-
-    @property
-    def fragment_source(self):
-        """Fragment shader source (str).
-        This can also be used to set the source before calling ``prepare``.
-        """
-        return self._frag_source
     
-    @fragment_source.setter
-    def fragment_source(self, source: str):
+    def set_fragment_source(self, source: str):
         """
         Set the fragment shader source
 
         :param source: (string) Fragment shader source
         """
-        self.frag_source = ShaderSource(FRAGMENT_SHADER, self.name, source)
+        self.fragment_source = ShaderSource(FRAGMENT_SHADER, self.name, source)
 
-    @property
-    def geometry_source(self):
-        """Geometry shader source (str).
-        This can also be used to set the source before calling ``prepare``.
-        """
-        return self._geo_source
-
-    @geometry_source.setter
-    def geometry_source(self, source: str):
+    def set_geometry_source(self, source: str):
         """
         Set the geometry shader source
 
         :param source: (string) Geometry shader source
         """
-        self._geo_source = ShaderSource(GEOMETRY_SHADER, self.name, source)
+        self.geometry_source = ShaderSource(GEOMETRY_SHADER, self.name, source)
 
     def prepare(self, reload=False):
         """
@@ -148,17 +120,17 @@ class ShaderProgram:
         """
         params = {'vertex_shader': self.vertex_source.source}
 
-        if self.geo_source:
-            params.update({'geometry_shader': self.geo_source.source})
+        if self.geometry_source:
+            params.update({'geometry_shader': self.geometry_source.source})
 
-        if self.frag_source:
-            params.update({'fragment_shader': self.frag_source.source})
+        if self.fragment_source:
+            params.update({'fragment_shader': self.fragment_source.source})
 
         # If no fragment shader is present we are doing transform feedback
-        if not self.frag_source:
+        if not self.fragment_source:
             # Out attributes is present in geometry shader if present
-            if self.geo_source:
-                out_attribs = self.geo_source.find_out_attribs()
+            if self.geometry_source:
+                out_attribs = self.geometry_source.find_out_attribs()
             # Otherwise they are specified in vertex shader
             else:
                 out_attribs = self.vertex_source.find_out_attribs()
@@ -224,13 +196,17 @@ class ShaderProgram:
         print("Shader VAO key:", self.vao_key)
 
 
+class ShaderError(Exception):
+    pass
+
+
 class ShaderSource:
     """
     Helper class to deal with shader source files.
     This represents a single shader (vert/frag/geo)
     """
-    def __init__(self, type, name, source):
-        self.type = type
+    def __init__(self, shader_type, name, source):
+        self.type = shader_type
         self.name = name
         self.source = source
         self.lines = None
