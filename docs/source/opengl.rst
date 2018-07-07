@@ -10,34 +10,24 @@ We proved some simple and powerful wrappers over OpenGL features in the
 - **Frame Buffer Object**: Offscreen rendering targets represented as textures
 - **Vertex Array Object**: Represents the geometry we are drawing using a shader
 
-Texture
-^^^^^^^
-
-Textures are normally loaded by requesting the resource by path/name in the initializer
-of an effect using the ``self.get_texture`` method inherited from the ``Effect`` base class.
-We use the PIL/Pillow library to image data from file.
-
-Textures can of course also be crated manually if needed.
-
-.. autoclass:: demosys.opengl.texture.Texture
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 Shader
 ^^^^^^
 
-In oder to draw something to the screen, we need a shader. There is no other way.
+In oder to draw something to the screen, we need a shader. There is no other
+way.
 
-Shader should ideally always be loaded from ``.glsl`` files located in a ``shaders`` directory
-in your effect or project global resource directory. Shaders have to be written in a single
-file were the different shader types are separated using preprocessors.
+Shader should ideally always be loaded from ``.glsl`` files located in a
+``shaders`` directory in your effect or project global resource directory.
+Shaders have to be written in a single file were the different shader types
+are separated using preprocessors.
 
 .. Note:: We wish to support loading shaders in other common formats such
    as separate files for each shader type. Feel free to make a pull request
    or create an issue on github.
 
-Like textures they are loaded in the effect using the ``get_shader`` method in the initializer.
+Like textures they are loaded in the effect using the ``get_shader`` method
+in the initializer.
 
 Once we have the reference to the shader object we will need a VAO object
 in order to bind it. We could of course just call ``bind()``, but **the VAOs
@@ -55,7 +45,8 @@ will do this for you**. More details in the VAO section below.
     // Geometry shader here
     #endif
 
-Once the shader is bound we can set uniforms through the various ``uniform_`` methods.
+Once the shader is bound we can set uniforms through the various ``uniform_``
+methods.
 
 Assuming we have a reference to a shader in ``s``:
 
@@ -78,7 +69,7 @@ are not much more to them.
 .. Note:: We are planning to support passing in preprocessors to shader.
    Please make an issue or a pull request on github.
 
-.. autoclass:: demosys.opengl.shader.Shader
+.. autoclass:: demosys.opengl.ShaderProgram
     :members:
     :undoc-members:
     :show-inheritance:

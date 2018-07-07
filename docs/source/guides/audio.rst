@@ -24,6 +24,7 @@ pygame's mixer module. (Optional setup for this)
 Audio Requirements:
 
 - As the current position in the music is what all
-  draw timers are based on, we need a library that can deliver very accurate value for this.
+  draw timers are based on, we need a library that can deliver very accurate
+  value for this.
 - Efficient and accurate seeking + pause support
 - Some way to extract simple data from the music for visualisation

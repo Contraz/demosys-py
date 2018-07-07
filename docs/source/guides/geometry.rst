@@ -2,12 +2,13 @@
 Geometry
 ========
 
-The ``demosys.opengl.geometry`` module currently provides some simple functions to generate VAOs.
+The ``demosys.geometry`` module currently provides some simple
+functions to generate VAOs.
 
 - Quad: Full screen quads for drawing offscreen buffers
 - Cube: Cube with normals, uvs and texture coordinates
 - Plane: A plane with a dimension and resolution
-- Sphere: A sphere 
+- Sphere: A sphere
 - Points: Random points in 3D
 
 .. Note:: We definitely need more here. Please make pull requests or make an issue on github.
@@ -137,30 +138,3 @@ Imagine generating a single VBO with interleaved position, normal and uv data:
                yield from uv(x, y, z)
 
        interleaved_data = numpy.fromiter(generate(), count=count * 8, dtype=numpy.float32)
-
-
-The geometry Module
-^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: demosys.opengl.geometry.cube
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-.. automodule:: demosys.opengl.geometry.plane
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-.. automodule:: demosys.opengl.geometry.points
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-.. automodule:: demosys.opengl.geometry.quad
-    :members:
-    :undoc-members:
-    :show-inheritance:

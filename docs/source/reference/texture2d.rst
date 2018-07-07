@@ -1,7 +1,7 @@
 Texture2D
 =========
 
-.. py:module:: demosys
+.. py:module:: demosys.opengl
 .. py:currentmodule:: demosys.opengl
 
 Create

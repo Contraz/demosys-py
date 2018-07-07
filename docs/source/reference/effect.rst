@@ -1,7 +1,7 @@
 Effect
 ======
 
-.. py:module:: demosys
+.. py:module:: demosys.effects
 .. py:currentmodule:: demosys.effects
 
 Draw Methods

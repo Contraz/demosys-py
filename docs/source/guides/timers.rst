@@ -22,7 +22,8 @@ Standard Timers
 - ``demosys.timers.Timer``: Default timer just tracking time in seconds
 - ``demosys.timers.Music``: Timer playing music reporting duration in the song
 - ``demosys.timers.RocketTimer``: Timer using the rocket sync system
-- ``demosys.timers.RocketMusicTimer``: Timer using the rocket sync system with music playback
+- ``demosys.timers.RocketMusicTimer``: Timer using the rocket sync system with
+  music playback
 
 Custom Timer
 ^^^^^^^^^^^^
