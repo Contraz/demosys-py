@@ -19,6 +19,7 @@ DRAW_MODES = {
     mgl.LINES_ADJACENCY: 'LINES_ADJACENCY',
 }
 
+SYSTEM_ATTRIBS = ['gl_InstanceID', ]
 
 class VAOError(Exception):
     pass
@@ -53,6 +54,7 @@ class BufferInfo:
         formats = []
         attrs = []
         for attrib_format, attrib in zip(self.attrib_formats, self.attributes):
+
             if attrib not in attributes:
                 formats.append(attrib_format.pad_str())
                 continue
@@ -199,6 +201,9 @@ class VAO:
 
         # Make sure all attributes are covered
         for attrib in shader.attribute_list:
+            if attrib.name in SYSTEM_ATTRIBS:
+                continue
+
             if not sum(b.has_attribute(attrib.name) for b in self.buffers):
                 raise VAOError("VAO {} doesn't have attribute {} for program {}".format(
                     self.name, attrib.name, shader.name))
@@ -212,7 +217,9 @@ class VAO:
                 vao_content.append(content)
 
         if len(attributes) > 0:
-            raise VAOError("Did not find a buffer mapping for {}".format([n for n in attributes]))
+            for attrib in attributes:
+                if attrib not in SYSTEM_ATTRIBS:
+                    raise VAOError("Did not find a buffer mapping for {}".format([n for n in attributes]))
 
         if self._index_buffer:
             vao = context.ctx().vertex_array(shader.program, vao_content,
