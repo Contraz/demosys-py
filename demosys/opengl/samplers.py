@@ -49,6 +49,11 @@ class Sampler:
         self.states()
 
     def use(self, location=0):
+        """
+        Use this sampler in the specified texture unit
+
+        :param location: The texture unit (int)
+        """
         GL.glBindSampler(location, self._id)
 
     def release(self, location=0):

@@ -17,7 +17,14 @@ class MeshShader:
         self.ctx = context.ctx()
 
     def draw(self, mesh, proj_mat, view_mat, time=0):
-        """Minimal draw function. Should be overridden"""
+        """
+        Draw code for the mesh. Should be overriden.
+
+        :param mesh: The Mesh object to draw
+        :param proj_mat: projection matrix (ndarray)
+        :param view_mat: View matrix (ndarray)
+        :param time: The current time
+        """
         self.shader.uniform("m_proj", proj_mat.astype('f4').tobytes())
         self.shader.uniform("m_mv", view_mat.astype('f4').tobytes())
         mesh.vao.draw(self.shader)
@@ -26,6 +33,8 @@ class MeshShader:
         """
         Determine if this MeshShader should be applied to the mesh
         Can return self or some MeshShader instance to support dynamic MeshShader creation
+
+        :param mesh: The mesh to inspect
         """
         raise NotImplementedError("apply is not implemented. Please override the MeshShader method")
 

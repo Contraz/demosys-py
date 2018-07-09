@@ -33,6 +33,13 @@ class Scene:
         self.bbox_shader = shaders.get('scene_default/bbox.glsl', create=True)
 
     def draw(self, m_proj, m_mv, time=0):
+        """
+        Draw all the nodes in the scene
+
+        :param m_proj: projection matrix (ndarray)
+        :param m_mv: view matrix
+        :param time: The current time
+        """
         for node in self.root_nodes:
             node.draw(m_proj, m_mv, time=time)
 
