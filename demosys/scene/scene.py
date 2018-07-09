@@ -32,9 +32,9 @@ class Scene:
         self.bbox_vao = geometry.bbox()
         self.bbox_shader = shaders.get('scene_default/bbox.glsl', create=True)
 
-    def draw(self, m_proj, m_mv):
+    def draw(self, m_proj, m_mv, time=0):
         for node in self.root_nodes:
-            node.draw(m_proj, m_mv)
+            node.draw(m_proj, m_mv, time=time)
 
     def draw_bbox(self, m_proj, m_mv, all=True):
         """Draw scene and mesh bounding boxes"""

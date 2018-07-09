@@ -16,7 +16,7 @@ class MeshShader:
         self.shader = shader
         self.ctx = context.ctx()
 
-    def draw(self, mesh, proj_mat, view_mat):
+    def draw(self, mesh, proj_mat, view_mat, time=0):
         """Minimal draw function. Should be overridden"""
         self.shader.uniform("m_proj", proj_mat.astype('f4').tobytes())
         self.shader.uniform("m_mv", view_mat.astype('f4').tobytes())
@@ -50,7 +50,7 @@ class ColorShader(MeshShader):
     def __init__(self, shader=None, **kwargs):
         super().__init__(shader=shaders.get("scene_default/color.glsl", create=True))
 
-    def draw(self, mesh, proj_mat, view_mat):
+    def draw(self, mesh, proj_mat, view_mat, time=0):
         m_normal = self.create_normal_matrix(view_mat)
 
         if mesh.material:
@@ -90,7 +90,7 @@ class TextureShader(MeshShader):
     def __init__(self, shader=None, **kwargs):
         super().__init__(shader=shaders.get("scene_default/texture.glsl", create=True))
 
-    def draw(self, mesh, proj_mat, view_mat):
+    def draw(self, mesh, proj_mat, view_mat, time=0):
         m_normal = self.create_normal_matrix(view_mat)
 
         if mesh.material.double_sided:
@@ -127,7 +127,7 @@ class FallbackShader(MeshShader):
     def __init__(self, shader=None, **kwargs):
         super().__init__(shader=shaders.get("scene_default/fallback.glsl", create=True))
 
-    def draw(self, mesh, proj_mat, view_mat):
+    def draw(self, mesh, proj_mat, view_mat, time=0):
 
         self.shader.uniform("m_proj", proj_mat.astype('f4').tobytes())
         self.shader.uniform("m_mv", view_mat.astype('f4').tobytes())
