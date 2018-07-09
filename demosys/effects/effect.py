@@ -12,6 +12,7 @@ from demosys.scene import camera  # noqa
 
 from rocket.tracks import Track
 
+
 def bind_target(func):
     """
     Decorator auto binding and releasing the incoming FBO in ``draw()``.
