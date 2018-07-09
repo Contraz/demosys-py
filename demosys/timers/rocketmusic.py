@@ -1,5 +1,5 @@
-from .rocket import RocketTimer
 from .music import MusicTimer
+from .rocket import RocketTimer
 
 
 class RocketMusicTimer(RocketTimer):

@@ -1,6 +1,7 @@
-import os
 import importlib
 import inspect
+import os
+
 from demosys.effects.effect import Effect
 
 EFFECT_MODULE = 'effect'

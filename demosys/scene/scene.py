@@ -1,10 +1,11 @@
 """
 Wrapper for a loaded scene with properties.
 """
-from .shaders import MeshShader, ColorShader, TextureShader, FallbackShader
 from demosys import geometry
 from demosys.resources import shaders
 from pyrr import matrix44, vector3
+
+from .shaders import ColorShader, FallbackShader, MeshShader, TextureShader
 
 
 class Scene:

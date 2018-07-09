@@ -7,20 +7,20 @@ class BaseTimer:
 
     def start(self):
         """Start the timer"""
-        raise NotImplemented
+        raise NotImplementedError()
 
     def pause(self):
         """Pause the timer"""
-        raise NotImplemented
+        raise NotImplementedError()
 
     def toggle_pause(self):
         """Toggle pause"""
-        raise NotImplemented
+        raise NotImplementedError()
 
     def stop(self):
         """Stop the timer"""
-        raise NotImplemented
+        raise NotImplementedError()
 
     def get_time(self):
         """Get the current time in seconds (float)"""
-        raise NotImplemented
+        raise NotImplementedError()

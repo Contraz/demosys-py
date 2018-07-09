@@ -1,6 +1,7 @@
 from typing import List
-from demosys.opengl import Texture2D, DepthTexture
+
 from demosys import context
+from demosys.opengl import DepthTexture, Texture2D
 
 WINDOW_FBO = None
 

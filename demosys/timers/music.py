@@ -4,7 +4,7 @@ from .base import BaseTimer
 
 try:
     from pygame import mixer
-except ImportError as e:
+except ImportError:
     print("pygame is needed for audio playback")
 
 

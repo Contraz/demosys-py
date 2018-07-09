@@ -1,16 +1,15 @@
 import os
-from typing import Tuple
 from functools import wraps
-
-import moderngl as mgl  # noqa
-from pyrr import matrix44, Matrix33, Matrix44, Vector3
-
-from demosys import resources
-from demosys.opengl import ShaderProgram, Texture2D
-from demosys.scene import Scene
-from demosys.scene import camera  # noqa
+from typing import Tuple
 
 from rocket.tracks import Track
+
+import moderngl as mgl  # noqa
+from demosys import resources
+from demosys.opengl import ShaderProgram, Texture2D
+from demosys.scene import camera  # noqa
+from demosys.scene import Scene
+from pyrr import Matrix33, Matrix44, Vector3, matrix44
 
 
 def bind_target(func):

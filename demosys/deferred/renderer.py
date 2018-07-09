@@ -1,12 +1,7 @@
 import moderngl as mgl
+from demosys import context, geometry, resources
+from demosys.opengl import FBO, DepthTexture, Texture2D, samplers
 from pyrr import matrix44
-
-from demosys.opengl import FBO
-from demosys.opengl import Texture2D, DepthTexture
-from demosys.opengl import samplers
-from demosys import resources
-from demosys import geometry
-from demosys import context
 
 
 class PointLight:

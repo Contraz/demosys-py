@@ -1,8 +1,9 @@
 """Shader Registry"""
-from demosys.opengl import Texture2D
-from demosys.core.texturefiles.finders import get_finders
-from demosys.core.exceptions import ImproperlyConfigured
 from PIL import Image
+
+from demosys.core.exceptions import ImproperlyConfigured
+from demosys.core.texturefiles.finders import get_finders
+from demosys.opengl import Texture2D
 
 
 class Textures:

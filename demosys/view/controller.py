@@ -5,14 +5,14 @@ Thins needs to be improved once more pieces fall in place.
 import glfw
 import OpenGL
 
+from demosys import context, resources
+from demosys.conf import settings
 from demosys.context.glfw import GLTFWindow
 from demosys.effects.registry import Effect
 from demosys.opengl import fbo
-from demosys import resources
-from demosys.conf import settings
 from demosys.scene import camera
 from demosys.utils import module_loading
-from demosys import context
+
 from . import screenshot
 
 # We still use PyOpenGL for samplers and don't want it to halt on errors

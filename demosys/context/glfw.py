@@ -1,10 +1,11 @@
-import glfw
 import sys
 
-import moderngl as mgl
+import glfw
 
+import moderngl as mgl
 from demosys.conf import settings
 from demosys.core.exceptions import ImproperlyConfigured
+
 from .base import Context
 
 PROFILES = {

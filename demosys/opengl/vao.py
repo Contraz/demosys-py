@@ -1,10 +1,10 @@
-import numpy
 from typing import List
-import moderngl as mgl
 
-from demosys.opengl import types
-from demosys.opengl import ShaderProgram
+import numpy
+
+import moderngl as mgl
 from demosys import context
+from demosys.opengl import ShaderProgram, types
 
 DRAW_MODES = {
     mgl.TRIANGLES: 'TRIANGLES',

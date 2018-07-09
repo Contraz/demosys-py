@@ -1,9 +1,8 @@
 """Shader Registry"""
 import moderngl
-
-from demosys.opengl import (ShaderProgram, ShaderError)
-from demosys.core.shaderfiles.finders import get_finders
 from demosys.core.exceptions import ImproperlyConfigured
+from demosys.core.shaderfiles.finders import get_finders
+from demosys.opengl import ShaderError, ShaderProgram
 
 
 class Shaders:

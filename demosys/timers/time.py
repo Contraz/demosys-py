@@ -1,4 +1,5 @@
 import glfw
+
 from .base import BaseTimer
 
 

@@ -1,7 +1,9 @@
-from rocket.controllers import TimeController
 from rocket import Rocket
-from demosys.resources import tracks
+from rocket.controllers import TimeController
+
 from demosys.conf import settings
+from demosys.resources import tracks
+
 from .base import BaseTimer
 
 

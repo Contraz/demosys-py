@@ -1,7 +1,9 @@
-from math import sin, cos, radians
+from math import cos, radians, sin
+
 import glfw
-from pyrr import matrix44, vector3, vector, Vector3
+
 from demosys.opengl import Projection
+from pyrr import Vector3, matrix44, vector, vector3
 
 # Direction Definitions
 RIGHT = 1

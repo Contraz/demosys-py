@@ -1,8 +1,8 @@
 """Scene Regisry"""
+from demosys.conf import settings
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.scenefiles.finders import get_finders
 from demosys.scene import Scene
-from demosys.conf import settings
 from demosys.utils.module_loading import import_string
 
 

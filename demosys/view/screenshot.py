@@ -3,8 +3,8 @@ from datetime import datetime
 
 from PIL import Image
 
-from demosys.conf import settings
 from demosys import context
+from demosys.conf import settings
 
 
 class Config:

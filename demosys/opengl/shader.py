@@ -1,6 +1,6 @@
-import moderngl as mgl
 import os
 
+import moderngl as mgl
 from demosys import context
 from demosys.conf import settings
 
