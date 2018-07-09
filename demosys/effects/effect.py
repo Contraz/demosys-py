@@ -6,8 +6,11 @@ import moderngl as mgl  # noqa
 from pyrr import matrix44, Matrix33, Matrix44, Vector3
 
 from demosys import resources
+from demosys.opengl import ShaderProgram, Texture2D
+from demosys.scene import Scene
 from demosys.scene import camera  # noqa
 
+from rocket.tracks import Track
 
 def bind_target(func):
     """
@@ -127,7 +130,7 @@ class Effect:
     # Methods for getting resources
 
     @local_path
-    def get_shader(self, path, local=False):
+    def get_shader(self, path, local=False) -> ShaderProgram:
         """
         Get a shader or schedule the shader for loading.
         If the resource is not loaded yet, an empty shader object
@@ -140,7 +143,7 @@ class Effect:
         return resources.shaders.get(path, create=True)
 
     @local_path
-    def get_texture(self, path, local=False, **kwargs):
+    def get_texture(self, path, local=False, **kwargs) -> Texture2D:
         """
         Get a texture or schedule the texture for loading.
         If the resource is not loaded yet, an empty texture object
@@ -153,7 +156,7 @@ class Effect:
         return resources.textures.get(path, create=True, **kwargs)
 
     @local_path
-    def get_track(self, name, local=False):
+    def get_track(self, name, local=False) -> Track:
         """
         Get or create a rocket track. This only makes sense when using rocket timers.
         If the resource is not loaded yet, an empty track object
@@ -166,7 +169,7 @@ class Effect:
         return resources.tracks.get(name)
 
     @local_path
-    def get_scene(self, path, local=False, **kwargs):
+    def get_scene(self, path, local=False, **kwargs) -> Scene:
         """
         Get or create a scene.
         :param path: Path to the scene
