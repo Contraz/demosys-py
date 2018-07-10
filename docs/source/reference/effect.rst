@@ -1,8 +1,16 @@
 Effect
 ======
 
+The base Effect class extended in effect modules.
+
 .. py:module:: demosys.effects
 .. py:currentmodule:: demosys.effects
+
+.. autoclass:: demosys.effects.Effect
+   :members:
+   :private-members:
+   :special-members:
+
 
 Draw Methods
 ------------
@@ -35,7 +43,6 @@ Attributes
 .. autoattribute:: Effect.window_width
 .. autoattribute:: Effect.window_height
 .. autoattribute:: Effect.window_aspect
-
 
 Decorators
 ----------
