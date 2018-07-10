@@ -21,7 +21,7 @@ class Textures:
         """
         return len(self.textures)
 
-    def get(self, path, create=False, **kwargs):
+    def get(self, path, create=False, cls=Texture2D, **kwargs):
         """
         Get or create a texture object.
         This may return an empty object that will be filled during load
@@ -29,11 +29,12 @@ class Textures:
 
         :param path: Path to the texture
         :param create: (bool) Create an empty texture object if it doesn't exist
+        :param cls: The texture class to instantiate
         :return: Texture object
         """
         texture = self.textures.get(path)
         if create and not texture:
-            texture = Texture2D.from_image(path, **kwargs)
+            texture = cls(path=path, **kwargs)
             self.textures[path] = texture
         return texture
 

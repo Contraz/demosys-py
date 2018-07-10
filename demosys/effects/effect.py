@@ -6,7 +6,7 @@ from rocket.tracks import Track
 
 import moderngl as mgl  # noqa
 from demosys import resources
-from demosys.opengl import ShaderProgram, Texture2D
+from demosys.opengl import ShaderProgram, Texture2D, TextureArray
 from demosys.scene import camera  # noqa
 from demosys.scene import Scene
 from pyrr import Matrix33, Matrix44, Vector3, matrix44
@@ -154,6 +154,20 @@ class Effect:
         :return: Texture object
         """
         return resources.textures.get(path, create=True, **kwargs)
+
+    @local_path
+    def get_texture_array(self, path, layers=0, local=False, **kwargs) -> Texture2D:
+        """
+        Get a texture or schedule the texture for loading.
+        If the resource is not loaded yet, an empty texture object
+        is returned that will be populated later.
+
+        :param path: Path to the texture in the virtual texture directory
+        :param layers: (int) Numer of layers
+        :param local: Auto-prepend the effect package name to the path
+        :return: Texture object
+        """
+        return resources.textures.get(path, create=True, layers=layers, cls=TextureArray, **kwargs)
 
     @local_path
     def get_track(self, name, local=False) -> Track:

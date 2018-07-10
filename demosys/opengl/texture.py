@@ -57,6 +57,15 @@ class BaseTexture:
     def swizzle(self):
         return self.mglo.swizzle
 
+    def build_mipmaps(self, base=0, max_level=1000):
+        """
+        Build mipmaps for this texture
+
+        :param base: Level to build from
+        :param max_level: Max levels
+        """
+        self.mglo.build_mipmaps(base=base, max_level=max_level)
+
     def read(self, level: int=0, alignment: int=1) -> bytes:
         """
         Read the content of the texture into a buffer.
@@ -97,7 +106,7 @@ class Texture2D(BaseTexture):
     quad = None
     shader = None
 
-    def __init__(self, path: str=None, mipmap: bool=False):
+    def __init__(self, path: str=None, mipmap: bool=False, **kwargs):
         """
         Initialize configuration for this texture.
         This doesn't create the OpenGL texture objects itself
@@ -143,16 +152,6 @@ class Texture2D(BaseTexture):
             texture.build_mipmaps()
 
         return texture
-
-    def build_mipmaps(self, base=0, max_level=1000):
-        """
-        Build mipmaps for this texture
-
-        :param base: Level to build from
-        :param max_level: Max levels
-        """
-        self.mglo.build_mipmaps(base=base, max_level=max_level)
-        self.mglo.filter = (mgl.LINEAR_MIPMAP_LINEAR, mgl.LINEAR)
 
     @classmethod
     def from_image(cls, path, image=None, **kwargs):
@@ -200,6 +199,50 @@ class Texture2D(BaseTexture):
         self.use(location=0)
         self.shader.uniform("texture0", 0)
         self.quad.draw(self.shader)
+
+
+class TextureArray(BaseTexture):
+
+    def __init__(self, path: str=None, mipmap: bool=False, layers=0, **kwargs):
+        """
+        Initialize configuration for this texture.
+        This doesn't create the OpenGL texture objects itself
+        and is mostly used by the resource loading system.
+
+        :param path: The global resource path for the texture to load
+        :param mipmap: (bool) Should we generate mipmaps?
+        """
+        super().__init__()
+        # Info for resource loader
+        self.path = path
+        self.layers = layers
+        self.mipmap = mipmap
+
+        if not self.layers > 0:
+            raise ValueError("Texture {} requires a layer parameter > 0".formats(self.path))
+
+    def set_image(self, image, flip=True):
+        """
+        Set pixel data using a image file with PIL/Pillow.
+
+        :param image: The PIL/Pillow image object
+        :param flip: Flip the image top to bottom
+        """
+        if flip:
+            image = image.transpose(Image.FLIP_TOP_BOTTOM)
+
+        width, height, depth = image.size[0], image.size[1] // self.layers, self.layers
+        print(width, height, depth)
+
+        self.mglo = self.ctx.texture_array(
+            (width, height, depth),
+            4,
+            image.convert("RGBA").tobytes(),
+        )
+
+        if self.mipmap:
+            self.build_mipmaps()
+
 
 
 class DepthTexture(BaseTexture):
