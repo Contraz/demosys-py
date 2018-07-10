@@ -6,14 +6,13 @@ from demosys.opengl import VAO
 
 def bbox(width=1.0, height=1.0, depth=1.0):
     """
-    Generates a cube centered at 0, 0, 0
+    Generates a bounding box.
+    This is simply a box with LINE_STRIP as draw mode
 
-    :param width: Width of the cube
-    :param height: height of the cube
-    :param depth: depth of the bubs
-    :param normals: (bool) Include normals
-    :param uvs: (bool) include uv coordinates
-    :return: VAO representing the cube
+    :param width: Width of the box
+    :param height: height of the box
+    :param depth: depth of the box
+    :return: VAO
     """
     width, height, depth = width / 2.0, height / 2.0, depth / 2.0
     pos = numpy.array([

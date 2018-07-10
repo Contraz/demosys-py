@@ -7,7 +7,7 @@ from demosys import context
 QUAD_FS = None
 
 
-def quad_fs():
+def quad_fs() -> VAO:
     """
     Creates a screen aligned quad.
     """
@@ -17,7 +17,7 @@ def quad_fs():
     return QUAD_FS
 
 
-def quad_2d(width, height, xpos=0.0, ypos=0.0):
+def quad_2d(width, height, xpos=0.0, ypos=0.0) -> VAO:
     """
     Creates a 2D quad VAO using 2 triangles.
 

@@ -6,7 +6,7 @@ from demosys import context
 from demosys.opengl import VAO
 
 
-def sphere(radius=0.5, sectors=32, rings=16):
+def sphere(radius=0.5, sectors=32, rings=16) -> VAO:
     """
     Generate a sphere
 

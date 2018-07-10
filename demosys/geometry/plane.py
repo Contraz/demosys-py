@@ -3,7 +3,7 @@ import numpy
 from demosys.opengl import VAO
 
 
-def plane_xz(size=(10, 10), resolution=(10, 10)):
+def plane_xz(size=(10, 10), resolution=(10, 10)) -> VAO:
     """
     Generates a plane on the xz axis of a specific size and resolution
 

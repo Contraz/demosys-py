@@ -5,11 +5,11 @@ from demosys.opengl import VAO
 
 def cube(width, height, depth, normals=True, uvs=True):
     """
-    Generates a cube centered at 0, 0, 0
+    Generates a cube VAO
 
     :param width: Width of the cube
     :param height: height of the cube
-    :param depth: depth of the bubs
+    :param depth: depth of the cube
     :param normals: (bool) Include normals
     :param uvs: (bool) include uv coordinates
     :return: VAO representing the cube
