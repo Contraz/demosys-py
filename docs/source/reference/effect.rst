@@ -1,16 +1,9 @@
 Effect
 ======
 
-The base Effect class extended in effect modules.
-
-.. py:module:: demosys.effects
 .. py:currentmodule:: demosys.effects
 
-.. autoclass:: demosys.effects.Effect
-   :members:
-   :private-members:
-   :special-members:
-
+The base Effect class extended in effect modules.
 
 Draw Methods
 ------------
