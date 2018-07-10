@@ -17,11 +17,10 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
-
 import os
+import sys
+sys.path.insert(0, os.path.abspath('../../'))
+
 import sphinx.environment
 from docutils.utils import get_source_line
 
@@ -62,7 +61,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'demosys-py'
-copyright = '2017, Einar Forselv'
+copyright = '2018, Einar Forselv'
 author = 'Einar Forselv'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -152,8 +151,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'demosys-py', 'demosys-py Documentation',
-     [author], 1)
+    (master_doc, 'demosys-py', 'demosys-py Documentation', [author], 1)
 ]
 
 
