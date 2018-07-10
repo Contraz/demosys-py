@@ -99,7 +99,7 @@ When using a timer not requiring an audio file, the value is ignored.
 Should contain a string with the absolute path to the audio file.
 
 .. Note:: Getting audio to work requires additional setup.
-   See the :doc:`audio` section.
+   See the :doc:`/guides/audio` section.
 
 .. code:: python
 
