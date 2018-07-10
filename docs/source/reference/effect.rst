@@ -24,8 +24,8 @@ Utility Methods
 .. automethod:: Effect.create_transformation(rotation=None, translation=None)
 .. automethod:: Effect.create_normal_matrix(modelview)
 
-Atttributes
------------
+Attributes
+----------
 
 .. autoattribute:: Effect.ctx
 .. autoattribute:: Effect.sys_camera
