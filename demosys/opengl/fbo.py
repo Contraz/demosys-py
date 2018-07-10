@@ -117,7 +117,7 @@ class FBO:
         Attempts to determine the pixel size of the FBO.
         Currently returns the size of the first color attachment.
         If the FBO has no color attachments, the depth attachment will be used.
-        Raises ```FBOError`` if the size cannot be determined.
+        Raises ``FBOError`` if the size cannot be determined.
 
         :return: (w, h) tuple representing the size in pixels
         """
