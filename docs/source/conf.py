@@ -21,6 +21,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../../'))
 
+from unittest.mock import MagicMock
 import sphinx.environment
 from docutils.utils import get_source_line
 
@@ -28,6 +29,13 @@ from docutils.utils import get_source_line
 # Define a settings module
 os.environ['DEMOSYS_SETTINGS_MODULE'] = 'demosys.conf.default_settings'
 
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
+MOCK_MODULES = ['glfw',]
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # Monkey patch sphinx to ignore: WARNING: nonlocal image URI
 def _warn_node(self, msg, node, **kwargs):

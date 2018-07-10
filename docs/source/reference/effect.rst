@@ -1,6 +1,7 @@
 Effect
 ======
 
+.. py:module:: demosys.effects
 .. py:currentmodule:: demosys.effects
 
 The base Effect class extended in effect modules.
