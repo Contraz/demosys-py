@@ -244,7 +244,6 @@ class TextureArray(BaseTexture):
             self.build_mipmaps()
 
 
-
 class DepthTexture(BaseTexture):
     """Depth Texture"""
 
