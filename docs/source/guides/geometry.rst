@@ -29,7 +29,7 @@ Examples:
 See the ``geometry`` reference for more info.
 
 Scene/Mesh File Formats
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 The ``demosys.scene.loaders`` currently support loading
 wavefront obj files and gltf.
@@ -45,7 +45,7 @@ class to ``SCENE_LOADERS``.
     )
 
 Generating Custom Geometry
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 
 To efficiently generate geometry in Python we must avoid as much memory
 allocation as possible. If performance doesn't matter, then take this

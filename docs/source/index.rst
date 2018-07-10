@@ -2,10 +2,7 @@
 demosys-py documentation
 ========================
 
-demosys-py
-==========
-
-A Python 3 cross platform modern OpenGL 3.3+ core framework based on `ModernGL <https://github.com/cprogrammer1994/ModernGL>`_
+A Python 3 cross platform OpenGL 3.3+ core framework based on `ModernGL <https://github.com/cprogrammer1994/ModernGL>`_
 
 +-----------------+-----------------+
 | |screenshot1|   | |screenshot2|   |

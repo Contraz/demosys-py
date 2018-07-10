@@ -25,7 +25,7 @@ This will generate the following structure:
 - ``manage.py`` is the entrypoint for running your project
 
 Effects
-^^^^^^^
+-------
 
 A good idea to put effect packages inside the project package as
 this protects you from package name collisions. It's of course also fine
@@ -33,7 +33,7 @@ to put them at the same level as your project or even have them in separate
 repositories and install them as packages thought ``pip``.
 
 manage.py
-^^^^^^^^^
+---------
 
 The ``manage.py`` script is an alternative entry point to ``demosys-admin``.
 Both can perform the same commands. The main purpose of ``demosys-admin``
@@ -54,7 +54,7 @@ Examples of ``manage.py`` usage:
     python manage.py <cusom command>
 
 Effect Templates
-^^^^^^^^^^^^^^^^
+----------------
 
 A collection of effect templates reside in ``effect_templates`` directory.
 To list the available templates:
@@ -76,14 +76,15 @@ To create a new effect with a specific template
     please make a pull request or report the issue on github.
 
 Management Commands
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
-Custom commands can be added to your project. This can be useful when you need additional tooling
-or whatever you could imagine would be useful to run from ``manage.py``.
+Custom commands can be added to your project. This can be useful when you need
+additional tooling or whatever you could imagine would be useful to run from
+``manage.py``.
 
-Creating a new command is fairly straight forward. Inside your project package, create
-the ``management/commands/`` directories. Inside the commands directory we can add commands.
-Let's add the command ``test``.
+Creating a new command is fairly straight forward. Inside your project package,
+create the ``management/commands/`` directories. Inside the commands directory
+we can add commands. Let's add the command ``test``.
 
 The project structure (excluding effects) would look something like:
 
@@ -117,10 +118,13 @@ Our test command would look like this:
         def handle(self, *args, **options):
             print("The message was:", options['message'])
 
-- ``add_arguments`` exposes a standard argparser we can add arguments for the command.
-- ``handle`` is the actual command logic were the parsed arguments are passed in
+- ``add_arguments`` exposes a standard argparser we can add arguments for the
+  command.
+- ``handle`` is the actual command logic were the parsed arguments are passed
+  in
 - If the parameters to the command do not meet the requirements for the parser,
   a standard arparse help will be printed to the terminal
-- The command class must be named ``Command`` and there can only be one command per module
+- The command class must be named ``Command`` and there can only be one command
+  per module
 
 This is pretty much identical to who management commands are done in django.

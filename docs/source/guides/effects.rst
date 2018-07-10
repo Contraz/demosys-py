@@ -13,7 +13,7 @@ fbos and textures and a method for drawing. An effect is an independent python
 package of specific format.
 
 The Effect Package
-^^^^^^^^^^^^^^^^^^
+------------------
 
 The effect package should have the following structure (assuming our effect is
 named "cube").
@@ -42,7 +42,7 @@ We can also decide not to have any effect-local resources and configure
 a project-global resource directory. More about this `settings`.
 
 Registry
-^^^^^^^^
+--------
 
 For an effect to be recognised by the system, it has to be registered
 in the ``EFFECTS`` tuple/list in your settings module.
@@ -61,7 +61,7 @@ If you have multiple effects, you need to crate or use an existing
 what time or state.
 
 Resources
-^^^^^^^^^
+---------
 
 Resource loading is baked into the ``Effect`` base class. Methods are inherited
 from the base ``Effect`` class such as ``get_shader`` and ``get_texture``.
@@ -74,7 +74,7 @@ Methods fetching resources can take additional parameters to override defaults.
     self.get_texture("cube/texture.png", mipmap=True)
 
 The Effect Module
-^^^^^^^^^^^^^^^^^
+-----------------
 
 The effect module needs to be named ``effect.py`` and
 located in the root of the effect package. It can only contain a single effect

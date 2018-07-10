@@ -34,7 +34,8 @@ Performance in rendering is not straight forward to measure in any language.
 Simply adding timers in the code will not really tell us much unless
 we also query OpenGL about the performance.
 
-We could also try to compile your project with pypy, but we have not tested this (yet).
+We could also try to compile your project with pypy, but we have not tested
+this (yet).
 
 We can also strive to do more with less. Rendering, in the end, is really just
 about creating illusions.

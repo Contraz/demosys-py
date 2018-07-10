@@ -14,7 +14,7 @@ We proved some simple and powerful wrappers over OpenGL features in the
 
 
 Shader
-^^^^^^
+------
 
 In oder to draw something to the screen, we need a shader. There is no other
 way.
@@ -77,7 +77,7 @@ are not much more to them.
     :show-inheritance:
 
 Vertex Array Object
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 Vertex Array Objects represents the geometry we are drawing with shaders.
 They keep track of the buffer binding states of one or multiple Vertex
@@ -205,7 +205,7 @@ More examples can be found in the :doc:`geometry` module.
     :show-inheritance:
 
 Frame Buffer Object
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 Frame Buffer Objects are offscreen render targets.
 Internally they are simply textures that can be used further in rendering.
@@ -315,7 +315,8 @@ resporting the viewport size is also a huge burden off our shoulders.
     def draw(self, time, frametime, target):
         # ...
 
-There are of course ways to bypass the stack, but should be done with extreme caution.
+There are of course ways to bypass the stack, but should be done with extreme
+caution.
 
 .. Note:: We are also aiming to support layered rendering using the geometry shader.
    Please make an issue or pull request on github.

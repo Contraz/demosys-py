@@ -81,7 +81,7 @@ effect you want to draw.
 The ``key_events`` method will trigger on key presses.
 
 BaseEffectManger
-^^^^^^^^^^^^^^^^
+----------------
 
 .. autoclass:: demosys.effects.managers.BaseEffectManger
    :members:

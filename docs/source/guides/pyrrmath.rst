@@ -10,7 +10,7 @@ See `pyrr <https://pyrr.readthedocs.io/en/latest/>`__ for official docs.
    make an issue or pull request on github.
 
 Examples
-^^^^^^^^
+--------
 
 Identity
 
@@ -51,7 +51,7 @@ Rotation
     mat = matrix44.multiply(mat, z)
 
 Covert
-^^^^^^
+------
 
 .. code:: python
 
@@ -62,7 +62,7 @@ Covert
 
 
 Common Mistakes
-^^^^^^^^^^^^^^^
+---------------
 
 Matrices and vectors are just numpy arrays. When multiplying matrices,
 use the ``mult`` method/function.
