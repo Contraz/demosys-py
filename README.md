@@ -80,6 +80,7 @@ Contributors
 
 * [Einar Forselv](https://github.com/einarf)
 * [Arttu Tamminen](https://github.com/helgrima)
+* [binaryf](https://github.com/binaryf)
 
 Libraries
 ---------
@@ -92,4 +93,4 @@ GLFW binaries must be installed. Get from your favourite location. Use version 3
 
 Optional for audio:
 
-- [pygame](https://www.pygame.org) using the mixer module for music
+* [pygame](https://www.pygame.org) using the mixer module for music
