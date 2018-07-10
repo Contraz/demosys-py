@@ -2,7 +2,7 @@ Effect
 ======
 
 .. py:module:: demosys.effects
-.. py:currentmodule:: demosys.effects
+.. py:currentmodule:: demosys.effects.effect
 
 Draw Methods
 ------------

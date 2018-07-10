@@ -7,5 +7,5 @@ Reference
     effect.rst
     texture2d.rst
     fbo.rst
-    settings.rst
+    vao.rst
     shaderprogram.rst

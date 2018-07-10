@@ -3,7 +3,8 @@ Settings
 ========
 
 
-The ``settings.py`` file must be present in your project containing settings for the project.
+The ``settings.py`` file must be present in your project containing settings
+for the project.
 
 When running your project with ``manage.py``, the script will set
 the ``DEMOSYS_SETTINGS_MODULE`` environment variable. This tells
@@ -17,45 +18,44 @@ OPENGL
    We strongly discourage enabling backwards compatibility.
    It might of curse make sense in some cases if you bring in existing draw
    code from older projects. Be extra careful when using deprecated OpenGL states.
+   Mixing in `PyOpenGL` is also not recommended.
 
-Using default values we can be more confident that cross-platform support is upheld.
-Remember that some platforms/drivers such as on OS X, core profiles can only be forward
-compatible or the context creation will simply fail.
+Using default values we can be more confident that cross-platform support is
+upheld. Remember that some platforms/drivers such as on OS X, core profiles
+can only be forward compatible or the context creation will simply fail.
 
-The default OpenGL version is 4.1. Some older systems might need that tuned down to 3.3,
-but generally 4.1 is widely supported.
+The default OpenGL version is 3.3 to support a wider range of hardware.
 
 .. code:: python
 
     OPENGL = {
-        "version": (4, 1),  # 3.3 -> 4.1 is acceptable
+        "version": (3, 3),
         "profile": "core",
         "forward_compat": True,
     }
 
-
-- ``version`` describes the major and minor version of the OpenGL context we are creating
-- ``profile`` should ideally always be ``core``, but we leave it configurable for
-  those who might want to include legacy OpenGL code permanently or temporary. Do note that
-  not using core profile will exclude the project from working on certain setups and may
-  have unexpected side effects.
+- ``version`` describes the major and minor version of the OpenGL context we
+  are creating
+- ``profile`` should ideally always be ``core``, but we leave it configurable
+  for those who might want to include legacy OpenGL code permanently or
+  temporary. Do note that not using core profile will exclude the project
+  from working on certain setups and may have unexpected side effects.
 
   - ``any``: glfw.OPENGL_ANY_PROFILE,
   - ``core``: glfw.OPENGL_CORE_PROFILE,
   - ``compat``: glfw.OPENGL_COMPAT_PROFILE,
 
-- ``forward_compat`` True, is required for the project to work on OS X and drivers
-  only supporting forward compatibility.
+- ``forward_compat`` True, is required for the project to work on OS X and
+  platforms only supporting forward compatibility.
 
 .. Note:: To make your project work on OS X you cannot move past version 4.1 (sadly).
-   This doesn't mean we cannot move past 4.1, but as of right now we focus on
-   implementing features up to 4.1.
 
 WINDOW
 ^^^^^^
 
-Window/screen properties. If you are using Retina or 4k displays, be aware that these
-values can refer to the virtual size. The actual buffer size will be larger.
+Window/screen properties. If you are using Retina or 4k displays, be aware that
+these values can refer to the virtual size. The actual buffer size will be
+larger (buffer size will nomally be 2 x the window size)
 
 .. code:: python
 
@@ -69,25 +69,27 @@ values can refer to the virtual size. The actual buffer size will be larger.
         "cursor": False,
     }
 
-- ``size``: The window size to open. Note that on 4k displays and retina the actual
-  frame buffer size will normally be twice as large. Internally we query glfw for
-  the actual buffer size so the viewport can be correctly applied.
+- ``size``: The window size to open. Note that on 4k displays and retina the
+  actual frame buffer size will normally be twice as large. Internally we
+  query glfw for the actual buffer size so the viewport can be correctly
+  applied.
 - ``aspect_ratio`` is the enforced aspect ratio of the viewport.
 - ``fullscreen``: True if you want to create a context in fullscreen mode
-- ``resizable``: If the window should be resizable. This only applies in windowed mode.
-  Currently we constrain the window size to the aspect ratio of the resolution (needs improvement)
+- ``resizable``: If the window should be resizable. This only applies in
+  windowed mode. Currently we constrain the window size to the aspect ratio
+  of the resolution (needs improvement)
 - ``vsync``: Only render one frame per screen refresh
 - ``title``: The visible title on the window in windowed mode
 - ``cursor``: Should the mouse cursor be visible on the screen? Disabling
-  this is also useful in windowed mode when controlling the camera on some platforms
-  as moving the mouse outside the window can cause issues.
+  this is also useful in windowed mode when controlling the camera on some
+  platforms as moving the mouse outside the window can cause issues.
 
 The created window frame buffer will by default use:
 
 - RGBA8 (32 bit per pixel)
-- 32 bit depth buffer were 24 bits is for depth and 8 bits for stencil
+- 24 bit depth buffer
 - Double buffering
-- color, depth and stencil is cleared every frame
+- color and depth buffer is cleared for every frame
 
 MUSIC
 ^^^^^
@@ -117,11 +119,14 @@ track of system time using ``glfw``.
 
 Other timers are:
 
-- ``demosys.timers.MusicTimer`` requires ``MUSIC`` to be defined and will use the current time in an mp3.
-- ``demosys.timers.RocketTimer`` is the same as the default timer, but uses uses the rocket library.
-- ``demosys.timers.RocketMusicTimer`` requires ``MUSIC`` and ``ROCKET`` to be configured.
+- ``demosys.timers.MusicTimer`` requires ``MUSIC`` to be defined and will
+  use the current time in an audio file.
+- ``demosys.timers.RocketTimer`` is the same as the default timer, but uses
+  the pyrocket library with options to connect to an external sync tracker.
+- ``demosys.timers.RocketMusicTimer`` requires ``MUSIC`` and ``ROCKET`` to
+  be configured.
 
-More information can be found in the :doc:`timers` section.
+More information can be found in the :doc:`/guides/timers` section.
 
 ROCKET
 ^^^^^^
@@ -131,11 +136,13 @@ Configuration of the pyrocket_ sync-tracker library.
 - ``rps``: Number of rows per second
 - ``mode``: The mode to run the rocket client
 
-  - ``editor``: Requires a rocket editor to run so the library can connect to it
+  - ``editor``: Requires a rocket editor to run so the library can
+    connect to it
   - ``project``: Loads the project file created by the editor and plays it back
-  - ``files``: Loads the binary track files genrated by the client through remote export in the editor.
+  - ``files``: Loads the binary track files genrated by the client through
+    remote export in the editor
 
-- ``project_file``: The absolute path to the project file
+- ``project_file``: The absolute path to the project file (xml file)
 - ``files``: The absolute path to the directory containing binary track data
 
 .. code:: python
@@ -175,13 +182,13 @@ If we use the ``run`` sub-command, the first registered effect will run.
 
     EFFECT_MANAGER = 'demosys.effects.managers.single.SingleEffectManager'
 
-More info in the :doc:`effectmanagers` section.
+More info in the :doc:`guides/effectmanagers` section.
 
 SHADER_STRICT_VALIDATION
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Boolean value. If ``True`` shaders will raise ``ShaderError`` when for example
-setting uniforms variables that don't exist or is of the wrong type.
+Boolean value. If ``True`` shaders will raise ``ShaderError`` when
+setting uniforms variables that don't exist.
 
 If the value is ``False`` an error message will be generated instead.
 
@@ -192,7 +199,8 @@ brutal way that something is wrong.
 SHADER_DIRS/FINDERS
 ^^^^^^^^^^^^^^^^^^^
 
-``SHADER_DIRS`` contains absolute paths the ``FileSystemFinder`` will look for shaders.
+``SHADER_DIRS`` contains absolute paths the ``FileSystemFinder`` will
+look for shaders.
 
 ``EffectDirectoriesFinder`` will look for shaders in all registered effects
 in the order they were added. This assumes you have a ``shaders`` directory in
@@ -215,6 +223,7 @@ TEXTURE_DIRS/FINDERS
 ^^^^^^^^^^^^^^^^^^^^
 
 Same principle as ``SHADER_DIRS`` and ``SHADER_FINDERS``.
+The ``EffectDirectoriesFinder`` will look for a ``textures`` directory in effects.
 
 .. code:: python
 
@@ -234,6 +243,7 @@ SCENE_DIRS/FINDERS
 
 Same principle as ``SHADER_DIRS`` and ``SHADER_FINDERS``.
 This is where scene files such as wavefront and gltf files are loaded from.
+The ``EffectDirectoriesFinder`` will look for a ``scenes`` directory
 
 .. code:: python
 
@@ -253,7 +263,7 @@ SCREENSHOT_PATH
 ^^^^^^^^^^^^^^^
 
 Absolute path to the directory screenshots will be saved.
-If not defined or the directory don't exist, the current working directory will be used.
+If not defined or the directory don't exist it will be created.
 
 .. code:: python
 

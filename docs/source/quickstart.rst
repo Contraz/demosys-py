@@ -5,8 +5,8 @@ Getting Started
 Python 3
 ^^^^^^^^
 
-Make sure you have Python 3.5 or later installed. On Windows and OS X you can simply
-install the latest Python 3 by downloading an installer from the
+Make sure you have Python 3.5 or later installed. On Windows and OS X you can
+simply install the latest Python 3 by downloading an installer from the
 official_ Python site.
 
 Binary Dependencies
@@ -89,7 +89,8 @@ This will generate the following files:
 - ``settings.py`` is the settings for your project
 - ``manage.py`` is an executable script for running your project
 
-More information about projects can be found in the :doc:`project` section.
+More information about projects can be found in the :doc:`/guides/project`
+section.
 
 Creating an Effect
 ^^^^^^^^^^^^^^^^^^

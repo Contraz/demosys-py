@@ -21,7 +21,7 @@ This will generate the following structure:
     manage.py
 
 - ``settings.py`` is the settings for your project with good defaults. See
-  ``settings`` for more info.
+  :doc:`/settings` for more info.
 - ``manage.py`` is the entrypoint for running your project
 
 Effects

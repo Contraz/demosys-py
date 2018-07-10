@@ -1,17 +1,32 @@
 
-Geometry
-========
+The geometry module
+===================
 
 The ``demosys.geometry`` module currently provides some simple
-functions to generate VAOs.
+functions to generate VAOs for simple things.
 
-- Quad: Full screen quads for drawing offscreen buffers
-- Cube: Cube with normals, uvs and texture coordinates
-- Plane: A plane with a dimension and resolution
-- Sphere: A sphere
-- Points: Random points in 3D
+Examples:
 
-.. Note:: We definitely need more here. Please make pull requests or make an issue on github.
+.. code-block:: python
+
+    from demosys import geometry
+    # Create a fullscreen quad for overing the entire screen
+    vao = geometry.quad_fs()
+    # Create a 1 x 1 quad on the xy plane
+    vao = geometry.quad_2f(with=1.0, height=1.0)
+    # Create a unit cube
+    vao = geometry.cube(1.0, 1.0, 1.0)
+    # Create a bounding box
+    vao = geometry.bbox()
+    # Create a sphere
+    vao = geometry.sphere(radius=0.5, sectors=32, rings=16)
+    # Random 10.000 random points in 3d
+    vao = geometry.points_random_3d(10_000)
+
+.. Note:: Improvements or suggestions can be made by through pull
+   requests or issues on github.
+
+See the ``geometry`` reference for more info.
 
 Scene/Mesh File Formats
 ^^^^^^^^^^^^^^^^^^^^^^^
