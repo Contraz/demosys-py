@@ -21,9 +21,6 @@ DRAW_MODES = {
 
 SYSTEM_ATTRIBS = ['gl_InstanceID', ]
 
-class VAOError(Exception):
-    pass
-
 
 class BufferInfo:
     """Container for a vbo with additional information"""
@@ -229,3 +226,7 @@ class VAO:
         self.vaos[shader.vao_key] = vao
 
         return vao
+
+
+class VAOError(Exception):
+    pass
