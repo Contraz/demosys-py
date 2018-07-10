@@ -18,11 +18,14 @@ from demosys import opengl
 
 # Modules we want to remove from types
 MODULES = [
-    'demosys',
-    'opengl',
-    'texture',
-    'shader',
-    'moderngl',
+    'demosys.',
+    'opengl.',
+    'texture.',
+    'shader.',
+    'moderngl.',
+    'rocket.',
+    'tracks.',
+    'scene.',
 ]
 
 class TestCase(unittest.TestCase):
@@ -44,7 +47,7 @@ class TestCase(unittest.TestCase):
             sig = str(inspect.signature(getattr(getattr(module, classname), methodname)))
             sig = sig.replace('self, ', '').replace('typing.', '').replace(' -> None', '')
             for m in MODULES:
-                sig = sig.replace("{}.".format(m), '')
+                sig = sig.replace(m, '')
             sig = sig.replace('(self)', '()').replace(', *,', ',').replace('(*, ', '(')
             sig = re.sub(r'-> \'(\w+)\'', r'-> \1', sig)
             self.assertEqual(docsig, sig, msg=filename + '::' + method)
