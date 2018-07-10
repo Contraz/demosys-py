@@ -2,7 +2,7 @@ Effect
 ======
 
 .. py:module:: demosys.effects
-.. py:currentmodule:: demosys.effects.effect
+.. py:currentmodule:: demosys.effects
 
 Draw Methods
 ------------
@@ -12,10 +12,10 @@ Draw Methods
 Resource Methods
 ----------------
 
-.. automethod:: Effect.get_shader(path, local=False)
-.. automethod:: Effect.get_texture(path, local=False, **kwargs)
-.. automethod:: Effect.get_track(name, local=False)
-.. automethod:: Effect.get_scene(path, local=False, **kwargs)
+.. automethod:: Effect.get_shader(path, local=False) -> ShaderProgram
+.. automethod:: Effect.get_texture(path, local=False, **kwargs) -> Texture2D
+.. automethod:: Effect.get_track(name, local=False) -> Track
+.. automethod:: Effect.get_scene(path, local=False, **kwargs) -> Scene
 
 Utility Methods
 ---------------
