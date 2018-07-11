@@ -18,7 +18,7 @@ class Scenes:
     def count(self):
         return len(self.scenes)
 
-    def get(self, path, create=False, **kwargs):
+    def get(self, path, create=False, **kwargs) -> Scene:
         """
         Get or create a scene object.
         This may return an empty object that will be filled during load

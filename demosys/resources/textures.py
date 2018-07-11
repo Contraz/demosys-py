@@ -1,9 +1,10 @@
 """Shader Registry"""
+from typing import Union
 from PIL import Image
 
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.texturefiles.finders import get_finders
-from demosys.opengl import Texture2D
+from demosys.opengl import Texture2D, TextureArray
 
 
 class Textures:
@@ -21,7 +22,7 @@ class Textures:
         """
         return len(self.textures)
 
-    def get(self, path, create=False, cls=Texture2D, **kwargs):
+    def get(self, path, create=False, cls=Texture2D, **kwargs) -> Union[Texture2D, TextureArray]:
         """
         Get or create a texture object.
         This may return an empty object that will be filled during load

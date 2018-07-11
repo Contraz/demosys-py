@@ -20,7 +20,7 @@ class Shaders:
         """
         return len(self.shaders)
 
-    def get(self, path, create=False):
+    def get(self, path, create=False) -> ShaderProgram:
         """
         Get or create a shader object.
         This may return an empty object that will be filled during load

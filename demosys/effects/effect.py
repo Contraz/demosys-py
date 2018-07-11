@@ -156,7 +156,7 @@ class Effect:
         return resources.textures.get(path, create=True, **kwargs)
 
     @local_path
-    def get_texture_array(self, path, layers=0, local=False, **kwargs) -> Texture2D:
+    def get_texture_array(self, path, layers=0, local=False, **kwargs) -> TextureArray:
         """
         Get a texture or schedule the texture for loading.
         If the resource is not loaded yet, an empty texture object

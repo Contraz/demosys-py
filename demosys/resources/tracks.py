@@ -10,7 +10,7 @@ class Tracks:
         self.tacks = []
         self.track_map = {}
 
-    def get(self, name):
+    def get(self, name) -> Track:
         """
         Get or create a Track object.
 
