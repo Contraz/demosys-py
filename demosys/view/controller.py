@@ -22,7 +22,8 @@ def run(manager=None):
 
     :param manager: The effect manager to use
     """
-    window_cls_name = getattr(settings.WINDOW, 'class', 'demosys.context.glfw.GLFW_Window')
+    window_cls_name = settings.WINDOW.get('class', 'demosys.context.glfw.GLFW_Window')
+    print("window class", window_cls_name)
     window_cls = module_loading.import_string(window_cls_name)
     window = window_cls()
 
