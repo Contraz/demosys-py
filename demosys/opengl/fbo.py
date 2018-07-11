@@ -3,33 +3,31 @@ from typing import List
 from demosys import context
 from demosys.opengl import DepthTexture, Texture2D
 
-WINDOW_FBO = None
-
 
 class WindowFBO:
-    """Fake FBO representing default render target"""
-    def __init__(self, window):
-        self.window = window
-        self.ctx = context.ctx()
+    window = None
 
-    def use(self):
+    @classmethod
+    def use(cls):
         """Sets the viewport back to the buffer size of the screen/window"""
         # The expected height with the current viewport width
-        expected_height = int(self.window.buffer_width / self.window.aspect_ratio)
+        expected_height = int(cls.window.buffer_width / cls.window.aspect_ratio)
 
         # How much positive or negative y padding
-        blank_space = self.window.buffer_height - expected_height
+        blank_space = cls.window.buffer_height - expected_height
 
-        self.ctx.screen.use()
-        self.ctx.viewport = (0, blank_space // 2, self.window.buffer_width, expected_height)
+        cls.window.ctx.screen.use()
+        cls.window.ctx.viewport = (0, blank_space // 2, cls.window.buffer_width, expected_height)
 
-    def release(self):
+    @classmethod
+    def release(cls):
         """Dummy release method"""
         pass
 
-    def clear(self, red=0.0, green=0.0, blue=0.0, depth=1.0, viewport=None):
+    @classmethod
+    def clear(cls, red=0.0, green=0.0, blue=0.0, depth=1.0, viewport=None):
         """Dummy clear method"""
-        self.ctx.screen.clear(red=red, green=green, blue=blue, depth=depth, viewport=viewport)
+        cls.ctx.screen.clear(red=red, green=green, blue=blue, depth=depth, viewport=viewport)
 
 
 class FBO:
@@ -167,7 +165,7 @@ class FBO:
         :param stack: (bool) If the bind should be popped form the FBO stack.
         """
         if not stack:
-            WINDOW_FBO.use()
+            WindowFBO.use()
             return
 
         # Are we trying to release an FBO that is not bound?
@@ -184,7 +182,7 @@ class FBO:
         if FBO._stack:
             parent = FBO._stack[-1]
         else:
-            parent = WINDOW_FBO
+            parent = WindowFBO
 
         # Bind the parent FBO
         if parent:
