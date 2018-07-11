@@ -7,7 +7,7 @@ from demosys.view import screenshot
 from .base import Window
 
 
-class GLTFWindow(Window):
+class GLFW_Window(Window):
     min_glfw_version = (3, 2, 1)
 
     def __init__(self):

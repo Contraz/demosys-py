@@ -10,7 +10,6 @@ OpenGL.ERROR_CHECKING = False  # noqa
 
 from demosys import context, resources
 from demosys.conf import settings
-from demosys.context.glfw import GLTFWindow
 from demosys.effects.registry import Effect
 from demosys.opengl.fbo import WindowFBO
 from demosys.scene import camera
@@ -23,8 +22,10 @@ def run(manager=None):
 
     :param manager: The effect manager to use
     """
-    # Load context class here
-    window = GLTFWindow()
+    window_cls_name = getattr(settings.WINDOW, 'class', 'demosys.context.glfw.GLFW_Window')
+    window_cls = module_loading.import_string(window_cls_name)
+    window = window_cls()
+
     window.manager = manager
     context.WINDOW = window
     window.print_context_info()

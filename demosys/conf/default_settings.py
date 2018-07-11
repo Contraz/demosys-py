@@ -36,6 +36,7 @@ OPENGL = {
 
 # Window size
 WINDOW = {
+    "class": "demosys.context.glfw.GLFW_Window",
     "size": (1280, 720),
     "aspect_ratio": 16 / 9,
     "fullscreen": False,

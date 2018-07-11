@@ -39,6 +39,7 @@ larger (buffer size will nomally be 2 x the window size)
 .. code:: python
 
     WINDOW = {
+        "class": "demosys.context.glfw.GLFW_Window",
         "size": (1280, 768),
         "aspect_ratio": 16 / 9,
         "fullscreen": False,
@@ -48,6 +49,7 @@ larger (buffer size will nomally be 2 x the window size)
         "cursor": False,
     }
 
+- ``class``: The class for our window (This can be customized)
 - ``size``: The window size to open. Note that on 4k displays and retina the
   actual frame buffer size will normally be twice as large. Internally we
   query glfw for the actual buffer size so the viewport can be correctly
