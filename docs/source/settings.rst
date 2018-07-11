@@ -2,56 +2,35 @@
 Settings
 ========
 
-
 The ``settings.py`` file must be present in your project containing settings
 for the project.
 
 When running your project with ``manage.py``, the script will set
 the ``DEMOSYS_SETTINGS_MODULE`` environment variable. This tells
 the framework where it can import the project settings. If the environment
-variable is not set the project cannot start.
+variable is not set, the project cannot start.
 
 OPENGL
-^^^^^^
+------
 
-.. Warning:: We cannot guarantee the framework will work properly for non-default values.
-   We strongly discourage enabling backwards compatibility.
-   It might of curse make sense in some cases if you bring in existing draw
-   code from older projects. Be extra careful when using deprecated OpenGL states.
-   Mixing in `PyOpenGL` is also not recommended.
+Sets the minimum required OpenGL version to run your project.
+A forward compatible core context will be always be created. This means
+the system will pick the highest available OpenGL version available.
 
-Using default values we can be more confident that cross-platform support is
-upheld. Remember that some platforms/drivers such as on OS X, core profiles
-can only be forward compatible or the context creation will simply fail.
-
-The default OpenGL version is 3.3 to support a wider range of hardware.
+The default and lowest OpenGL version is 3.3 to support a wider
+range of hardware.
+To make your project work on OS X you cannot move past version 4.1 (sadly).
 
 .. code:: python
 
     OPENGL = {
         "version": (3, 3),
-        "profile": "core",
-        "forward_compat": True,
     }
 
-- ``version`` describes the major and minor version of the OpenGL context we
-  are creating
-- ``profile`` should ideally always be ``core``, but we leave it configurable
-  for those who might want to include legacy OpenGL code permanently or
-  temporary. Do note that not using core profile will exclude the project
-  from working on certain setups and may have unexpected side effects.
-
-  - ``any``: glfw.OPENGL_ANY_PROFILE,
-  - ``core``: glfw.OPENGL_CORE_PROFILE,
-  - ``compat``: glfw.OPENGL_COMPAT_PROFILE,
-
-- ``forward_compat`` True, is required for the project to work on OS X and
-  platforms only supporting forward compatibility.
-
-.. Note:: To make your project work on OS X you cannot move past version 4.1 (sadly).
+Only increase the OpenGL version if you use features above 3.3.
 
 WINDOW
-^^^^^^
+------
 
 Window/screen properties. If you are using Retina or 4k displays, be aware that
 these values can refer to the virtual size. The actual buffer size will be
@@ -92,7 +71,7 @@ The created window frame buffer will by default use:
 - color and depth buffer is cleared for every frame
 
 MUSIC
-^^^^^
+-----
 
 The ``MUSIC`` attribute is used by timers supporting audio playback.
 When using a timer not requiring an audio file, the value is ignored.
@@ -107,7 +86,7 @@ Should contain a string with the absolute path to the audio file.
     MUSIC = os.path.join(PROJECT_DIR, 'resources/music/tg2035.mp3')
 
 TIMER
-^^^^^
+-----
 
 This is the timer class that controls time in your project.
 This defaults to ``demosys.timers.Timer`` that is simply keeps
@@ -129,7 +108,7 @@ Other timers are:
 More information can be found in the :doc:`/guides/timers` section.
 
 ROCKET
-^^^^^^
+------
 
 Configuration of the pyrocket_ sync-tracker library.
 
@@ -155,7 +134,7 @@ Configuration of the pyrocket_ sync-tracker library.
     }
 
 EFFECTS
-^^^^^^^
+-------
 
 Effect packages that will be recognized by the project.
 Initialization should happens in the order they appear in the list.
@@ -167,7 +146,7 @@ Initialization should happens in the order they appear in the list.
     )
 
 EFFECT_MANAGER
-^^^^^^^^^^^^^^
+--------------
 
 Effect mangers are pluggable classed that initialize and run effects.
 When only having a single effect we can run it using ``runeffect``,
@@ -185,7 +164,7 @@ If we use the ``run`` sub-command, the first registered effect will run.
 More info in the :doc:`guides/effectmanagers` section.
 
 SHADER_STRICT_VALIDATION
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 Boolean value. If ``True`` shaders will raise ``ShaderError`` when
 setting uniforms variables that don't exist.
@@ -197,7 +176,7 @@ missing or incorrect uniforms. Other times you want to know in a more
 brutal way that something is wrong.
 
 SHADER_DIRS/FINDERS
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 ``SHADER_DIRS`` contains absolute paths the ``FileSystemFinder`` will
 look for shaders.
@@ -220,7 +199,7 @@ your effect package.
     )
 
 TEXTURE_DIRS/FINDERS
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 Same principle as ``SHADER_DIRS`` and ``SHADER_FINDERS``.
 The ``EffectDirectoriesFinder`` will look for a ``textures`` directory in effects.
@@ -239,7 +218,7 @@ The ``EffectDirectoriesFinder`` will look for a ``textures`` directory in effect
     )
 
 SCENE_DIRS/FINDERS
-^^^^^^^^^^^^^^^^^^
+------------------
 
 Same principle as ``SHADER_DIRS`` and ``SHADER_FINDERS``.
 This is where scene files such as wavefront and gltf files are loaded from.
@@ -260,7 +239,7 @@ The ``EffectDirectoriesFinder`` will look for a ``scenes`` directory
 
 
 SCREENSHOT_PATH
-^^^^^^^^^^^^^^^
+---------------
 
 Absolute path to the directory screenshots will be saved.
 If not defined or the directory don't exist it will be created.

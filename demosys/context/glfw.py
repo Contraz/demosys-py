@@ -8,12 +8,6 @@ from demosys.core.exceptions import ImproperlyConfigured
 
 from .base import Context
 
-PROFILES = {
-    'any': glfw.OPENGL_ANY_PROFILE,
-    'core': glfw.OPENGL_CORE_PROFILE,
-    'compat': glfw.OPENGL_COMPAT_PROFILE,
-}
-
 
 class GLTFWindow(Context):
     min_glfw_version = (3, 2, 1)
@@ -35,13 +29,9 @@ class GLTFWindow(Context):
         glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, settings.OPENGL['version'][0])
         glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, settings.OPENGL['version'][1])
 
-        profile = PROFILES.get(settings.OPENGL['profile'])
-        if not profile:
-            raise ImproperlyConfigured("OPENGL profile {} not supported".format(profile))
-
         glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
-        if settings.OPENGL.get('forward_compat'):
-            glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
+        glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
+
         if not settings.WINDOW.get('resizable'):
             glfw.window_hint(glfw.RESIZABLE, False)
 

@@ -32,8 +32,6 @@ SCREENSHOT_PATH = None
 # forward_compat: Whether we should drop fixed pipeline and only support core
 OPENGL = {
     "version": (3, 3),
-    "profile": "core",
-    "forward_compat": True,
 }
 
 # Window size
