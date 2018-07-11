@@ -4,7 +4,6 @@ import glfw
 
 import moderngl as mgl
 from demosys.conf import settings
-from demosys.core.exceptions import ImproperlyConfigured
 
 from .base import Context
 
@@ -36,14 +35,7 @@ class GLTFWindow(Context):
             glfw.window_hint(glfw.RESIZABLE, False)
 
         glfw.window_hint(glfw.DOUBLEBUFFER, True)
-
-        # glfw.window_hint(glfw.RED_BITS, 8)
-        # glfw.window_hint(glfw.GREEN_BITS, 8)
-        # glfw.window_hint(glfw.BLUE_BITS, 8)
-        # glfw.window_hint(glfw.ALPHA_BITS, 8)
-
         glfw.window_hint(glfw.DEPTH_BITS, 24)
-        # glfw.window_hint(glfw.STENCIL_BITS, 8)
 
         monitor = None
         if settings.WINDOW.get('fullscreen'):
@@ -53,17 +45,6 @@ class GLTFWindow(Context):
 
             self.width, self.height = mode.size.width, mode.size.height
             print("picked fullscreen mode:", mode)
-
-            # modes = glfw.get_video_modes(monitor)
-            # print("Supported fullscreen resolutions:")
-            # print("\n".join(str(m) for m in modes))
-            #
-            # # Pick a mode close to the configured one
-            # for mode in modes:
-            #     if self.width <= mode[0][0]:
-            #         self.width, self.height = mode[0]
-            #         print("picked fullscreen mode:", mode)
-            #         break
 
         print("Window size:", self.width, self.height)
         self.window = glfw.create_window(self.width, self.height, self.title, monitor, None)
