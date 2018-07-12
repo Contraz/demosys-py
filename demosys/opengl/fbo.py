@@ -10,14 +10,8 @@ class WindowFBO:
     @classmethod
     def use(cls):
         """Sets the viewport back to the buffer size of the screen/window"""
-        # The expected height with the current viewport width
-        expected_height = int(cls.window.buffer_width / cls.window.aspect_ratio)
-
-        # How much positive or negative y padding
-        blank_space = cls.window.buffer_height - expected_height
-
-        cls.window.ctx.screen.use()
-        cls.window.ctx.viewport = (0, blank_space // 2, cls.window.buffer_width, expected_height)
+        cls.window.use()
+        cls.window.viewport()
 
     @classmethod
     def release(cls):
@@ -27,7 +21,13 @@ class WindowFBO:
     @classmethod
     def clear(cls, red=0.0, green=0.0, blue=0.0, depth=1.0, viewport=None):
         """Dummy clear method"""
-        cls.ctx.screen.clear(red=red, green=green, blue=blue, depth=depth, viewport=viewport)
+        cls.window.clear()
+
+    @property
+    @classmethod
+    def mglo(cls):
+        """Internal ModernGL fbo"""
+        return cls.window.mgl_fbo()
 
 
 class FBO:
@@ -224,6 +224,10 @@ class FBO:
             self.depth_buffer,
         )
 
+    @property
+    def mglo(self):
+        """Internal ModernGL fbo"""
+        return self.fbo
 
 class FBOError(Exception):
     """Generic FBO Error"""

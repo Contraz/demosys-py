@@ -50,6 +50,7 @@ class GLFW_Window(Window):
         self.buffer_width, self.buffer_height = glfw.get_framebuffer_size(self.window)
         print("Frame buffer size:", self.buffer_width, self.buffer_height)
         print("Actual window size:", glfw.get_window_size(self.window))
+        self._calc_viewport()
 
         glfw.make_context_current(self.window)
 
@@ -60,10 +61,13 @@ class GLFW_Window(Window):
 
         glfw.set_key_callback(self.window, self.key_event_callback)
         glfw.set_cursor_pos_callback(self.window, self.mouse_event_callback)
-        # glfw.set_window_size_callback(self.window, window_resize_callback)
+        glfw.set_window_size_callback(self.window, self.window_resize_callback)
 
         # Create mederngl context from existing context
         self.ctx = mgl.create_context()
+
+    def use(self):
+        self.ctx.screen.use()
 
     def should_close(self):
         return glfw.window_should_close(self.window)
@@ -72,6 +76,7 @@ class GLFW_Window(Window):
         glfw.set_window_should_close(self.window, True)
 
     def swap_buffers(self):
+        self.frames += 1
         glfw.swap_buffers(self.window)
         self.poll_events()
 
@@ -80,9 +85,13 @@ class GLFW_Window(Window):
         self.height = height
         self.buffer_width, self.buffer_height = glfw.get_framebuffer_size(self.window)
         print("Resize:", self.width, self.height, self.buffer_width, self.buffer_height)
+        super().resize(width, height)
 
     def terminate(self):
         glfw.terminate()
+
+    def mgl_fbo(self):
+        return self.ctx.screen
 
     def poll_events(self):
         """Poll events from glfw"""

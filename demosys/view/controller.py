@@ -8,10 +8,9 @@ import time
 import OpenGL
 OpenGL.ERROR_CHECKING = False  # noqa
 
-from demosys import context, resources
+from demosys import resources
 from demosys.conf import settings
 from demosys.effects.registry import Effect
-from demosys.opengl.fbo import WindowFBO
 from demosys.scene import camera
 from demosys.utils import module_loading
 
@@ -26,24 +25,19 @@ def run(manager=None):
     print("window class", window_cls_name)
     window_cls = module_loading.import_string(window_cls_name)
     window = window_cls()
-
-    window.manager = manager
-    context.WINDOW = window
     window.print_context_info()
-
-    WindowFBO.window = window
-    window.fbo = WindowFBO
+    window.manager = manager
 
     print("Loader started at", time.time())
 
     # Inject attributes into the base Effect class
-    setattr(Effect, '_window_width', context.WINDOW.buffer_width)
-    setattr(Effect, '_window_height', context.WINDOW.buffer_height)
-    setattr(Effect, '_window_aspect', context.WINDOW.aspect_ratio)
-    setattr(Effect, '_ctx', context.ctx())
+    setattr(Effect, '_window_width', window.buffer_width)
+    setattr(Effect, '_window_height', window.buffer_height)
+    setattr(Effect, '_window_aspect', window.aspect_ratio)
+    setattr(Effect, '_ctx', window.ctx)
 
     # Set up the default system camera
-    window.sys_camera = camera.SystemCamera(aspect=context.WINDOW.aspect_ratio, fov=60.0, near=1, far=1000)
+    window.sys_camera = camera.SystemCamera(aspect=window.aspect_ratio, fov=60.0, near=1, far=1000)
     setattr(Effect, '_sys_camera', window.sys_camera)
 
     # Initialize Effects
@@ -66,7 +60,7 @@ def run(manager=None):
     window.timer.start()
 
     # Main loop
-    frames, frame_time = 0, 60.0 / 1000.0
+    frame_time = 60.0 / 1000.0
     # time_start = glfw.get_time()
     time_start = time.time()
     prev_time = window.timer.get_time()
@@ -74,14 +68,12 @@ def run(manager=None):
     while not window.should_close():
         current_time = window.timer.get_time()
 
+        window.use()
         window.viewport()
         window.clear()
-
-        manager.draw(current_time, frame_time, WindowFBO)
-
+        window.draw(current_time, frame_time)
         window.swap_buffers()
 
-        frames += 1
         frame_time = current_time - prev_time
         prev_time = current_time
 
@@ -91,6 +83,6 @@ def run(manager=None):
     window.terminate()
 
     if duration > 0:
-        fps = round(frames / duration, 2)
-        print("Duration: {}s rendering {} frames at {} fps".format(duration, frames, fps))
+        fps = round(window.frames / duration, 2)
+        print("Duration: {}s rendering {} frames at {} fps".format(duration, window.frames, fps))
         print("Timeline duration:", duration_timer)
