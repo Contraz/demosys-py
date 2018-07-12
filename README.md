@@ -76,6 +76,28 @@ In order to use the framework it's an advantage to know the following:
 
 If you are missing any of these requirements the framework can definitely be used to learn. 0 lines of code are needed to generate a project with a spinning cube and you can star poking at things.
 
+Local Development
+-----------------
+
+Installing the project in development mode (in a virtualenv):
+
+```bash
+python setup.py develop
+```
+
+Running tests:
+
+```bash
+pytest
+```
+
+Bulding docs:
+
+```bash
+cd docs
+make html
+```
+
 Contributors
 ------------
 
