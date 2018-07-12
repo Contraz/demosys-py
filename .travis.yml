@@ -4,15 +4,20 @@ sudo: false
 
 matrix:
   include:
-   - env: TOXENV=pep8
-     python: 3.6
+    - os: linux
+      env:
+        - TOXENV=pep8
+      before_script:
+        - "export DISPLAY=:99.0"
+        - "sh -e /etc/init.d/xvfb start"
+        - sleep 3 # give xvfb some time to start
+      python: 3.6
 
 install: 
-  - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
   - pip install tox
   - pip install pytest
   - python setup.py develop
 
 script:
   - tox
-  - pytest tests/test_documentation.py
+  - pytest tests/test_docs.py tests/test_window.py
