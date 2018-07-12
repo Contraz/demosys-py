@@ -10,15 +10,23 @@ controller.create_window()
 
 
 class DemosysTestCase(TestCase):
+
     window = context.window()
 
-    def create_shader(self, source):
-        program = ShaderProgram(name="test")
-        program.set_source(source)
-        return program
+    def create_shader(self, source=None, path=None):
+        """
+        Create a shader from source or file
+        """
+        program = ShaderProgram(name="test", path=path)
 
-    def get_shader(self, path):
-        return resources.shaders.get(path, create=True)
+        if source:
+            program.set_source(source)
+            program.prepare()
+
+        if path:
+            resources.shaders.load_shader(program)
+
+        return program
 
     def get_texture(self, path):
         return resources.textures.get(path, create=True)
