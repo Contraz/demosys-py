@@ -7,7 +7,7 @@ Texture2D
 Create
 ------
 
-.. automethod:: Texture2D.create(size, components, data=None, samples=0, alignment=1, dtype='f1', mipmap=False) -> Texture2D
+.. automethod:: Texture2D.create(size, components=4, data=None, samples=0, alignment=1, dtype='f1', mipmap=False) -> Texture2D
 .. automethod:: Texture2D.from_image(path, image=None, **kwargs)
 
 Methods
