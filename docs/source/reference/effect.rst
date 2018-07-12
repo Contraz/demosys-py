@@ -16,6 +16,7 @@ Resource Methods
 
 .. automethod:: Effect.get_shader(path, local=False) -> ShaderProgram
 .. automethod:: Effect.get_texture(path, local=False, **kwargs) -> Texture2D
+.. automethod:: Effect.get_texture_array(path, layers=0, local=False, **kwargs) -> TextureArray
 .. automethod:: Effect.get_track(name, local=False) -> Track
 .. automethod:: Effect.get_scene(path, local=False, **kwargs) -> Scene
 

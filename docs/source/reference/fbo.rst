@@ -24,4 +24,6 @@ Methods
 
 Attributes
 ----------
+
 .. autoattribute:: FBO.size
+.. autoattribute:: FBO.mglo
