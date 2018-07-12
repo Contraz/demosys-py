@@ -14,6 +14,7 @@ OPENGL = {
 }
 
 WINDOW = {
+    "class": "demosys.context.headless.HeadlessWindow",
     "size": (1280, 720),
     "vsync": True,
     "resizable": True,
