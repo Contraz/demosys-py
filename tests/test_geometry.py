@@ -1,10 +1,8 @@
 import pytest
-from demosys.test import DemosysTestCase
-from demosys import geometry
 
-# @pytest.fixture
-# def shader():
-    
+from demosys import geometry
+from demosys.test import DemosysTestCase
+
 
 class GeometryTest(DemosysTestCase):
 
