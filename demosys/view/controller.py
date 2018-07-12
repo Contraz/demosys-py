@@ -15,17 +15,22 @@ from demosys.scene import camera
 from demosys.utils import module_loading
 
 
+def create_window():
+    window_cls_name = settings.WINDOW.get('class', 'demosys.context.glfw.GLFW_Window')
+    print("window class", window_cls_name)
+    window_cls = module_loading.import_string(window_cls_name)
+    window = window_cls()
+    window.print_context_info()
+    return window
+
+
 def run(manager=None):
     """
     Initialize, load and run
 
     :param manager: The effect manager to use
     """
-    window_cls_name = settings.WINDOW.get('class', 'demosys.context.glfw.GLFW_Window')
-    print("window class", window_cls_name)
-    window_cls = module_loading.import_string(window_cls_name)
-    window = window_cls()
-    window.print_context_info()
+    window = create_window()
     window.manager = manager
 
     print("Loader started at", time.time())

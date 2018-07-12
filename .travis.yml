@@ -7,6 +7,11 @@ matrix:
    - env: TOXENV=pep8
      python: 3.6
 
-install: pip install tox
+install: 
+  - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
+  - pip install tox
+  - pip install pytest
 
-script: tox
+script:
+  - tox
+  - pytest

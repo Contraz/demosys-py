@@ -23,6 +23,8 @@ WINDOW = {
     "cursor": True,
 }
 
+HEADLESS_FRAMES = 1
+
 # MUSIC = os.path.join(PROJECT_DIR, 'resources/music/tg2035.mp3')
 TIMER = 'demosys.timers.Timer'
 # TIMER = 'demosys.timers.RocketTimer'
