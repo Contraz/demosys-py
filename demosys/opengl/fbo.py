@@ -229,6 +229,7 @@ class FBO:
         """Internal ModernGL fbo"""
         return self.fbo
 
+
 class FBOError(Exception):
     """Generic FBO Error"""
     pass
