@@ -16,6 +16,7 @@ but can of course be used for other purposes.
 Made for people who enjoy playing around with modern OpenGL without spending lots of time creating all the tooling to get things up and running.
 
 * [Documentation](http://demosys-py.readthedocs.io/)
+* [ModernGL Documentation](https://moderngl.readthedocs.io)
 * [Examples](https://github.com/Contraz/demosys-py-test)
 * [Effect Templates](https://github.com/Contraz/demosys-py/tree/master/demosys/effect_templates)
 * [demosys-py on Github](https://github.com/Contraz/demosys-py)
