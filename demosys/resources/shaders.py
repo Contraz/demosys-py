@@ -39,30 +39,46 @@ class Shaders:
     def load(self, reload=False):
         """
         Loads all the shaders using the configured finders.
+
+        :param reload: (bool) Are we reloading the shaders?
         """
-        finders = list(get_finders())
         print("Loading shaders:")
         for name, shader in self.shaders.items():
-            for finder in finders:
-                path = finder.find(name)
-                if path:
-                    print(" - {}".format(path))
-                    with open(path, 'r') as fd:
-                        shader.set_source(fd.read())
+            self.load_shader(shader, name=name, reload=reload)
 
-                    try:
-                        shader.prepare(reload=reload)
-                    except (ShaderError, moderngl.Error) as err:
-                        print("ShaderError: ", err)
-                        if not reload:
-                            raise
-                    except Exception as err:
-                        print(err)
+    def load_shader(self, shader, name=None, reload=False):
+        """
+        Loads a single shader adding it to the shader registry
+
+        :param shader: The shader to load
+        :param name: Unique name in the registry. Usually the path
+        :param reload: (bool) Are we reloading the shader?
+        """
+        if name is None:
+            name = shader.path
+
+        finders = list(get_finders())
+
+        for finder in finders:
+            path = finder.find(name)
+            if path:
+                print(" - {}".format(path))
+                with open(path, 'r') as fd:
+                    shader.set_source(fd.read())
+
+                try:
+                    shader.prepare(reload=reload)
+                except (ShaderError, moderngl.Error) as err:
+                    print("ShaderError: ", err)
+                    if not reload:
                         raise
+                except Exception as err:
+                    print(err)
+                    raise
 
-                    break
-            else:
-                raise ImproperlyConfigured("Cannot find shader {}".format(name))
+                break
+        else:
+            raise ImproperlyConfigured("Cannot find shader {}".format(name))
 
     def reload(self):
         """
