@@ -1,6 +1,5 @@
+import time
 from math import cos, radians, sin
-
-import glfw
 
 from demosys.opengl import Projection
 from pyrr import Vector3, matrix44, vector, vector3
@@ -195,11 +194,11 @@ class SystemCamera(Camera):
         :return: The current view matrix for the camera
         """
         # Use separate time in camera so we can move it when the demo is paused
-        time = glfw.get_time()
+        now = time.time()
         # If the camera has been inactive for a while, a large time delta
         # can suddenly move the camera far away from the scene
-        t = max(time - self._last_time, 0)
-        self._last_time = time
+        t = max(now - self._last_time, 0)
+        self._last_time = now
 
         # X Movement
         if self._xdir == POSITIVE:
