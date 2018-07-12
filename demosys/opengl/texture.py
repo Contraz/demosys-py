@@ -123,7 +123,7 @@ class Texture2D(BaseTexture):
         _init_texture2d_draw()
 
     @classmethod
-    def create(cls, size, components, data=None, samples=0, alignment=1, dtype='f1', mipmap=False) -> 'Texture2D':
+    def create(cls, size, components=4, data=None, samples=0, alignment=1, dtype='f1', mipmap=False) -> 'Texture2D':
         """
         Creates a 2d texture.
         All parameters are passed on the texture initializer.
@@ -265,6 +265,10 @@ class DepthTexture(BaseTexture):
         self.mglo = self.ctx.depth_texture(size, data=data, samples=samples, alignment=alignment)
         self.mglo.filter = mgl.LINEAR, mgl.LINEAR
         _init_depth_texture_draw()
+
+    @classmethod
+    def create(cls, size, data=None, samples=0, alignment=8):
+        return cls(size, data=data, samples=samples, alignment=alignment)
 
     def draw(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
