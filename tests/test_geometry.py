@@ -7,7 +7,7 @@ from demosys.test import DemosysTestCase
 class GeometryTest(DemosysTestCase):
 
     def setUp(self):
-        self.shader = self.create_shader(path="basic_pos.glsl")
+        self.shader = self.create_shader(path="vf_pos.glsl")
 
     def test_bbox(self):
         vao = geometry.bbox()
