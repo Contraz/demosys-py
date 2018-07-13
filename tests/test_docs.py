@@ -9,7 +9,8 @@ import inspect
 import os
 import re
 import unittest
-from demosys.test import DemosysTestCase
+
+os.environ['DEMOSYS_SETTINGS_MODULE'] = 'tests.settings'  # noqa
 
 import demosys
 from demosys import effects, opengl
