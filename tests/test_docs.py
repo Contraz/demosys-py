@@ -66,6 +66,11 @@ class TestCase(unittest.TestCase):
             os.path.join('reference', 'texturearray.rst'),
             opengl, 'TextureArray', [])
 
+    def test_depth_texture_docs(self):
+        self.validate(
+            os.path.join('reference', 'depthtexture.rst'),
+            opengl, 'DepthTexture', ['quad', 'shader', 'sampler', 'build_mipmaps'])
+
     def test_fbo_docs(self):
         self.validate(
             os.path.join('reference', 'fbo.rst'),
