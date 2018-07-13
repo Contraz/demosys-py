@@ -10,11 +10,8 @@ import os
 import re
 import unittest
 
-os.environ['DEMOSYS_SETTINGS_MODULE'] = 'tests.settings'
-
 import demosys
-from demosys import effects
-from demosys import opengl
+from demosys import effects, opengl
 
 # Modules we want to remove from types
 MODULES = [

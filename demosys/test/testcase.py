@@ -1,4 +1,7 @@
+import os
 from unittest import TestCase
+
+os.environ['DEMOSYS_SETTINGS_MODULE'] = 'tests.settings'  # noqa
 
 import demosys
 from demosys import context, resources
