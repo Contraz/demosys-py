@@ -9,7 +9,7 @@ from demosys.opengl import ShaderProgram, TextureArray
 from demosys.view import controller
 
 demosys.setup()
-controller.create_window()
+controller.create_window().use()
 
 
 class DemosysTestCase(TestCase):
