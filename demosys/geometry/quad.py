@@ -1,4 +1,4 @@
-import moderngl as mgl
+import moderngl
 import numpy
 from demosys.opengl import VAO
 from demosys import context
@@ -53,7 +53,7 @@ def quad_2d(width, height, xpos=0.0, ypos=0.0) -> VAO:
         1.0, 1.0,
     ], dtype=numpy.float32).tobytes())
 
-    vao = VAO("geometry:quad", mode=mgl.TRIANGLES)
+    vao = VAO("geometry:quad", mode=moderngl.TRIANGLES)
     vao.buffer(pos, '3f', ["in_position"])
     vao.buffer(normals, '3f', ["in_normal"])
     vao.buffer(uvs, '2f', ["in_uv"])

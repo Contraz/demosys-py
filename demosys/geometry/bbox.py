@@ -1,4 +1,4 @@
-import moderngl as mgl
+import moderngl
 import numpy
 
 from demosys.opengl import VAO
@@ -54,7 +54,7 @@ def bbox(width=1.0, height=1.0, depth=1.0):
         width, height, depth,
     ], dtype=numpy.float32)
 
-    vao = VAO("geometry:cube", mode=mgl.LINE_STRIP)
+    vao = VAO("geometry:cube", mode=moderngl.LINE_STRIP)
     vao.buffer(pos, '3f', ["in_position"])
 
     return vao

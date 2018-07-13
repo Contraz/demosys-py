@@ -1,4 +1,4 @@
-import moderngl as mgl
+import moderngl
 from demosys.effects import effect
 from demosys import geometry
 # from pyrr import matrix44
@@ -12,7 +12,7 @@ class SimpleCubeEffect(effect.Effect):
 
     @effect.bind_target
     def draw(self, time, frametime, target):
-        self.ctx.enable(mgl.DEPTH_TEST)
+        self.ctx.enable(moderngl.DEPTH_TEST)
 
         # Rotate and translate
         m_mv = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),

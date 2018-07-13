@@ -1,4 +1,4 @@
-import moderngl as mgl
+import moderngl
 import numpy
 from demosys.opengl import VAO
 
@@ -52,7 +52,7 @@ def plane_xz(size=(10, 10), resolution=(10, 10)) -> VAO:
     normal_data = numpy.fromiter(gen_normal(), dtype=numpy.float32)
     index_data = numpy.fromiter(gen_index(), dtype=numpy.uint32)
 
-    vao = VAO("plane_xz", mode=mgl.TRIANGLES)
+    vao = VAO("plane_xz", mode=moderngl.TRIANGLES)
 
     vao.buffer(pos_data, '3f', ['in_position'])
     vao.buffer(uv_data, '2f', ['in_uv'])

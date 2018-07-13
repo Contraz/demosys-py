@@ -2,7 +2,7 @@ from typing import Tuple
 
 from PIL import Image
 
-import moderngl as mgl
+import moderngl
 from demosys import context
 from demosys.opengl import samplers
 
@@ -24,7 +24,7 @@ class BaseTexture:
         self.mglo.use(location)
 
     @property
-    def ctx(self) -> mgl.Context:
+    def ctx(self) -> moderngl.Context:
         """ModernGL context"""
         return self._ctx
 
@@ -284,7 +284,7 @@ class DepthTexture(BaseTexture):
         """
         super().__init__()
         self.mglo = self.ctx.depth_texture(size, data=data, samples=samples, alignment=alignment)
-        self.mglo.filter = mgl.LINEAR, mgl.LINEAR
+        self.mglo.filter = moderngl.LINEAR, moderngl.LINEAR
         _init_depth_texture_draw()
 
     @classmethod
@@ -393,8 +393,8 @@ def _init_depth_texture_draw():
     program.prepare()
 
     DepthTexture.sampler = samplers.create(
-        min_filter=mgl.LINEAR,
-        mag_filter=mgl.LINEAR,
+        min_filter=moderngl.LINEAR,
+        mag_filter=moderngl.LINEAR,
         texture_compare_mode=False,
     )
     DepthTexture.shader = program

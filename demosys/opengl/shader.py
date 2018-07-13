@@ -1,6 +1,6 @@
 import os
 
-import moderngl as mgl
+import moderngl
 from demosys import context
 from demosys.conf import settings
 
@@ -143,7 +143,7 @@ class ShaderProgram:
             print("Out attributes for transform feedback", out_attribs)
             params.update({'varyings': out_attribs})
 
-        # Raises mgl.Error
+        # Raises moderngl.Error
         program = self.ctx.program(**params)
 
         if reload:
@@ -165,7 +165,7 @@ class ShaderProgram:
         Builds an internal uniform map by querying the program.
         This way we don't have to query OpenGL (can cause slowdowns)
         """
-        self.uniform_map = {k: v for k, v in self.program._members.items() if isinstance(v, mgl.Uniform)}
+        self.uniform_map = {k: v for k, v in self.program._members.items() if isinstance(v, moderngl.Uniform)}
         print("ShaderProgram {} has {} uniform(s)".format(self.name, len(self.uniform_map)))
 
         for name, uniform in self.uniform_map.items():
@@ -184,7 +184,7 @@ class ShaderProgram:
         self.attribute_map = {}
 
         for name, attribute in self.program._members.items():
-            if not isinstance(attribute, mgl.Attribute):
+            if not isinstance(attribute, moderngl.Attribute):
                 continue
 
             self.attribute_list.append(attribute)

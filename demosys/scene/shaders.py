@@ -1,4 +1,4 @@
-import moderngl as mgl
+import moderngl
 import os
 
 from pyrr import Matrix33
@@ -64,9 +64,9 @@ class ColorShader(MeshShader):
 
         if mesh.material:
             if mesh.material.double_sided:
-                self.ctx.disable(mgl.CULL_FACE)
+                self.ctx.disable(moderngl.CULL_FACE)
             else:
-                self.ctx.enable(mgl.CULL_FACE)
+                self.ctx.enable(moderngl.CULL_FACE)
 
             if mesh.material.color:
                 self.shader.uniform("color", tuple(mesh.material.color))
@@ -103,9 +103,9 @@ class TextureShader(MeshShader):
         m_normal = self.create_normal_matrix(view_mat)
 
         if mesh.material.double_sided:
-            self.ctx.disable(mgl.CULL_FACE)
+            self.ctx.disable(moderngl.CULL_FACE)
         else:
-            self.ctx.enable(mgl.CULL_FACE)
+            self.ctx.enable(moderngl.CULL_FACE)
 
         mesh.material.mat_texture.texture.use()
         self.shader.uniform("texture0", 0)

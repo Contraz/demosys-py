@@ -8,7 +8,7 @@ import struct
 import numpy
 
 from PIL import Image
-import moderngl as mgl
+import moderngl
 from pyrr import matrix44, Matrix44, quaternion
 
 from demosys import context
@@ -368,7 +368,7 @@ class GLTFMesh:
         # According to the spec they can have different materials and vertex format
         for primitive in self.primitives:
 
-            vao = VAO(self.name, mode=primitive.mode or mgl.TRIANGLES)
+            vao = VAO(self.name, mode=primitive.mode or moderngl.TRIANGLES)
 
             # Index buffer
             component_type, index_vbo = self.load_indices(primitive)

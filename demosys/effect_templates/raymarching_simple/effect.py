@@ -1,4 +1,4 @@
-import moderngl as mgl
+import moderngl
 
 from demosys.effects import effect
 from demosys import geometry
@@ -16,7 +16,7 @@ class SimpleRaymarchEffect(effect.Effect):
 
     @effect.bind_target
     def draw(self, time, frametime, target):
-        self.ctx.enable(mgl.DEPTH_TEST)
+        self.ctx.enable(moderngl.DEPTH_TEST)
 
         # Rotate plane 90 degrees, and move plane back so it will fit correctly on to screen
         backoff = math.tan(math.radians(self.sys_camera.projection.fov / 2)) * (self.window_width / 2)

@@ -1,4 +1,4 @@
-import moderngl as mgl
+import moderngl
 from demosys import context, geometry, resources
 from demosys.opengl import FBO, DepthTexture, Texture2D, samplers
 from pyrr import matrix44
@@ -32,7 +32,7 @@ class DeferredRenderer:
         self.size = (width, height)
         self.depth_sampler = samplers.create(
             texture_compare_mode=False,
-            min_filter=mgl.LINEAR, mag_filter=mgl.LINEAR
+            min_filter=moderngl.LINEAR, mag_filter=moderngl.LINEAR
         )
 
         # FBOs
@@ -79,7 +79,7 @@ class DeferredRenderer:
         :param near: Projection near value
         :param far: Projection far value
         """
-        self.ctx.disable(mgl.DEPTH_TEST)
+        self.ctx.disable(moderngl.DEPTH_TEST)
 
         self.gbuffer.draw_color_layer(layer=0, pos=(0.0, 0.0), scale=(0.25, 0.25))
         self.gbuffer.draw_color_layer(layer=1, pos=(0.5, 0.0), scale=(0.25, 0.25))
@@ -93,15 +93,15 @@ class DeferredRenderer:
     def render_lights(self, camera_matrix, projection):
         """Render light volumes"""
         # Draw light volumes from the inside
-        self.ctx.enable(mgl.CULL_FACE)
+        self.ctx.enable(moderngl.CULL_FACE)
         self.ctx.front_face = 'cw'
 
         # No depth testing
-        self.ctx.disable(mgl.DEPTH_TEST)
+        self.ctx.disable(moderngl.DEPTH_TEST)
 
         # Enable additive blending
-        self.ctx.enable(mgl.BLEND)
-        self.ctx.blend_func = mgl.ONE, mgl.ONE
+        self.ctx.enable(moderngl.BLEND)
+        self.ctx.blend_func = moderngl.ONE, moderngl.ONE
 
         with self.lightbuffer:
             for light in self.point_lights:
@@ -123,13 +123,13 @@ class DeferredRenderer:
 
                 self.depth_sampler.release()
 
-        self.ctx.disable(mgl.BLEND)
-        self.ctx.disable(mgl.CULL_FACE)
+        self.ctx.disable(moderngl.BLEND)
+        self.ctx.disable(moderngl.CULL_FACE)
 
     def render_lights_debug(self, camera_matrix, projection):
         """Render outlines of light volumes"""
-        self.ctx.enable(mgl.BLEND)
-        self.ctx.blend_func = mgl.SRC_ALPHA, mgl.ONE_MINUS_SRC_ALPHA
+        self.ctx.enable(moderngl.BLEND)
+        self.ctx.blend_func = moderngl.SRC_ALPHA, moderngl.ONE_MINUS_SRC_ALPHA
 
         for light in self.point_lights:
             m_mv = matrix44.multiply(light.matrix, camera_matrix)
@@ -137,9 +137,9 @@ class DeferredRenderer:
             self.debug_shader.uniform("m_proj", projection.tobytes())
             self.debug_shader.uniform("m_mv", m_mv.astype('f4').tobytes())
             self.debug_shader.uniform("size", light_size)
-            self.unit_cube.draw(self.debug_shader, mode=mgl.LINE_STRIP)
+            self.unit_cube.draw(self.debug_shader, mode=moderngl.LINE_STRIP)
 
-        self.ctx.disable(mgl.BLEND)
+        self.ctx.disable(moderngl.BLEND)
 
     def render_geometry(self, cam_matrix, projection):
         raise NotImplementedError("render_geometry() not implemented")

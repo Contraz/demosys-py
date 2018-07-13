@@ -4,7 +4,7 @@ from typing import Tuple
 
 from rocket.tracks import Track
 
-import moderngl as mgl  # noqa
+import moderngl  # noqa
 from demosys import resources
 from demosys.opengl import ShaderProgram, Texture2D, TextureArray
 from demosys.scene import camera  # noqa
@@ -72,7 +72,7 @@ class Effect:
     _window_height = 0
     _window_aspect = 0
 
-    _ctx = None  # type: mgl.Context
+    _ctx = None  # type: moderngl.Context
     _sys_camera = None  # type: camera.SystemCamera
 
     @property
@@ -101,7 +101,7 @@ class Effect:
         return self._window_aspect
 
     @property
-    def ctx(self) -> mgl.Context:
+    def ctx(self) -> moderngl.Context:
         """ModernGL context"""
         return self._ctx
 

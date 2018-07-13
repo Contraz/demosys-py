@@ -1,7 +1,7 @@
 import sys
 from collections import namedtuple
 
-import moderngl as mgl
+import moderngl
 from demosys.conf import settings
 from demosys.opengl.fbo import WindowFBO
 from demosys import context
@@ -91,7 +91,7 @@ class Window:
     def print_context_info(self):
         """Prints out context info"""
         print("Context Version:")
-        print('ModernGL:', mgl.__version__)
+        print('ModernGL:', moderngl.__version__)
         print('vendor:', self.ctx.info['GL_VENDOR'])
         print('renderer:', self.ctx.info['GL_RENDERER'])
         print('version:', self.ctx.info['GL_VERSION'])

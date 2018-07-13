@@ -1,6 +1,6 @@
 import glfw
 
-import moderngl as mgl
+import moderngl
 from demosys.scene import camera
 from demosys.view import screenshot
 
@@ -64,7 +64,7 @@ class GLFW_Window(Window):
         glfw.set_window_size_callback(self.window, self.window_resize_callback)
 
         # Create mederngl context from existing context
-        self.ctx = mgl.create_context()
+        self.ctx = moderngl.create_context()
 
     def use(self):
         self.ctx.screen.use()

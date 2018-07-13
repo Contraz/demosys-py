@@ -2,21 +2,21 @@ from typing import List
 
 import numpy
 
-import moderngl as mgl
+import moderngl
 from demosys import context
 from demosys.opengl import ShaderProgram, types
 
 DRAW_MODES = {
-    mgl.TRIANGLES: 'TRIANGLES',
-    mgl.TRIANGLE_FAN: 'TRIANGLE_FAN',
-    mgl.TRIANGLE_STRIP: 'TRIANGLE_STRIP',
-    mgl.TRIANGLES_ADJACENCY: 'TRIANGLES_ADJACENCY',
-    mgl.TRIANGLE_STRIP_ADJACENCY: 'TRIANGLE_STRIP_ADJACENCY',
-    mgl.POINTS: 'POINTS',
-    mgl.LINES: 'LINES',
-    mgl.LINE_STRIP: 'LINE_STRIP',
-    mgl.LINE_LOOP: 'LINE_LOOP',
-    mgl.LINES_ADJACENCY: 'LINES_ADJACENCY',
+    moderngl.TRIANGLES: 'TRIANGLES',
+    moderngl.TRIANGLE_FAN: 'TRIANGLE_FAN',
+    moderngl.TRIANGLE_STRIP: 'TRIANGLE_STRIP',
+    moderngl.TRIANGLES_ADJACENCY: 'TRIANGLES_ADJACENCY',
+    moderngl.TRIANGLE_STRIP_ADJACENCY: 'TRIANGLE_STRIP_ADJACENCY',
+    moderngl.POINTS: 'POINTS',
+    moderngl.LINES: 'LINES',
+    moderngl.LINE_STRIP: 'LINE_STRIP',
+    moderngl.LINE_LOOP: 'LINE_LOOP',
+    moderngl.LINES_ADJACENCY: 'LINES_ADJACENCY',
 }
 
 SYSTEM_ATTRIBS = ['gl_InstanceID', ]
@@ -24,7 +24,7 @@ SYSTEM_ATTRIBS = ['gl_InstanceID', ]
 
 class BufferInfo:
     """Container for a vbo with additional information"""
-    def __init__(self, buffer: mgl.Buffer, buffer_format: str, attributes=None, per_instance=False):
+    def __init__(self, buffer: moderngl.Buffer, buffer_format: str, attributes=None, per_instance=False):
         """
         :param buffer: The vbo object
         :param format: The format of the buffer
@@ -80,7 +80,7 @@ class VAO:
     A name must be provided for debug puporses.
     The default draw mode is ``moderngl.TRIANGLES``
     """
-    def __init__(self, name, mode=mgl.TRIANGLES):
+    def __init__(self, name, mode=moderngl.TRIANGLES):
         """
         Create and empty VAO
 
@@ -121,7 +121,7 @@ class VAO:
 
         vao.render(mode, vertices=vertices, first=first, instances=instances)
 
-    def transform(self, shader, buffer: mgl.Buffer, mode=None, vertices=-1, first=0, instances=1):
+    def transform(self, shader, buffer: moderngl.Buffer, mode=None, vertices=-1, first=0, instances=1):
         """
         Transform vertices. Stores the output in a single buffer.
 
@@ -151,7 +151,7 @@ class VAO:
         if not isinstance(attribute_names, list):
             attribute_names = [attribute_names, ]
 
-        if not isinstance(buffer, mgl.Buffer) and not isinstance(buffer, numpy.ndarray):
+        if not isinstance(buffer, moderngl.Buffer) and not isinstance(buffer, numpy.ndarray):
             raise VAOError("buffer parameter must be a moderngl.Buffer or numpy.ndarray instance")
 
         if isinstance(buffer, numpy.ndarray):
@@ -173,7 +173,7 @@ class VAO:
         :param buffer: Buffer object or ndarray
         :param index_element_size: Byte size of each element. 1, 2 or 4
         """
-        if not isinstance(buffer, mgl.Buffer) and not isinstance(buffer, numpy.ndarray):
+        if not isinstance(buffer, moderngl.Buffer) and not isinstance(buffer, numpy.ndarray):
             raise VAOError("buffer parameter must be a moderngl.Buffer or numpy.ndarray instance")
 
         if isinstance(buffer, numpy.ndarray):

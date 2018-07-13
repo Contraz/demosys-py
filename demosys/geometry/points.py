@@ -1,4 +1,4 @@
-import moderngl as mgl
+import moderngl
 from demosys.opengl import VAO
 import numpy
 import random
@@ -24,7 +24,7 @@ def points_random_3d(count, range_x=(-10.0, 10.0), range_y=(-10.0, 10.0), range_
 
     data = numpy.fromiter(gen(), count=count * 3, dtype=numpy.float32)
 
-    vao = VAO("geometry:points_random_3d", mode=mgl.POINTS)
+    vao = VAO("geometry:points_random_3d", mode=moderngl.POINTS)
     vao.buffer(data, '3f', ['in_position'])
 
     return vao
