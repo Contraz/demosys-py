@@ -6,6 +6,7 @@ Reference
 
     effect.rst
     texture2d.rst
+    texturearray.rst
     fbo.rst
     vao.rst
     shaderprogram.rst

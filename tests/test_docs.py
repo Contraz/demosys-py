@@ -61,6 +61,11 @@ class TestCase(unittest.TestCase):
             os.path.join('reference', 'texture2d.rst'),
             opengl, 'Texture2D', ['quad', 'shader'])
 
+    def test_texture_array(self):
+        self.validate(
+            os.path.join('reference', 'texturearray.rst'),
+            opengl, 'TextureArray', [])
+
     def test_fbo_docs(self):
         self.validate(
             os.path.join('reference', 'fbo.rst'),

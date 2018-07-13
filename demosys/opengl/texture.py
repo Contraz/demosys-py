@@ -203,7 +203,7 @@ class Texture2D(BaseTexture):
 
 class TextureArray(BaseTexture):
 
-    def __init__(self, path: str=None, mipmap: bool=False, layers=0, **kwargs):
+    def __init__(self, path: str=None, mipmap: bool=False, layers=0, **kwargs) -> 'TextureArray':
         """
         Initialize configuration for this texture.
         This doesn't create the OpenGL texture objects itself
@@ -222,7 +222,7 @@ class TextureArray(BaseTexture):
             raise ValueError("Texture {} requires a layer parameter > 0".formats(self.path))
 
     @classmethod
-    def create(cls, size, components=4, data=None, alignment=1, dtype='f1', mipmap=False):
+    def create(cls, size, components=4, data=None, alignment=1, dtype='f1', mipmap=False) -> 'TextureArray':
         """
         :param size: (x, y, layers) size and layers of the texture
         :param components: The number of components 1, 2, 3 or 4
@@ -288,7 +288,7 @@ class DepthTexture(BaseTexture):
         _init_depth_texture_draw()
 
     @classmethod
-    def create(cls, size, data=None, samples=0, alignment=8):
+    def create(cls, size, data=None, samples=0, alignment=8) -> 'DepthTexture':
         return cls(size, data=data, samples=samples, alignment=alignment)
 
     def draw(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
