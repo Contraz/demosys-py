@@ -1,6 +1,7 @@
+import moderngl
 from demosys.test import DemosysTestCase
-from demosys.opengl import VAO
 from demosys import geometry
+from demosys.opengl import VAO
 
 
 class VAOTest(DemosysTestCase):
@@ -17,7 +18,7 @@ class VAOTest(DemosysTestCase):
 
     def test_transform(self):
         shader = self.create_shader(path="v_write_1.glsl")
-        vao = VAO("transform")
+        vao = VAO("transform", mode=moderngl.POINTS)
         vao.buffer(
             self.ctx.buffer(reserve=12),
             '1u',
@@ -27,7 +28,7 @@ class VAOTest(DemosysTestCase):
         vao.transform(shader, result)
         self.assertEqual(
             result.read(),
-            b'\x01\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00',
+            b'\xff\x00\x00\x00\xff\x00\x00\x00\xff\x00\x00\x00',
         )
 
     def test_instanced(self):
