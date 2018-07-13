@@ -218,8 +218,29 @@ class TextureArray(BaseTexture):
         self.layers = layers
         self.mipmap = mipmap
 
-        if not self.layers > 0:
+        if self.layers <= 0:
             raise ValueError("Texture {} requires a layer parameter > 0".formats(self.path))
+
+    @classmethod
+    def create(cls, size, components=4, data=None, alignment=1, dtype='f1', mipmap=False):
+        """
+        :param size: (x, y, layers) size and layers of the texture
+        :param components: The number of components 1, 2, 3 or 4
+        :param data: (bytes) Content of the texture
+        :param alignment: The byte alignment 1, 2, 4 or 8
+        :param dtype: (str) The data type
+        :param mipmap: (bool) Generate mipmaps
+        """
+        texture = cls("create", mipmap=False, layers=size[2])
+        texture.mglo = context.ctx().texture_array(
+            size, components,
+            data=data, alignment=alignment, dtype=dtype,
+        )
+
+        if mipmap:
+            texture.build_mipmaps()
+
+        return texture
 
     def set_image(self, image, flip=True):
         """
