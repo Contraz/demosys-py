@@ -9,6 +9,7 @@ import inspect
 import os
 import re
 import unittest
+from demosys.test import DemosysTestCase
 
 import demosys
 from demosys import effects, opengl

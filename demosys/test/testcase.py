@@ -15,6 +15,7 @@ controller.create_window()
 class DemosysTestCase(TestCase):
 
     window = context.window()
+    ctx = context.ctx()
 
     def create_shader(self, source=None, path=None):
         """
