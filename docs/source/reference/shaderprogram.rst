@@ -21,4 +21,8 @@ Source Methods
 Attributes
 ----------
 
+.. autoattribute:: ShaderProgram.geometry_input
+.. autoattribute:: ShaderProgram.geometry_output
+.. autoattribute:: ShaderProgram.geometry_vertices
 .. autoattribute:: ShaderProgram.mglo
+.. autoattribute:: ShaderProgram.glo

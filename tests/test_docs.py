@@ -79,7 +79,7 @@ class TestCase(unittest.TestCase):
     def test_shader_docs(self):
         self.validate(
             os.path.join('reference', 'shaderprogram.rst'),
-            opengl, 'ShaderProgram', []
+            opengl, 'ShaderProgram', [],
         )
 
     def test_vao_docs(self):

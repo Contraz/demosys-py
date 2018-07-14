@@ -1,4 +1,5 @@
 import os
+from typing import Union
 
 import moderngl
 from demosys import context
@@ -46,15 +47,16 @@ class ShaderProgram:
         # Unique key for VAO instances containing shader id and attributes
         self.vao_key = None
 
-    @property
-    def mglo(self):
-        """The ModernGL Program object"""
-        return self.program
+    def __getitem__(self, key) -> Union[moderngl.Uniform, moderngl.UniformBlock, moderngl.Subroutine,
+                                        moderngl.Attribute, moderngl.Varying]:
+        return self.mglo[key]
 
     def uniform(self, name, value=None):
         """
         Set or get a uniform.
         If no `value` is specificed, the unform will be returned
+
+        Optionally uniforms and other objects can be fetched with ``shader[key]``.
 
         :param name: Name of the uniform
         :param value: Value for the uniform
@@ -199,6 +201,47 @@ class ShaderProgram:
 
         self.vao_key = "{}:{}".format(self.program.glo, self.attribute_key)
         print("Shader VAO key:", self.vao_key)
+
+    @property
+    def mglo(self):
+        """The ModernGL Program object"""
+        return self.program
+
+    @property
+    def glo(self) -> int:
+        """
+        int: The internal OpenGL object.
+        This values is provided for debug purposes only.
+        """
+        return self.glo
+
+    @property
+    def geometry_input(self) -> int:
+        """
+        int: The geometry input primitive.
+        The GeometryShader's input primitive if the GeometryShader exists.
+        The geometry input primitive will be used for validation.
+        """
+        return self.mglo.geometry_input
+
+    @property
+    def geometry_output(self) -> int:
+        """
+        int: The geometry output primitive.
+        The GeometryShader's output primitive if the GeometryShader exists.
+        """
+        return self.mglo.geometry_output
+
+    @property
+    def geometry_vertices(self) -> int:
+        """
+        int: The maximum number of vertices that
+        the geometry shader will output.
+        """
+        return self.mglo.geometry_vertices
+
+    def __repr__(self):
+        return '<ShaderProgram: {} id={}>'.format(self.path or self.name, self.mglo.glo)
 
 
 class ShaderError(Exception):
