@@ -139,7 +139,7 @@ class VAO:
 
         vao.transform(buffer, mode=mode, vertices=vertices, first=first, instances=instances)
 
-    def subroutines(self, shader, routines:tuple):
+    def subroutines(self, shader, routines: tuple):
         """Set the active subroutines"""
         vao = self._create_vao_instance(shader)
         vao.subroutines = (r.index for r in routines)
