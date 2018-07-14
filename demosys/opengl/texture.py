@@ -75,7 +75,7 @@ class BaseTexture:
 
     @property
     def size(self) -> Tuple:
-        """(int, int) The size of the texture"""
+        """The size of the texture"""
         return self.mglo.size
 
     @property
@@ -285,7 +285,7 @@ class TextureArray(BaseTexture):
         :param dtype: (str) The data type
         :param mipmap: (bool) Generate mipmaps
         """
-        texture = cls("create", mipmap=False, layers=size[2])
+        texture = TextureArray("create", mipmap=False, layers=size[2])
         texture.mglo = context.ctx().texture_array(
             size, components,
             data=data, alignment=alignment, dtype=dtype,
