@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from demosys import context
 from demosys.opengl import DepthTexture, Texture2D
@@ -109,23 +109,27 @@ class FBO:
             dtype=dtype,
         )
 
-    @property
-    def size(self):
+    def read_into(self, buffer, viewport=None, components=3,
+                  attachment=0, alignment=1, dtype='f1', write_offset=0):
         """
-        Attempts to determine the pixel size of the FBO.
-        Currently returns the size of the first color attachment.
-        If the FBO has no color attachments, the depth attachment will be used.
-        Raises ``FBOError`` if the size cannot be determined.
+        Read the content of the framebuffer into a buffer.
 
-        :return: (w, h) tuple representing the size in pixels
+        :param buffer: (bytearray) The buffer that will receive the pixels.
+        :param viewport: (tuple) The viewport.
+        :param components: (int) The number of components to read.
+        :param attachment: (int) The color attachment.
+        :param alignment: (int) The byte alignment of the pixels.
+        :param dtype: (str) Data type.
+        :param write_offset: (int) The write offset.
         """
-        if self.color_buffers:
-            return self.color_buffers[0].size
-
-        if self.depth_buffer:
-            return self.depth_buffer.size
-
-        raise FBOError("Cannot determine size of FBO. No attachments.")
+        return self.fbo.read_into(
+            buffer,
+            viewport=None, components=components,
+            attachment=attachment,
+            alignment=alignment,
+            dtype=dtype,
+            write_offset=write_offset
+        )
 
     def __enter__(self):
         """
@@ -223,6 +227,53 @@ class FBO:
             self.color_buffers,
             self.depth_buffer,
         )
+
+    @property
+    def size(self):
+        """
+        (w, h) tuple representing the size in pixels
+        """
+        return self.fbo.size
+
+    @property
+    def samples(self) -> int:
+        """
+        int: The samples of the framebuffer.
+        """
+        return self.fbo.samples
+
+    @property
+    def viewport(self) -> Tuple[int, int, int, int]:
+        """
+        tuple: The viewport of the framebuffer.
+        """
+        return self.mglo.viewport
+
+    @viewport.setter
+    def viewport(self, value):
+        self.fbo.viewport = tuple(value)
+
+    @property
+    def color_mask(self) -> Tuple[bool, bool, bool, bool]:
+        """
+        tuple[bool, bool, bool, bool]: The color mask of the framebuffer.
+        """
+        return self.mglo.color_mask
+
+    @color_mask.setter
+    def color_mask(self, value):
+        self.fbo.color_mask = value
+
+    @property
+    def depth_mask(self) -> bool:
+        """
+        bool: The depth mask of the framebuffer.
+        """
+        return self.mglo.depth_mask
+
+    @depth_mask.setter
+    def depth_mask(self, value):
+        self.fbo.depth_mask = value
 
     @property
     def mglo(self):
