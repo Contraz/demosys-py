@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Union  # noqa
 
 from PIL import Image
 
@@ -12,7 +12,7 @@ class BaseTexture:
     Wraps the basic functionality of the ModernGL methods
     """
     def __init__(self):
-        self.mglo = None
+        self.mglo = None  # Type: Union[moderngl.Texture, moderngl.TextureArray]
         self._ctx = context.ctx()
 
     def use(self, location=0):
@@ -22,40 +22,6 @@ class BaseTexture:
         :param location: The texture location. (GL_TEXTURE0 + location)
         """
         self.mglo.use(location)
-
-    @property
-    def ctx(self) -> moderngl.Context:
-        """ModernGL context"""
-        return self._ctx
-
-    @property
-    def size(self) -> Tuple:
-        """The size of the texture"""
-        return self.mglo.size
-
-    @property
-    def width(self) -> int:
-        """Width of the texture"""
-        return self.mglo.width
-
-    @property
-    def height(self) -> int:
-        """Height of the texture"""
-        return self.mglo.height
-
-    @property
-    def dtype(self) -> str:
-        """The data type of the texture"""
-        return self.mglo.dtype
-
-    @property
-    def depth(self) -> bool:
-        """Is this a depth texture?"""
-        return self.mglo.depth
-
-    @property
-    def swizzle(self):
-        return self.mglo.swizzle
 
     def build_mipmaps(self, base=0, max_level=1000):
         """
@@ -97,6 +63,94 @@ class BaseTexture:
         :param alignment: (int) – The byte alignment of the pixels.
         """
         self.mglo.write(data, viewport=viewport, level=level, alignment=alignment)
+
+    def release(self):
+        """Release/free the ModernGL object"""
+        self.mglo.release()
+
+    @property
+    def ctx(self) -> moderngl.Context:
+        """ModernGL context"""
+        return self._ctx
+
+    @property
+    def size(self) -> Tuple:
+        """(int, int) The size of the texture"""
+        return self.mglo.size
+
+    @property
+    def width(self) -> int:
+        """int: Width of the texture"""
+        return self.mglo.width
+
+    @property
+    def height(self) -> int:
+        """int: Height of the texture"""
+        return self.mglo.height
+
+    @property
+    def dtype(self) -> str:
+        """str: The data type of the texture"""
+        return self.mglo.dtype
+
+    @property
+    def components(self) -> int:
+        """int: The number of components in the texture"""
+        return self.mglo.components
+
+    @property
+    def samples(self) -> int:
+        """int: The number of samples of the texture"""
+        return self.mglo.samples
+
+    @property
+    def depth(self) -> bool:
+        """Is this a depth texture?"""
+        return self.mglo.depth
+
+    @property
+    def glo(self) -> int:
+        """
+        int: The internal OpenGL object.
+        This values is provided for debug purposes only.
+        """
+        return self.mglo.glo
+
+    @property
+    def repeat_x(self):
+        """bool: The repeat_x of the texture"""
+        return self.mglo.repeat_x
+
+    @repeat_x.setter
+    def repeat_x(self, value):
+        self.mglo.repeat_x = value
+
+    @property
+    def filter(self) -> Tuple[int, int]:
+        """tuple: (min, mag) filtering of the texture"""
+        return self.mglo.filter
+
+    @filter.setter
+    def filter(self, value):
+        self.mglo.filter = value
+
+    @property
+    def repeat_y(self):
+        """bool: The repeat_y of the texture"""
+        return self.mglo.repeat_y
+
+    @repeat_y.setter
+    def repeat_y(self, value):
+        self.mglo.repeat_y = value
+
+    @property
+    def swizzle(self):
+        """str: The swizzle of the texture"""
+        return self.mglo.swizzle
+
+    @swizzle.setter
+    def swizzle(self, value):
+        self.mglo.swizzle = value
 
 
 class Texture2D(BaseTexture):
@@ -309,6 +363,15 @@ class DepthTexture(BaseTexture):
 
         self.quad.draw(self.shader)
         self.sampler.release()
+
+    @property
+    def compare_func(self) -> str:
+        """tuple: The compare function of the depth texture"""
+        return self.mglo.compare_func
+
+    @compare_func.setter
+    def compare_func(self, value):
+        self.mglo.compare_func = value
 
 
 def _init_texture2d_draw():

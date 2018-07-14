@@ -18,6 +18,7 @@ Methods
 .. automethod:: TextureArray.read(level:int=0, alignment:int=1) -> bytes
 .. automethod:: TextureArray.read_into(buffer:bytearray, level:int=0, alignment:int=1, write_offset:int=0)
 .. automethod:: TextureArray.write(data:bytes, viewport=None, level:int=0, alignment:int=1)
+.. automethod:: TextureArray.release()
 
 Attributes
 ----------
@@ -26,7 +27,14 @@ Attributes
 .. autoattribute:: TextureArray.width
 .. autoattribute:: TextureArray.height
 .. autoattribute:: TextureArray.dtype
+.. autoattribute:: TextureArray.samples
+.. autoattribute:: TextureArray.components
+.. autoattribute:: TextureArray.repeat_x
+.. autoattribute:: TextureArray.repeat_y
+.. autoattribute:: TextureArray.filter
+
 .. autoattribute:: TextureArray.depth
 .. autoattribute:: TextureArray.swizzle
 .. autoattribute:: TextureArray.size
 .. autoattribute:: TextureArray.ctx
+.. autoattribute:: TextureArray.glo

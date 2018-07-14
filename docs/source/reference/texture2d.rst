@@ -20,6 +20,7 @@ Methods
 .. automethod:: Texture2D.read(level:int=0, alignment:int=1) -> bytes
 .. automethod:: Texture2D.read_into(buffer:bytearray, level:int=0, alignment:int=1, write_offset:int=0)
 .. automethod:: Texture2D.write(data:bytes, viewport=None, level:int=0, alignment:int=1)
+.. automethod:: Texture2D.release()
 
 Attributes
 ----------
@@ -28,7 +29,13 @@ Attributes
 .. autoattribute:: Texture2D.width
 .. autoattribute:: Texture2D.height
 .. autoattribute:: Texture2D.dtype
+.. autoattribute:: Texture2D.components
+.. autoattribute:: Texture2D.samples
+.. autoattribute:: Texture2D.repeat_x
+.. autoattribute:: Texture2D.repeat_y
+.. autoattribute:: Texture2D.filter
 .. autoattribute:: Texture2D.depth
 .. autoattribute:: Texture2D.swizzle
 .. autoattribute:: Texture2D.size
 .. autoattribute:: Texture2D.ctx
+.. autoattribute:: Texture2D.glo
