@@ -139,6 +139,11 @@ class VAO:
 
         vao.transform(buffer, mode=mode, vertices=vertices, first=first, instances=instances)
 
+    def subroutines(self, shader, routines:tuple):
+        """Set the active subroutines"""
+        vao = self._create_vao_instance(shader)
+        vao.subroutines = (r.index for r in routines)
+
     def buffer(self, buffer, buffer_format: str, attribute_names, per_instance=False):
         """
         Register a buffer/vbo for the VAO. This can be called multiple times.

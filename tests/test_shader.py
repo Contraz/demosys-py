@@ -2,6 +2,7 @@ import numpy
 
 import moderngl
 from demosys.test import DemosysTestCase
+from demosys import geometry
 
 
 class ShaderTest(DemosysTestCase):
@@ -30,6 +31,16 @@ class ShaderTest(DemosysTestCase):
         assert shader.geometry_input == moderngl.POINTS
         assert shader.geometry_output == moderngl.TRIANGLE_STRIP
         assert shader.geometry_vertices == 4
+
+    def test_subroutines(self):
+        shader = self.create_shader(path='vf_subroutines.glsl')
+        cube = geometry.cube(1.0, 1.0, 1.0)
+        self.assertAttributes(shader)
+
+        assert shader.subroutines == ('color',)
+
+        cube.subroutines(shader, (shader['redColor'],))
+        cube.draw(shader)
 
     def assertAttributes(self, shader):
         assert shader.attribute_key

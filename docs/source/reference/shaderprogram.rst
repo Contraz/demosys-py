@@ -21,6 +21,7 @@ Source Methods
 Attributes
 ----------
 
+.. autoattribute:: ShaderProgram.subroutines
 .. autoattribute:: ShaderProgram.geometry_input
 .. autoattribute:: ShaderProgram.geometry_output
 .. autoattribute:: ShaderProgram.geometry_vertices

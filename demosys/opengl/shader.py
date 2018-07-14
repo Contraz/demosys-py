@@ -1,5 +1,5 @@
 import os
-from typing import Union
+from typing import Tuple, Union
 
 import moderngl
 from demosys import context
@@ -214,6 +214,13 @@ class ShaderProgram:
         This values is provided for debug purposes only.
         """
         return self.glo
+
+    @property
+    def subroutines(self) -> Tuple[str, ...]:
+        '''
+            tuple: The subroutine uniforms.
+        '''
+        return self.mglo.subroutines
 
     @property
     def geometry_input(self) -> int:
