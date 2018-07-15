@@ -17,7 +17,7 @@ Made for people who enjoy playing around with modern OpenGL without spending lot
 
 * [Documentation](http://demosys-py.readthedocs.io/)
 * [ModernGL Documentation](https://moderngl.readthedocs.io)
-* [Examples](https://github.com/Contraz/demosys-py-test)
+* [Examples](https://github.com/Contraz/demosys-py/tree/master/examples)
 * [Effect Templates](https://github.com/Contraz/demosys-py/tree/master/demosys/effect_templates)
 * [demosys-py on Github](https://github.com/Contraz/demosys-py)
 * [demosys-py on PyPi](https://pypi.python.org/pypi/demosys-py)
