@@ -20,3 +20,4 @@ Feedback
 Basic example of using transform feedback. Thousands of particles are being
 affected by newton's law with a pulsing gravity field in the middle of the scene.
 
+![screenshot](https://github.com/Contraz/demosys-py/blob/master/examples/images/feedback.png)
