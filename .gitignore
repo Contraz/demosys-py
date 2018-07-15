@@ -18,10 +18,6 @@ __pycache__
 /.env/
 /.venv/
 
-# Local dev project
-/manage.py
-/testdemo
-
 # IDE files
 /.idea
 
