@@ -4,7 +4,7 @@ Examples
 Cubes
 -----
 
-Simple example showing tree cubes
+Simple example showing three cubes
 
 * Single Color
 * Lighting
