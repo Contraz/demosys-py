@@ -16,7 +16,7 @@ def cube(width, height, depth, center=(0.0, 0.0, 0.0), normals=True, uvs=True) -
     :return: VAO representing the cube
     """
     width, height, depth = width / 2.0, height / 2.0, depth / 2.0
-    
+
     pos = numpy.array([
         center[0] + width, center[1] - height, center[2] + depth,
         center[0] + width, center[1] + height, center[2] + depth,
