@@ -1,4 +1,5 @@
 __pycache__
+*.pyc
 
 # Build and test directories
 /.tox
