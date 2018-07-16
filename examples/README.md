@@ -32,3 +32,16 @@ python manage.py runeffect examples.feedback
 ```
 
 ![screenshot](https://github.com/Contraz/demosys-py/blob/master/examples/images/feedback.png)
+
+Geo Cubes
+---------
+
+Geometry shader example. We're drawing points were the geometry shader emits
+a cube on each point and slightly modifying the position of each cube.
+The texture on these cube is an fbo texture of a spinning cube just for fun.
+
+```bash
+python manage.py runeffect examples.geocubes
+```
+
+![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/geocubes.png)
