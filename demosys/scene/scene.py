@@ -33,7 +33,7 @@ class Scene:
         self.bbox_vao = geometry.bbox()
         self.bbox_shader = shaders.get('scene_default/bbox.glsl', create=True)
 
-    def draw(self, m_proj, m_mv, time=0):
+    def draw(self, proj_mat, view_mat, camera_mat, normal_mat, time=0):
         """
         Draw all the nodes in the scene
 
@@ -42,7 +42,7 @@ class Scene:
         :param time: The current time
         """
         for node in self.root_nodes:
-            node.draw(m_proj, m_mv, time=time)
+            node.draw(proj_mat, view_mat, camera_mat, normal_mat, time=time)
 
     def draw_bbox(self, m_proj, m_mv, all=True):
         """Draw scene and mesh bounding boxes"""

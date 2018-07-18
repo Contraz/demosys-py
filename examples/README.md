@@ -45,3 +45,17 @@ python manage.py runeffect examples.geocubes
 ```
 
 ![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/geocubes.png)
+
+Minecraft
+---------
+
+Example loading and drawing a wavefront obj file.
+
+Underground city in the "Lost Empire" area from the Vokselia Minecraft world
+http://vokselia.com CC BY 3.0 License http://creativecommons.org/licenses/by/3.0/
+
+```bash
+python manage.py runeffect examples.minecraft
+```
+
+![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/minecraft.png)

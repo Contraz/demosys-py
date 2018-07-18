@@ -9,20 +9,24 @@ class Node:
         self.camera = camera
         self.mesh = mesh
         self.matrix = matrix
+        self.matrix_global = None
         self.children = []
 
     def add_child(self, child):
         self.children.append(child)
 
-    def draw(self, m_proj, m_mv, time=0):
-        if self.matrix is not None:
-            m_mv = matrix44.multiply(self.matrix, m_mv)
+    def draw(self, proj_mat, view_mat, camera_mat, normal_mat, time=0):
+        # if self.matrix is not None:
+        #     m_mv = matrix44.multiply(self.matrix, m_mv)
+
+        if self.matrix_global is not None:
+            view_mat = self.matrix_global
 
         if self.mesh:
-            self.mesh.draw(m_proj, m_mv, time=time)
+            self.mesh.draw(proj_mat, view_mat, camera_mat, normal_mat, time=time)
 
         for child in self.children:
-            child.draw(m_proj, m_mv)
+            child.draw(proj_mat, view_mat, camera_mat, normal_mat, time=time)
 
     def draw_bbox(self, m_proj, m_mv, shader, vao):
         if self.matrix is not None:

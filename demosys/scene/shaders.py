@@ -59,14 +59,14 @@ class ColorShader(MeshShader):
     def __init__(self, shader=None, **kwargs):
         super().__init__(shader=shaders.get("scene_default/color.glsl", create=True))
 
-    def draw(self, mesh, proj_mat, view_mat, time=0):
+    def draw(self, mesh, proj_mat, view_mat, cam_mat, normal_mat, time=0):
         m_normal = self.create_normal_matrix(view_mat)
 
         if mesh.material:
-            if mesh.material.double_sided:
-                self.ctx.disable(moderngl.CULL_FACE)
-            else:
-                self.ctx.enable(moderngl.CULL_FACE)
+        #     if mesh.material.double_sided:
+        #         self.ctx.disable(moderngl.CULL_FACE)
+        #     else:
+        #         self.ctx.enable(moderngl.CULL_FACE)
 
             if mesh.material.color:
                 self.shader.uniform("color", tuple(mesh.material.color))
@@ -99,20 +99,20 @@ class TextureShader(MeshShader):
     def __init__(self, shader=None, **kwargs):
         super().__init__(shader=shaders.get("scene_default/texture.glsl", create=True))
 
-    def draw(self, mesh, proj_mat, view_mat, time=0):
-        m_normal = self.create_normal_matrix(view_mat)
+    def draw(self, mesh, proj_mat, view_mat, cam_mat, normal_mat, time=0):
 
-        if mesh.material.double_sided:
-            self.ctx.disable(moderngl.CULL_FACE)
-        else:
-            self.ctx.enable(moderngl.CULL_FACE)
+        # if mesh.material.double_sided:
+        #     self.ctx.disable(moderngl.CULL_FACE)
+        # else:
+        #     self.ctx.enable(moderngl.CULL_FACE)
 
         mesh.material.mat_texture.texture.use()
         self.shader.uniform("texture0", 0)
 
         self.shader.uniform("m_proj", proj_mat.astype('f4').tobytes())
-        self.shader.uniform("m_mv", view_mat.astype('f4').tobytes())
-        self.shader.uniform("m_normal", m_normal.astype('f4').tobytes())
+        self.shader.uniform("m_view", view_mat.astype('f4').tobytes())
+        self.shader.uniform("m_cam", cam_mat.astype('f4').tobytes())
+        self.shader.uniform("m_normal", normal_mat.astype('f4').tobytes())
 
         mesh.vao.draw(self.shader)
 
@@ -136,10 +136,11 @@ class FallbackShader(MeshShader):
     def __init__(self, shader=None, **kwargs):
         super().__init__(shader=shaders.get("scene_default/fallback.glsl", create=True))
 
-    def draw(self, mesh, proj_mat, view_mat, time=0):
+    def draw(self, mesh, proj_mat, view_mat, cam_mat, normal_mat, time=0):
 
         self.shader.uniform("m_proj", proj_mat.astype('f4').tobytes())
         self.shader.uniform("m_mv", view_mat.astype('f4').tobytes())
+        self.shader.uniform("m_cam", cam_mat.astype('f4').tobytes())
 
         if mesh.material:
             self.shader.uniform("color", tuple(mesh.material.color[0:3]))

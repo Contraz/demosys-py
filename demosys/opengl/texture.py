@@ -4,7 +4,6 @@ from PIL import Image
 
 import moderngl
 from demosys import context
-from demosys.opengl import samplers
 
 
 class BaseTexture:
@@ -159,6 +158,7 @@ class Texture2D(BaseTexture):
     # Class attributes for drawing the texture
     quad = None
     shader = None
+    sampler = None
 
     def __init__(self, path: str=None, mipmap: bool=False, **kwargs):
         """
@@ -239,6 +239,7 @@ class Texture2D(BaseTexture):
         )
 
         if self.mipmap:
+            print("Creating mipamps")
             self.build_mipmaps()
 
     def draw(self, pos=(0.0, 0.0), scale=(1.0, 1.0)):
@@ -251,8 +252,10 @@ class Texture2D(BaseTexture):
         self.shader.uniform("offset", (pos[0] - 1.0, pos[1] - 1.0))
         self.shader.uniform("scale", (scale[0], scale[1]))
         self.use(location=0)
+        self.sampler.use(location=0)
         self.shader.uniform("texture0", 0)
         self.quad.draw(self.shader)
+        self.sampler.clear(location=0)
 
 
 class TextureArray(BaseTexture):
@@ -362,7 +365,8 @@ class DepthTexture(BaseTexture):
         self.shader.uniform("texture0", 0)
 
         self.quad.draw(self.shader)
-        self.sampler.release()
+
+        self.sampler.clear(location=0)
 
     @property
     def compare_func(self) -> str:
@@ -411,6 +415,10 @@ def _init_texture2d_draw():
     program.set_source("\n".join(src))
     program.prepare()
 
+    Texture2D.sampler = context.ctx().sampler(
+        filter=(moderngl.LINEAR, moderngl.LINEAR),
+    )
+
     Texture2D.shader = program
 
 
@@ -455,9 +463,8 @@ def _init_depth_texture_draw():
     program.set_source("\n".join(src))
     program.prepare()
 
-    DepthTexture.sampler = samplers.create(
-        min_filter=moderngl.LINEAR,
-        mag_filter=moderngl.LINEAR,
-        texture_compare_mode=False,
+    DepthTexture.sampler = context.ctx().sampler(
+        filter=(moderngl.LINEAR, moderngl.LINEAR),
+        compare_func='',
     )
     DepthTexture.shader = program

@@ -1,0 +1,279 @@
+{
+  "created_at": "2018-07-16T14:28:43.451336",
+  "version": "0.1",
+  "materials": [
+    "/Users/einarforselv/Documents/projects/contraz/demosys-py-test/testdemo/sceneobj/scenes/sceneobj/lost-empire/lost_empire.mtl"
+  ],
+  "vertex_buffers": [
+    {
+      "material": "Stone",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 0,
+      "byte_length": 5637888
+    },
+    {
+      "material": "Grass",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 5637888,
+      "byte_length": 6494208
+    },
+    {
+      "material": "Dirt",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 12132096,
+      "byte_length": 2082624
+    },
+    {
+      "material": "Cobblestone",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 14214720,
+      "byte_length": 410880
+    },
+    {
+      "material": "Wooden_Plank",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 14625600,
+      "byte_length": 23808
+    },
+    {
+      "material": "Stationary_Water",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 14649408,
+      "byte_length": 111168
+    },
+    {
+      "material": "Stationary_Lava",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 14760576,
+      "byte_length": 15552
+    },
+    {
+      "material": "Sand",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 14776128,
+      "byte_length": 30528
+    },
+    {
+      "material": "Gravel",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 14806656,
+      "byte_length": 265536
+    },
+    {
+      "material": "Iron_Ore",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 15072192,
+      "byte_length": 20736
+    },
+    {
+      "material": "Coal_Ore",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 15092928,
+      "byte_length": 48960
+    },
+    {
+      "material": "Log",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 15141888,
+      "byte_length": 298944
+    },
+    {
+      "material": "Leaves",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 15440832,
+      "byte_length": 4287552
+    },
+    {
+      "material": "Bed",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 19728384,
+      "byte_length": 1344
+    },
+    {
+      "material": "Powered_Rail",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 19729728,
+      "byte_length": 11328
+    },
+    {
+      "material": "Detector_Rail",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 19741056,
+      "byte_length": 1920
+    },
+    {
+      "material": "Sticky_Piston",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 19742976,
+      "byte_length": 384
+    },
+    {
+      "material": "Dandelion",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 19743360,
+      "byte_length": 23808
+    },
+    {
+      "material": "Rose",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 19767168,
+      "byte_length": 3840
+    },
+    {
+      "material": "Brown_Mushroom",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 19771008,
+      "byte_length": 9984
+    },
+    {
+      "material": "Double_Slab",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 19780992,
+      "byte_length": 854016
+    },
+    {
+      "material": "Stone_Slab",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 20635008,
+      "byte_length": 604416
+    },
+    {
+      "material": "Obsidian",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21239424,
+      "byte_length": 16512
+    },
+    {
+      "material": "Torch",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21255936,
+      "byte_length": 157056
+    },
+    {
+      "material": "Wooden_Stairs",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21412992,
+      "byte_length": 384
+    },
+    {
+      "material": "Chest",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21413376,
+      "byte_length": 5184
+    },
+    {
+      "material": "Redstone_Wire",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21418560,
+      "byte_length": 35328
+    },
+    {
+      "material": "Diamond_Block",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21453888,
+      "byte_length": 768
+    },
+    {
+      "material": "Crafting_Table",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21454656,
+      "byte_length": 1728
+    },
+    {
+      "material": "Furnace",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21456384,
+      "byte_length": 1920
+    },
+    {
+      "material": "Sign_Post",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21458304,
+      "byte_length": 2880
+    },
+    {
+      "material": "Ladder",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21461184,
+      "byte_length": 2880
+    },
+    {
+      "material": "Rail",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21464064,
+      "byte_length": 45888
+    },
+    {
+      "material": "Cobblestone_Stairs",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21509952,
+      "byte_length": 55296
+    },
+    {
+      "material": "Wall_Sign",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21565248,
+      "byte_length": 2496
+    },
+    {
+      "material": "Lever",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21567744,
+      "byte_length": 1728
+    },
+    {
+      "material": "Iron_Door",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21569472,
+      "byte_length": 960
+    },
+    {
+      "material": "Redstone_Torch_(off)",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21570432,
+      "byte_length": 2112
+    },
+    {
+      "material": "Redstone_Torch_(on)",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21572544,
+      "byte_length": 4992
+    },
+    {
+      "material": "Stone_Button",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21577536,
+      "byte_length": 960
+    },
+    {
+      "material": "Fence",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21578496,
+      "byte_length": 13248
+    },
+    {
+      "material": "Portal",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21591744,
+      "byte_length": 1152
+    },
+    {
+      "material": "Repeater_(off)",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21592896,
+      "byte_length": 4224
+    },
+    {
+      "material": "Repeater_(on)",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21597120,
+      "byte_length": 192
+    },
+    {
+      "material": "White_Wool",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 21597312,
+      "byte_length": 2496
+    }
+  ]
+}
