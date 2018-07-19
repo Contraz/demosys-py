@@ -25,6 +25,7 @@ MODULES = [
     'rocket.',
     'tracks.',
     'scene.',
+    'buffer.',
 ]
 
 class TestCase(unittest.TestCase):
@@ -59,7 +60,7 @@ class TestCase(unittest.TestCase):
     def test_texture2d_docs(self):
         self.validate(
             os.path.join('reference', 'texture2d.rst'),
-            opengl, 'Texture2D', ['quad', 'shader'])
+            opengl, 'Texture2D', ['quad', 'shader', 'sampler'])
 
     def test_texture_array(self):
         self.validate(

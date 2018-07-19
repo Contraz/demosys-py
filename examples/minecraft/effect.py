@@ -3,7 +3,6 @@ import moderngl
 from demosys.effects import effect
 from demosys.scene import MeshShader
 from demosys.opengl import FBO
-from pyrr import matrix44
 
 
 class MinecraftEffect(effect.Effect):
@@ -50,6 +49,7 @@ class MinecraftEffect(effect.Effect):
         self.fbo.draw_color_layer(0)
         self.fbo.draw_depth(0.1, 300, pos=(1.25, 1.25), scale=(0.5, 0.5))
         self.fbo.clear()
+
 
 class MinecraftShader(MeshShader):
     """

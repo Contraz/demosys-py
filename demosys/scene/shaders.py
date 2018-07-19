@@ -1,7 +1,4 @@
-import moderngl
 import os
-
-from pyrr import Matrix33
 
 from demosys import context
 from demosys.conf import settings
@@ -20,7 +17,7 @@ class MeshShader:
         """
         Draw code for the mesh. Should be overriden.
 
-        :param projection_matrix: projection_matrix (bytes) 
+        :param projection_matrix: projection_matrix (bytes)
         :param view_matrix: view_matrix (bytes)
         :param camera_matrix: camera_matrix (bytes)
         :param time: The current time
@@ -49,10 +46,10 @@ class ColorShader(MeshShader):
     def draw(self, mesh, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
 
         if mesh.material:
-        #     if mesh.material.double_sided:
-        #         self.ctx.disable(moderngl.CULL_FACE)
-        #     else:
-        #         self.ctx.enable(moderngl.CULL_FACE)
+            # if mesh.material.double_sided:
+            #     self.ctx.disable(moderngl.CULL_FACE)
+            # else:
+            #     self.ctx.enable(moderngl.CULL_FACE)
 
             if mesh.material.color:
                 self.shader.uniform("color", tuple(mesh.material.color))

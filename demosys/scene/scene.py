@@ -38,7 +38,7 @@ class Scene:
     @property
     def view_matrix(self):
         return self._view_matrix
-    
+
     @view_matrix.setter
     def view_matrix(self, value):
         self._view_matrix = value.astype('f4')

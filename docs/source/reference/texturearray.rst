@@ -32,6 +32,7 @@ Attributes
 .. autoattribute:: TextureArray.repeat_x
 .. autoattribute:: TextureArray.repeat_y
 .. autoattribute:: TextureArray.filter
+.. autoattribute:: TextureArray.anisotropy
 
 .. autoattribute:: TextureArray.depth
 .. autoattribute:: TextureArray.swizzle

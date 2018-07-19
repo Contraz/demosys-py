@@ -32,6 +32,7 @@ Attributes
 .. autoattribute:: DepthTexture.repeat_x
 .. autoattribute:: DepthTexture.repeat_y
 .. autoattribute:: DepthTexture.filter
+.. autoattribute:: DepthTexture.anisotropy
 .. autoattribute:: DepthTexture.depth
 .. autoattribute:: DepthTexture.swizzle
 .. autoattribute:: DepthTexture.size

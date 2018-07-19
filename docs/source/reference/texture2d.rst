@@ -34,6 +34,7 @@ Attributes
 .. autoattribute:: Texture2D.repeat_x
 .. autoattribute:: Texture2D.repeat_y
 .. autoattribute:: Texture2D.filter
+.. autoattribute:: Texture2D.anisotropy
 .. autoattribute:: Texture2D.depth
 .. autoattribute:: Texture2D.swizzle
 .. autoattribute:: Texture2D.size

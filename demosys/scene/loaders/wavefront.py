@@ -4,7 +4,6 @@ from .base import SceneLoader
 import pywavefront
 from pywavefront.material import Texture
 
-from OpenGL import GL
 from demosys.opengl import VAO
 from demosys.scene import Mesh, Node, Material, MaterialTexture
 from demosys.resources import textures
