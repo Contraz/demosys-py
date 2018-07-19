@@ -13,7 +13,6 @@ from pyrr import matrix44, Matrix44, quaternion
 
 from demosys import context
 from demosys.opengl import Texture2D
-from demosys.opengl import samplers
 from demosys.opengl import VAO
 from demosys.opengl.constants import TYPE_INFO
 from demosys.scene import (
@@ -155,7 +154,14 @@ class GLTF2(SceneLoader):
 
     def load_samplers(self):
         for sampler in self.meta.samplers:
-            self.samplers.append(sampler.create())
+            self.samplers.append(
+                self.ctx.sampler(
+                    filter=(sampler.minFilter, sampler.magFilter),
+                    # self.wrapS = data.get('wrapS')
+                    # self.wrapT = data.get('wrapT')
+                    anisotropy=16,
+                )
+            )
 
     def load_textures(self):
         for texture_meta in self.meta.textures:
@@ -662,6 +668,7 @@ class GLTFImage:
             image = Image.open(io.BytesIO(base64.b64decode(data)))
         else:
             path = os.path.join(path, self.uri)
+            print("Loading:", self.uri)
             image = Image.open(path)
 
         texture.set_image(image, flip=False)
@@ -680,16 +687,6 @@ class GLTFSampler:
         self.minFilter = data.get('minFilter')
         self.wrapS = data.get('wrapS')
         self.wrapT = data.get('wrapT')
-
-    def create(self):
-        return samplers.create(
-            mipmap=True,
-            mag_filter=self.magFilter,
-            min_filter=self.minFilter,
-            anisotropy=8,
-            wrap_s=self.wrapS,
-            wrap_t=self.wrapT,
-        )
 
 
 class GLTFCamera:

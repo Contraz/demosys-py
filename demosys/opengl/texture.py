@@ -251,7 +251,6 @@ class Texture2D(BaseTexture):
         )
 
         if self.mipmap:
-            print("Creating mipamps")
             self.build_mipmaps()
 
     def draw(self, pos=(0.0, 0.0), scale=(1.0, 1.0)):
