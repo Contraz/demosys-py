@@ -9,15 +9,16 @@ in vec2 in_uv;
 uniform mat4 m_proj;
 uniform mat4 m_view;
 uniform mat4 m_cam;
-uniform mat3 m_normal;
 
 out vec3 normal;
 out vec2 uv;
 out vec3 pos;
 
 void main() {
-    vec4 p = m_cam * m_view  * vec4(in_position, 1.0);
+    mat4 mv = m_cam * m_view; 
+    vec4 p = mv * vec4(in_position, 1.0);
 	gl_Position = m_proj * p;
+    mat3 m_normal = transpose(inverse(mat3(mv)));
     normal = m_normal * in_normal;
     uv = in_uv;
     pos = p.xyz;

@@ -27,10 +27,22 @@ class Mesh:
         self.bbox_max = bbox_max
         self.mesh_shader = None
 
-    def draw(self, proj_mat, view_mat, camera_mat, normal_mat, time=0):
-        """Draw the mesh using the assigned mesh shader"""
+    def draw(self, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
+        """
+        Draw the mesh using the assigned mesh shader
+
+        :param projection_matrix: projection_matrix (bytes)
+        :param view_matrix: view_matrix (bytes)
+        :param camera_matrix: camera_matrix (bytes)
+        """
         if self.mesh_shader:
-            self.mesh_shader.draw(self, proj_mat, view_mat, camera_mat, normal_mat, time=time)
+            self.mesh_shader.draw(
+                self,
+                projection_matrix=projection_matrix,
+                view_matrix=view_matrix,
+                camera_matrix=camera_matrix,
+                time=time
+            )
 
     def draw_bbox(self, proj_matrix, view_matrix, shader, vao):
         shader.uniform("m_proj", proj_matrix.astype('f4').tobytes())

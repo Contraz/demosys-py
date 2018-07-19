@@ -33,16 +33,35 @@ class Scene:
         self.bbox_vao = geometry.bbox()
         self.bbox_shader = shaders.get('scene_default/bbox.glsl', create=True)
 
-    def draw(self, proj_mat, view_mat, camera_mat, normal_mat, time=0):
+        self._view_matrix = matrix44.create_identity()
+
+    @property
+    def view_matrix(self):
+        return self._view_matrix
+    
+    @view_matrix.setter
+    def view_matrix(self, value):
+        self._view_matrix = value.astype('f4')
+        for node in self.root_nodes:
+            node.calc_view_mat(self._view_matrix)
+
+    def draw(self, projection_matrix=None, camera_matrix=None, time=0):
         """
         Draw all the nodes in the scene
 
-        :param m_proj: projection matrix (ndarray)
-        :param m_mv: view matrix
+        :param projection_matrix: projection matrix (bytes)
+        :param camera_matrix: camera_matrix (bytes)
         :param time: The current time
         """
+        projection_matrix = projection_matrix.astype('f4').tobytes()
+        camera_matrix = camera_matrix.astype('f4').tobytes()
+
         for node in self.root_nodes:
-            node.draw(proj_mat, view_mat, camera_mat, normal_mat, time=time)
+            node.draw(
+                projection_matrix=projection_matrix,
+                camera_matrix=camera_matrix,
+                time=time,
+            )
 
     def draw_bbox(self, m_proj, m_mv, all=True):
         """Draw scene and mesh bounding boxes"""
@@ -102,6 +121,7 @@ class Scene:
             self.loader.load(self, file=path)
 
         self.apply_mesh_shaders()
+        self.view_matrix = matrix44.create_identity()
 
     def __str__(self):
         return "<Scene: {}>".format(self.name)

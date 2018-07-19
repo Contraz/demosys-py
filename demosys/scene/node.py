@@ -10,23 +10,34 @@ class Node:
         self.mesh = mesh
         self.matrix = matrix
         self.matrix_global = None
+        self.matrix_global_bytes = None
         self.children = []
 
     def add_child(self, child):
         self.children.append(child)
 
-    def draw(self, proj_mat, view_mat, camera_mat, normal_mat, time=0):
-        # if self.matrix is not None:
-        #     m_mv = matrix44.multiply(self.matrix, m_mv)
+    def draw(self, projection_matrix=None, camera_matrix=None, time=0):
+        """
+        Draw node and children
 
-        if self.matrix_global is not None:
-            view_mat = self.matrix_global
-
+        :param projection_matrix: projection matrix (bytes)
+        :param camera_matrix: camera_matrix (bytes)
+        :param time: The current time
+        """
         if self.mesh:
-            self.mesh.draw(proj_mat, view_mat, camera_mat, normal_mat, time=time)
+            self.mesh.draw(
+                projection_matrix=projection_matrix,
+                view_matrix=self.matrix_global_bytes,
+                camera_matrix=camera_matrix,
+                time=time
+            )
 
         for child in self.children:
-            child.draw(proj_mat, view_mat, camera_mat, normal_mat, time=time)
+            child.draw(
+                projection_matrix=projection_matrix,
+                camera_matrix=camera_matrix,
+                time=time
+            )
 
     def draw_bbox(self, m_proj, m_mv, shader, vao):
         if self.matrix is not None:
@@ -50,3 +61,17 @@ class Node:
             bbox_min, bbox_max = child.calc_global_bbox(view_matrix, bbox_min, bbox_max)
 
         return bbox_min, bbox_max
+
+    def calc_view_mat(self, view_matrix):
+        if self.matrix is not None:
+            self.matrix_global = matrix44.multiply(self.matrix, view_matrix).astype('f4')
+            self.matrix_global_bytes = self.matrix_global.tobytes()
+
+            for child in self.children:
+                child.calc_view_mat(self.matrix_global)
+        else:
+            self.matrix_global = view_matrix
+            self.matrix_global_bytes = view_matrix.tobytes()
+
+            for child in self.children:
+                child.calc_view_mat(view_matrix)
