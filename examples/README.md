@@ -59,3 +59,15 @@ python manage.py runeffect examples.minecraft
 ```
 
 ![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/minecraft.png)
+
+Sponza
+------
+
+Example loading and drawing GLTF 2.0 scenes. The Atrium Sponza Palace, Dubrovnik, is an elegant and improved model created by Frank Meinl. The original Sponza model was created by Marko Dabrovic in early 2002.
+See [README.md](https://github.com/Contraz/demosys-py/tree/master/examples/sponza/scenes/sponza/Sponza) for more info.
+
+```bash
+python manage.py runeffect examples.sponza
+```
+
+![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/sponza.png)
