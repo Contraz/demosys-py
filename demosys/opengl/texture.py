@@ -125,6 +125,15 @@ class BaseTexture:
         self.mglo.repeat_x = value
 
     @property
+    def repeat_y(self):
+        """bool: The repeat_y of the texture"""
+        return self.mglo.repeat_y
+
+    @repeat_y.setter
+    def repeat_y(self, value):
+        self.mglo.repeat_y = value
+
+    @property
     def filter(self) -> Tuple[int, int]:
         """tuple: (min, mag) filtering of the texture"""
         return self.mglo.filter
@@ -134,13 +143,16 @@ class BaseTexture:
         self.mglo.filter = value
 
     @property
-    def repeat_y(self):
-        """bool: The repeat_y of the texture"""
-        return self.mglo.repeat_y
+    def anisotropy(self) -> float:
+        """
+        float: Number of samples for anisotropic filtering.
+        Any value greater than 1.0 counts as a use of anisotropic filtering
+        """
+        return self.mglo.anisotropy
 
-    @repeat_y.setter
-    def repeat_y(self, value):
-        self.mglo.repeat_y = value
+    @anisotropy.setter
+    def anisotropy(self, value):
+        self.mglo.anisotropy = value
 
     @property
     def swizzle(self):
@@ -310,7 +322,6 @@ class TextureArray(BaseTexture):
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
         width, height, depth = image.size[0], image.size[1] // self.layers, self.layers
-        print(width, height, depth)
 
         self.mglo = self.ctx.texture_array(
             (width, height, depth),
