@@ -1,3 +1,5 @@
+import numpy
+
 import moderngl
 import pywavefront
 from pywavefront import cache
@@ -46,8 +48,8 @@ class VAOCacheLoader(cache.CacheLoader):
         buffer_format, attributes, mesh_attributes = translate_buffer_format(material.vertex_format)
 
         vao = VAO(material.name, mode=moderngl.TRIANGLES)
-        buffer = context.ctx().buffer(fd.read(length))
-        vao.buffer(buffer, buffer_format, attributes)
+        # buffer = context.ctx().buffer(fd.read(length))
+        vao.buffer(fd.read(length), buffer_format, attributes)
 
         setattr(material, 'vao', vao)
         setattr(material, 'buffer_format', buffer_format)
@@ -74,13 +76,29 @@ class ObjLoader(SceneLoader):
 
         for _, mat in data.materials.items():
 
-            if not hasattr(mat, 'vao'):
-                continue
-
             mesh = Mesh(mat.name)
-            mesh.vao = mat.vao
-            for attrs in mat.mesh_attributes:
-                mesh.add_attribute(*attrs)
+
+            # Traditional loader
+            if mat.vertices:
+                buffer_format, attributes, mesh_attributes = translate_buffer_format(mat.vertex_format)
+                vbo = numpy.array(mat.vertices, dtype='f4')
+
+                vao = VAO(mat.name, mode=moderngl.TRIANGLES)
+                vao.buffer(vbo, buffer_format, attributes)
+                mesh.vao = vao
+
+                for attrs in mesh_attributes:
+                    mesh.add_attribute(*attrs)
+
+            # Binary cache loader
+            elif hasattr(mat, 'vao'):
+                mesh = Mesh(mat.name)
+                mesh.vao = mat.vao
+                for attrs in mat.mesh_attributes:
+                    mesh.add_attribute(*attrs)
+            else:
+                # Empty
+                continue
 
             scene.meshes.append(mesh)
 

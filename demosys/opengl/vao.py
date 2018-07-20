@@ -87,6 +87,7 @@ class VAO:
         :param name: The name for debug purposes
         :param mode: Default draw mode for this VAO
         """
+        self.ctx = context.ctx()
         self.name = name
         self.mode = mode
 
@@ -156,11 +157,14 @@ class VAO:
         if not isinstance(attribute_names, list):
             attribute_names = [attribute_names, ]
 
-        if not isinstance(buffer, moderngl.Buffer) and not isinstance(buffer, numpy.ndarray):
-            raise VAOError("buffer parameter must be a moderngl.Buffer or numpy.ndarray instance")
+        if not type(buffer) in [moderngl.Buffer, numpy.ndarray, bytes]:
+            raise VAOError("buffer parameter must be a moderngl.Buffer, numpy.ndarray or bytes instance")
 
         if isinstance(buffer, numpy.ndarray):
-            buffer = context.ctx().buffer(buffer.tobytes())
+            buffer = self.ctx.buffer(buffer.tobytes())
+
+        if isinstance(buffer, bytes):
+            buffer = self.ctx.buffer(data=buffer)
 
         formats = buffer_format.split()
         if len(formats) != len(attribute_names):
@@ -178,11 +182,14 @@ class VAO:
         :param buffer: Buffer object or ndarray
         :param index_element_size: Byte size of each element. 1, 2 or 4
         """
-        if not isinstance(buffer, moderngl.Buffer) and not isinstance(buffer, numpy.ndarray):
-            raise VAOError("buffer parameter must be a moderngl.Buffer or numpy.ndarray instance")
+        if not type(buffer) in [moderngl.Buffer, numpy.ndarray, bytes]:
+            raise VAOError("buffer parameter must be a moderngl.Buffer, numpy.ndarray or bytes instance")
 
         if isinstance(buffer, numpy.ndarray):
-            buffer = context.ctx().buffer(buffer.tobytes())
+            buffer = self.ctx.buffer(buffer.tobytes())
+
+        if isinstance(buffer, bytes):
+            buffer = self.ctx.buffer(data=buffer)
 
         self._index_buffer = buffer
         self._index_element_size = index_element_size
