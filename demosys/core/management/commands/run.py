@@ -19,8 +19,9 @@ class Command(BaseCommand):
         print(manager_path)
         try:
             manager_cls = import_string(manager_path)
-        except ImportError as e:
-            raise ImproperlyConfigured("EFFECT_MANAGER '{}' failed to initialize: {}".format(manager_path, e))
+        except ImportError as err:
+            raise ImproperlyConfigured(
+                "EFFECT_MANAGER '{}' failed to initialize: {}".format(manager_path, err))
 
         manager = manager_cls()
         demosys.run(manager=manager)

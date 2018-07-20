@@ -70,6 +70,8 @@ class Window:
 
     def resize(self, width, height):
         """Resize window"""
+        self.width = width
+        self.height = height
         self._calc_viewport()
 
     def close(self):

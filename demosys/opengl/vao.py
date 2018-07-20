@@ -218,7 +218,7 @@ class VAO:
             if content:
                 vao_content.append(content)
 
-        if len(attributes) > 0:
+        if attributes:
             for attrib in attributes:
                 if attrib not in SYSTEM_ATTRIBS:
                     raise VAOError("Did not find a buffer mapping for {}".format([n for n in attributes]))

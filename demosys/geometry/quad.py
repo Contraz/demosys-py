@@ -1,20 +1,15 @@
-import moderngl
 import numpy
-from demosys.opengl import VAO
-from demosys import context
 
-# Cache fullscreen quad
-QUAD_FS = None
+import moderngl
+from demosys import context
+from demosys.opengl import VAO
 
 
 def quad_fs() -> VAO:
     """
     Creates a screen aligned quad.
     """
-    global QUAD_FS
-    if not QUAD_FS:
-        QUAD_FS = quad_2d(2.0, 2.0, 0.0, 0.0)
-    return QUAD_FS
+    return quad_2d(2.0, 2.0, 0.0, 0.0)
 
 
 def quad_2d(width, height, xpos=0.0, ypos=0.0) -> VAO:

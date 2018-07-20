@@ -1,12 +1,13 @@
-import moderngl
 import numpy
-from .base import SceneLoader
+
+import moderngl
 import pywavefront
 from pywavefront.material import Texture
-
 from demosys.opengl import VAO
-from demosys.scene import Mesh, Node, Material, MaterialTexture
 from demosys.resources import textures
+from demosys.scene import Material, MaterialTexture, Mesh, Node
+
+from .base import SceneLoader
 
 
 # HACK: Mock the initializer to avoid the exist check
@@ -29,7 +30,7 @@ class ObjLoader(SceneLoader):
         """Deferred loading"""
         data = pywavefront.Wavefront(file, create_materials=True)
 
-        for name, mat in data.materials.items():
+        for _, mat in data.materials.items():
 
             if not mat.vertices:
                 continue

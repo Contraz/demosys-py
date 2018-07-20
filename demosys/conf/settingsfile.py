@@ -17,7 +17,7 @@ def create(settings):
             value = ",\n".join('    "{}": {}'.format(k, to_s(v)) for k, v in value.items())
 
             # Add comma after the last dict entry
-            if len(value) > 0:
+            if value:
                 value += ','
 
             data += "%s = {\n%s\n}\n\n" % (name, value)
@@ -26,7 +26,7 @@ def create(settings):
             value = ",\n".join("    {}".format(to_s(v)) for v in value)
 
             # Add comma after the last tuple entry
-            if len(value) > 0:
+            if value:
                 value += ","
 
             data += "{} = (\n{}\n)\n\n".format(name, value)
@@ -38,8 +38,8 @@ def create(settings):
     return data[:-1]
 
 
-def to_s(t):
-    if isinstance(t, str):
-        return '"{}"'.format(t)
+def to_s(var):
+    if isinstance(var, str):
+        return '"{}"'.format(var)
     else:
-        return str(t)
+        return str(var)

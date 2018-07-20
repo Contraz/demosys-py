@@ -17,10 +17,16 @@ class GeoCubesEffect(effect.Effect):
 
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
-        v = 100.0
-        r = (-v, v)
+        axis_range = 100.0
+        range_tuple = (-axis_range, axis_range)
 
-        self.points = geometry.points_random_3d(50_000, range_x=r, range_y=r, range_z=r, seed=7656456)
+        self.points = geometry.points_random_3d(
+            50_000,
+            range_x=range_tuple,
+            range_y=range_tuple,
+            range_z=range_tuple,
+            seed=7656456
+        )
         self.quad = geometry.quad_fs()
         self.fbo = FBO.create((512, 512), depth=True)
 

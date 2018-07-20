@@ -30,8 +30,8 @@ class FileSystemFinder:
         :param path: The path to find
         :return: The absolute path to the file or None if not found
         """
-        for p in self.paths:
-            abspath = os.path.join(p, path)
+        for entry in self.paths:
+            abspath = os.path.join(entry, path)
             if os.path.exists(abspath):
                 self.cache(abspath, abspath)
                 return abspath
@@ -48,9 +48,9 @@ class FileSystemFinder:
         :param path: The path to the file
         :return: The absolute path to the file or None
         """
-        e = self._cache.get(path)
-        if e.exists:
-            return e.abspath
+        entry = self._cache.get(path)
+        if entry.exists:
+            return entry.abspath
         return None
 
     def cache(self, path, abspath, exists=True):

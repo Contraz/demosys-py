@@ -19,7 +19,7 @@ class WindowFBO:
         pass
 
     @classmethod
-    def clear(cls, red=0.0, green=0.0, blue=0.0, depth=1.0, viewport=None):
+    def clear(cls):
         """Dummy clear method"""
         cls.window.clear()
 
@@ -124,7 +124,8 @@ class FBO:
         """
         return self.fbo.read_into(
             buffer,
-            viewport=None, components=components,
+            viewport=viewport,
+            components=components,
             attachment=attachment,
             alignment=alignment,
             dtype=dtype,

@@ -1,5 +1,6 @@
-import moderngl
 import numpy
+
+import moderngl
 from demosys.opengl import VAO
 
 
@@ -30,7 +31,7 @@ def plane_xz(size=(10, 10), resolution=(10, 10)) -> VAO:
                 yield 1 - z / (rz - 1)
 
     def gen_normal():
-        for z in range(rx * rz):
+        for _ in range(rx * rz):
             yield 0.0
             yield 1.0
             yield 0.0

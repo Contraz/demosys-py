@@ -3,4 +3,6 @@ from demosys.effects import Effect
 
 
 class DeferredEffect(Effect):
-    pass
+
+    def draw(self, time, frametime, target):
+        pass

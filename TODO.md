@@ -25,7 +25,6 @@
 - Framebuffer Blitting
 - Textures:
   - 3D
-  - Texture Array
   - Texture Cube
 - FBOs
   - Support layers

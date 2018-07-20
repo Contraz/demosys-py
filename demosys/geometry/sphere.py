@@ -1,7 +1,8 @@
 import math
-import moderngl as mlg
+
 import numpy
 
+import moderngl as mlg
 from demosys import context
 from demosys.opengl import VAO
 

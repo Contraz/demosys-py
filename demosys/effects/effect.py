@@ -41,13 +41,13 @@ def local_path(func):
 
         # If use_local is True prepend the package name to the path
         if use_local is True:
-                path = args[1]
-                path = os.path.join(args[0].effect_name, path)
+            path = args[1]
+            path = os.path.join(args[0].effect_name, path)
 
-                # Replace path and rebuild tuple
-                args = list(args)
-                args[1] = path
-                args = tuple(args)
+            # Replace path and rebuild tuple
+            args = list(args)
+            args[1] = path
+            args = tuple(args)
 
         return func(*args, **kwargs)
     return local_wrapper

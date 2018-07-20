@@ -26,7 +26,6 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
     install_requires=[
-        'PyOpenGL==3.1.0',
         'glfw==1.6.0',
         'moderngl==5.3.0',
         'pyrr==0.9.2',

@@ -49,13 +49,11 @@ Features
 --------
 
 * A simple effect system based on python packages
-* Supports loading GLTF and obj files/scenes
+* Supports loading GLTF 2.0 and obj files/scenes
 * Support for the rocket sync-tracker system to create interesting keyframe data (Using [pyrocket](https://github.com/Contraz/pyrocket))
 * Management commands to create new projects and effects
 * Convenient wrappers for VAO, Shader, Texture, FBO etc
-* On-the-fly Shader and VAO negotiation of the needed buffer binding
 * Runtime re-loading shaders (press R)
-* Strict validation in most OpenGL operations with reasonable error feedback
 * Time line / Timer support
 * A highly pluggable framework
 * Support for custom management commands

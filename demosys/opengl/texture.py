@@ -1,4 +1,4 @@
-from typing import Tuple, Union  # noqa
+from typing import Tuple  # noqa
 
 from PIL import Image
 

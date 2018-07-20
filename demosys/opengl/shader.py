@@ -170,7 +170,7 @@ class ShaderProgram:
         self.uniform_map = {k: v for k, v in self.program._members.items() if isinstance(v, moderngl.Uniform)}
         print("ShaderProgram {} has {} uniform(s)".format(self.name, len(self.uniform_map)))
 
-        for name, uniform in self.uniform_map.items():
+        for _, uniform in self.uniform_map.items():
             print(" - Uniform[{}] {} {} {}".format(
                 uniform.location, uniform.name, uniform.dimension, uniform.array_length
             ))
