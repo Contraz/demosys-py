@@ -10,7 +10,7 @@ class MinecraftEffect(effect.Effect):
     def __init__(self):
         self.shader = MinecraftShader(shader=self.get_shader('minecraft.glsl', local=True))
         self.scene = self.get_scene(
-            'lost-empire/lost_empire.obj',
+            'lost-empire/lost_empire.obj.bin',
             local=True,
             mesh_shaders=[self.shader],
         )

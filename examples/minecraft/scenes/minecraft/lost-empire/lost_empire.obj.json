@@ -1,8 +1,8 @@
 {
-  "created_at": "2018-07-16T14:28:43.451336",
+  "created_at": "2018-07-20T17:45:31.699063",
   "version": "0.1",
-  "materials": [
-    "/Users/einarforselv/Documents/projects/contraz/demosys-py-test/testdemo/sceneobj/scenes/sceneobj/lost-empire/lost_empire.mtl"
+  "mtllibs": [
+    "lost_empire.mtl"
   ],
   "vertex_buffers": [
     {
