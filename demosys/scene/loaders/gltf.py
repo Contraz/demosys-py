@@ -5,22 +5,18 @@ import io
 import json
 import os
 import struct
+from collections import namedtuple
+
 import numpy
-
 from PIL import Image
-import moderngl
-from pyrr import matrix44, Matrix44, quaternion
 
+import moderngl
 from demosys import context
-from demosys.opengl import Texture2D
-from demosys.opengl import VAO
-from demosys.opengl.constants import TYPE_INFO
-from demosys.scene import (
-    Node,
-    Mesh,
-    Material,
-    MaterialTexture,
-)
+from demosys.opengl import VAO, Texture2D
+# from demosys.opengl.constants import TYPE_INFO
+from demosys.scene import Material, MaterialTexture, Mesh, Node
+from pyrr import Matrix44, matrix44, quaternion
+
 from .base import SceneLoader
 
 GLTF_MAGIC_HEADER = b'glTF'
@@ -31,6 +27,17 @@ NP_COMPONENT_DTYPE = {
     5123: numpy.uint16,  # GL_UNSIGNED_SHORT
     5125: numpy.uint32,  # GL_UNSIGNED_INT
     5126: numpy.float32,  # GL_FLOAT
+}
+
+ComponentType = namedtuple('ComponentType', ['name', 'value', 'size'])
+
+COMPONENT_TYPE = {
+    5120: ComponentType("BYTE", 5120, 1),
+    5121: ComponentType("UNSIGNED_BYTE", 5121, 1),
+    5122: ComponentType("SHORT", 5122, 2),
+    5123: ComponentType("UNSIGNED_SHORT", 5123, 2),
+    5125: ComponentType("UNSIGNED_INT", 5125, 4),
+    5126: ComponentType("FLOAT", 5126, 4),
 }
 
 # dtype to moderngl buffer format
@@ -493,7 +500,7 @@ class GLTFAccessor:
         self.bufferViewId = data.get('bufferView') or 0
         self.bufferView = None
         self.byteOffset = data.get('byteOffset') or 0
-        self.componentType = TYPE_INFO[data['componentType']]
+        self.componentType = COMPONENT_TYPE[data['componentType']]
         self.count = data.get('count')
         self.min = numpy.array(data.get('min') or [-0.5, -0.5, -0.5], dtype=numpy.float32)
         self.max = numpy.array(data.get('max') or [0.5, 0.5, 0.5], dtype=numpy.float32)

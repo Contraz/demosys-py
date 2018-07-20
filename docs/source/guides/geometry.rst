@@ -57,6 +57,7 @@ The naive way of generating geometry would probably look something like this:
 .. code-block:: python
 
    import numpy
+   import moderngl
    from pyrr import Vector3
 
    def random_points(count):
@@ -68,7 +69,7 @@ The naive way of generating geometry would probably look something like this:
        # Create VBO enforcing float32 values with numpy
        points_data = numpy.array(points, dtype=numpy.float32)
 
-       vao = VAO("random_points", mode=GL.GL_POINTS)
+       vao = VAO("random_points", mode=moderngl.POINTS)
        vao.buffer(points_data, 'f4', "in_position")
        return vao
 
