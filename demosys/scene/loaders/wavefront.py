@@ -1,8 +1,6 @@
-import numpy
-
 import moderngl
 import pywavefront
-from pywavefront import cache 
+from pywavefront import cache
 from pywavefront.obj import ObjParser
 
 from demosys import context
@@ -46,7 +44,7 @@ class VAOCacheLoader(cache.CacheLoader):
 
     def load_vertex_buffer(self, fd, material, length):
         buffer_format, attributes, mesh_attributes = translate_buffer_format(material.vertex_format)
-        print(buffer_format, attributes, mesh_attributes)
+
         vao = VAO(material.name, mode=moderngl.TRIANGLES)
         buffer = context.ctx().buffer(fd.read(length))
         vao.buffer(buffer, buffer_format, attributes)
