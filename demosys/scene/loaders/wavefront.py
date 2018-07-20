@@ -74,7 +74,7 @@ class ObjLoader(SceneLoader):
 
         for _, mat in data.materials.items():
 
-            if not mat.vao:
+            if not hasattr(mat, 'vao'):
                 continue
 
             mesh = Mesh(mat.name)
