@@ -44,9 +44,10 @@ class Mesh:
                 time=time
             )
 
-    def draw_bbox(self, proj_matrix, view_matrix, shader, vao):
-        shader.uniform("m_proj", proj_matrix.astype('f4').tobytes())
-        shader.uniform("m_mv", view_matrix.astype('f4').tobytes())
+    def draw_bbox(self, proj_matrix, view_matrix, cam_matrix, shader, vao):
+        shader.uniform("m_proj", proj_matrix)
+        shader.uniform("m_view", view_matrix)
+        shader.uniform("m_cam", cam_matrix)
         shader.uniform("bb_min", self.bbox_min.astype('f4').tobytes())
         shader.uniform("bb_max", self.bbox_max.astype('f4').tobytes())
         shader.uniform("color", (0.75, 0.75, 0.75))

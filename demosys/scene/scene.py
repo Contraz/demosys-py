@@ -33,7 +33,7 @@ class Scene:
         self.bbox_vao = geometry.bbox()
         self.bbox_shader = shaders.get('scene_default/bbox.glsl', create=True)
 
-        self._view_matrix = matrix44.create_identity()
+        self._view_matrix = matrix44.create_identity()        
 
     @property
     def view_matrix(self):
@@ -63,11 +63,15 @@ class Scene:
                 time=time,
             )
 
-    def draw_bbox(self, m_proj, m_mv, all=True):
+    def draw_bbox(self, projection_matrix=None, camera_matrix=None, all=True):
         """Draw scene and mesh bounding boxes"""
+        projection_matrix = projection_matrix.astype('f4').tobytes()
+        camera_matrix = camera_matrix.astype('f4').tobytes()
+
         # Scene bounding box
-        self.bbox_shader.uniform("m_proj", m_proj.astype('f4').tobytes())
-        self.bbox_shader.uniform("m_mv", m_mv.astype('f4').tobytes())
+        self.bbox_shader.uniform("m_proj", projection_matrix)
+        self.bbox_shader.uniform("m_view", self._view_matrix.astype('f4').tobytes())
+        self.bbox_shader.uniform("m_view", camera_matrix)
         self.bbox_shader.uniform("bb_min", self.bbox_min.astype('f4').tobytes())
         self.bbox_shader.uniform("bb_max", self.bbox_max.astype('f4').tobytes())
         self.bbox_shader.uniform("color", (1.0, 0.0, 0.0))
@@ -78,7 +82,7 @@ class Scene:
 
         # Draw bounding box for children
         for node in self.root_nodes:
-            node.draw_bbox(m_proj, m_mv, self.bbox_shader, self.bbox_vao)
+            node.draw_bbox(projection_matrix, camera_matrix, self.bbox_shader, self.bbox_vao)
 
     def apply_mesh_shaders(self):
         """Applies mesh shaders to meshes"""

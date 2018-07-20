@@ -14,7 +14,11 @@ class SceneEffect(effect.Effect):
         self.ctx.enable(mgl.DEPTH_TEST)
         self.sys_camera.velocity = self.scene.diagonal_size / 5.0
 
-        self.scene.draw(self.proj_mat, self.sys_camera.view_matrix, time=time)
+        self.scene.draw(
+            projection_matrix=self.proj_mat,
+            camera_matrix=self.sys_camera.view_matrix,
+            time=time,
+        )
 
         # Draw bbox
-        # self.scene.draw_bbox(self.m_proj, m_mv, all=True)
+        self.scene.draw_bbox(self.proj_mat, self.sys_camera.view_matrix, all=True)

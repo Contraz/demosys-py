@@ -39,15 +39,19 @@ class Node:
                 time=time
             )
 
-    def draw_bbox(self, m_proj, m_mv, shader, vao):
-        if self.matrix is not None:
-            m_mv = matrix44.multiply(self.matrix, m_mv)
+    def draw_bbox(self, projection_matrix, camera_matrix, shader, vao):
 
         if self.mesh:
-            self.mesh.draw_bbox(m_proj, m_mv, shader, vao)
+            self.mesh.draw_bbox(
+                projection_matrix,
+                self.matrix_global_bytes,
+                camera_matrix,
+                shader,
+                vao
+            )
 
         for child in self.children:
-            child.draw_bbox(m_proj, m_mv, shader, vao)
+            child.draw_bbox(projection_matrix, camera_matrix, shader, vao)
 
     def calc_global_bbox(self, view_matrix, bbox_min, bbox_max):
         """Recursive calculation of scene bbox"""
