@@ -92,8 +92,7 @@ pytest
 Bulding docs:
 
 ```bash
-cd docs
-make html
+python setup.py build_sphinx
 ```
 
 Contributors
