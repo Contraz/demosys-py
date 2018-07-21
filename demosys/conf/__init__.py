@@ -15,6 +15,7 @@ ENVIRONMENT_VARIABLE = "DEMOSYS_SETTINGS_MODULE"
 class Settings:
     SHADER_DIRS = []
     TEXTURE_DIRS = []
+    DATA_DIRS = []
     SETTINGS_MODULE = None
 
     def __init__(self):
@@ -69,6 +70,12 @@ class Settings:
         dirs = list(self.TEXTURE_DIRS)
         dirs.append(directory)
         self.TEXTURE_DIRS = dirs
+
+    def add_data_dir(self, directory):
+        """Hack in a data directory"""
+        dirs = list(self.DATA_DIRS)
+        dirs.append(directory)
+        self.DATA_DIRS = dirs
 
 
 settings = Settings()

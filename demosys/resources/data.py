@@ -87,7 +87,7 @@ class DataFiles:
                     data_file.load(path)
                     break
             else:
-                raise ImproperlyConfigured("Cannot find texture {}".format(name))
+                raise ImproperlyConfigured("Cannot find data file {}".format(name))
 
 
 data = DataFiles()

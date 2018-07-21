@@ -17,7 +17,7 @@ class EffectDirectoriesFinder(finders.BaseEffectDirectoriesFinder):
 
 
 def get_finders():
-    for finder in settings.TEXTURE_FINDERS:
+    for finder in settings.DATA_FINDERS:
         yield get_finder(finder)
 
 
