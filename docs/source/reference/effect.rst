@@ -19,6 +19,7 @@ Resource Methods
 .. automethod:: Effect.get_texture_array(path, layers=0, local=False, **kwargs) -> TextureArray
 .. automethod:: Effect.get_track(name, local=False) -> Track
 .. automethod:: Effect.get_scene(path, local=False, **kwargs) -> Scene
+.. automethod:: Effect.get_data(path, local=False, **kwargs) -> Data
 
 Utility Methods
 ---------------

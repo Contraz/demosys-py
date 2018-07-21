@@ -21,6 +21,8 @@ MODULES = [
     'opengl.',
     'texture.',
     'shader.',
+    'resources.',
+    'data.',
     'moderngl.',
     'buffer.',
     'rocket.',
