@@ -31,7 +31,13 @@ class WindowFBO:
 
 
 class FBO:
-    """Frame buffer object"""
+    """
+    A framebuffer object is a collection of buffers that can be used as the destination for rendering.
+    The buffers for framebuffer objects reference images from either textures.
+
+    A typical FBO has one or multiple color layers and a depth. Shaders can write to these buffers
+    when activated.
+    """
     _stack = []
 
     def __init__(self):
@@ -47,7 +53,7 @@ class FBO:
         :param color_buffers: List of textures
         :param depth_buffer: Depth texture
 
-        :return: FBO instance
+        :return: A new :py:class:`FBO`
         """
         instance = FBO()
         instance.color_buffers = color_buffers
@@ -70,8 +76,7 @@ class FBO:
         :param depth: (bool) Create a depth attachment
         :param dtype: (string) data type per r, g, b, a ...
         :param layers: (int) number of color attachments
-
-        :return: A new FBO
+        :return: A new :py:class:`FBO`
         """
         instance = FBO()
 
@@ -150,6 +155,12 @@ class FBO:
     def use(self, stack=True):
         """
         Bind FBO adding it to the stack.
+        Optionally a context manager can be used:
+
+        optonally a context manager can be used::
+
+            with fbo:
+                # draw stuff
 
         :param stack: (bool) If the bind should push the current FBO on the stack.
         """

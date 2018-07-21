@@ -26,6 +26,8 @@ MODULES = [
     'tracks.',
     'scene.',
     'buffer.',
+    'depth.',
+    'array.',
 ]
 
 class TestCase(unittest.TestCase):

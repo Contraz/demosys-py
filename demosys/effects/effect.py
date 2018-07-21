@@ -16,7 +16,7 @@ def bind_target(func):
     """
     Decorator auto binding and releasing the incoming FBO in ``draw()``.
 
-    literal blocks::
+    example::
 
        @bind_target
         def draw(...):

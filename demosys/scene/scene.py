@@ -33,7 +33,7 @@ class Scene:
         self.bbox_vao = geometry.bbox()
         self.bbox_shader = shaders.get('scene_default/bbox.glsl', create=True)
 
-        self._view_matrix = matrix44.create_identity()        
+        self._view_matrix = matrix44.create_identity()
 
     @property
     def view_matrix(self):

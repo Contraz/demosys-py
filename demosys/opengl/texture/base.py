@@ -14,7 +14,7 @@ class BaseTexture:
 
     def use(self, location=0):
         """
-        Bind the texture.
+        Bind the texture to a channel/location.
 
         :param location: The texture location. (GL_TEXTURE0 + location)
         """

@@ -5,14 +5,17 @@ from .base import BaseTexture
 
 
 class DepthTexture(BaseTexture):
-    """Depth Texture"""
+    """
+    A DepthTexture is a texture for storing depth information during rendering.
+    They are attachments to :py:class:`demosys.opengl.FBO`.
+    """
 
     # Class attributes for drawing the texture
     quad = None
     shader = None
     sampler = None
 
-    def __init__(self, size, data=None, samples=0, alignment=8):
+    def __init__(self, size, data=None, samples=0, alignment=4):
         """
         Create a depth texture
 
@@ -27,12 +30,24 @@ class DepthTexture(BaseTexture):
         _init_depth_texture_draw()
 
     @classmethod
-    def create(cls, size, data=None, samples=0, alignment=8) -> 'DepthTexture':
+    def create(cls, size, data=None, samples=0, alignment=4) -> 'DepthTexture':
+        """
+        Creates a :py:class:`DepthTexture` object
+
+        :param size: (tuple) The width and height of the texture.
+        :param data: (bytes) Content of the texture.
+        :param samples: The number of samples. Value 0 means no multisample format.
+        :param alignment: The byte alignment 1, 2, 4 or 8.
+        :return: :py:class:`DepthTexture` object
+        """
         return cls(size, data=data, samples=samples, alignment=alignment)
 
     def draw(self, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
         Draw depth buffer linearized.
+        By default this will draw the texture as a full screen quad.
+        A sampler will be used to ensure the right conditions to draw the depth buffer.
+
         :param near: Near plane in projection
         :param far: Far plane in projection
         :param pos: (tuple) offset x, y

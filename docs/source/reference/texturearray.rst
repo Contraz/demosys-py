@@ -4,6 +4,9 @@ TextureArray
 .. py:module:: demosys.opengl
 .. py:currentmodule:: demosys.opengl
 
+.. autodata:: TextureArray
+   :annotation:
+
 Create
 ------
 

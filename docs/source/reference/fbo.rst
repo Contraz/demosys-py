@@ -1,10 +1,11 @@
 FBO
 ===
 
-Framebuffer Object for off-screen rendering
-
 .. py:module:: demosys.opengl
 .. py:currentmodule:: demosys.opengl
+
+.. autodata:: FBO
+   :annotation:
 
 Create
 ------

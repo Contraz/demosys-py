@@ -5,7 +5,6 @@ import pywavefront
 from pywavefront import cache
 from pywavefront.obj import ObjParser
 
-from demosys import context
 from demosys.opengl import VAO
 from demosys.resources import textures
 from demosys.scene import Material, MaterialTexture, Mesh, Node

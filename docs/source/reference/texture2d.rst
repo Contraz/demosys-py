@@ -4,6 +4,9 @@ Texture2D
 .. py:module:: demosys.opengl
 .. py:currentmodule:: demosys.opengl
 
+.. autodata:: Texture2D
+   :annotation:
+
 Create
 ------
 

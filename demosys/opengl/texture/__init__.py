@@ -1,3 +1,3 @@
-from .texture import Texture2D
-from .array import TextureArray
-from .depth import DepthTexture
+from .texture import Texture2D  # noqa
+from .array import TextureArray  # noqa
+from .depth import DepthTexture  # noqa

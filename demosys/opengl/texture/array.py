@@ -6,7 +6,13 @@ from .base import BaseTexture
 
 
 class TextureArray(BaseTexture):
-    """This is the class docstring"""
+    """
+    A TextureArray is a texture where each mipmap level contains an array of
+    images of the same size. Array textures may have Mipmaps, but each mipmap
+    in the texture has the same number of levels.
+
+    The image data size must exactly match (width, height * layers)
+    """
 
     def __init__(self, path: str=None, mipmap: bool=False, layers=0, **kwargs) -> 'TextureArray':
         """
@@ -35,6 +41,7 @@ class TextureArray(BaseTexture):
         :param alignment: The byte alignment 1, 2, 4 or 8
         :param dtype: (str) The data type
         :param mipmap: (bool) Generate mipmaps
+        :returns: :py:class:`TextureArray` object
         """
         texture = TextureArray("create", mipmap=False, layers=size[2])
         texture.mglo = context.ctx().texture_array(
@@ -50,6 +57,7 @@ class TextureArray(BaseTexture):
     def set_image(self, image, flip=True):
         """
         Set pixel data using a image file with PIL/Pillow.
+        The image size must exactly match (width, height * layers)
 
         :param image: The PIL/Pillow image object
         :param flip: Flip the image top to bottom

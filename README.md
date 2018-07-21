@@ -89,7 +89,7 @@ Running tests:
 pytest
 ```
 
-Bulding docs:
+Building docs:
 
 ```bash
 python setup.py build_sphinx

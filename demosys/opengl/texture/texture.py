@@ -7,7 +7,12 @@ from .base import BaseTexture
 
 
 class Texture2D(BaseTexture):
-    """2D Texture"""
+    """
+    A Texture is an OpenGL object that contains one or more images that all
+    have the same image format. A texture can be used in two ways. It can
+    be the source of a texture access from a Shader, or it can be used
+    as a render target.
+    """
 
     # Class attributes for drawing the texture
     quad = None
@@ -43,7 +48,7 @@ class Texture2D(BaseTexture):
         :param alignment: Data alignment (1, 2, 4 or 8)
         :param dtype: Datatype for each component
         :param mipmap: Generate mipmaps
-        :return: Texture object
+        :return: :py:class:`Texture2D` object
         """
         texture = Texture2D(path="dynamic", mipmap=mipmap)
 
@@ -69,7 +74,7 @@ class Texture2D(BaseTexture):
 
         :param path: The path to the file
         :param image: The PIL/Pillow image object (Can be None)
-        :return: Texture object
+        :return: :py:class:`Texture2D` object
         """
         texture = Texture2D(path=path, **kwargs)
         if image:
@@ -97,7 +102,8 @@ class Texture2D(BaseTexture):
 
     def draw(self, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
-        Draw texture
+        Draw texture using a fullscreen quad.
+        By default this will conver the entire screen.
 
         :param pos: (tuple) offset x, y
         :param scale: (tuple) scale x, y
