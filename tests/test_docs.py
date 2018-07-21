@@ -22,6 +22,7 @@ MODULES = [
     'texture.',
     'shader.',
     'moderngl.',
+    'buffer.',
     'rocket.',
     'tracks.',
     'scene.',
