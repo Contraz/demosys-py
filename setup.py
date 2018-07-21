@@ -31,7 +31,7 @@ setup(
         'pyrr==0.9.2',
         'Pillow==5.1.0',
         'pyrocket==0.2.7',
-        'PyWavefront==0.4.0',
+        'PyWavefront==0.4.1',
         # 'pygame==1.9.3',
     ],
     entry_points={'console_scripts': [
