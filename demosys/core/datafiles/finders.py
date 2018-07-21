@@ -32,6 +32,6 @@ def get_finder(import_path):
     :return: An instance of the finder
     """
     Finder = import_string(import_path)
-    if not issubclass(Finder, finders.FileSystemFinder):
+    if not issubclass(Finder, finders.BaseFileSystemFinder):
         raise ImproperlyConfigured('Finder {} is not a subclass of core.finders.FileSystemFinder'.format(import_path))
     return Finder()

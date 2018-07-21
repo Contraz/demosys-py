@@ -7,6 +7,7 @@ from rocket.tracks import Track
 import moderngl  # noqa
 from demosys import resources
 from demosys.opengl import ShaderProgram, Texture2D, TextureArray
+from demosys.resources import Data
 from demosys.scene import camera  # noqa
 from demosys.scene import Scene
 from pyrr import Matrix33, Matrix44, Vector3, matrix44
@@ -192,6 +193,17 @@ class Effect:
         :return: Scene object
         """
         return resources.scenes.get(path, create=True, **kwargs)
+
+    @local_path
+    def get_data(self, path, local=False, **kwargs) -> Data:
+        """
+        Get or create a data file.
+        :param path: Path to the data file
+        :param local: Auto-prepend the effect package name to the path
+        :param kwargs: Generic paramters passed to data loader
+        :return: Data object
+        """
+        return resources.data.get(path, create=True, **kwargs)
 
     # Utility methods for matrices
 
