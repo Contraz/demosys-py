@@ -1,5 +1,5 @@
 import functools
-import os
+
 from demosys.core import finders
 from demosys.conf import settings
 from demosys.core.exceptions import ImproperlyConfigured
