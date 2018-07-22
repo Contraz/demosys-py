@@ -5,7 +5,7 @@ from .base import BaseTimer
 try:
     from pygame import mixer
 except ImportError:
-    print("pygame is needed for audio playback")
+    print("pygame is needed for timer: MusicTimer")
 
 
 class MusicTimer(BaseTimer):
