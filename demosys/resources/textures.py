@@ -6,13 +6,16 @@ from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.texturefiles.finders import get_finders
 from demosys.opengl import Texture2D, TextureArray
 
+from .base import BaseRegistry
 
-class Textures:
+
+class Textures(BaseRegistry):
     """
     A registry for textures requested by effects.
     Once all effects are initialized, we ask this class to load the textures.
     """
     def __init__(self):
+        super().__init__()
         self.textures = {}
 
     @property
@@ -55,6 +58,8 @@ class Textures:
                     break
             else:
                 raise ImproperlyConfigured("Cannot find texture {}".format(name))
+
+        self._on_loaded()
 
 
 textures = Textures()

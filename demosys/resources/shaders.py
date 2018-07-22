@@ -4,13 +4,16 @@ from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.shaderfiles.finders import get_finders
 from demosys.opengl import ShaderError, ShaderProgram
 
+from .base import BaseRegistry
 
-class Shaders:
+
+class Shaders(BaseRegistry):
     """
     A registry for shaders requested by effects.
     Once all effects are initialized, we ask this class to load the shaders.
     """
     def __init__(self):
+        super().__init__()
         self.shaders = {}
 
     @property
@@ -45,6 +48,8 @@ class Shaders:
         print("Loading shaders:")
         for name, shader in self.shaders.items():
             self.load_shader(shader, name=name, reload=reload)
+
+        self._on_loaded()
 
     def load_shader(self, shader, name=None, reload=False):
         """
