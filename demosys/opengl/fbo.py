@@ -4,40 +4,16 @@ from demosys import context
 from demosys.opengl import DepthTexture, Texture2D
 
 
-class WindowFBO:
-    window = None
-
-    @classmethod
-    def use(cls):
-        """Sets the viewport back to the buffer size of the screen/window"""
-        cls.window.use()
-        cls.window.viewport()
-
-    @classmethod
-    def release(cls):
-        """Dummy release method"""
-        pass
-
-    @classmethod
-    def clear(cls, red=0.0, green=0.0, blue=0.0, depth=1.0, viewport=None):
-        """Dummy clear method"""
-        cls.window.clear()
-
-    @property
-    @classmethod
-    def mglo(cls):
-        """Internal ModernGL fbo"""
-        return cls.window.mgl_fbo()
-
-
 class FBO:
     """Frame buffer object"""
     _stack = []
 
     def __init__(self):
+        self._window = context.window()
         self.color_buffers = []
         self.depth_buffer = None
         self.fbo = None
+        self.default_framebuffer = False
 
     @staticmethod
     def create_from_textures(color_buffers: List[Texture2D], depth_buffer: DepthTexture = None) -> 'FBO':
@@ -157,7 +133,8 @@ class FBO:
         if not stack:
             return
 
-        FBO._stack.append(self)
+        if not self.default_framebuffer:
+            FBO._stack.append(self)
 
         if len(FBO._stack) > 8:
             raise FBOError("FBO stack overflow. You probably forgot to release a bind somewhere.")
@@ -168,8 +145,11 @@ class FBO:
 
         :param stack: (bool) If the bind should be popped form the FBO stack.
         """
+        if self.default_framebuffer:
+            return
+
         if not stack:
-            WindowFBO.use()
+            self._window.fbo.use()
             return
 
         # Are we trying to release an FBO that is not bound?
@@ -186,7 +166,7 @@ class FBO:
         if FBO._stack:
             parent = FBO._stack[-1]
         else:
-            parent = WindowFBO
+            parent = self._window.fbo
 
         # Bind the parent FBO
         if parent:

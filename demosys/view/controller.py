@@ -74,7 +74,6 @@ def run(manager=None):
         current_time = window.timer.get_time()
 
         window.use()
-        window.viewport()
         window.clear()
         window.draw(current_time, frame_time)
         window.swap_buffers()

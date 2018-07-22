@@ -3,7 +3,8 @@ import glfw
 import moderngl
 from demosys.scene import camera
 from demosys.view import screenshot
-
+from demosys.opengl import FBO
+from demosys import context
 from .base import Window
 
 
@@ -50,7 +51,6 @@ class GLFW_Window(Window):
         self.buffer_width, self.buffer_height = glfw.get_framebuffer_size(self.window)
         print("Frame buffer size:", self.buffer_width, self.buffer_height)
         print("Actual window size:", glfw.get_window_size(self.window))
-        self._calc_viewport()
 
         glfw.make_context_current(self.window)
 
@@ -65,6 +65,11 @@ class GLFW_Window(Window):
 
         # Create mederngl context from existing context
         self.ctx = moderngl.create_context()
+        self.fbo = FBO()
+        self.fbo.fbo = self.ctx.screen
+        self.fbo.default_framebuffer = True
+        context.WINDOW = self
+        self.set_default_viewport()
 
     def use(self):
         self.ctx.screen.use()
@@ -90,9 +95,6 @@ class GLFW_Window(Window):
     def terminate(self):
         glfw.terminate()
 
-    def mgl_fbo(self):
-        return self.ctx.screen
-
     def poll_events(self):
         """Poll events from glfw"""
         glfw.poll_events()
@@ -106,7 +108,7 @@ class GLFW_Window(Window):
     def key_event_callback(self, window, key, scancode, action, mods):
         """
         Key event callback for glfw
-    s
+
         :param window: Window event origin
         :param key: The keyboard key that was pressed or released.
         :param scancode: The system-specific scancode of the key.
