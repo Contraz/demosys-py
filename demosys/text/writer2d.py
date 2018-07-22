@@ -1,15 +1,16 @@
 import numpy
+
 import moderngl
-from demosys.opengl import VAO
+from demosys.opengl import VAO, TextureArray
 from demosys.resources import data, shaders, textures
-from demosys.opengl import TextureArray
+from pyrr import matrix44
 
 from .base import BaseText, Meta
 
 
 class TextWriter2D(BaseText):
 
-    def __init__(self, area, size=0.1, text=""):
+    def __init__(self, area, text="", aspect_ratio=1.0):
         """
         :param area: (x, y) Text area size (number of characters)
         :param size: Text size
@@ -17,12 +18,15 @@ class TextWriter2D(BaseText):
         """
         super().__init__()
         self.area = area
-        self.size = size
         self._text = text.encode('latin1')
+
+        self.projection_bytes = None
+        self._aspect_ratio = 1.0
+        self.aspect_ratio = aspect_ratio
 
         self._vao = None
         self._texture = textures.get('demosys/text/VeraMono.png', cls=TextureArray, layers=190, create=True)
-        self._shader = shaders.get('demosys/text/textwriter.glsl', create=True)
+        self._shader = shaders.get('demosys/text/textwriter2d.glsl', create=True)
         self._config = data.get('demosys/text/meta.json', create=True)
 
         data.on_loaded(self._post_load)
@@ -49,11 +53,36 @@ class TextWriter2D(BaseText):
     def text(self, value):
         self._text = value
 
-    def draw(self, proj_matrix, view_matrix):
-        # print(self._text, self._string_data)
+    @property
+    def aspect_ratio(self):
+        return self._aspect_ratio
+
+    @aspect_ratio.setter
+    def aspect_ratio(self, value):
+        self._aspect_ratio = value
+        self.projection_bytes = matrix44.create_orthogonal_projection_matrix(
+            -self.aspect_ratio,  # left
+            self.aspect_ratio,  # right
+            -1.0,  # bottom
+            1.0,  # top
+            -100.0,  # near
+            100.0,  # far
+            dtype=numpy.float32,
+        ).tobytes()
+
+    def draw(self, pos, size=1.0):
+        csize = (
+            self._meta.character_width / self._meta.character_height * size,
+            1.0 * size,
+        )
+        cpos = (
+            pos[0] - self._aspect_ratio + csize[0] / 2,
+            -pos[1] + 1.0 - csize[1] / 2,
+        )
+
         self._texture.use(location=0)
-        self._shader.uniform("m_proj", proj_matrix.astype('f4').tobytes())
-        self._shader.uniform("m_mv", view_matrix.astype('f4').tobytes())
+        self._shader.uniform("m_proj", self.projection_bytes)
+        self._shader.uniform("text_pos", cpos)
         self._shader.uniform("font_texture", 0)
-        self._shader.uniform("char_size", (self._meta.character_width / self._meta.character_height, 1.0))
+        self._shader.uniform("char_size", csize)
         self._vao.draw(self._shader, instances=len(self._string_data))

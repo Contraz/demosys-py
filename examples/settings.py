@@ -14,7 +14,7 @@ WINDOW = {
     "aspect_ratio": 1.7777777777777777,
     "fullscreen": False,
     "resizable": True,
-    "title": "demosys-py",
+    "title": "Examples",
     "vsync": True,
     "cursor": True,
 }

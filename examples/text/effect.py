@@ -10,7 +10,9 @@ class TextEffect(effect.Effect):
         super().__init__()
         self.writer = TextWriter2D(
             (10, 1),
-            text="Hello world! Hello world! Hello world!")
+            aspect_ratio=self.window_aspect,
+            text="Hello world! Hello world! Hello world!",
+        )
 
     def post_load(self):
         pass
@@ -18,7 +20,5 @@ class TextEffect(effect.Effect):
     @effect.bind_target
     def draw(self, time, frametime, target):
         self.ctx.disable(moderngl.CULL_FACE)
-        m_proj = self.create_projection()
-        # m_mv = matrix44.create_identity()
 
-        self.writer.draw(m_proj, self.sys_camera.view_matrix)
+        self.writer.draw((0.02, 0.01), size=0.05)
