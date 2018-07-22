@@ -9,7 +9,7 @@ class TextEffect(effect.Effect):
     def __init__(self):
         super().__init__()
         self.writer = TextWriter2D((10, 1),
-            text="Hello world! Hello world! Hello world! Hello world! Hello world! Hello world! Hello world! Hello world! Hello world!")
+            text="Hello world! Hello world! Hello world!")
 
     def post_load(self):
         pass
