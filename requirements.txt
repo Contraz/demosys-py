@@ -7,4 +7,5 @@ pyrocket==0.2.7
 PyWavefront==0.3.2
 
 # Optional
-#pygame==1.9.3
+# pygame==1.9.3
+# python-vlc==3.0.102
