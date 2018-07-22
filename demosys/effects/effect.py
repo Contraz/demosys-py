@@ -7,6 +7,7 @@ from rocket.tracks import Track
 import moderngl  # noqa
 from demosys import resources
 from demosys.opengl import ShaderProgram, Texture2D, TextureArray
+from demosys.resources import Data
 from demosys.scene import camera  # noqa
 from demosys.scene import Scene
 from pyrr import Matrix33, Matrix44, Vector3, matrix44
@@ -74,6 +75,16 @@ class Effect:
 
     _ctx = None  # type: moderngl.Context
     _sys_camera = None  # type: camera.SystemCamera
+
+    def __init__(self, *args, **kwargs):
+        self.on_resouces_loaded(self.post_load)
+
+    def post_load(self):
+        """
+        Called when all resources are loaded before effects start running.
+        This assumes you have called Effect.__init__()
+        """
+        pass
 
     @property
     def name(self) -> str:
@@ -192,6 +203,39 @@ class Effect:
         :return: Scene object
         """
         return resources.scenes.get(path, create=True, **kwargs)
+
+    @local_path
+    def get_data(self, path, local=False, **kwargs) -> Data:
+        """
+        Get or create a data file.
+        :param path: Path to the data file
+        :param local: Auto-prepend the effect package name to the path
+        :param kwargs: Generic paramters passed to data loader
+        :return: Data object
+        """
+        return resources.data.get(path, create=True, **kwargs)
+
+    # Register callbacks
+
+    def on_resouces_loaded(self, func):
+        """Register callback function when all resources are loaded"""
+        resources.on_loaded(func)
+
+    def on_shaders_loaded(self, func):
+        """Register callback function when shaders are loaded"""
+        resources.shaders.on_loaded(func)
+
+    def on_textures_loaded(self, func):
+        """Register callback function when textures are loaded"""
+        resources.textures.on_loaded(func)
+
+    def on_scenes_loaded(self, func):
+        """Register callback function when scenes are loaded"""
+        resources.scenes.on_loaded(func)
+
+    def on_data_loaded(self, func):
+        """Register callback function when data files are loaded"""
+        resources.data.on_loaded(func)
 
     # Utility methods for matrices
 

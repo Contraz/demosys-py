@@ -7,17 +7,17 @@ from demosys.utils.module_loading import import_string
 
 
 class FileSystemFinder(finders.BaseFileSystemFinder):
-    """Find textures in ``TEXTURE_DIRS``"""
-    settings_attr = 'TEXTURE_DIRS'
+    """Find data in ``DATA_DIRS``"""
+    settings_attr = 'DATA_DIRS'
 
 
 class EffectDirectoriesFinder(finders.BaseEffectDirectoriesFinder):
-    """Finds textures in the registered effects"""
-    directory = 'textures'
+    """Finds data in the registered effects"""
+    directory = 'data'
 
 
 def get_finders():
-    for finder in settings.TEXTURE_FINDERS:
+    for finder in settings.DATA_FINDERS:
         yield get_finder(finder)
 
 
