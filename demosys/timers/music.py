@@ -1,4 +1,4 @@
-import glfw
+# import glfw
 from demosys.conf import settings
 from .base import BaseTimer
 
@@ -11,13 +11,11 @@ except ImportError:
 class MusicTimer(BaseTimer):
     """Timer based on music"""
     def __init__(self, **kwargs):
-        mixer.init()
+        mixer.init(frequency=44100, size=-16, channels=2, buffer=1024)
         mixer.music.load(settings.MUSIC)
         self.paused = True
-        # Reported time is not accurate when pausing or unpausing. We hack around it.
         self.pause_time = 0
         self.initialized = False
-        self._upt = 0  # hack fixing jaggy unpause
         super().__init__(**kwargs)
 
     def start(self):
@@ -32,16 +30,14 @@ class MusicTimer(BaseTimer):
         self.paused = False
 
     def pause(self):
-        self.pause_time = self.get_time()
-        print("paused", self.pause_time)
-        self.paused = True
         mixer.music.pause()
+        self.pause_time = self.get_time()
+        self.paused = True
 
     def toggle_pause(self):
         """Toggle pause mode"""
         if self.paused:
             self.start()
-            self._upt = glfw.get_time()
         else:
             self.pause()
 
@@ -52,23 +48,8 @@ class MusicTimer(BaseTimer):
 
     def get_time(self):
         """Get the current time in seconds"""
-        # Hack around inaccuracy in mixer
+
         if self.paused:
             return self.pause_time
 
-        time = mixer.music.get_pos() / 1000.0
-
-        # Jaggy unpause. get_pos returns future and past time.
-        # We inspect the difference between the paused time and
-        # the reported time for 0.25 seconds after the unpause
-        if glfw.get_time() < (self._upt + 0.25):
-            if time > self.pause_time + 0.25:
-                return self.pause_time
-
-        if time < self.pause_time:
-            return self.pause_time
-
-        # Avoid jaggy time skips when unpausing
-        if time < self.pause_time:
-            return self.pause_time
-        return time
+        return mixer.music.get_pos() / 1000.0

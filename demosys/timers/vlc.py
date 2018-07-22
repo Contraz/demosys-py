@@ -44,5 +44,4 @@ class VLCTimer(BaseTimer):
         if self.paused:
             return self.pause_time
 
-        time = self.player.get_time() / 1000.0
-        return time
+        return self.player.get_time() / 1000.0
