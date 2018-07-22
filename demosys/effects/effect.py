@@ -256,6 +256,9 @@ class Effect:
             far,
         )
 
+    # def create_orthogonal_projection(self, left, right, bottom, top, near, far, dtype=None):
+    #     return matrix44.create_orthogonal_projection
+
     def create_transformation(self, rotation=None, translation=None):
         """Convenient transformation method doing rotations and translation"""
         mat = None
