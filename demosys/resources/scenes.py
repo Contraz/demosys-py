@@ -5,13 +5,16 @@ from demosys.core.scenefiles.finders import get_finders
 from demosys.scene import Scene
 from demosys.utils.module_loading import import_string
 
+from .base import BaseRegistry
 
-class Scenes:
+
+class Scenes(BaseRegistry):
     """
     A registry for scense requested by effects.
     Once all effects are initialized, we ask this class to load the scenes.
     """
     def __init__(self):
+        super().__init__()
         self.scenes = {}
 
     @property
@@ -53,6 +56,8 @@ class Scenes:
                     break
             else:
                 raise ImproperlyConfigured("Cannot find scene {}".format(name))
+
+        self._on_loaded()
 
 
 scenes = Scenes()

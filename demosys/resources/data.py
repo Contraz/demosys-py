@@ -3,6 +3,7 @@ Registry general data files
 """
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.datafiles.finders import get_finders
+from .base import BaseRegistry
 
 
 class Data:
@@ -45,9 +46,10 @@ class Data:
                 if attr.startswith("load_")}
 
 
-class DataFiles:
+class DataFiles(BaseRegistry):
     """Registry for requested data files"""
     def __init__(self):
+        super().__init__()
         self.files = []
         self.file_map = {}
 
@@ -88,6 +90,8 @@ class DataFiles:
                     break
             else:
                 raise ImproperlyConfigured("Cannot find data file {}".format(name))
+
+        self._on_loaded()
 
 
 data = DataFiles()
