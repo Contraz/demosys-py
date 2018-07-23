@@ -3,8 +3,6 @@ from collections import namedtuple
 
 import moderngl
 from demosys.conf import settings
-from demosys.opengl.fbo import WindowFBO
-from demosys import context
 
 GLVersion = namedtuple('GLVersion', ['major', 'minor'])
 
@@ -38,31 +36,33 @@ class Window:
         self.vsync = settings.WINDOW.get('vsync')
         self.cursor = settings.WINDOW.get('cursor')
 
-        self._calc_viewport()
+        self.clear_color = (0.0, 0.0, 0.0, 0.0)
+        self.clear_depth = (1.0)
 
         # ModernGL context
         self.ctx = None
 
-        WindowFBO.window = self
-        self.fbo = WindowFBO
-        context.WINDOW = self
-
     def draw(self, current_time, frame_time):
-        self.manager.draw(current_time, frame_time, WindowFBO)
+        self.set_default_viewport()
+        self.manager.draw(current_time, frame_time, self.fbo)
 
     def clear(self):
         """Clear the scren"""
-        self.ctx.clear(
-            red=0.0, blue=0.0, green=0.0, alpha=0.0, depth=1.0,
-            viewport=self._viewport,
+        self.ctx.screen.clear(
+            red=self.clear_color[0],
+            green=self.clear_color[1],
+            blue=self.clear_color[2],
+            alpha=self.clear_color[3],
+            depth=self.clear_depth,
         )
+
+    def clear_values(self, red=0.0, green=0.0, blue=0.0, alpha=0.0, depth=1.0):
+        self.clear_color = (red, green, blue, alpha)
+        self.clear_depth = depth
 
     def use(self):
         """Render to this window"""
         raise NotImplementedError()
-
-    def viewport(self):
-        self.ctx.viewport = self._viewport
 
     def swap_buffers(self):
         """Swap frame buffer"""
@@ -70,9 +70,7 @@ class Window:
 
     def resize(self, width, height):
         """Resize window"""
-        self.width = width
-        self.height = height
-        self._calc_viewport()
+        self.set_default_viewport()
 
     def close(self):
         """Set the close state"""
@@ -87,8 +85,7 @@ class Window:
         raise NotImplementedError()
 
     def mgl_fbo(self):
-        """Returns the ModernGL fbo used by this window"""
-        raise NotImplementedError()
+        return self.ctx.screen
 
     def print_context_info(self):
         """Prints out context info"""
@@ -101,11 +98,11 @@ class Window:
         print('platform:', sys.platform)
         print('code:', self.ctx.version_code)
 
-    def _calc_viewport(self):
+    def set_default_viewport(self):
         """Calculate viewport with correct aspect ratio"""
         # The expected height with the current viewport width
         expected_height = int(self.buffer_width / self.aspect_ratio)
 
         # How much positive or negative y padding
         blank_space = self.buffer_height - expected_height
-        self._viewport = (0, blank_space // 2, self.buffer_width, expected_height)
+        self.ctx.screen.viewport = (0, blank_space // 2, self.buffer_width, expected_height)

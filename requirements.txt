@@ -7,4 +7,5 @@ PyWavefront==0.4.1
 # https://github.com/einarf/PyWavefront/archive/binary-cache.zip#egg=PyWavefront
 
 # Optional
-#pygame==1.9.3
+# pygame==1.9.3
+# python-vlc==3.0.102

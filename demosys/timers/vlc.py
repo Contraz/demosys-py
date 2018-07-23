@@ -1,18 +1,16 @@
-# import glfw
 from demosys.conf import settings
 from .base import BaseTimer
 
 try:
-    from pygame import mixer
+    import vlc
 except ImportError:
-    print("pygame is needed for timer: MusicTimer")
+    print("python-vlc is needed for timer: VLCTimer")
 
 
-class MusicTimer(BaseTimer):
+class VLCTimer(BaseTimer):
     """Timer based on music"""
     def __init__(self, **kwargs):
-        mixer.init(frequency=44100, size=-16, channels=2, buffer=1024)
-        mixer.music.load(settings.MUSIC)
+        self.player = vlc.MediaPlayer(settings.MUSIC)
         self.paused = True
         self.pause_time = 0
         self.initialized = False
@@ -20,19 +18,13 @@ class MusicTimer(BaseTimer):
 
     def start(self):
         """Start the timer and music"""
-        if self.initialized:
-            mixer.music.unpause()
-        else:
-            mixer.music.play()
-            # FIXME: Calling play twice to ensure the music is actually playing
-            mixer.music.play()
-            self.initialized = True
+        self.player.play()
         self.paused = False
 
     def pause(self):
-        mixer.music.pause()
         self.pause_time = self.get_time()
         self.paused = True
+        self.player.pause()
 
     def toggle_pause(self):
         """Toggle pause mode"""
@@ -43,13 +35,13 @@ class MusicTimer(BaseTimer):
 
     def stop(self):
         """Stop the music and the timer"""
-        mixer.music.stop()
+        self.player.stop()
         return self.get_time()
 
     def get_time(self):
         """Get the current time in seconds"""
-
+        # Hack around inaccuracy in mixer
         if self.paused:
             return self.pause_time
 
-        return mixer.music.get_pos() / 1000.0
+        return self.player.get_time() / 1000.0
