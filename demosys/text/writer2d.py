@@ -89,9 +89,11 @@ class TextWriter2D(BaseText):
             offset=(self.area[0] * 4) * line,
         )
 
-    def draw(self, pos, lenght=-1, size=1.0):
-        if lenght < 0:
-            lenght = self.area[0] * self.area[1]
+    def draw(self, pos, length=-1, size=1.0):
+        if length < 0:
+            length = self.area[0] * self.area[1]
+        elif length > self.area[0] * self.area[1]:
+            length = self.area[0] * self.area[1]
 
         csize = (
             self._meta.character_width / self._meta.character_height * size,
@@ -110,4 +112,4 @@ class TextWriter2D(BaseText):
         self._shader.uniform("char_size", csize)
         self._shader.uniform("line_length", self.area[0])
 
-        self._vao.draw(self._shader, instances=lenght)
+        self._vao.draw(self._shader, instances=length)

@@ -21,4 +21,7 @@ class TextEffect(effect.Effect):
 
     @effect.bind_target
     def draw(self, time, frametime, target):
-        self.writer.draw((0.05, 0.01 - math.fmod(time, 75.0) / 5.0), size=0.05)
+        self.writer.draw(
+            (0.05, 0.01 - math.fmod(time, 75.0) / 5.0),
+            size=0.05,
+        )
