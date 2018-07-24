@@ -19,6 +19,7 @@ class HeadlessWindow(Window):
 
         self._close = False
         self.ctx = moderngl.create_standalone_context()
+        context.WINDOW = self
 
         self.fbo = FBO()
         self.fbo.ctx = self.ctx
@@ -27,7 +28,6 @@ class HeadlessWindow(Window):
             depth_attachment=self.ctx.depth_texture((self.width, self.height)),
         )
         # self.fbo.default_framebuffer = True
-        context.WINDOW = self
         self.set_default_viewport()
 
     def draw(self, current_time, frame_time):
