@@ -5,7 +5,7 @@ from demosys.effects import effect
 from demosys.text import TextWriter2D
 
 
-class TextEffect(effect.Effect):
+class TextWriterEffect(effect.Effect):
 
     def __init__(self):
         super().__init__()

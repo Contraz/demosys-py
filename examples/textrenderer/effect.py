@@ -5,7 +5,7 @@ from demosys.effects import effect
 from demosys.text import TextRenderer2D
 
 
-class TextEffect(effect.Effect):
+class TextRendererEffect(effect.Effect):
 
     def __init__(self):
         super().__init__()
