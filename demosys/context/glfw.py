@@ -65,11 +65,11 @@ class GLFW_Window(Window):
 
         # Create mederngl context from existing context
         self.ctx = moderngl.create_context()
+        context.WINDOW = self
         self.fbo = FBO()
         self.fbo.ctx = self.ctx
         self.fbo.fbo = self.ctx.screen
         self.fbo.default_framebuffer = True
-        context.WINDOW = self
         self.set_default_viewport()
 
     def use(self):
