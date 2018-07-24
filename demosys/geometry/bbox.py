@@ -1,6 +1,6 @@
-import moderngl
 import numpy
 
+import moderngl
 from demosys.opengl import VAO
 
 

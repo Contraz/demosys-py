@@ -1,7 +1,7 @@
-import moderngl
 import numpy
+
+import moderngl
 from demosys.opengl import VAO
-from demosys import context
 
 # Cache fullscreen quad
 QUAD_FS = None
@@ -26,32 +26,32 @@ def quad_2d(width, height, xpos=0.0, ypos=0.0) -> VAO:
     :param xpos: Center position x
     :param ypos: Center position y
     """
-    pos = context.ctx().buffer(numpy.array([
+    pos = numpy.array([
         xpos - width / 2.0, ypos + height / 2.0, 0.0,
         xpos - width / 2.0, ypos - height / 2.0, 0.0,
         xpos + width / 2.0, ypos - height / 2.0, 0.0,
         xpos - width / 2.0, ypos + height / 2.0, 0.0,
         xpos + width / 2.0, ypos - height / 2.0, 0.0,
         xpos + width / 2.0, ypos + height / 2.0, 0.0,
-    ], dtype=numpy.float32).tobytes())
+    ], dtype=numpy.float32)
 
-    normals = context.ctx().buffer(numpy.array([
+    normals = numpy.array([
         0.0, 0.0, 1.0,
         0.0, 0.0, 1.0,
         0.0, 0.0, 1.0,
         0.0, 0.0, 1.0,
         0.0, 0.0, 1.0,
         0.0, 0.0, 1.0,
-    ], dtype=numpy.float32).tobytes())
+    ], dtype=numpy.float32)
 
-    uvs = context.ctx().buffer(numpy.array([
+    uvs = numpy.array([
         0.0, 1.0,
         0.0, 0.0,
         1.0, 0.0,
         0.0, 1.0,
         1.0, 0.0,
         1.0, 1.0,
-    ], dtype=numpy.float32).tobytes())
+    ], dtype=numpy.float32)
 
     vao = VAO("geometry:quad", mode=moderngl.TRIANGLES)
     vao.buffer(pos, '3f', ["in_position"])
