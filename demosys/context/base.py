@@ -105,4 +105,4 @@ class Window:
 
         # How much positive or negative y padding
         blank_space = self.buffer_height - expected_height
-        self.ctx.screen.viewport = (0, blank_space // 2, self.buffer_width, expected_height)
+        self.fbo.viewport = (0, blank_space // 2, self.buffer_width, expected_height)

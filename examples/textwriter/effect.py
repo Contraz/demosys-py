@@ -1,24 +1,27 @@
-import moderngl
+import math
+import os
+
 from demosys.effects import effect
 from demosys.text import TextWriter2D
-# from pyrr import matrix44
 
 
 class TextEffect(effect.Effect):
 
     def __init__(self):
         super().__init__()
-        self.writer = TextWriter2D(
-            (10, 1),
-            aspect_ratio=self.window_aspect,
-            text="Hello world! Hello world! Hello world!",
-        )
 
-    def post_load(self):
-        pass
+        with open(os.path.join(os.path.dirname(__file__), 'sample.txt'), 'r') as fd:
+            lines = fd.readlines()
+
+        self.writer = TextWriter2D(
+            (105, len(lines)),
+            aspect_ratio=self.window_aspect,
+            text_lines=lines,
+        )
 
     @effect.bind_target
     def draw(self, time, frametime, target):
-        self.ctx.disable(moderngl.CULL_FACE)
-
-        self.writer.draw((0.02, 0.01), size=0.05)
+        self.writer.draw(
+            (0.05, 0.01 - math.fmod(time, 75.0) / 5.0),
+            size=0.05,
+        )

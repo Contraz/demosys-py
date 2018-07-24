@@ -71,3 +71,16 @@ python manage.py runeffect examples.sponza
 ```
 
 ![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/sponza.png)
+
+Text Writer
+-----------
+
+Example loading a text file displaying it on the screen. The text is drawn using instanced rendering
+were each instance is a character in the file. This may not be the most efficient way for drivers
+emulating instancing. Text renderer (render to texture) is an alternative.
+
+```bash
+python manage.py runeffect examples.textwriter
+```
+
+![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/textwriter.png)

@@ -62,7 +62,6 @@ def run(manager=None):
 
     # Main loop
     frame_time = 60.0 / 1000.0
-    # time_start = glfw.get_time()
     time_start = time.time()
     prev_time = window.timer.get_time()
 
