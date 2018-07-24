@@ -3,9 +3,7 @@
 demosys-py
 ==========
 
-<aside class="warning">
-The current master branch depends on ModernGL master branch until new release is out.
-</aside>
+**The current master branch depends on ModernGL master branch until new release is out.**
 
 
 A Python 3 cross platform OpenGL 3.3+ core framework based on [ModernGL](https://github.com/cprogrammer1994/ModernGL)
