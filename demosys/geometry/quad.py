@@ -1,7 +1,6 @@
 import numpy
 
 import moderngl
-from demosys import context
 from demosys.opengl import VAO
 
 
