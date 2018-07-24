@@ -307,6 +307,7 @@ class TextureArray(BaseTexture):
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
         width, height, depth = image.size[0], image.size[1] // self.layers, self.layers
+        print(width, height, depth)
 
         self.mglo = self.ctx.texture_array(
             (width, height, depth),
