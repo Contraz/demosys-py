@@ -6,11 +6,14 @@ in vec3 in_position;
 in uint in_char_id;
 
 uniform vec2 char_size;
+uniform float line_length;
 
 out uint vs_char_id;
 
 void main() {
-	gl_Position = vec4(in_position + vec3(gl_InstanceID * char_size.x, 0.0, 0.0), 1.0);
+    float ypos = int(gl_InstanceID / line_length) * char_size.y;
+    float xpos = mod(gl_InstanceID, line_length) * char_size.x;
+	gl_Position = vec4(in_position + vec3(xpos, -ypos, 0.0), 1.0);
     vs_char_id = in_char_id;
 }
 
