@@ -58,3 +58,16 @@ python manage.py runeffect examples.textwriter
 ```
 
 ![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/textwriter.png)
+
+Text Renderer
+-------------
+
+Example loading a text file displaying it on the screen. The text is rendered to a texture at initialization.
+We simply display the texture each frame. We are limiting the texture height to 8k in this example.
+
+```bash
+python manage.py runeffect examples.textrenderer
+```
+
+![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/textrenderer.png)
+
