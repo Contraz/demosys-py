@@ -21,4 +21,4 @@ class SceneEffect(effect.Effect):
         )
 
         # Draw bbox
-        self.scene.draw_bbox(self.proj_mat, self.sys_camera.view_matrix, all=True)
+        # self.scene.draw_bbox(self.proj_mat, self.sys_camera.view_matrix, all=True)
