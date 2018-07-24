@@ -30,8 +30,6 @@ SCREENSHOT_PATH = None
 
 # OpenGL context configuration
 # version: (MAJOR, MINOR)
-# profile: any, core, compat
-# forward_compat: Whether we should drop fixed pipeline and only support core
 OPENGL = {
     "version": (3, 3),
 }

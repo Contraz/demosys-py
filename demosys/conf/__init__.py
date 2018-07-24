@@ -59,10 +59,10 @@ class Settings:
             settings_module=self.SETTINGS_MODULE,
         )
 
-    def add_shader_dir(self, dir):
+    def add_shader_dir(self, directory):
         """Hack in shader directory"""
         dirs = list(self.SHADER_DIRS)
-        dirs.append(dir)
+        dirs.append(directory)
         self.SHADER_DIRS = dirs
 
     def add_texture_dir(self, directory):

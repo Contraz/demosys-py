@@ -1,6 +1,6 @@
 import moderngl
 from demosys import context, geometry, resources
-from demosys.opengl import FBO, DepthTexture, Texture2D, samplers
+from demosys.opengl import FBO, DepthTexture, Texture2D
 from pyrr import matrix44
 
 
@@ -30,10 +30,6 @@ class DeferredRenderer:
         self.width = width
         self.height = height
         self.size = (width, height)
-        self.depth_sampler = samplers.create(
-            texture_compare_mode=False,
-            min_filter=moderngl.LINEAR, mag_filter=moderngl.LINEAR
-        )
 
         # FBOs
         self.gbuffer = gbuffer
@@ -113,15 +109,12 @@ class DeferredRenderer:
                 self.point_light_shader.uniform("m_light", m_light.astype('f4').tobytes())
                 self.gbuffer.color_buffers[1].use(location=0)
                 self.point_light_shader.uniform("g_normal", 0)
-                self.depth_sampler.use(location=1)
                 self.gbuffer.depth_buffer.use(location=1)
                 self.point_light_shader.uniform("g_depth", 1)
                 self.point_light_shader.uniform("screensize", (self.width, self.height))
                 self.point_light_shader.uniform("proj_const", projection.projection_constants)
                 self.point_light_shader.uniform("radius", light_size)
                 self.unit_cube.draw(self.point_light_shader)
-
-                self.depth_sampler.release()
 
         self.ctx.disable(moderngl.BLEND)
         self.ctx.disable(moderngl.CULL_FACE)

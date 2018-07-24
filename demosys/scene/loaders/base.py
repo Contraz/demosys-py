@@ -1,3 +1,4 @@
+from demosys import context
 
 
 class SceneLoader:
@@ -7,6 +8,7 @@ class SceneLoader:
 
     def __init__(self, file_path, **kwargs):
         self.file_path = file_path
+        self.ctx = context.ctx()
 
     def load(self, scene, file=None):
         """
@@ -15,7 +17,7 @@ class SceneLoader:
         :param scene: The scene object
         :param file: Resolved path if changed by finder
         """
-        raise NotImplemented
+        raise NotImplementedError()
 
     @classmethod
     def supports_file(cls, path):

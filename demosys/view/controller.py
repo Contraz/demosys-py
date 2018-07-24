@@ -4,10 +4,6 @@ Thins needs to be improved once more pieces fall in place.
 """
 import time
 
-# We still use PyOpenGL for samplers and don't want it to halt on errors
-import OpenGL
-OpenGL.ERROR_CHECKING = False  # noqa
-
 from demosys import resources
 from demosys.conf import settings
 from demosys.effects.registry import Effect

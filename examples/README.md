@@ -46,6 +46,32 @@ python manage.py runeffect examples.geocubes
 
 ![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/geocubes.png)
 
+Minecraft
+---------
+
+Example loading and drawing a wavefront obj file.
+
+Underground city in the "Lost Empire" area from the Vokselia Minecraft world
+http://vokselia.com CC BY 3.0 License http://creativecommons.org/licenses/by/3.0/
+
+```bash
+python manage.py runeffect examples.minecraft
+```
+
+![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/minecraft.png)
+
+Sponza
+------
+
+Example loading and drawing GLTF 2.0 scenes. The Atrium Sponza Palace, Dubrovnik, is an elegant and improved model created by Frank Meinl. The original Sponza model was created by Marko Dabrovic in early 2002.
+See [README.md](https://github.com/Contraz/demosys-py/tree/master/examples/sponza/scenes/sponza/Sponza) for more info.
+
+```bash
+python manage.py runeffect examples.sponza
+```
+
+![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/sponza.png)
+
 Text Writer
 -----------
 

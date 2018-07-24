@@ -1,9 +1,9 @@
-import moderngl
-
-from demosys.effects import effect
-from demosys import geometry
-from pyrr import Vector3
 import math
+
+import moderngl
+from demosys import geometry
+from demosys.effects import effect
+from pyrr import Vector3
 
 
 class SimpleRaymarchEffect(effect.Effect):

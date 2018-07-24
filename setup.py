@@ -26,13 +26,12 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
     install_requires=[
-        'PyOpenGL==3.1.0',
         'glfw==1.6.0',
         'moderngl==5.3.0',
         'pyrr==0.9.2',
         'Pillow==5.1.0',
         'pyrocket==0.2.7',
-        'PyWavefront==0.3.2',
+        'PyWavefront==0.4.1',
         # 'pygame==1.9.3',
     ],
     entry_points={'console_scripts': [

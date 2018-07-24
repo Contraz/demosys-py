@@ -4,10 +4,13 @@ DepthTexture
 .. py:module:: demosys.opengl
 .. py:currentmodule:: demosys.opengl
 
+.. autodata:: DepthTexture
+   :annotation:
+
 Create
 ------
 
-.. automethod:: DepthTexture.create(size, data=None, samples=0, alignment=8) -> DepthTexture
+.. automethod:: DepthTexture.create(size, data=None, samples=0, alignment=4) -> DepthTexture
 
 Methods
 -------
@@ -32,6 +35,7 @@ Attributes
 .. autoattribute:: DepthTexture.repeat_x
 .. autoattribute:: DepthTexture.repeat_y
 .. autoattribute:: DepthTexture.filter
+.. autoattribute:: DepthTexture.anisotropy
 .. autoattribute:: DepthTexture.depth
 .. autoattribute:: DepthTexture.swizzle
 .. autoattribute:: DepthTexture.size

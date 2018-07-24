@@ -136,7 +136,8 @@ disable=print-statement,
         comprehension-escape,
         missing-docstring,
         duplicate-code,
-        no-member
+        no-member,
+        C0326
 
 
 # Enable the message, report, category or checker with the given id(s). You can

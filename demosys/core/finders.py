@@ -59,7 +59,6 @@ class BaseFileSystemFinder:
         :return: The absolute path to the file or None
         """
         entry = self._cache.get(path)
-
         if entry.exists:
             return entry.abspath
 

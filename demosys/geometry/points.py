@@ -19,7 +19,7 @@ def points_random_3d(count, range_x=(-10.0, 10.0), range_y=(-10.0, 10.0), range_
     random.seed(seed)
 
     def gen():
-        for i in range(count):
+        for _ in range(count):
             yield random.uniform(*range_x)
             yield random.uniform(*range_y)
             yield random.uniform(*range_z)

@@ -32,8 +32,8 @@ class Effects:
         """
         Get all effect directories for registered effects.
         """
-        for k, v in self.effects.items():
-            yield v.path
+        for value in self.effects.values():
+            yield value.path
 
     def polulate(self, effect_list):
         """
@@ -60,7 +60,7 @@ class Effects:
         module = importlib.import_module(module_name)
 
         # Find the Effect class in the module
-        for name, cls in inspect.getmembers(module):
+        for _, cls in inspect.getmembers(module):
             if inspect.isclass(cls):
                 if cls == Effect:
                     continue

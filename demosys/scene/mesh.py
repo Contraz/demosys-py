@@ -27,14 +27,27 @@ class Mesh:
         self.bbox_max = bbox_max
         self.mesh_shader = None
 
-    def draw(self, proj_mat, view_mat, time=0):
-        """Draw the mesh using the assigned mesh shader"""
-        if self.mesh_shader:
-            self.mesh_shader.draw(self, proj_mat, view_mat, time=time)
+    def draw(self, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
+        """
+        Draw the mesh using the assigned mesh shader
 
-    def draw_bbox(self, proj_matrix, view_matrix, shader, vao):
-        shader.uniform("m_proj", proj_matrix.astype('f4').tobytes())
-        shader.uniform("m_mv", view_matrix.astype('f4').tobytes())
+        :param projection_matrix: projection_matrix (bytes)
+        :param view_matrix: view_matrix (bytes)
+        :param camera_matrix: camera_matrix (bytes)
+        """
+        if self.mesh_shader:
+            self.mesh_shader.draw(
+                self,
+                projection_matrix=projection_matrix,
+                view_matrix=view_matrix,
+                camera_matrix=camera_matrix,
+                time=time
+            )
+
+    def draw_bbox(self, proj_matrix, view_matrix, cam_matrix, shader, vao):
+        shader.uniform("m_proj", proj_matrix)
+        shader.uniform("m_view", view_matrix)
+        shader.uniform("m_cam", cam_matrix)
         shader.uniform("bb_min", self.bbox_min.astype('f4').tobytes())
         shader.uniform("bb_max", self.bbox_max.astype('f4').tobytes())
         shader.uniform("color", (0.75, 0.75, 0.75))
