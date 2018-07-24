@@ -68,7 +68,7 @@ class DataFiles(BaseRegistry):
         key = name.lower()
 
         data_file = self.file_map.get(key)
-        if not data_file:
+        if not data_file and create:
             data_file = cls(name)
             self.files.append(data_file)
             self.file_map[key] = data_file

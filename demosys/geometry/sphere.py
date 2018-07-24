@@ -3,7 +3,6 @@ import math
 import numpy
 
 import moderngl as mlg
-from demosys import context
 from demosys.opengl import VAO
 
 
@@ -58,10 +57,10 @@ def sphere(radius=0.5, sectors=32, rings=16) -> VAO:
             indices[i + 5] = (r + 1) * sectors + (s + 1)
             i += 6
 
-    vbo_vertices = context.ctx().buffer(numpy.array(vertices, dtype=numpy.float32).tobytes())
-    vbo_normals = context.ctx().buffer(numpy.array(normals, dtype=numpy.float32).tobytes())
-    vbo_uvs = context.ctx().buffer(numpy.array(uvs, dtype=numpy.float32).tobytes())
-    vbo_elements = context.ctx().buffer(numpy.array(indices, dtype=numpy.uint32).tobytes())
+    vbo_vertices = numpy.array(vertices, dtype=numpy.float32)
+    vbo_normals = numpy.array(normals, dtype=numpy.float32)
+    vbo_uvs = numpy.array(uvs, dtype=numpy.float32)
+    vbo_elements = numpy.array(indices, dtype=numpy.uint32)
 
     vao = VAO("sphere", mode=mlg.TRIANGLES)
     # VBOs

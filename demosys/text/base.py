@@ -55,3 +55,10 @@ class Meta:
         self.character_width = self._meta['character_width']
         self.atlas_height = self._meta['atlas_height']
         self.atlas_width = self._meta['atlas_width']
+
+    @property
+    def char_aspect_wh(self):
+        return self.character_width / self.character_height
+
+    def char_aspect_hw(self):
+        return self.character_height / self.character_width

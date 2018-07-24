@@ -2,10 +2,19 @@ import numpy
 
 import moderngl
 from demosys.opengl import VAO, TextureArray
-from demosys.resources import data, shaders, textures
+from demosys import resources
 from pyrr import matrix44
 
 from .base import BaseText, Meta
+
+
+def on_load():
+    resources.textures.get('demosys/text/VeraMono.png', cls=TextureArray, layers=190, create=True)
+    resources.shaders.get('demosys/text/textwriter2d.glsl', create=True)
+    resources.data.get('demosys/text/meta.json', create=True)
+
+
+resources.on_load(on_load, priority=100)
 
 
 class TextWriter2D(BaseText):
@@ -25,13 +34,13 @@ class TextWriter2D(BaseText):
         self.aspect_ratio = aspect_ratio
 
         self._vao = None
-        self._texture = textures.get('demosys/text/VeraMono.png', cls=TextureArray, layers=190, create=True)
-        self._shader = shaders.get('demosys/text/textwriter2d.glsl', create=True)
-        self._config = data.get('demosys/text/meta.json', create=True)
+        self._texture = resources.textures.get('demosys/text/VeraMono.png', cls=TextureArray, layers=190, create=True)
+        self._shader = resources.shaders.get('demosys/text/textwriter2d.glsl', create=True)
+        self._config = resources.data.get('demosys/text/meta.json', create=True)
 
         self._string_buffer = None
 
-        data.on_loaded(self._post_load)
+        resources.on_loaded(self._post_load, priority=99)
 
     def _post_load(self):
         """Parse font metadata after resources are loaded"""
