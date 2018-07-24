@@ -7,6 +7,7 @@ from pyrr import matrix44
 
 from .base import BaseText, Meta
 
+
 def on_load():
     resources.textures.get('demosys/text/VeraMono.png', cls=TextureArray, layers=190, create=True)
     resources.shaders.get('demosys/text/textwriter2d.glsl', create=True)
