@@ -1,13 +1,14 @@
+from pathlib import Path
+
 import numpy
 
 import moderngl
 import pywavefront
-from pywavefront import cache
-from pywavefront.obj import ObjParser
-
 from demosys.opengl import VAO
 from demosys.resources import textures
 from demosys.scene import Material, MaterialTexture, Mesh, Node
+from pywavefront import cache
+from pywavefront.obj import ObjParser
 
 from .base import SceneLoader
 
@@ -61,17 +62,21 @@ ObjParser.cache_loader_cls = VAOCacheLoader
 
 class ObjLoader(SceneLoader):
     """Loade obj files"""
-    file_extensions = ['.obj', '.obj.gz', '.bin']
+    file_extensions = [
+        ['.obj'],
+        ['.obj', '.gz'],
+        ['.bin'],
+    ]
 
-    def __init__(self, file_path):
-        super().__init__(file_path)
+    def __init__(self, path):
+        super().__init__(path)
 
-    def load(self, scene, file=None):
+    def load(self, scene, path: Path=None):
         """Deferred loading"""
-        if file.endswith('.bin'):
-            file = file[:-4]
+        if path.suffix == '.bin':
+            path = path.parent / path.stem
 
-        data = pywavefront.Wavefront(file, create_materials=True, cache=True)
+        data = pywavefront.Wavefront(str(path), create_materials=True, cache=True)
 
         for _, mat in data.materials.items():
 

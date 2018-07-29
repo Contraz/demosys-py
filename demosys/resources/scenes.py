@@ -1,4 +1,7 @@
 """Scene Regisry"""
+from pathlib import Path
+from typing import Union
+
 from demosys.conf import settings
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.scenefiles.finders import get_finders
@@ -21,7 +24,7 @@ class Scenes(BaseRegistry):
     def count(self):
         return len(self.scenes)
 
-    def get(self, path, create=False, **kwargs) -> Scene:
+    def get(self, path: Union[str, Path], **kwargs) -> Scene:
         """
         Get or create a scene object.
         This may return an empty object that will be filled during load
@@ -31,6 +34,8 @@ class Scenes(BaseRegistry):
         :param create: (bool) Create an empty scene object if it doesn't exist
         :return: Scene object
         """
+        path = Path(path)
+
         # Figure out what scene loader class should be used
         for loader_name in settings.SCENE_LOADERS:
             loader_cls = import_string(loader_name)

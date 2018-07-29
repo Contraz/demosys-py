@@ -1,4 +1,7 @@
 """Shader Registry"""
+from pathlib import Path
+from typing import Union
+
 import moderngl
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.shaderfiles.finders import get_finders
@@ -23,16 +26,18 @@ class Shaders(BaseRegistry):
         """
         return len(self.shaders)
 
-    def get(self, path, create=False) -> ShaderProgram:
+    def get(self, path: Union[str, Path], create=False) -> ShaderProgram:
         """
         Get or create a shader object.
         This may return an empty object that will be filled during load
         based on the ``create`` parameter.
 
-        :param path: Path to the shader
+        :param path: Path to the shader (pathlib.Path instance)
         :param create: (bool) Create an empty shader object if it doesn't exist
         :return: Shader object
         """
+        path = Path(path)
+
         shader = self.shaders.get(path)
         if create and not shader:
             shader = ShaderProgram(path)

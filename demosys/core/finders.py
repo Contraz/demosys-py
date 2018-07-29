@@ -1,8 +1,9 @@
 """
 Base finders
 """
-import os
 from collections import namedtuple
+from pathlib import Path
+
 from demosys.conf import settings
 from demosys.core.exceptions import ImproperlyConfigured
 
@@ -20,60 +21,24 @@ class BaseFileSystemFinder:
                 "This is required when using a FileSystemFinder."
             )
         self.paths = getattr(settings, self.settings_attr)
+        self._cached_paths = {}
 
-        self._cache = {}
-
-    def find(self, path):
+    def find(self, path: Path):
         """
-        Find a file in the path.
-        When creating a custom finder, this is the method you override.
+        Find a file in the path. The file may exist in multiple
+        paths. The last found file will be returned.
 
         :param path: The path to find
         :return: The absolute path to the file or None if not found
         """
-        return self._find(path)
+        path_found = None
 
-    def _find(self, path):
-        """
-        Similar to ``find()``, but it caches each result to speed things.
-
-        :param path: The path to find
-        :return: The absolute path to the file or None if not found
-        """
         for entry in self.paths:
-            abspath = os.path.join(entry, path)
-            if os.path.exists(abspath):
-                self.cache(abspath, abspath)
-                return abspath
-            else:
-                self.cache(abspath, abspath, exists=False)
+            abspath = entry / path
+            if abspath.exists():
+                path_found = abspath
 
-        return None
-
-    def find_cached(self, path):
-        """
-        Check if the path is already cached.
-        This method should normally not be overridden.
-
-        :param path: The path to the file
-        :return: The absolute path to the file or None
-        """
-        entry = self._cache.get(path)
-        if entry.exists:
-            return entry.abspath
-
-        return None
-
-    def cache(self, path, abspath, exists=True):
-        """
-        Caches an entry.
-        Should ideally not be overridden.
-
-        :param path: The path
-        :param abspath: The absolute path
-        :param exists: Did the file exist? (bool)
-        """
-        self._cache[path] = FinderEntry(path=path, abspath=abspath, exists=exists)
+        return path_found
 
 
 class BaseEffectDirectoriesFinder(BaseFileSystemFinder):
@@ -83,7 +48,7 @@ class BaseEffectDirectoriesFinder(BaseFileSystemFinder):
     def __init__(self):
         from demosys.effects.registry import effects
         self.paths = list(effects.get_dirs())
-        self._cache = {}
 
-    def find(self, path):
-        return self._find(os.path.join(self.directory, path))
+    def find(self, path: Path):
+        path = Path(self.directory) / Path(path)
+        return super().find(path)

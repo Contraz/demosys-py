@@ -1,5 +1,7 @@
 """Shader Registry"""
+from pathlib import Path
 from typing import Union
+
 from PIL import Image
 
 from demosys.core.exceptions import ImproperlyConfigured
@@ -25,7 +27,7 @@ class Textures(BaseRegistry):
         """
         return len(self.textures)
 
-    def get(self, path, create=False, cls=Texture2D, **kwargs) -> Union[Texture2D, TextureArray]:
+    def get(self, path: Union[str, Path], create=False, cls=Texture2D, **kwargs) -> Union[Texture2D, TextureArray]:
         """
         Get or create a texture object.
         This may return an empty object that will be filled during load
@@ -36,6 +38,8 @@ class Textures(BaseRegistry):
         :param cls: The texture class to instantiate
         :return: Texture object
         """
+        path = Path(path)
+
         texture = self.textures.get(path)
         if create and not texture:
             texture = cls(path=path, **kwargs)

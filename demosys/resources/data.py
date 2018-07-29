@@ -1,6 +1,8 @@
 """
 Registry general data files
 """
+from pathlib import Path
+
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.datafiles.finders import get_finders
 from .base import BaseRegistry
@@ -53,25 +55,25 @@ class DataFiles(BaseRegistry):
         self.files = []
         self.file_map = {}
 
-    def get(self, name, create=False, cls=Data) -> Data:
+    def get(self, path: str, create=False, cls=Data) -> Data:
         """
         Get or create a Data object.
 
-        :param name: data file with relative path
+        :param path: data file with path (pathlib.Path)
         :param crate: (bool) register a new resource (or fetch existing)
         :param cls: (Data class) custom data class
         :return: Data object
         """
+        path = Path(path)
+
         if not hasattr(cls, 'load'):
             raise ImproperlyConfigured("{} must have a load(path) method".format(cls.__class__))
 
-        key = name.lower()
-
-        data_file = self.file_map.get(key)
+        data_file = self.file_map.get(path)
         if not data_file and create:
-            data_file = cls(name)
+            data_file = cls(path)
             self.files.append(data_file)
-            self.file_map[key] = data_file
+            self.file_map[path] = data_file
 
         return data_file
 

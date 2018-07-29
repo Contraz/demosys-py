@@ -1,4 +1,8 @@
+from pathlib import Path
+from typing import Union
+
 from demosys import context
+from demosys.scene import Scene
 
 
 class SceneLoader:
@@ -6,11 +10,11 @@ class SceneLoader:
     # File extensions supported by this loader
     file_extensions = []
 
-    def __init__(self, file_path, **kwargs):
-        self.file_path = file_path
+    def __init__(self, path: Union[str, Path], **kwargs):
+        self.path = path
         self.ctx = context.ctx()
 
-    def load(self, scene, file=None):
+    def load(self, scene: Scene, path: Path=None):
         """
         Deferred loading of the scene
 
@@ -20,10 +24,10 @@ class SceneLoader:
         raise NotImplementedError()
 
     @classmethod
-    def supports_file(cls, path):
+    def supports_file(cls, path: Path):
         """Check if the loader has a supported file extension"""
         for ext in cls.file_extensions:
-            if path.endswith(ext):
+            if path.suffixes[:len(ext)] == ext:
                 return True
 
         return False

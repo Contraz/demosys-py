@@ -122,7 +122,7 @@ class Scene:
             return
 
         if self.loader:
-            self.loader.load(self, file=path)
+            self.loader.load(self, path=path)
 
         self.apply_mesh_shaders()
         self.view_matrix = matrix44.create_identity()
