@@ -27,3 +27,4 @@ Attributes
 .. autoattribute:: ShaderProgram.geometry_vertices
 .. autoattribute:: ShaderProgram.mglo
 .. autoattribute:: ShaderProgram.glo
+.. autoattribute:: ShaderProgram.ctx

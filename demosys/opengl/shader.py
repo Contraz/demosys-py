@@ -47,7 +47,8 @@ class ShaderProgram:
         self.vao_key = None
 
     @property
-    def ctx(self):
+    def ctx(self) -> moderngl.Context:
+        """The moderngl context"""
         return context.ctx()
 
     def __getitem__(self, key) -> Union[moderngl.Uniform, moderngl.UniformBlock, moderngl.Subroutine,
