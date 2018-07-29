@@ -65,7 +65,7 @@ class Shaders(BaseRegistry):
         :param reload: (bool) Are we reloading the shader?
         """
         if name is None:
-            name = shader.path
+            name = Path(shader.path)
 
         finders = list(get_finders())
 
