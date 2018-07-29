@@ -20,7 +20,11 @@ class BaseTexture:
     """
     def __init__(self):
         self.mglo = None  # Type: Union[moderngl.Texture, moderngl.TextureArray]
-        self._ctx = context.ctx()
+
+    @property
+    def ctx(self) -> moderngl.Context:
+        """ModernGL context"""
+        return context.ctx()
 
     def use(self, location=0):
         """
@@ -74,11 +78,6 @@ class BaseTexture:
     def release(self):
         """Release/free the ModernGL object"""
         self.mglo.release()
-
-    @property
-    def ctx(self) -> moderngl.Context:
-        """ModernGL context"""
-        return self._ctx
 
     @property
     def size(self) -> Tuple:
