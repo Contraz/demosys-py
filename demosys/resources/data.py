@@ -13,7 +13,7 @@ class Data:
     Generic data file.
     This can be extended with cusomtized loading functions.
     """
-    def __init__(self, path, mode='binary'):
+    def __init__(self, path, mode='binary', **kwargs):
         """
         :param path: file with relative path
         :param mode: What mode the file should be read ('b': binary, 't': text)
@@ -33,6 +33,9 @@ class Data:
     def load(self, path):
         self.func(path)
 
+    def destroy(self):
+        self.data = None
+
     def load_binary(self, path):
         with open(path, 'rb') as fd:
             self.data = fd.read()
@@ -48,16 +51,23 @@ class Data:
                 if attr.startswith("load_")}
 
 
+class DataFileMeta:
+
+    def __init__(self, path, cls, mode, **kwargs):
+        self.path = path
+        self.cls = cls
+        self.mode = mode
+        self.kwargs = kwargs
+
+
 class DataFiles(BaseRegistry):
     """Registry for requested data files"""
     def __init__(self):
         super().__init__()
-        self.files = []
-        self.file_map = {}
 
-    def get(self, path: str, create=False, cls=Data) -> Data:
+    def load(self, path: str, cls=Data, mode='binary', **kwargs) -> Data:
         """
-        Get or create a Data object.
+        Load Data object or get existing
 
         :param path: data file with path (pathlib.Path)
         :param crate: (bool) register a new resource (or fetch existing)
@@ -66,32 +76,56 @@ class DataFiles(BaseRegistry):
         """
         path = Path(path)
 
-        if not hasattr(cls, 'load'):
-            raise ImproperlyConfigured("{} must have a load(path) method".format(cls.__class__))
-
         data_file = self.file_map.get(path)
-        if not data_file and create:
-            data_file = cls(path)
-            self.files.append(data_file)
-            self.file_map[path] = data_file
+        if data_file:
+            return data_file
+
+        if not data_file:
+            meta = self.load_deferred(path, cls=cls, mode=mode, **kwargs)
+            data_file = self._load(meta)
+            self.file_map[meta.path] = data_file
 
         return data_file
 
-    def load(self):
+    def load_deferred(self, path: str, cls=Data, mode='binary', **kwargs):
+        """
+        Register a resource to be loaded in the loading stage
+
+        :returns: DateFileMeta object
+        """
+        if not hasattr(cls, 'load'):
+            raise ImproperlyConfigured("{} must have a load(path) method".format(cls.__class__))
+
+        meta = DataFileMeta(path, cls, mode, **kwargs)
+
+        self.file_map[path] = None
+        self.file_meta[path] = meta
+
+        return meta
+
+    def _load(self, meta) -> Data:
+        """Internal loader"""
+        found_path = self._find_last_of(meta.path, list(get_finders()))
+
+        if not found_path:
+            raise ImproperlyConfigured("Cannot find data file {}".format(meta.path))
+
+        print(" - {}".format(meta.path))
+        data_file = meta.cls(meta.path, mode=meta.mode, **meta.kwargs)
+        data_file.load(found_path)
+
+        return data_file
+
+    def _destroy(self, obj):
+        obj.destroy()
+
+    def load_pool(self):
         """
         Loads all the data files using the configured finders.
         """
-        finders = list(get_finders())
         print("Loading data files:")
-        for name, data_file in self.file_map.items():
-            for finder in finders:
-                path = finder.find(name)
-                if path:
-                    print(" - {}".format(path))
-                    data_file.load(path)
-                    break
-            else:
-                raise ImproperlyConfigured("Cannot find data file {}".format(name))
+        for path, data_file in self.file_map.items():
+            self._load(self.file_meta[path])
 
         self._on_loaded()
 
