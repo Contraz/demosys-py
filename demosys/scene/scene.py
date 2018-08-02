@@ -10,13 +10,12 @@ from .shaders import ColorShader, FallbackShader, MeshShader, TextureShader
 
 class Scene:
     """Generic scene"""
-    def __init__(self, name, loader=None, mesh_shaders=None, **kwargs):
+    def __init__(self, name, mesh_shaders=None, **kwargs):
         """
         :param name: Unique name or path for the scene
         :param loader: Loader class for the scene if relevant
         """
         self.name = name
-        self.loader = loader
         self.root_nodes = []
 
         # References resources in the scene
@@ -31,7 +30,7 @@ class Scene:
         self.diagonal_size = 1.0
 
         self.bbox_vao = geometry.bbox()
-        self.bbox_shader = shaders.get('scene_default/bbox.glsl', create=True)
+        self.bbox_shader = shaders.get('scene_default/bbox.glsl')
 
         self._view_matrix = matrix44.create_identity()
 
@@ -122,16 +121,16 @@ class Scene:
 
         self.diagonal_size = vector3.length(self.bbox_max - self.bbox_min)
 
-    def load(self, path):
+    def load(self, loader, path):
         """Deferred loading if a loader is specified"""
-        if not hasattr(self, 'loader'):
-            return
-
-        if self.loader:
-            self.loader.load(self, path=path)
-
+        loader.load(self, path=path)
         self.apply_mesh_shaders()
         self.view_matrix = matrix44.create_identity()
+
+    def destroy(self):
+        """Destroy the scene data and deallocate buffers"""
+        for mesh in self.meshes:
+            mesh.vao.release()
 
     def __str__(self):
         return "<Scene: {}>".format(self.name)

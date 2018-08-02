@@ -74,8 +74,8 @@ class Scenes(BaseRegistry):
             raise ImproperlyConfigured("Cannot find scene file {}".format(meta.path))
 
         print("Loading: {}".format(meta.path))
-        scene = Scene(meta.path, loader=meta.loader_cls(meta.path), **meta.kwargs)
-        scene.load(found_path)
+        scene = Scene(meta.path, **meta.kwargs)
+        scene.load(meta.loader_cls(meta.path), found_path)
 
         self.file_map[meta.path] = scene
         return scene
