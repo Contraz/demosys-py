@@ -30,7 +30,7 @@ class Scene:
         self.diagonal_size = 1.0
 
         self.bbox_vao = geometry.bbox()
-        self.bbox_shader = shaders.get('scene_default/bbox.glsl')
+        self.bbox_shader = shaders.load('scene_default/bbox.glsl')
 
         self._view_matrix = matrix44.create_identity()
 

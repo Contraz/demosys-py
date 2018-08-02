@@ -153,7 +153,7 @@ class ShaderProgram:
         program = self.ctx.program(**params)
 
         if reload:
-            self.program.release()
+            self.release()
 
         self.program = program
 
@@ -161,7 +161,7 @@ class ShaderProgram:
         self._build_uniform_map()
         self._build_attribute_map()
 
-    def _delete(self):
+    def release(self):
         """Frees the memory and invalidates the name associated with the program"""
         if self.program:
             self.program.release()

@@ -41,7 +41,7 @@ class ColorShader(MeshShader):
     Simple color shader
     """
     def __init__(self, shader=None, **kwargs):
-        super().__init__(shader=shaders.get("scene_default/color.glsl", create=True))
+        super().__init__(shader=shaders.load("scene_default/color.glsl"))
 
     def draw(self, mesh, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
 
@@ -79,7 +79,7 @@ class TextureShader(MeshShader):
     Simple texture shader
     """
     def __init__(self, shader=None, **kwargs):
-        super().__init__(shader=shaders.get("scene_default/texture.glsl", create=True))
+        super().__init__(shader=shaders.load("scene_default/texture.glsl"))
 
     def draw(self, mesh, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
         # if mesh.material.double_sided:
@@ -112,7 +112,7 @@ class FallbackShader(MeshShader):
     Fallback shader only rendering positions in white
     """
     def __init__(self, shader=None, **kwargs):
-        super().__init__(shader=shaders.get("scene_default/fallback.glsl", create=True))
+        super().__init__(shader=shaders.load("scene_default/fallback.glsl"))
 
     def draw(self, mesh, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
 
