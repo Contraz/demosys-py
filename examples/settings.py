@@ -17,6 +17,7 @@ WINDOW = {
     "title": "Examples",
     "vsync": True,
     "cursor": True,
+    "samples": 4,
 }
 
 HEADLESS_DURATION = 10.0

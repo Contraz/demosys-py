@@ -32,6 +32,7 @@ class Window:
         )
         self.title = settings.WINDOW.get('title') or "demosys-py"
         self.aspect_ratio = settings.WINDOW.get('aspect_ratio', 16 / 9)
+        self.samples = settings.WINDOW.get('samples', 0)
 
         self.resizable = settings.WINDOW.get('resizable') or False
         self.fullscreen = settings.WINDOW.get('fullscreen')

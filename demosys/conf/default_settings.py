@@ -44,6 +44,7 @@ WINDOW = {
     "title": "demosys-py",
     "vsync": True,
     "cursor": True,
+    "samples": 0,
 }
 
 MUSIC = None
