@@ -1,8 +1,8 @@
-import math
 import moderngl
+
 from demosys.effects import effect
-from demosys.scene import MeshShader
 from demosys.opengl import FBO
+from demosys.scene import MeshShader
 
 
 class MinecraftEffect(effect.Effect):
@@ -16,28 +16,23 @@ class MinecraftEffect(effect.Effect):
         )
         self.fbo = FBO.create((self.window_width, self.window_height), depth=True)
 
-        self.sampler = self.ctx.sampler()
-        self.sampler.filter = moderngl.NEAREST, moderngl.NEAREST
+        self.sampler = self.ctx.sampler(
+            filter=(moderngl.NEAREST_MIPMAP_NEAREST, moderngl.NEAREST),
+            anisotropy=16.0,
+            max_lod=4.0,
+        )
 
     @effect.bind_target
     def draw(self, time, frametime, target):
         self.ctx.enable(moderngl.DEPTH_TEST)
         self.ctx.disable(moderngl.CULL_FACE)
         self.sys_camera.velocity = 10.0
+        self.sampler.use(location=0)
 
         # m_view = self.create_transformation(translation=(0.0, -5.0, -8.0))
         m_proj = self.create_projection(75, near=0.1, far=300.0)
 
         with self.fbo:
-
-            if math.fmod(time, 2.0) < 1.0:
-                self.sampler.anisotropy = 0.0
-                # self.sampler.filter = moderngl.NEAREST, moderngl.NEAREST
-            else:
-                self.sampler.anisotropy = 16.0
-                # self.sampler.filter = moderngl.LINEAR, moderngl.LINEAR
-
-            self.sampler.use(location=0)
             self.scene.draw(
                 projection_matrix=m_proj,
                 camera_matrix=self.sys_camera.view_matrix,

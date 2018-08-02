@@ -3,7 +3,7 @@ from PIL import Image
 import moderngl
 from demosys import context
 
-from .base import BaseTexture
+from .base import BaseTexture, image_data
 
 
 class Texture2D(BaseTexture):
@@ -91,10 +91,12 @@ class Texture2D(BaseTexture):
         if flip:
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
+        components, data = image_data(image)
+
         self.mglo = self.ctx.texture(
             image.size,
-            4,
-            image.convert("RGBA").tobytes(),
+            components,
+            data,
         )
 
         if self.mipmap:

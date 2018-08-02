@@ -86,6 +86,7 @@ class SingleEffectManager(BaseEffectManger):
         return True
 
     def post_load(self):
+        self.active_effect.post_load()
         return True
 
     def draw(self, time, frametime, target):

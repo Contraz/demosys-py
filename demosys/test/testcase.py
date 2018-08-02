@@ -21,22 +21,21 @@ class DemosysTestCase(TestCase):
         """
         Create a shader from source or file
         """
-        program = ShaderProgram(name="test", path=path)
-
         if source:
+            program = ShaderProgram(name="test", path=path)
             program.set_source(source)
             program.prepare()
 
         if path:
-            resources.shaders.load_shader(program)
+            program = resources.shaders.load(path)
 
         return program
 
     def get_texture(self, path):
-        return resources.textures.get(path, create=True)
+        return resources.textures.load(path, create=True)
 
     def get_texture_array(self, path, layers=0):
-        return resources.textures.get(path, create=True, cls=TextureArray, layers=layers)
+        return resources.textures.load(path, create=True, cls=TextureArray, layers=layers)
 
     def get_track(self, name):
         return resources.tracks.get(name)

@@ -20,7 +20,6 @@ class ShaderProgram:
         :param path: Full file path to the shader
         :param name: Name of the shader (debug purposes)
         """
-        self.ctx = context.ctx()
         if not path and not name:
             raise ShaderError("Shader must have a path or a name")
 
@@ -46,6 +45,11 @@ class ShaderProgram:
         self.attribute_key = None
         # Unique key for VAO instances containing shader id and attributes
         self.vao_key = None
+
+    @property
+    def ctx(self) -> moderngl.Context:
+        """The moderngl context"""
+        return context.ctx()
 
     def __getitem__(self, key) -> Union[moderngl.Uniform, moderngl.UniformBlock, moderngl.Subroutine,
                                         moderngl.Attribute, moderngl.Varying]:
@@ -149,7 +153,7 @@ class ShaderProgram:
         program = self.ctx.program(**params)
 
         if reload:
-            self.program.release()
+            self.release()
 
         self.program = program
 
@@ -157,7 +161,7 @@ class ShaderProgram:
         self._build_uniform_map()
         self._build_attribute_map()
 
-    def _delete(self):
+    def release(self):
         """Frees the memory and invalidates the name associated with the program"""
         if self.program:
             self.program.release()

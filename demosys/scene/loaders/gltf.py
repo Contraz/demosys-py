@@ -1,11 +1,12 @@
 # Spec: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#asset
-
 import base64
 import io
 import json
 import os
 import struct
 from collections import namedtuple
+from pathlib import Path
+from typing import Union
 
 import numpy
 from PIL import Image
@@ -13,13 +14,17 @@ from PIL import Image
 import moderngl
 from demosys import context
 from demosys.opengl import VAO, Texture2D
-# from demosys.opengl.constants import TYPE_INFO
-from demosys.scene import Material, MaterialTexture, Mesh, Node
+from demosys.scene import Material, MaterialTexture, Mesh, Node, Scene
 from pyrr import Matrix44, matrix44, quaternion
 
 from .base import SceneLoader
 
 GLTF_MAGIC_HEADER = b'glTF'
+
+# Texture wrap values
+REPEAT = 10497
+CLAMP_TO_EDGE = 33071
+MIRRORED_REPEAT = 33648
 
 # numpy dtype mapping
 NP_COMPONENT_DTYPE = {
@@ -60,10 +65,13 @@ class GLTF2(SceneLoader):
     """
     Loader for GLTF 2.0 files
     """
-    file_extensions = ['.gltf', '.glb']
+    file_extensions = [
+        ['.gltf'],
+        ['.glb'],
+    ]
     supported_extensions = []
 
-    def __init__(self, file_path):
+    def __init__(self, path: Union[str, Path]):
         """
         Parse the json file and validate its contents.
         No actual data loading will happen.
@@ -73,7 +81,7 @@ class GLTF2(SceneLoader):
         - gltf embedded buffers
         - glb Binary format
         """
-        super().__init__(file_path)
+        super().__init__(path)
         self.scenes = []
         self.nodes = []
         self.meshes = []
@@ -83,29 +91,31 @@ class GLTF2(SceneLoader):
         self.textures = []
 
         self.meta = None
-        self.file = file_path
-        self.path = ""
+        self.path = path
         self.scene = None
 
-    def load(self, scene, file=None):
+    def load(self, scene: Scene, path: Path=None):
         """
         Deferred loading of the scene
 
         :param scene: The scene object
         :param file: Resolved path if changed by finder
         """
-        print("Loading", self.file)
+        print("Loading", self.path)
         self.scene = scene
-        if file:
-            self.file = file
-        self.path = os.path.dirname(self.file)
+
+        if path:
+            self.path = path
+
+        self.path = Path(self.path)
+        print(self.path)
 
         # Load gltf json file
-        if self.file.endswith('.gltf'):
+        if self.path.suffix == '.gltf':
             self.load_gltf()
 
         # Load binary gltf file
-        if self.file.endswith('.glb'):
+        if self.path.suffix == '.glb':
             self.load_glb()
 
         self.meta.check_version()
@@ -121,20 +131,20 @@ class GLTF2(SceneLoader):
 
     def load_gltf(self):
         """Loads a gltf json file"""
-        with open(self.file) as fd:
-            self.meta = GLTFMeta(self.file, json.load(fd))
+        with open(self.path) as fd:
+            self.meta = GLTFMeta(self.path, json.load(fd))
 
     def load_glb(self):
         """Loads a binary gltf file"""
-        with open(self.file, 'rb') as fd:
+        with open(self.path, 'rb') as fd:
             # Check header
             magic = fd.read(4)
             if magic != GLTF_MAGIC_HEADER:
-                raise ValueError("{} has incorrect header {} != {}".format(self.file, magic, GLTF_MAGIC_HEADER))
+                raise ValueError("{} has incorrect header {} != {}".format(self.path, magic, GLTF_MAGIC_HEADER))
 
             version = struct.unpack('<I', fd.read(4))[0]
             if version != 2:
-                raise ValueError("{} has unsupported version {}".format(self.file, version))
+                raise ValueError("{} has unsupported version {}".format(self.path, version))
 
             # Total file size including headers
             _ = struct.unpack('<I', fd.read(4))[0]  # noqa
@@ -143,7 +153,7 @@ class GLTF2(SceneLoader):
             chunk_0_length = struct.unpack('<I', fd.read(4))[0]
             chunk_0_type = fd.read(4)
             if chunk_0_type != b'JSON':
-                raise ValueError("Expected JSON chunk, not {} in file {}".format(chunk_0_type, self.file))
+                raise ValueError("Expected JSON chunk, not {} in file {}".format(chunk_0_type, self.path))
 
             json_meta = fd.read(chunk_0_length).decode()
 
@@ -151,22 +161,24 @@ class GLTF2(SceneLoader):
             chunk_1_length = struct.unpack('<I', fd.read(4))[0]
             chunk_1_type = fd.read(4)
             if chunk_1_type != b'BIN\x00':
-                raise ValueError("Expected BIN chunk, not {} in file {}".format(chunk_1_type, self.file))
+                raise ValueError("Expected BIN chunk, not {} in file {}".format(chunk_1_type, self.path))
 
-            self.meta = GLTFMeta(self.file, json.loads(json_meta), binary_buffer=fd.read(chunk_1_length))
+            self.meta = GLTFMeta(self.path, json.loads(json_meta), binary_buffer=fd.read(chunk_1_length))
 
     def load_images(self):
         for image in self.meta.images:
-            self.images.append(image.load(self.path))
+            self.images.append(image.load(self.path.parent))
 
     def load_samplers(self):
         for sampler in self.meta.samplers:
+            # NOTE: Texture wrap will be changed in moderngl 6.x
+            #       We currently only have repeat values
             self.samplers.append(
                 self.ctx.sampler(
                     filter=(sampler.minFilter, sampler.magFilter),
-                    # self.wrapS = data.get('wrapS')
-                    # self.wrapT = data.get('wrapT')
-                    anisotropy=16,
+                    repeat_x=sampler.wrapS in [REPEAT, MIRRORED_REPEAT],
+                    repeat_y=sampler.wrapT in [REPEAT, MIRRORED_REPEAT],
+                    anisotropy=16.0,
                 )
             )
 
@@ -245,15 +257,14 @@ class GLTF2(SceneLoader):
 
 class GLTFMeta:
     """Container for gltf metadata"""
-    def __init__(self, file, data, binary_buffer=None):
+    def __init__(self, path, data, binary_buffer=None):
         """
         :param file: GLTF file name loaded
         :param data: Metadata (json loaded)
         :param binary_buffer: Binary buffer when loading glb files
         """
         self.data = data
-        self.file = file
-        self.path = os.path.dirname(self.file)
+        self.path = path
         self.asset = GLTFAsset(data['asset'])
         self.materials = [GLTFMaterial(m) for m in data['materials']] if data.get('materials') else []
         self.images = [GLTFImage(i) for i in data['images']] if data.get('images') else []
@@ -265,7 +276,7 @@ class GLTFMeta:
         self.cameras = [GLTFCamera(c) for c in data['cameras']] if data.get('cameras') else []
         self.buffer_views = [GLTFBufferView(i, v) for i, v in enumerate(data['bufferViews'])] \
             if data.get('bufferViews') else []
-        self.buffers = [GLTFBuffer(i, b, self.path) for i, b in enumerate(data['buffers'])] \
+        self.buffers = [GLTFBuffer(i, b, self.path.parent) for i, b in enumerate(data['buffers'])] \
             if data.get('buffers') else []
         self.accessors = [GLTFAccessor(i, a) for i, a in enumerate(data['accessors'])] \
             if data.get('accessors') else []
@@ -309,7 +320,7 @@ class GLTFMeta:
         if not self.version == required:
             msg = "GLTF Format version is not 2.0. Version states '{}' in file {}".format(
                 self.version,
-                self.file
+                self.path,
             )
             raise ValueError(msg)
 
@@ -334,9 +345,9 @@ class GLTFMeta:
             if not buff.is_separate_file:
                 continue
 
-            path = os.path.join(self.path, buff.uri)
+            path = self.path.parent / buff.uri
             if not os.path.exists(path):
-                raise FileNotFoundError("Buffer {} referenced in {} not found".format(path, self.file))
+                raise FileNotFoundError("Buffer {} referenced in {} not found".format(path, self.path))
 
     def images_exist(self):
         """checks if the images references in textures exist"""
@@ -589,7 +600,7 @@ class GLTFBuffer:
             self.data = base64.b64decode(self.uri[self.uri.find(',') + 1:])
             return
 
-        with open(os.path.join(self.path, self.uri), 'rb') as fd:
+        with open(self.path / self.uri, 'rb') as fd:
             self.data = fd.read()
 
     def read(self, byte_offset=0, byte_length=0):
@@ -674,7 +685,7 @@ class GLTFImage:
             data = self.uri[self.uri.find(',') + 1:]
             image = Image.open(io.BytesIO(base64.b64decode(data)))
         else:
-            path = os.path.join(path, self.uri)
+            path = path / self.uri
             print("Loading:", self.uri)
             image = Image.open(path)
 

@@ -4,13 +4,27 @@ import moderngl
 from demosys import context
 
 
+def image_data(image):
+    """Get components and bytes for an image"""
+    # NOTE: We might want to check the actual image.mode
+    #       and convert to an acceptable format.
+    #       At the moment we load the data as is.
+    data = image.tobytes()
+    components = len(data) // (image.size[0] * image.size[1])
+    return components, data
+
+
 class BaseTexture:
     """
     Wraps the basic functionality of the ModernGL methods
     """
     def __init__(self):
         self.mglo = None  # Type: Union[moderngl.Texture, moderngl.TextureArray]
-        self._ctx = context.ctx()
+
+    @property
+    def ctx(self) -> moderngl.Context:
+        """ModernGL context"""
+        return context.ctx()
 
     def use(self, location=0):
         """
@@ -64,11 +78,6 @@ class BaseTexture:
     def release(self):
         """Release/free the ModernGL object"""
         self.mglo.release()
-
-    @property
-    def ctx(self) -> moderngl.Context:
-        """ModernGL context"""
-        return self._ctx
 
     @property
     def size(self) -> Tuple:

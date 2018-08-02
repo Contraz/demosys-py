@@ -8,15 +8,6 @@ from pyrr import matrix44
 from .base import BaseText, Meta
 
 
-def on_load():
-    resources.textures.get('demosys/text/VeraMono.png', cls=TextureArray, layers=190, create=True)
-    resources.shaders.get('demosys/text/textwriter2d.glsl', create=True)
-    resources.data.get('demosys/text/meta.json', create=True)
-
-
-resources.on_load(on_load, priority=100)
-
-
 class TextWriter2D(BaseText):
 
     def __init__(self, area, text_lines=None, aspect_ratio=1.0):
@@ -34,16 +25,12 @@ class TextWriter2D(BaseText):
         self.aspect_ratio = aspect_ratio
 
         self._vao = None
-        self._texture = resources.textures.get('demosys/text/VeraMono.png', cls=TextureArray, layers=190, create=True)
-        self._shader = resources.shaders.get('demosys/text/textwriter2d.glsl', create=True)
-        self._config = resources.data.get('demosys/text/meta.json', create=True)
+        self._texture = resources.textures.load('demosys/text/VeraMono.png', cls=TextureArray, layers=190)
+        self._shader = resources.shaders.load('demosys/text/textwriter2d.glsl')
+        self._config = resources.data.load('demosys/text/meta.json')
 
         self._string_buffer = None
 
-        resources.on_loaded(self._post_load, priority=99)
-
-    def _post_load(self):
-        """Parse font metadata after resources are loaded"""
         self._init(Meta(self._config.data))
 
         self._string_buffer = self.ctx.buffer(reserve=self.area[0] * 4 * self.area[1])

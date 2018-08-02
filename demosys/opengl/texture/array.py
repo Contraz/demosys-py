@@ -2,7 +2,7 @@ from PIL import Image
 
 from demosys import context
 
-from .base import BaseTexture
+from .base import BaseTexture, image_data
 
 
 class TextureArray(BaseTexture):
@@ -66,11 +66,12 @@ class TextureArray(BaseTexture):
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
         width, height, depth = image.size[0], image.size[1] // self.layers, self.layers
+        components, data = image_data(image)
 
         self.mglo = self.ctx.texture_array(
             (width, height, depth),
-            4,
-            image.convert("RGBA").tobytes(),
+            components,
+            data,
         )
 
         if self.mipmap:

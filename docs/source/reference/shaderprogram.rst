@@ -17,6 +17,7 @@ Source Methods
 .. automethod:: ShaderProgram.set_vertex_source(source:str)
 .. automethod:: ShaderProgram.set_geometry_source(source:str)
 .. automethod:: ShaderProgram.set_fragment_source(source:str)
+.. automethod:: ShaderProgram.release()
 
 Attributes
 ----------
@@ -27,3 +28,4 @@ Attributes
 .. autoattribute:: ShaderProgram.geometry_vertices
 .. autoattribute:: ShaderProgram.mglo
 .. autoattribute:: ShaderProgram.glo
+.. autoattribute:: ShaderProgram.ctx

@@ -1,10 +1,20 @@
 """Shader Registry"""
+from pathlib import Path
+from typing import Union
+
 import moderngl
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.shaderfiles.finders import get_finders
 from demosys.opengl import ShaderError, ShaderProgram
 
 from .base import BaseRegistry
+
+
+class ShaderMeta:
+
+    def __init__(self, path, **kwargs):
+        self.path = path
+        self.kwargs = kwargs
 
 
 class Shaders(BaseRegistry):
@@ -14,82 +24,76 @@ class Shaders(BaseRegistry):
     """
     def __init__(self):
         super().__init__()
-        self.shaders = {}
 
-    @property
-    def count(self):
-        """
-        :return: Number of shaders
-        """
-        return len(self.shaders)
+    def get(self, path: Union[str, Path], **kwargs) -> ShaderProgram:
+        """Compatibility method with the old resource system"""
+        return self.load(path, **kwargs)
 
-    def get(self, path, create=False) -> ShaderProgram:
+    def load(self, path: Union[str, Path], **kwargs) -> ShaderProgram:
         """
-        Get or create a shader object.
-        This may return an empty object that will be filled during load
-        based on the ``create`` parameter.
+        load shader program or return an exiting program.
 
-        :param path: Path to the shader
-        :param create: (bool) Create an empty shader object if it doesn't exist
+        :param path: Path to the shader (pathlib.Path instance)
         :return: Shader object
         """
-        shader = self.shaders.get(path)
-        if create and not shader:
-            shader = ShaderProgram(path)
-            self.shaders[path] = shader
+        path = Path(path)
+
+        shader = self.file_map.get(path)
+        if shader:
+            return shader
+
+        meta = self.load_deferred(path, **kwargs)
+        shader = self._load(meta)
+
         return shader
 
-    def load(self, reload=False):
-        """
-        Loads all the shaders using the configured finders.
+    def load_deferred(self, path: Union[str, Path], **kwargs) -> ShaderMeta:
+        meta = ShaderMeta(path, **kwargs)
 
-        :param reload: (bool) Are we reloading the shaders?
-        """
-        print("Loading shaders:")
-        for name, shader in self.shaders.items():
-            self.load_shader(shader, name=name, reload=reload)
+        self.file_map[path] = None
+        self.file_meta[path] = meta
 
-        self._on_loaded()
+        return meta
 
-    def load_shader(self, shader, name=None, reload=False):
-        """
-        Loads a single shader adding it to the shader registry
+    def _load(self, meta, reload=False):
+        found_path = self._find_last_of(meta.path, list(get_finders()))
 
-        :param shader: The shader to load
-        :param name: Unique name in the registry. Usually the path
-        :param reload: (bool) Are we reloading the shader?
-        """
-        if name is None:
-            name = shader.path
+        if not found_path:
+            raise ImproperlyConfigured("Cannot find shader {}".format(meta.path))
 
-        finders = list(get_finders())
-
-        for finder in finders:
-            path = finder.find(name)
-            if path:
-                print(" - {}".format(path))
-                with open(path, 'r') as fd:
-                    shader.set_source(fd.read())
-
-                try:
-                    shader.prepare(reload=reload)
-                except (ShaderError, moderngl.Error) as err:
-                    print("ShaderError: ", err)
-                    if not reload:
-                        raise
-                except Exception as err:
-                    print(err)
-                    raise
-
-                break
+        print("Loading: {}".format(meta.path))
+        if reload:
+            shader = self.file_map[meta.path]
         else:
-            raise ImproperlyConfigured("Cannot find shader {}".format(name))
+            shader = ShaderProgram(meta.path)
+
+        with open(found_path, 'r') as fd:
+            shader.set_source(fd.read())
+
+        try:
+            shader.prepare(reload=reload)
+        except (ShaderError, moderngl.Error) as err:
+            print("ShaderError: ", err)
+            if not reload:
+                raise
+        except Exception as err:
+            print(err)
+            raise
+
+        self.file_map[meta.path] = shader
+
+        return shader
+
+    def _destroy(self, obj):
+        obj.release()
 
     def reload(self):
         """
         Reloads all shaders
         """
-        self.load(reload=True)
+        for path, meta in self.file_meta.items():
+            print(path, meta)
+            self._load(meta, reload=True)
 
 
 shaders = Shaders()

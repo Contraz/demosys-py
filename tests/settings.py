@@ -45,16 +45,23 @@ SHADER_DIRS = (
     os.path.join(PROJECT_DIR, 'resources/shaders'),
 )
 
+SCENE_DIRS = (
+    os.path.join(PROJECT_DIR, 'resources/scenes'),
+)
+
+TEXTURE_DIRS = (
+    os.path.join(PROJECT_DIR, 'resources/textures'),
+)
+
+DATA_DIRS = (
+    os.path.join(PROJECT_DIR, 'resources/data'),
+)
+
 SHADER_FINDERS = (
     'demosys.core.shaderfiles.finders.FileSystemFinder',
     'demosys.core.shaderfiles.finders.EffectDirectoriesFinder',
 )
 
-TEXTURE_DIRS = (
-    os.path.join(PROJECT_DIR, 'resource/textures'),
-)
-
-# Finder classes
 TEXTURE_FINDERS = (
     'demosys.core.texturefiles.finders.FileSystemFinder',
     'demosys.core.texturefiles.finders.EffectDirectoriesFinder'

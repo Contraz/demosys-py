@@ -1,7 +1,7 @@
 """
 Wrapper for a loaded scene with properties.
 """
-from demosys import geometry
+from demosys import context, geometry
 from demosys.resources import shaders
 from pyrr import matrix44, vector3
 
@@ -10,13 +10,12 @@ from .shaders import ColorShader, FallbackShader, MeshShader, TextureShader
 
 class Scene:
     """Generic scene"""
-    def __init__(self, name, loader=None, mesh_shaders=None, **kwargs):
+    def __init__(self, name, mesh_shaders=None, **kwargs):
         """
         :param name: Unique name or path for the scene
         :param loader: Loader class for the scene if relevant
         """
         self.name = name
-        self.loader = loader
         self.root_nodes = []
 
         # References resources in the scene
@@ -31,9 +30,13 @@ class Scene:
         self.diagonal_size = 1.0
 
         self.bbox_vao = geometry.bbox()
-        self.bbox_shader = shaders.get('scene_default/bbox.glsl', create=True)
+        self.bbox_shader = shaders.load('scene_default/bbox.glsl')
 
         self._view_matrix = matrix44.create_identity()
+
+    @property
+    def ctx(self):
+        return context.ctx()
 
     @property
     def view_matrix(self):
@@ -62,6 +65,8 @@ class Scene:
                 camera_matrix=camera_matrix,
                 time=time,
             )
+
+        self.ctx.clear_samplers(0, 4)
 
     def draw_bbox(self, projection_matrix=None, camera_matrix=None, all=True):
         """Draw scene and mesh bounding boxes"""
@@ -116,16 +121,16 @@ class Scene:
 
         self.diagonal_size = vector3.length(self.bbox_max - self.bbox_min)
 
-    def load(self, path):
+    def load(self, loader, path):
         """Deferred loading if a loader is specified"""
-        if not hasattr(self, 'loader'):
-            return
-
-        if self.loader:
-            self.loader.load(self, file=path)
-
+        loader.load(self, path=path)
         self.apply_mesh_shaders()
         self.view_matrix = matrix44.create_identity()
+
+    def destroy(self):
+        """Destroy the scene data and deallocate buffers"""
+        for mesh in self.meshes:
+            mesh.vao.release()
 
     def __str__(self):
         return "<Scene: {}>".format(self.name)
