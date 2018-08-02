@@ -1,8 +1,8 @@
-import math
 import moderngl
+
 from demosys.effects import effect
-from demosys.scene import MeshShader
 from demosys.opengl import FBO
+from demosys.scene import MeshShader
 
 
 class MinecraftEffect(effect.Effect):
