@@ -80,10 +80,8 @@ class DataFiles(BaseRegistry):
         if data_file:
             return data_file
 
-        if not data_file:
-            meta = self.load_deferred(path, cls=cls, mode=mode, **kwargs)
-            data_file = self._load(meta)
-            self.file_map[meta.path] = data_file
+        meta = self.load_deferred(path, cls=cls, mode=mode, **kwargs)
+        data_file = self._load(meta)
 
         return data_file
 
@@ -110,24 +108,15 @@ class DataFiles(BaseRegistry):
         if not found_path:
             raise ImproperlyConfigured("Cannot find data file {}".format(meta.path))
 
-        print(" - {}".format(meta.path))
+        print("Loading: {}".format(meta.path))
         data_file = meta.cls(meta.path, mode=meta.mode, **meta.kwargs)
         data_file.load(found_path)
+        self.file_map[meta.path] = data_file
 
         return data_file
 
     def _destroy(self, obj):
         obj.destroy()
-
-    def load_pool(self):
-        """
-        Loads all the data files using the configured finders.
-        """
-        print("Loading data files:")
-        for path, data_file in self.file_map.items():
-            self._load(self.file_meta[path])
-
-        self._on_loaded()
 
 
 data = DataFiles()
