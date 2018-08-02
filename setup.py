@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="demosys-py",
@@ -11,7 +11,7 @@ setup(
     author_email="eforselv@gmail.com",
     maintainer="Einar Forselv",
     maintainer_email="eforselv@gmail.com",
-    packages=['demosys'],
+    packages=find_packages(),
     include_package_data=True,
     keywords = ['opengl', 'framework', 'demoscene'],
     classifiers=[

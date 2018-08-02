@@ -1,3 +1,4 @@
-recursive-include demosys *.py *.glsl *.png
+recursive-include demosys *.glsl *.png *.jpg *.json
 
 include README.md
+include LICENSE.txt
