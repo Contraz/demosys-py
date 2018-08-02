@@ -4,7 +4,7 @@ from collections import namedtuple
 import moderngl
 from demosys.conf import settings
 
-GLVersion = namedtuple('GLVersion', ['major', 'minor'])
+GLVersion = namedtuple('GLVersion', ['major', 'minor', 'code'])
 
 
 class Window:
@@ -26,12 +26,14 @@ class Window:
         self.resources = None
         self.manager = None
 
-        self.gl_version = GLVersion(*settings.OPENGL['version'])
-        self.resizable = settings.WINDOW.get('resizable') or False
+        self.gl_version = GLVersion(
+            *settings.OPENGL['version'],
+            int("{}{}0".format(*settings.OPENGL['version']))
+        )
         self.title = settings.WINDOW.get('title') or "demosys-py"
         self.aspect_ratio = settings.WINDOW.get('aspect_ratio', 16 / 9)
 
-        self.resizable = settings.WINDOW.get('resizable')
+        self.resizable = settings.WINDOW.get('resizable') or False
         self.fullscreen = settings.WINDOW.get('fullscreen')
         self.vsync = settings.WINDOW.get('vsync')
         self.cursor = settings.WINDOW.get('cursor')
@@ -48,7 +50,7 @@ class Window:
 
     def clear(self):
         """Clear the scren"""
-        self.ctx.screen.clear(
+        self.ctx.fbo.clear(
             red=self.clear_color[0],
             green=self.clear_color[1],
             blue=self.clear_color[2],

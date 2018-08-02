@@ -64,7 +64,7 @@ class GLFW_Window(Window):
         glfw.set_window_size_callback(self.window, self.window_resize_callback)
 
         # Create mederngl context from existing context
-        self.ctx = moderngl.create_context()
+        self.ctx = moderngl.create_context(require=self.gl_version.code)
         context.WINDOW = self
         self.fbo = FBO()
         self.fbo.ctx = self.ctx

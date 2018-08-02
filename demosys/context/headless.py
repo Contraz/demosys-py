@@ -18,7 +18,7 @@ class HeadlessWindow(Window):
             raise ImproperlyConfigured("HEADLESS_DURATION or HEADLESS_FRAMES not present in settings")
 
         self._close = False
-        self.ctx = moderngl.create_standalone_context()
+        self.ctx = moderngl.create_standalone_context(require=self.gl_version.code)
         context.WINDOW = self
 
         self.fbo = FBO()
@@ -27,7 +27,7 @@ class HeadlessWindow(Window):
             color_attachments=self.ctx.texture((self.width, self.height), 4),
             depth_attachment=self.ctx.depth_texture((self.width, self.height)),
         )
-        # self.fbo.default_framebuffer = True
+        self.fbo.default_framebuffer = True
         self.set_default_viewport()
 
     def draw(self, current_time, frame_time):

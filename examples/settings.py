@@ -19,6 +19,8 @@ WINDOW = {
     "cursor": True,
 }
 
+HEADLESS_DURATION = 10.0
+
 MUSIC = None
 
 ROCKET = {
