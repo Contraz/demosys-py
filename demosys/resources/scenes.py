@@ -30,6 +30,10 @@ class Scenes(BaseRegistry):
             import_string(loader) for loader in settings.SCENE_LOADERS
         ]
 
+    def get(self, path: Union[str, Path], **kwargs) -> Scene:
+        """Compatibility function for the old resource system"""
+        return self.load(path, **kwargs)
+
     def load(self, path: Union[str, Path], **kwargs) -> Scene:
         """
         Get or create a scene object.

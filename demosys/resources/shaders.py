@@ -25,6 +25,10 @@ class Shaders(BaseRegistry):
     def __init__(self):
         super().__init__()
 
+    def get(self, path: Union[str, Path], **kwargs) -> ShaderProgram:
+        """Compatibility method with the old resource system"""
+        return self.load(path, **kwargs)
+
     def load(self, path: Union[str, Path], **kwargs) -> ShaderProgram:
         """
         load shader program or return an exiting program.

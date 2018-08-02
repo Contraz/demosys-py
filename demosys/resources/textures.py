@@ -27,6 +27,10 @@ class Textures(BaseRegistry):
     def __init__(self):
         super().__init__()
 
+    def get(self, path: Union[str, Path], cls=Texture2D, **kwargs) -> Union[Texture2D, TextureArray]:
+        """Compatibility with old resource system"""
+        return self.load(path, cls=cls, **kwargs)
+
     def load(self, path: Union[str, Path], cls=Texture2D, **kwargs) -> Union[Texture2D, TextureArray]:
         """
         Get or create a texture object.

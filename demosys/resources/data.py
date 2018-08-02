@@ -65,6 +65,10 @@ class DataFiles(BaseRegistry):
     def __init__(self):
         super().__init__()
 
+    def get(self, path: str, cls=Data, mode='binary', **kwargs) -> Data:
+        """Compatibility function for the old resource system"""
+        return self.load(path, cls=cls, mode=mode, **kwargs)
+
     def load(self, path: str, cls=Data, mode='binary', **kwargs) -> Data:
         """
         Load Data object or get existing
