@@ -26,8 +26,12 @@ class BaseRegistry:
         raise NotImplementedError()
 
     def load_pool(self):
-        """Load all resource in the pool"""
-        raise NotImplementedError()
+        """
+        Loads all the data files using the configured finders.
+        """
+        for path, data_file in self.file_map.items():
+            if self.file_map[path] is None:
+                self._load(self.file_meta[path])
 
     def delete(self, obj, destroy=False):
         """
