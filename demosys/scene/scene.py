@@ -1,7 +1,7 @@
 """
 Wrapper for a loaded scene with properties.
 """
-from demosys import geometry
+from demosys import context, geometry
 from demosys.resources import shaders
 from pyrr import matrix44, vector3
 
@@ -36,6 +36,10 @@ class Scene:
         self._view_matrix = matrix44.create_identity()
 
     @property
+    def ctx(self):
+        return context.ctx()
+
+    @property
     def view_matrix(self):
         return self._view_matrix
 
@@ -62,6 +66,8 @@ class Scene:
                 camera_matrix=camera_matrix,
                 time=time,
             )
+
+        self.ctx.clear_samplers(0, 4)
 
     def draw_bbox(self, projection_matrix=None, camera_matrix=None, all=True):
         """Draw scene and mesh bounding boxes"""

@@ -21,6 +21,11 @@ from .base import SceneLoader
 
 GLTF_MAGIC_HEADER = b'glTF'
 
+# Texture wrap values
+REPEAT = 10497
+CLAMP_TO_EDGE = 33071
+MIRRORED_REPEAT = 33648
+
 # numpy dtype mapping
 NP_COMPONENT_DTYPE = {
     5121: numpy.uint8,  # GL_UNSIGNED_BYTE
@@ -166,12 +171,14 @@ class GLTF2(SceneLoader):
 
     def load_samplers(self):
         for sampler in self.meta.samplers:
+            # NOTE: Texture wrap will be changed in moderngl 6.x
+            #       We currently only have repeat values
             self.samplers.append(
                 self.ctx.sampler(
                     filter=(sampler.minFilter, sampler.magFilter),
-                    # self.wrapS = data.get('wrapS')
-                    # self.wrapT = data.get('wrapT')
-                    anisotropy=16,
+                    repeat_x=sampler.wrapS in [REPEAT, MIRRORED_REPEAT],
+                    repeat_y=sampler.wrapT in [REPEAT, MIRRORED_REPEAT],
+                    anisotropy=16.0,
                 )
             )
 
