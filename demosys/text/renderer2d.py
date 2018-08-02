@@ -7,13 +7,6 @@ from demosys import resources
 from .writer2d import TextWriter2D
 
 
-def on_load():
-    resources.shaders.get('demosys/text/view_renderer_texture.glsl', create=True)
-
-
-resources.on_load(on_load, priority=100)
-
-
 class TextRenderer2D(TextWriter2D):
 
     def __init__(self, area, text_lines=None, texture_height=64):
@@ -22,17 +15,14 @@ class TextRenderer2D(TextWriter2D):
         :param size: Text size
         :param text: Initial text
         """
+        super().__init__(area, text_lines=text_lines)
         self._texture_height = texture_height
         self._texture_width = 0
 
         self._quad = self._create_vao()
-        self._quad_shader = resources.shaders.get('demosys/text/view_renderer_texture.glsl', create=True)
+        self._quad_shader = resources.shaders.load('demosys/text/view_renderer_texture.glsl', create=True)
         self._fbo = None
-        super().__init__(area, text_lines=text_lines)
 
-    def _post_load(self):
-        print("TextRenderer2D._post_load")
-        super()._post_load()
         self._texture_width = int(
             round(self._meta.char_aspect_wh * self._texture_height * self.area[0] / self.area[1], 0)
         )

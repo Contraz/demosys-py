@@ -46,4 +46,4 @@ class ShaderTest(DemosysTestCase):
         assert shader.attribute_key
         assert len(shader.attribute_list) == 1
         assert len(shader.attribute_map) == 1
-        assert shader.path in str(shader)
+        assert str(shader.path) in str(shader)

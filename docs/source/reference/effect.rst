@@ -20,16 +20,7 @@ Resource Methods
 .. automethod:: Effect.get_track(name, local=False) -> Track
 .. automethod:: Effect.get_scene(path, local=False, **kwargs) -> Scene
 .. automethod:: Effect.get_data(path, local=False, **kwargs) -> Data
-
-Callbacks
----------
-
 .. automethod:: Effect.post_load()
-.. automethod:: Effect.on_resouces_loaded(func)
-.. automethod:: Effect.on_textures_loaded(func)
-.. automethod:: Effect.on_data_loaded(func)
-.. automethod:: Effect.on_shaders_loaded(func)
-.. automethod:: Effect.on_scenes_loaded(func)
 
 Utility Methods
 ---------------
