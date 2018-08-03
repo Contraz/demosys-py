@@ -1,6 +1,9 @@
+import os
+
 from demosys.test import DemosysTestCase
 from demosys import resources
 from demosys.core.exceptions import ImproperlyConfigured
+from demosys.conf import settings
 
 
 class ResourceTestCase(DemosysTestCase):
@@ -101,5 +104,14 @@ class ResourceTestCase(DemosysTestCase):
         with self.assertRaises(ImproperlyConfigured):
             resources.textures.load('notfound.png')
 
-    # def test_resource_override(self):
-    #     pass
+    def test_resource_override(self):
+        data = resources.data.load('data.txt', mode='text')
+        self.assertEqual(data.data, "1234")
+
+        # Add another data directory containing overriding file
+        test_root = os.path.dirname(os.path.abspath(__file__))
+        settings.add_data_dir(os.path.join(test_root, 'resources', 'data_override'))
+
+        resources.data.flush(destroy=True)
+        data = resources.data.load('data.txt', mode='text')
+        self.assertEqual(data.data, "4567")
