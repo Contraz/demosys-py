@@ -30,7 +30,7 @@ class BaseRegistry:
         Loads all the data files using the configured finders.
         """
         for path, data_file in self.file_map.items():
-            if self.file_map[path] is None:
+            if data_file is None:
                 self._load(self.file_meta[path])
 
     def delete(self, obj, destroy=False):
@@ -42,6 +42,7 @@ class BaseRegistry:
             if data == obj:
                 del self.file_map[path]
                 del self.file_meta[path]
+
                 if destroy:
                     self._destroy(obj)
                 break

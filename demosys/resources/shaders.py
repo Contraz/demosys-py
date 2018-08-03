@@ -56,7 +56,7 @@ class Shaders(BaseRegistry):
         return meta
 
     def _load(self, meta, reload=False):
-        found_path = self._find_last_of(meta.path, list(get_finders()))
+        found_path = self._find_last_of(meta.path, get_finders())
 
         if not found_path:
             raise ImproperlyConfigured("Cannot find shader {}".format(meta.path))

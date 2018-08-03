@@ -23,7 +23,6 @@ class BaseFileSystemFinder:
                 "This is required when using a FileSystemFinder.".format(self.settings_attr)
             )
         self.paths = getattr(settings, self.settings_attr)
-        self._cached_paths = {}
 
     def find(self, path: Path):
         """
@@ -35,7 +34,7 @@ class BaseFileSystemFinder:
         """
         # Update paths from settings to make them editable runtime
         # This is only possible for FileSystemFinders
-        if self.settings_attr:
+        if getattr(self, 'settings_attr', None):
             self.paths = getattr(settings, self.settings_attr)
 
         path_found = None
@@ -53,12 +52,16 @@ class BaseEffectDirectoriesFinder(BaseFileSystemFinder):
     directory = None
 
     def __init__(self):
-        from demosys.effects.registry import effects
-        self.paths = list(effects.get_dirs())
+        pass
 
     def find(self, path: Path):
         path = Path(self.directory) / Path(path)
         return super().find(path)
+
+    @property
+    def paths(self):
+        from demosys.effects.registry import effects
+        return list(effects.get_dirs())
 
 
 @functools.lru_cache(maxsize=None)

@@ -72,7 +72,7 @@ class Scenes(BaseRegistry):
         return meta
 
     def _load(self, meta) -> Scene:
-        found_path = self._find_last_of(meta.path, list(get_finders()))
+        found_path = self._find_last_of(meta.path, get_finders())
 
         if not found_path:
             raise ImproperlyConfigured("Cannot find scene file {}".format(meta.path))

@@ -9,7 +9,8 @@ from demosys.conf import settings
 class ResourceTestCase(DemosysTestCase):
 
     def test_datafiles(self):
-        """Loading data files"""
+        resources.data.flush(destroy=True)        
+
         # string and binary data file
         data_str = resources.data.load('data.txt', mode="text")
         data_bin = resources.data.load('data.bin', mode="binary")
@@ -34,6 +35,8 @@ class ResourceTestCase(DemosysTestCase):
             resources.data.load('notfound.bin')
 
     def test_scene(self):
+        resources.scenes.flush(destroy=True)
+
         scene_obj = resources.scenes.load('cube.obj')
         self.assertEqual(len(scene_obj.nodes), 0)
         self.assertEqual(len(scene_obj.root_nodes), 1)
@@ -61,6 +64,7 @@ class ResourceTestCase(DemosysTestCase):
 
     def test_shaders(self):
         resources.shaders.flush(destroy=True)
+
         shader1 = resources.shaders.load('vf_pos.glsl')
         shader2 = resources.shaders.load('vgf_quads.glsl')
         self.assertEqual(resources.shaders.count, 2)
@@ -85,6 +89,8 @@ class ResourceTestCase(DemosysTestCase):
             resources.shaders.load('notfound.glsl')
 
     def test_textures(self):
+        resources.textures.flush(destroy=True)
+
         texture1 = resources.textures.load('wood.jpg')
         texture2 = resources.textures.load('crate.jpg')
         self.assertEqual(resources.textures.count, 2)
