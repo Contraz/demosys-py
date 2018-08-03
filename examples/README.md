@@ -109,13 +109,13 @@ python manage.py runeffect examples.warpspeed
 
 ![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/warpspeed.png)
 
-Raymaching
-----------
+Ray Marching
+------------
 
-Raymaching example by Arttu "helgrima" Tamminen.
+Ray marching example by Arttu "helgrima" Tamminen.
 
 ```bash
 python manage.py runeffect examples.raymaching
 ```
 
-![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/raymaching.png)
+![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/raymarching.png)
