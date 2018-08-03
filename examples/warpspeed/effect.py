@@ -14,10 +14,8 @@ class Empty(effect.Effect):
 
         self.zangle = 0.0
 
-
     @effect.bind_target
     def draw(self, time, frametime, target):
-
         self.texture1.use(location=0)
         self.shader.uniform("tex", 0)
         self.texture2.use(location=1)
@@ -26,8 +24,7 @@ class Empty(effect.Effect):
         self.shader.uniform("scroll", time * 1.5)
         self.shader.uniform("intensity", 1.0 + ((math.sin(time / 2)) / 2))
         self.shader.uniform("zangle", time)
-        v =  (math.sin(time) + 1.0) / 2
-        self.shader.uniform("speedlayer_alpha", v);	
+        self.shader.uniform("speedlayer_alpha", (math.sin(time) + 1.0) / 2)
         self.shader.uniform("accelerate", 0.5)
 
         self.vao.draw(self.shader)
