@@ -43,7 +43,7 @@ WINDOW = {
     "resizable": True,
     "title": "demosys-py",
     "vsync": True,
-    "cursor": True,
+    "cursor": False,
     "samples": 0,
 }
 
