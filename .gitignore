@@ -22,6 +22,9 @@ __pycache__
 # IDE files
 /.idea
 
+# Test project
+/testdemo/
+
 # Misc
 .DS_Store
 .vscode/settings.json
