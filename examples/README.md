@@ -97,3 +97,14 @@ python manage.py runeffect examples.textrenderer
 
 ![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/textrenderer.png)
 
+Warp Speed
+----------
+
+An example of what can be achieved with a relatively simple shader and a fullscreen quad.
+Originally created by Erik "Dran" Norby for the demo "Sonic Room".
+
+```bash
+python manage.py runeffect examples.warpspeed
+```
+
+![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/warpspeed.png)
