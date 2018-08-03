@@ -53,7 +53,11 @@ class BaseRegistry:
     def flush(self, destroy=False):
         """Delete all resources"""
         for obj in list(self.file_map.values()):
-            self.delete(obj, destroy=destroy)
+            if obj is not None:
+                self.delete(obj, destroy=destroy)
+
+        self.file_map = {}
+        self.file_meta = {}
 
     def _find_last_of(self, file_path, finders):
         """Find the last occurance of the file in finders"""
