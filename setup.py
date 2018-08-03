@@ -26,7 +26,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
     install_requires=[
-        'glfw==1.6.0',
+        'glfw==1.7.0',
         'moderngl==5.4.2',
         'pyrr==0.9.2',
         'Pillow==5.2.0',
