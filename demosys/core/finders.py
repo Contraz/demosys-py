@@ -17,8 +17,8 @@ class BaseFileSystemFinder:
     def __init__(self):
         if not hasattr(settings, self.settings_attr):
             raise ImproperlyConfigured(
-                "Settings module don't define TEXTURE_DIRS."
-                "This is required when using a FileSystemFinder."
+                "Settings module don't define {}."
+                "This is required when using a FileSystemFinder.".format(self.settings_attr)
             )
         self.paths = getattr(settings, self.settings_attr)
         self._cached_paths = {}
@@ -31,6 +31,11 @@ class BaseFileSystemFinder:
         :param path: The path to find
         :return: The absolute path to the file or None if not found
         """
+        # Update paths from settings to make them editable runtime
+        # This is only possible for FileSystemFinders
+        if self.settings_attr:
+            self.paths = getattr(settings, self.settings_attr)
+
         path_found = None
 
         for entry in self.paths:
