@@ -30,7 +30,7 @@ class BaseRegistry:
         Loads all the data files using the configured finders.
         """
         for path, data_file in self.file_map.items():
-            if self.file_map[path] is None:
+            if data_file is None:
                 self._load(self.file_meta[path])
 
     def delete(self, obj, destroy=False):
@@ -42,6 +42,7 @@ class BaseRegistry:
             if data == obj:
                 del self.file_map[path]
                 del self.file_meta[path]
+
                 if destroy:
                     self._destroy(obj)
                 break
@@ -53,7 +54,11 @@ class BaseRegistry:
     def flush(self, destroy=False):
         """Delete all resources"""
         for obj in list(self.file_map.values()):
-            self.delete(obj, destroy=destroy)
+            if obj is not None:
+                self.delete(obj, destroy=destroy)
+
+        self.file_map = {}
+        self.file_meta = {}
 
     def _find_last_of(self, file_path, finders):
         """Find the last occurance of the file in finders"""

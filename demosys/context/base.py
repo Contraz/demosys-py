@@ -45,6 +45,10 @@ class Window:
         # ModernGL context
         self.ctx = None
 
+    @property
+    def size(self):
+        return (self.width, self.height)
+
     def draw(self, current_time, frame_time):
         self.set_default_viewport()
         self.manager.draw(current_time, frame_time, self.fbo)

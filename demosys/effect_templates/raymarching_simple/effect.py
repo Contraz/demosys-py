@@ -14,7 +14,6 @@ class SimpleRaymarchEffect(effect.Effect):
         # create plane to fit whole screen
         self.plane = geometry.plane.plane_xz(size=(self.window_width, self.window_height), resolution=(10, 10))
 
-    @effect.bind_target
     def draw(self, time, frametime, target):
         self.ctx.enable(moderngl.DEPTH_TEST)
 
