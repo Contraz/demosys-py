@@ -1,45 +1,19 @@
+import os
 
 
-def create(settings):
+def create(**kwargs):
     """
-    Return a string representation of the settings.
-    This is an extremely ugly way of doing this, but it works for now!
+    Return a string representing a new default settings file for a project
     """
-    # FIXME: Use a template system for generating settings file
-    data = "# Auto generated settings file\n" \
-           "import os\n" \
-           "PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))\n\n"
+    template_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'default.py')
+    data = ""
+    with open(template_file, 'r') as fd:
+        data = fd.read()
 
-    for name in settings.__ORDER__:
-        value = getattr(settings, name)
+    header = (
+        '"""\n'
+        'Auto generated settings file for project {}\n'
+        '"""\n'
+    ).format(kwargs.get('name'))
 
-        if isinstance(value, dict):
-            value = ",\n".join('    "{}": {}'.format(k, to_s(v)) for k, v in value.items())
-
-            # Add comma after the last dict entry
-            if value:
-                value += ','
-
-            data += "%s = {\n%s\n}\n\n" % (name, value)
-
-        elif isinstance(value, tuple):
-            value = ",\n".join("    {}".format(to_s(v)) for v in value)
-
-            # Add comma after the last tuple entry
-            if value:
-                value += ","
-
-            data += "{} = (\n{}\n)\n\n".format(name, value)
-
-        elif value is None:
-            data += "{} = {}\n\n".format(name, value)
-
-    # Return config excluding last newline
-    return data[:-1]
-
-
-def to_s(var):
-    if isinstance(var, str):
-        return '"{}"'.format(var)
-    else:
-        return str(var)
+    return header + data

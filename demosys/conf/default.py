@@ -1,32 +1,8 @@
-"""
-Default settings for demosys. Override using a settings module.
-"""
+import os
 
-# What attributes should be used when generating a settings file
-__ORDER__ = (
-    'DEBUG',
-    'SCREENSHOT_PATH',
-    'OPENGL',
-    'WINDOW',
-    'MUSIC',
-    'TIMER',
-    'ROCKET',
-    'EFFECTS',
-    'EFFECT_MANAGER',
-    'SHADER_DIRS',
-    'SHADER_FINDERS',
-    'TEXTURE_DIRS',
-    'TEXTURE_FINDERS',
-    'SCENE_DIRS',
-    'SCENE_FINDERS',
-    'SCENE_LOADERS',
-    'DATA_DIRS',
-    'DATA_FINDERS',
-)
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = False
-
-SCREENSHOT_PATH = None
+SCREENSHOT_PATH = os.path.join(PROJECT_DIR, 'screenshots')
 
 # OpenGL context configuration
 # version: (MAJOR, MINOR)
@@ -34,7 +10,7 @@ OPENGL = {
     "version": (3, 3),
 }
 
-# Window size
+# Window / context properties
 WINDOW = {
     "class": "demosys.context.glfw.GLFW_Window",
     "size": (1280, 720),
@@ -63,7 +39,7 @@ EFFECTS = ()
 
 EFFECT_MANAGER = 'demosys.effects.managers.SingleEffectManager'
 
-# Raise errors when uniforms are assigned with incorrect type
+# Raise errors when shader uniforms are assigned incorrectly
 # Otherwise just print the errors to terminal
 SHADER_STRICT_VALIDATION = False
 
@@ -73,23 +49,22 @@ SHADERS = {
     'geometry_shader_suffix': ('geom', '_gs.glsl', '.glslg'),
 }
 
-# Additional directories shaders can be found
 SHADER_DIRS = ()
 
-# Finder
 SHADER_FINDERS = (
     'demosys.core.shaderfiles.finders.FileSystemFinder',
     'demosys.core.shaderfiles.finders.EffectDirectoriesFinder'
 )
 
-# Additonal directories textures can be found
 TEXTURE_DIRS = ()
+
 TEXTURE_FINDERS = (
     'demosys.core.texturefiles.finders.FileSystemFinder',
     'demosys.core.texturefiles.finders.EffectDirectoriesFinder'
 )
 
 SCENE_DIRS = ()
+
 SCENE_FINDERS = (
     "demosys.core.scenefiles.finders.FileSystemFinder",
     "demosys.core.scenefiles.finders.EffectDirectoriesFinder",
@@ -101,6 +76,7 @@ SCENE_LOADERS = (
 )
 
 DATA_DIRS = ()
+
 DATA_FINDERS = (
     "demosys.core.datafiles.finders.FileSystemFinder",
     "demosys.core.datafiles.finders.EffectDirectoriesFinder",

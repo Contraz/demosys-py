@@ -31,12 +31,11 @@ class Command(CreateCommand):
         os.makedirs(name)
 
         # Use the default settings file
-        os.environ['DEMOSYS_SETTINGS_MODULE'] = 'demosys.conf.default_settings'
-        from demosys.conf import settings
+        os.environ['DEMOSYS_SETTINGS_MODULE'] = 'demosys.conf.default'
         from demosys.conf import settingsfile
 
         with open(os.path.join(name, 'settings.py'), 'w') as fd:
-            fd.write(settingsfile.create(settings))
+            fd.write(settingsfile.create(name=name))
 
         with open(manage_file, 'w') as fd:
             fd.write(gen_manage_py(name))
