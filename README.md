@@ -31,18 +31,10 @@ demosys-admin createproject myproject
 demosys-admin createeffect myproject/cube
 ```
 
-Now edit ``myproject/settings.py`` adding the effect in ``EFFECTS``.
-
-```python
-EFFECTS = (
-  'myproject.cube',  # note the comma!
-)
-```
-
-Now run the effect!
+Now run the effect
 
 ```bash
-./manage.py run
+python manage.py runeffect myproject.cube
 ```
 
 Features
