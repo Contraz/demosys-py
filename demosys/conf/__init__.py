@@ -4,7 +4,7 @@ Settings and configuration for demosys
 import importlib
 import os
 
-from demosys.conf import default_settings
+from demosys.conf import default
 from demosys.core.exceptions import ImproperlyConfigured
 
 ENVIRONMENT_VARIABLE = "DEMOSYS_SETTINGS_MODULE"
@@ -13,10 +13,11 @@ ENVIRONMENT_VARIABLE = "DEMOSYS_SETTINGS_MODULE"
 
 
 class Settings:
+    SETTINGS_MODULE = None
     SHADER_DIRS = []
     TEXTURE_DIRS = []
     DATA_DIRS = []
-    SETTINGS_MODULE = None
+    SCENE_DIRS = []
 
     def __init__(self):
         settings_module = os.environ.get(ENVIRONMENT_VARIABLE)
@@ -27,9 +28,9 @@ class Settings:
             )
 
         # Update this dict from global settings
-        for setting in dir(default_settings):
+        for setting in dir(default):
             if setting.isupper():
-                setattr(self, setting, getattr(default_settings, setting))
+                setattr(self, setting, getattr(default, setting))
 
         # Read the supplied settings module
         self.SETTINGS_MODULE = settings_module
