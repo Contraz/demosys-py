@@ -1,4 +1,4 @@
-import moderngl as mgl
+import moderngl
 from demosys.effects import effect
 
 
@@ -10,7 +10,8 @@ class SceneEffect(effect.Effect):
         self.proj_mat = self.create_projection(fov=75.0, near=0.01, far=1000.0)
 
     def draw(self, time, frametime, target):
-        self.ctx.enable(mgl.DEPTH_TEST)
+        self.ctx.enable(moderngl.DEPTH_TEST)
+        self.ctx.enable(moderngl.CULL_FACE)
         self.sys_camera.velocity = self.scene.diagonal_size / 5.0
 
         self.scene.draw(
