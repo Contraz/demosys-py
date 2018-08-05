@@ -9,7 +9,7 @@ from demosys.conf import settings
 from demosys.effects.registry import Effect
 from demosys.scene import camera
 from demosys.utils import module_loading
-from demosys.opengl import helper
+from demosys.opengl import texture
 
 
 def run(manager=None, window=None):
@@ -20,8 +20,8 @@ def run(manager=None, window=None):
     """
     window.manager = manager
 
-    helper._init_texture2d_draw()
-    helper._init_depth_texture_draw()
+    texture._init_texture2d_draw()
+    texture._init_depth_texture_draw()
 
     print("Loader started at", time.time())
 

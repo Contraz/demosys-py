@@ -15,7 +15,7 @@ class TextureHelper:
     def ctx(self):
         return context.ctx()
 
-    def draw_texture(self, texture, pos=(0.0, 0.0), scale=(1.0, 1.0)):
+    def draw(self, texture, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
         Draw texture using a fullscreen quad.
         By default this will conver the entire screen.
@@ -31,7 +31,7 @@ class TextureHelper:
         self._quad.draw(self._texture2d_shader)
         self._texture2d_sampler.clear(location=0)
 
-    def draw_depth_texture(self, texture, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
+    def draw_depth(self, texture, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
         """
         Draw depth buffer linearized.
         By default this will draw the texture as a full screen quad.
@@ -138,4 +138,4 @@ class TextureHelper:
         )
 
 
-helper = TextureHelper()
+texture = TextureHelper()

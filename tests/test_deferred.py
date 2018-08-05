@@ -4,15 +4,15 @@ from demosys.test import DemosysTestCase
 from demosys.deferred import DeferredRenderer
 from demosys import geometry
 from demosys.opengl import Projection
-from demosys.opengl import helper
+from demosys.opengl import texture
 
 
 class DeferredTestCase(DemosysTestCase):
     """Crude test executing deferred code"""
 
     def setUp(self):
-        helper._init_texture2d_draw()
-        helper._init_depth_texture_draw()
+        texture._init_texture2d_draw()
+        texture._init_depth_texture_draw()
 
     def test_create(self):
         renderer = DeferredRenderer(self.window.width, self.window.height)
