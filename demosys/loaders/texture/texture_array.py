@@ -12,4 +12,3 @@ class TextureArray(BaseLoader):
         image = Image.open(self.path)
         texture.set_image(image)
         return texture
-

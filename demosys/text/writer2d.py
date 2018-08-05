@@ -1,7 +1,7 @@
 import numpy
 
 import moderngl
-from demosys.opengl import VAO, TextureArray
+from demosys.opengl import VAO
 from demosys import resources
 from pyrr import matrix44
 
