@@ -4,11 +4,13 @@ from demosys import context
 class BaseLoader:
     name = None
 
-    def __init__(self, path):
+    def __init__(self, path, **kwargs):
         self.path = path
-
-    def ctx(self):
-        return context.ctx()
+        self.kwargs = kwargs
 
     def load(self):
         pass
+
+    @property
+    def ctx(self):
+        return context.ctx()

@@ -26,7 +26,7 @@ class Scenes(BaseRegistry):
     """
     def __init__(self):
         super().__init__()
-        self.scene_loaders = [
+        self.loaders = [
             import_string(loader) for loader in settings.SCENE_LOADERS
         ]
 
@@ -57,7 +57,7 @@ class Scenes(BaseRegistry):
 
     def load_deferred(self, path: Union[str, Path], **kwargs) -> SceneMeta:
         # Figure out what scene loader class should be used
-        for loader_cls in self.scene_loaders:
+        for loader_cls in self.loaders:
             if loader_cls.supports_file(path):
                 break
         else:

@@ -124,7 +124,7 @@ class Effect:
         :param local: Auto-prepend the effect package name to the path
         :return: Texture object
         """
-        return resources.textures.load(path, create=True, **kwargs)
+        return resources.textures.load(path, create=True, loader='2d', **kwargs)
 
     @local_path
     def get_texture_array(self, path, layers=0, local=False, **kwargs) -> TextureArray:
@@ -138,7 +138,7 @@ class Effect:
         :param local: Auto-prepend the effect package name to the path
         :return: Texture object
         """
-        return resources.textures.load(path, create=True, layers=layers, cls=TextureArray, **kwargs)
+        return resources.textures.load(path, create=True, loader='array', layers=layers, **kwargs)
 
     @local_path
     def get_track(self, name, local=False) -> Track:

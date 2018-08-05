@@ -25,7 +25,8 @@ class TextWriter2D(BaseText):
         self.aspect_ratio = aspect_ratio
 
         self._vao = None
-        self._texture = resources.textures.load('demosys/text/VeraMono.png', cls=TextureArray, layers=190)
+        self._texture = resources.textures.load('demosys/text/VeraMono.png', loader='array', layers=190)
+        self._texture.build_mipmaps()
         self._shader = resources.shaders.load('demosys/text/textwriter2d.glsl')
         self._config = resources.data.load('demosys/text/meta.json')
 

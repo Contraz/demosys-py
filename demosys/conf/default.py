@@ -63,6 +63,11 @@ TEXTURE_FINDERS = (
     'demosys.core.texturefiles.finders.EffectDirectoriesFinder'
 )
 
+TEXTURE_LOADERS = (
+    'demosys.loaders.texture.Texture2D',
+    'demosys.loaders.texture.TextureArray',
+)
+
 SCENE_DIRS = ()
 
 SCENE_FINDERS = (

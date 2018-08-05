@@ -7,8 +7,6 @@ import demosys
 from demosys import context, resources
 from demosys.opengl import ShaderProgram, TextureArray
 
-from demosys.view import controller
-
 demosys.setup()
 demosys.create_window().use()
 
