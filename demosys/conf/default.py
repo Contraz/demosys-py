@@ -71,8 +71,8 @@ SCENE_FINDERS = (
 )
 
 SCENE_LOADERS = (
-    'demosys.scene.loaders.gltf.GLTF2',
-    'demosys.scene.loaders.wavefront.ObjLoader',
+    'demosys.loaders.scene.gltf.GLTF2',
+    'demosys.loaders.scene.wavefront.ObjLoader',
 )
 
 DATA_DIRS = ()
