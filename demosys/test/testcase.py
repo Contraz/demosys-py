@@ -5,7 +5,7 @@ os.environ['DEMOSYS_SETTINGS_MODULE'] = 'tests.settings'  # noqa
 
 import demosys
 from demosys import context, resources
-from demosys.opengl import ShaderProgram, TextureArray
+from demosys.opengl import ShaderProgram
 
 demosys.setup()
 demosys.create_window().use()
@@ -34,7 +34,7 @@ class DemosysTestCase(TestCase):
         return resources.textures.load(path, create=True)
 
     def get_texture_array(self, path, layers=0):
-        return resources.textures.load(path, create=True, cls=TextureArray, layers=layers)
+        return resources.textures.load(path, create=True, loader='array', layers=layers)
 
     def get_track(self, name):
         return resources.tracks.get(name)

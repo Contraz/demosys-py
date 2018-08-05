@@ -4,7 +4,7 @@ from demosys.test import DemosysTestCase
 from demosys.deferred import DeferredRenderer
 from demosys import geometry
 from demosys.opengl import Projection
-from demosys.opengl.texture import helper
+from demosys.opengl import helper
 
 
 class DeferredTestCase(DemosysTestCase):

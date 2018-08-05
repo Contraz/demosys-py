@@ -10,9 +10,12 @@ class SceneLoader:
     # File extensions supported by this loader
     file_extensions = []
 
-    def __init__(self, path: Union[str, Path], **kwargs):
+    def __init__(self, path: Union[str, Path]=None, **kwargs):
         self.path = path
-        self.ctx = context.ctx()
+
+    @property
+    def ctx(self):
+        return context.ctx()
 
     def load(self, scene: Scene, path: Path=None):
         """

@@ -10,12 +10,13 @@ from typing import Union
 
 import numpy
 from PIL import Image
+from pyrr import Matrix44, matrix44, quaternion
 
 import moderngl
 from demosys import context
-from demosys.opengl import VAO, Texture2D
+from demosys.loaders.texture import Texture2D
+from demosys.opengl import VAO
 from demosys.scene import Material, MaterialTexture, Mesh, Node, Scene
-from pyrr import Matrix44, matrix44, quaternion
 
 from .base import SceneLoader
 
@@ -675,8 +676,6 @@ class GLTFImage:
     def load(self, path):
         # data:image/png;base64,iVBOR
 
-        texture = Texture2D(self.uri, mipmap=True)
-
         # Image is stored in bufferView
         if self.bufferView is not None:
             image = Image.open(io.BytesIO(self.bufferView.read_raw()))
@@ -689,7 +688,8 @@ class GLTFImage:
             print("Loading:", self.uri)
             image = Image.open(path)
 
-        texture.set_image(image, flip=False)
+        texture = Texture2D(path=None, image=image, flip=False, mipmap=True).load()
+
         return texture
 
 

@@ -2,7 +2,7 @@ from pyrr import matrix44
 
 import moderngl
 from demosys import context, geometry, resources
-from demosys.opengl.texture import helper
+from demosys.opengl import helper
 
 
 class PointLight:

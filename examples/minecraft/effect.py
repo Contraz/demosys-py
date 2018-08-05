@@ -2,7 +2,7 @@ import moderngl
 
 from demosys.effects import effect
 from demosys.scene import MeshShader
-from demosys.opengl.texture import helper
+from demosys.opengl import helper
 
 
 class MinecraftEffect(effect.Effect):

@@ -2,10 +2,11 @@
 from pathlib import Path
 from typing import Union
 
+import moderngl
+
 from demosys.conf import settings
 from demosys.core.exceptions import ImproperlyConfigured
 from demosys.core.texturefiles.finders import get_finders
-from demosys.opengl import Texture2D, TextureArray
 from demosys.utils.module_loading import import_string
 
 from .base import BaseRegistry
@@ -30,11 +31,13 @@ class Textures(BaseRegistry):
             import_string(loader) for loader in settings.TEXTURE_LOADERS
         ]
 
-    def get(self, path: Union[str, Path], loader='2d', **kwargs) -> Union[Texture2D, TextureArray]:
+    def get(self, path: Union[str, Path], loader='2d', **kwargs) -> Union[moderngl.Texture, moderngl.TextureArray,
+                                                                          moderngl.TextureCube, moderngl.Texture3D]:
         """Compatibility with old resource system"""
         return self.load(path, loader=loader, **kwargs)
 
-    def load(self, path: Union[str, Path], loader='2d', **kwargs) -> Union[Texture2D, TextureArray]:
+    def load(self, path: Union[str, Path], loader='2d', **kwargs) -> Union[moderngl.Texture, moderngl.TextureArray,
+                                                                           moderngl.TextureCube, moderngl.Texture3D]:
         """
         Get or create a texture object.
         This may return an empty object that will be filled during loading stage

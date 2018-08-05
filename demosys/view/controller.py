@@ -9,7 +9,7 @@ from demosys.conf import settings
 from demosys.effects.registry import Effect
 from demosys.scene import camera
 from demosys.utils import module_loading
-from demosys.opengl.texture import helper
+from demosys.opengl import helper
 
 
 def run(manager=None, window=None):
@@ -37,10 +37,9 @@ def run(manager=None, window=None):
     if not manager.pre_load():
         return
 
-    # Load resources
-    num_resources = resources.count()
-    print("Loading {} resources".format(num_resources))
+    # Window key events can reload shaders
     window.resources = resources
+
     resources.load()
 
     # Post-Load actions for effects

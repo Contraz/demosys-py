@@ -17,11 +17,11 @@ class BaseRegistry:
     def count(self):
         return len(self.file_map)
 
-    def load(self, path, **kwargs):
+    def load(self, *args, **kwargs):
         """Loads a resource or return existing one"""
         raise NotImplementedError()
 
-    def load_deferred(self, path, **kwargs):
+    def load_deferred(self, *args, **kwargs):
         """Register a resource for deferred loading"""
         raise NotImplementedError()
 

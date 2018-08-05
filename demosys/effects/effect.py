@@ -4,13 +4,13 @@ from functools import wraps
 from pyrr import Matrix33, Matrix44, Vector3, matrix44
 from rocket.tracks import Track
 
-import moderngl  # noqa
+import moderngl
 from demosys import resources
-from demosys.opengl import ShaderProgram, Texture2D, TextureArray
+from demosys.context.base import Window  # noqa
+from demosys.opengl import ShaderProgram
 from demosys.resources import Data
 from demosys.scene import camera  # noqa
 from demosys.scene import Scene
-from demosys.context.base import Window  # noqa
 
 
 def local_path(func):
@@ -111,23 +111,24 @@ class Effect:
         :param local: Auto-prepend the effect package name to the path
         :return: Shader object
         """
-        return resources.shaders.load(path, create=True)
+        return resources.shaders.load(path)
 
     @local_path
-    def get_texture(self, path, local=False, **kwargs) -> Texture2D:
+    def get_texture(self, path, flip=True, local=False, **kwargs) -> moderngl.Texture:
         """
         Get a texture or schedule the texture for loading.
         If the resource is not loaded yet, an empty texture object
         is returned that will be populated later.
 
         :param path: Path to the texture in the virtual texture directory
+        :param flip: (bool) Flip the texture horisontally
         :param local: Auto-prepend the effect package name to the path
         :return: Texture object
         """
-        return resources.textures.load(path, create=True, loader='2d', **kwargs)
+        return resources.textures.load(path, loader='2d', flip=flip, **kwargs)
 
     @local_path
-    def get_texture_array(self, path, layers=0, local=False, **kwargs) -> TextureArray:
+    def get_texture_array(self, path, layers=0, flip=True, local=False, **kwargs) -> moderngl.TextureArray:
         """
         Get a texture or schedule the texture for loading.
         If the resource is not loaded yet, an empty texture object
@@ -135,10 +136,11 @@ class Effect:
 
         :param path: Path to the texture in the virtual texture directory
         :param layers: (int) Numer of layers
+        :param flip: (bool) Flip the texture horisontally
         :param local: Auto-prepend the effect package name to the path
         :return: Texture object
         """
-        return resources.textures.load(path, create=True, loader='array', layers=layers, **kwargs)
+        return resources.textures.load(path, loader='array', flip=flip, layers=layers, **kwargs)
 
     @local_path
     def get_track(self, name, local=False) -> Track:
@@ -162,7 +164,7 @@ class Effect:
         :param kwargs: Generic paramters passed to scene loaders
         :return: Scene object
         """
-        return resources.scenes.load(path, create=True, **kwargs)
+        return resources.scenes.load(path, **kwargs)
 
     @local_path
     def get_data(self, path, local=False, **kwargs) -> Data:
@@ -173,7 +175,7 @@ class Effect:
         :param kwargs: Generic paramters passed to data loader
         :return: Data object
         """
-        return resources.data.load(path, create=True, **kwargs)
+        return resources.data.load(path, **kwargs)
 
     # Utility methods for matrices
 
