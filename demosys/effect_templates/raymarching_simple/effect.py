@@ -12,13 +12,13 @@ class SimpleRaymarchEffect(effect.Effect):
         self.shader = self.get_shader("raymarching_simple.glsl", local=True)
 
         # create plane to fit whole screen
-        self.plane = geometry.plane.plane_xz(size=(self.window_width, self.window_height), resolution=(10, 10))
+        self.plane = geometry.plane_xz(size=self.window.size, resolution=(10, 10))
 
     def draw(self, time, frametime, target):
         self.ctx.enable(moderngl.DEPTH_TEST)
 
         # Rotate plane 90 degrees, and move plane back so it will fit correctly on to screen
-        backoff = math.tan(math.radians(self.sys_camera.projection.fov / 2)) * (self.window_width / 2)
+        backoff = math.tan(math.radians(self.sys_camera.projection.fov / 2)) * (self.window.width / 2)
         m_mv = self.create_transformation(rotation=(math.radians(90), 0.0, 0.0), translation=(0.0, 0.0, -backoff))
 
         # Uniforms
@@ -50,6 +50,6 @@ class SimpleRaymarchEffect(effect.Effect):
         self.shader.uniform("lIntensity", lItensity)
         self.shader.uniform("color", color.astype('f4').tobytes())
 
-        self.shader.uniform("resolution", (self.window_width, self.window_height))
+        self.shader.uniform("resolution", (self.window.width, self.window.height))
 
         self.plane.draw(self.shader)

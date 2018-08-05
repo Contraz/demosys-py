@@ -12,7 +12,6 @@ class SimpleCubeEffect(effect.Effect):
         self.texture = self.get_texture("cubes/crate.jpg", mipmap=True)
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
-    @effect.bind_target
     def draw(self, time, frametime, target):
         self.ctx.enable(moderngl.DEPTH_TEST)
 

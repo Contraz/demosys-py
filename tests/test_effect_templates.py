@@ -13,9 +13,7 @@ class EffectTemplateTestCase(DemosysTestCase):
         effects.polulate(templates)
 
         Effect.ctx = self.ctx
-        Effect.window_aspect = 16 / 9
-        Effect.window_width = self.window.width
-        Effect.window_height = self.window.height
+        Effect.window = self.window
         Effect.sys_camera = camera.SystemCamera()
 
         for name, config in effects.effects.items():

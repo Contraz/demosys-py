@@ -2,7 +2,6 @@ import moderngl as mgl
 # import math
 from demosys.effects import effect
 from demosys import geometry
-from demosys.opengl import FBO
 
 
 class GeoCubesEffect(effect.Effect):
@@ -28,9 +27,12 @@ class GeoCubesEffect(effect.Effect):
             seed=7656456
         )
         self.quad = geometry.quad_fs()
-        self.fbo = FBO.create((512, 512), depth=True)
 
-    @effect.bind_target
+        self.fbo = self.ctx.framebuffer(
+            self.ctx.texture((512, 512), 4),
+            depth_attachment=self.ctx.depth_texture((512, 512)),
+        )
+
     def draw(self, time, frametime, target):
         self.ctx.enable(mgl.DEPTH_TEST)
         self.ctx.enable(mgl.CULL_FACE)
@@ -40,16 +42,19 @@ class GeoCubesEffect(effect.Effect):
         normal_m = self.create_normal_matrix(mv_m)
         proj_m = self.create_projection(fov=60.0, ratio=1.0)
 
-        with self.fbo:
-            self.cube_shader1.uniform("m_proj", proj_m.astype('f4').tobytes())
-            self.cube_shader1.uniform("m_mv", mv_m.astype('f4').tobytes())
-            self.cube_shader1.uniform("m_normal", normal_m.astype('f4').tobytes())
-            self.texture1.use(location=0)
-            self.texture2.use(location=1)
-            self.cube_shader1.uniform("texture0", 0)
-            self.cube_shader1.uniform("texture1", 1)
-            self.cube_shader1.uniform("time", time)
-            self.cube.draw(self.cube_shader1)
+        self.fbo.use()
+
+        self.cube_shader1.uniform("m_proj", proj_m.astype('f4').tobytes())
+        self.cube_shader1.uniform("m_mv", mv_m.astype('f4').tobytes())
+        self.cube_shader1.uniform("m_normal", normal_m.astype('f4').tobytes())
+        self.texture1.use(location=0)
+        self.texture2.use(location=1)
+        self.cube_shader1.uniform("texture0", 0)
+        self.cube_shader1.uniform("texture1", 1)
+        self.cube_shader1.uniform("time", time)
+        self.cube.draw(self.cube_shader1)
+
+        target.use()
 
         self.sys_camera.projection.update(fov=75, near=0.1, far=1000)
 
@@ -59,7 +64,7 @@ class GeoCubesEffect(effect.Effect):
         self.cube_shader2.uniform("m_proj", self.sys_camera.projection.tobytes())
         self.cube_shader2.uniform("m_mv", view_m.astype('f4').tobytes())
         self.cube_shader2.uniform("m_normal", normal_m.astype('f4').tobytes())
-        self.fbo.color_buffers[0].use(location=0)
+        self.fbo.color_attachments[0].use(location=0)
         self.cube_shader2.uniform("texture0", 0)
         self.cube_shader2.uniform("time", time)
         self.cube_shader2.uniform("lightpos", (0.0, 0.0, 0.0))

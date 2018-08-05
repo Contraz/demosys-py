@@ -14,7 +14,6 @@ class Empty(effect.Effect):
 
         self.zangle = 0.0
 
-    @effect.bind_target
     def draw(self, time, frametime, target):
         self.texture1.use(location=0)
         self.shader.uniform("tex", 0)

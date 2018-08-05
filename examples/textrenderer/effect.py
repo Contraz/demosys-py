@@ -22,7 +22,6 @@ class TextRendererEffect(effect.Effect):
     def post_load(self):
         self.renderer.render()
 
-    @effect.bind_target
     def draw(self, time, frametime, target):
         self.renderer.draw(
             (0.05, math.fmod(time, 75.0) / 5.0),

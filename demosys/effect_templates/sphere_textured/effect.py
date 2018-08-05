@@ -11,7 +11,6 @@ class TexturedSphere(effect.Effect):
         self.sphere = geometry.sphere(4.0, sectors=32, rings=16)
         self.texture = self.get_texture("wood.jpg", local=True)
 
-    @effect.bind_target
     def draw(self, time, frametime, target):
         self.ctx.enable(moderngl.DEPTH_TEST)
         self.ctx.enable(moderngl.CULL_FACE)

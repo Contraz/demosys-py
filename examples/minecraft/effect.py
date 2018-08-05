@@ -1,8 +1,8 @@
 import moderngl
 
 from demosys.effects import effect
-from demosys.opengl import FBO
 from demosys.scene import MeshShader
+from demosys.opengl.texture import helper
 
 
 class MinecraftEffect(effect.Effect):
@@ -14,7 +14,11 @@ class MinecraftEffect(effect.Effect):
             local=True,
             mesh_shaders=[self.shader],
         )
-        self.fbo = FBO.create((self.window_width, self.window_height), depth=True)
+
+        self.fbo = self.ctx.framebuffer(
+            self.ctx.texture(self.window.size, 4),
+            depth_attachment=self.ctx.depth_texture(self.window.size)
+        )
 
         self.sampler = self.ctx.sampler(
             filter=(moderngl.NEAREST_MIPMAP_NEAREST, moderngl.NEAREST),
@@ -22,7 +26,6 @@ class MinecraftEffect(effect.Effect):
             max_lod=4.0,
         )
 
-    @effect.bind_target
     def draw(self, time, frametime, target):
         self.ctx.enable(moderngl.DEPTH_TEST)
         self.ctx.disable(moderngl.CULL_FACE)
@@ -32,17 +35,18 @@ class MinecraftEffect(effect.Effect):
         # m_view = self.create_transformation(translation=(0.0, -5.0, -8.0))
         m_proj = self.create_projection(75, near=0.1, far=300.0)
 
-        with self.fbo:
-            self.scene.draw(
-                projection_matrix=m_proj,
-                camera_matrix=self.sys_camera.view_matrix,
-                time=time
-            )
+        self.fbo.use()
+        self.scene.draw(
+            projection_matrix=m_proj,
+            camera_matrix=self.sys_camera.view_matrix,
+            time=time
+        )
+        self.window.use()
 
         self.ctx.disable(moderngl.DEPTH_TEST)
 
-        self.fbo.draw_color_layer(0)
-        self.fbo.draw_depth(0.1, 300, pos=(1.25, 1.25), scale=(0.5, 0.5))
+        helper.draw_texture(self.fbo.color_attachments[0])
+        helper.draw_depth_texture(self.fbo.depth_attachment, 0.1, 300, pos=(1.25, 1.25), scale=(0.5, 0.5))
         self.fbo.clear()
 
 

@@ -38,7 +38,7 @@ void main()
     vec3 dir = normalize(-pos);
     float l = dot(dir, normalize(normal));
     vec4 color = texture(texture0, uv);
-    fragColor = color * 0.5 + color * 0.5 * abs(l);
+    fragColor = color * 0.2 + color * 0.8 * abs(l);
 }
 
 #endif

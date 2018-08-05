@@ -2,11 +2,11 @@ import math
 import random
 
 import numpy
+from pyrr import matrix44, vector3
 
 import moderngl as mgl
 from demosys.effects import effect
 from demosys.opengl import VAO
-from pyrr import matrix44, vector3
 
 
 class FeedbackEffect(effect.Effect):
@@ -27,7 +27,6 @@ class FeedbackEffect(effect.Effect):
         self.pos = None
         self.init_particles()
 
-    @effect.bind_target
     def draw(self, time, frametime, target):
         self.ctx.disable(mgl.DEPTH_TEST)
         self.ctx.enable(mgl.BLEND)

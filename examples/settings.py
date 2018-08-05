@@ -15,7 +15,7 @@ WINDOW = {
     "fullscreen": False,
     "resizable": True,
     "title": "Examples",
-    "vsync": True,
+    "vsync": False,
     "cursor": True,
     "samples": 4,
 }

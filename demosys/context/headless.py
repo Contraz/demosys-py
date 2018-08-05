@@ -1,7 +1,6 @@
 import moderngl
 from demosys import context
 from demosys.conf import ImproperlyConfigured, settings
-from demosys.opengl.fbo import FBO
 
 from .base import Window
 
@@ -21,13 +20,11 @@ class HeadlessWindow(Window):
         self.ctx = moderngl.create_standalone_context(require=self.gl_version.code)
         context.WINDOW = self
 
-        self.fbo = FBO()
-        self.fbo.ctx = self.ctx
-        self.fbo.fbo = self.ctx.framebuffer(
-            color_attachments=self.ctx.texture((self.width, self.height), 4),
-            depth_attachment=self.ctx.depth_texture((self.width, self.height)),
+        self.fbo = self.ctx.framebuffer(
+            color_attachments=self.ctx.texture(self.size, 4),
+            depth_attachment=self.ctx.depth_texture(self.size),
         )
-        self.fbo.default_framebuffer = True
+
         self.set_default_viewport()
 
     def draw(self, current_time, frame_time):
@@ -37,7 +34,7 @@ class HeadlessWindow(Window):
             self.close()
 
     def use(self):
-        self.fbo.use(stack=False)
+        self.fbo.use()
 
     def should_close(self):
         return self._close

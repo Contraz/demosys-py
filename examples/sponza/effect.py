@@ -9,7 +9,6 @@ class SceneEffect(effect.Effect):
 
         self.proj_mat = self.create_projection(fov=75.0, near=0.01, far=1000.0)
 
-    @effect.bind_target
     def draw(self, time, frametime, target):
         self.ctx.enable(mgl.DEPTH_TEST)
         self.sys_camera.velocity = self.scene.diagonal_size / 5.0

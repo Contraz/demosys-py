@@ -8,7 +8,6 @@ Reference
     texture2d.rst
     texturearray.rst
     depthtexture.rst
-    fbo.rst
     vao.rst
     shaderprogram.rst
     geometry.rst

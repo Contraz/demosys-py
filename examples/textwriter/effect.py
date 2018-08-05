@@ -15,11 +15,10 @@ class TextWriterEffect(effect.Effect):
 
         self.writer = TextWriter2D(
             (105, len(lines)),
-            aspect_ratio=self.window_aspect,
+            aspect_ratio=self.window.aspect_ratio,
             text_lines=lines,
         )
 
-    @effect.bind_target
     def draw(self, time, frametime, target):
         self.writer.draw(
             (0.05, 0.01 - math.fmod(time, 75.0) / 5.0),

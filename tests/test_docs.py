@@ -77,11 +77,6 @@ class TestCase(unittest.TestCase):
             os.path.join('reference', 'depthtexture.rst'),
             opengl, 'DepthTexture', ['quad', 'shader', 'sampler', 'build_mipmaps'])
 
-    def test_fbo_docs(self):
-        self.validate(
-            os.path.join('reference', 'fbo.rst'),
-            opengl, 'FBO', [])
-
     def test_shader_docs(self):
         self.validate(
             os.path.join('reference', 'shaderprogram.rst'),

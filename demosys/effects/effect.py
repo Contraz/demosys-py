@@ -1,7 +1,7 @@
 import os
 from functools import wraps
-from typing import Tuple
 
+from pyrr import Matrix33, Matrix44, Vector3, matrix44
 from rocket.tracks import Track
 
 import moderngl  # noqa
@@ -10,24 +10,7 @@ from demosys.opengl import ShaderProgram, Texture2D, TextureArray
 from demosys.resources import Data
 from demosys.scene import camera  # noqa
 from demosys.scene import Scene
-from pyrr import Matrix33, Matrix44, Vector3, matrix44
-
-
-def bind_target(func):
-    """
-    Decorator auto binding and releasing the incoming FBO in ``draw()``.
-
-    example::
-
-       @bind_target
-        def draw(...):
-            # draw stuff
-    """
-    def func_wrapper(*args, **kwargs):
-        args[3].use()
-        func(*args, **kwargs)
-        args[3].release()
-    return func_wrapper
+from demosys.context.base import Window  # noqa
 
 
 def local_path(func):
@@ -60,18 +43,15 @@ class Effect:
 
     The following attributes are injected by demosys before initialization:
 
-    * ``window_width`` (int): Window width in pixels
-    * ``window_height`` (int): Window height in pixels
-    * ``window_aspect`` (float): Aspect ratio of the resolution
+    * ``window`` (demosys.context.Context): Window
+    * ``ctx`` (moderngl.Context): The moderngl context
     * ``sys_camera`` (demosys.scene.camera.Camera): The system camera responding to inputs
     """
     # Full python path to the effect (set per instance)
     _name = ""
 
     # Window properties set by controller on initialization (class vars)
-    _window_width = 0
-    _window_height = 0
-    _window_aspect = 0
+    _window = None  # type: Window
 
     _ctx = None  # type: moderngl.Context
     _sys_camera = None  # type: camera.SystemCamera
@@ -88,24 +68,8 @@ class Effect:
         return self._name
 
     @property
-    def window_width(self) -> int:
-        """Window width in pixels"""
-        return self._window_width
-
-    @property
-    def window_height(self) -> int:
-        """Window height in pixels"""
-        return self._window_height
-
-    @property
-    def window_size(self) -> Tuple[int, int]:
-        """Window size tuple (width, height)"""
-        return self._window_width, self._window_height
-
-    @property
-    def window_aspect(self) -> float:
-        """Aspect ratio of the window"""
-        return self._window_aspect
+    def window(self) -> Window:
+        return self._window
 
     @property
     def ctx(self) -> moderngl.Context:
@@ -225,7 +189,7 @@ class Effect:
         """
         return matrix44.create_perspective_projection_matrix(
             fov,
-            ratio or self.window_aspect,
+            ratio or self.window.aspect_ratio,
             near,
             far,
         )

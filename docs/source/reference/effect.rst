@@ -36,10 +36,7 @@ Attributes
 .. autoattribute:: Effect.sys_camera
 .. autoattribute:: Effect.name
 .. autoattribute:: Effect.effect_name
-.. autoattribute:: Effect.window_size
-.. autoattribute:: Effect.window_width
-.. autoattribute:: Effect.window_height
-.. autoattribute:: Effect.window_aspect
+.. autoattribute:: Effect.window
 
 Decorators
 ----------

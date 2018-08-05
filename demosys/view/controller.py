@@ -9,6 +9,7 @@ from demosys.conf import settings
 from demosys.effects.registry import Effect
 from demosys.scene import camera
 from demosys.utils import module_loading
+from demosys.opengl.texture import helper
 
 
 def create_window():
@@ -29,12 +30,13 @@ def run(manager=None):
     window = create_window()
     window.manager = manager
 
+    helper._init_texture2d_draw()
+    helper._init_depth_texture_draw()
+
     print("Loader started at", time.time())
 
     # Inject attributes into the base Effect class
-    setattr(Effect, '_window_width', window.buffer_width)
-    setattr(Effect, '_window_height', window.buffer_height)
-    setattr(Effect, '_window_aspect', window.aspect_ratio)
+    setattr(Effect, '_window', window)
     setattr(Effect, '_ctx', window.ctx)
 
     # Set up the default system camera

@@ -1,7 +1,7 @@
 import numpy
 
 import moderngl
-from demosys.opengl import FBO, VAO
+from demosys.opengl import VAO
 from demosys import resources
 
 from .writer2d import TextWriter2D
@@ -28,7 +28,8 @@ class TextRenderer2D(TextWriter2D):
         )
 
         self.aspect_ratio = self._texture_width / self._texture_height
-        self._fbo = FBO.create((self._texture_width, self._texture_height))
+        self._fbo = self.ctx.framebuffer(self.ctx.texture((self._texture_width, self._texture_height), 4))
+        self._fbo_scope = self.ctx.scope(self._fbo)
 
     @property
     def texture(self):
@@ -36,11 +37,11 @@ class TextRenderer2D(TextWriter2D):
 
     def render(self):
         self._fbo.clear()
-        with self._fbo:
+        with self._fbo_scope:
             super().draw((0.0, 0.0), size=2.0 / self.area[1])
 
     def draw(self, pos, size=1.0):
-        self._fbo.color_buffers[0].use(location=0)
+        self._fbo.color_attachments[0].use(location=0)
         self._quad_shader.uniform("texture0", 0)
         self._quad_shader.uniform("yscale", self._texture_height / self._texture_width)
         self._quad_shader.uniform("pos", pos)
