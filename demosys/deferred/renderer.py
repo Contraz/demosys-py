@@ -2,7 +2,6 @@ from pyrr import matrix44
 
 import moderngl
 from demosys import context, geometry, resources
-from demosys.opengl import DepthTexture, Texture2D
 from demosys.opengl.texture import helper
 
 

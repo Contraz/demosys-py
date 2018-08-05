@@ -54,8 +54,8 @@ class TextureHelper:
 
     def _init_texture2d_draw(self):
         """Initialize geometry and shader for drawing FBO layers"""
-        from demosys import context, geometry
-        from demosys.opengl import ShaderProgram
+        from demosys import context, geometry  # noqa
+        from demosys.opengl import ShaderProgram  # noqa
 
         if not TextureHelper._quad:
             TextureHelper._quad = geometry.quad_fs()
@@ -94,8 +94,8 @@ class TextureHelper:
 
     def _init_depth_texture_draw(self):
         """Initialize geometry and shader for drawing FBO layers"""
-        from demosys import context, geometry
-        from demosys.opengl import ShaderProgram
+        from demosys import context, geometry  # noqa
+        from demosys.opengl import ShaderProgram  # noqa
 
         if not TextureHelper._quad:
             TextureHelper._quad = geometry.quad_fs()
