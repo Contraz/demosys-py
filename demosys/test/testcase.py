@@ -6,10 +6,11 @@ os.environ['DEMOSYS_SETTINGS_MODULE'] = 'tests.settings'  # noqa
 import demosys
 from demosys import context, resources
 from demosys.opengl import ShaderProgram, TextureArray
+
 from demosys.view import controller
 
 demosys.setup()
-controller.create_window().use()
+demosys.create_window().use()
 
 
 class DemosysTestCase(TestCase):
