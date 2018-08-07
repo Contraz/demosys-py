@@ -1,7 +1,7 @@
-from demosys.loaders.texture.base import TextureLoader, image_data
+from demosys.loaders.texture.pillow import PillowLoader, image_data
 
 
-class Loader(TextureLoader):
+class Loader(PillowLoader):
     name = '2d'
 
     def load(self):

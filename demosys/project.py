@@ -14,16 +14,14 @@ class Project:
 
     def create_resources(self, external):
         # Just return the external list
-        return external
+        return external or []
 
     def create_effects(self):
         pass
 
     def load(self):
-        resource_list = self.create_resources()
-
         # Throw each resource into their respective pools
-        for meta in resource_list:
+        for meta in self.create_resources():
             resources.add(meta)
 
         for meta, resource in resources.textures.load_pool():

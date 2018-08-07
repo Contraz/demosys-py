@@ -1,20 +1,24 @@
+from typing import Any
+
 from PIL import Image
 
-from demosys import context
+from demosys.loaders.base import BaseLoader
 
 
-class TextureLoader:
-    name = None
+class PillowLoader(BaseLoader):
+    """Base loader using PIL/Pillow"""
+    name = '__unknown__'
 
     def __init__(self, path, **kwargs):
+        super().__init__(path)
         self.path = path
         self.kwargs = kwargs
         self.image = kwargs.get('image')
         self.flip = kwargs.get('flip') or True
         self.mipmap = kwargs.get('mipmap') or False
 
-    def load(self):
-        pass
+    def load(self) -> Any:
+        raise NotImplementedError()
 
     def _open_image(self):
         self.image = Image.open(self.path)
@@ -24,10 +28,6 @@ class TextureLoader:
 
     def _close_image(self):
         self.image.close()
-
-    @property
-    def ctx(self):
-        return context.ctx()
 
 
 def image_data(image):
