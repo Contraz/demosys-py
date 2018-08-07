@@ -5,8 +5,6 @@ import json
 import os
 import struct
 from collections import namedtuple
-from pathlib import Path
-from typing import Union
 
 import numpy
 from PIL import Image
@@ -14,11 +12,11 @@ from pyrr import Matrix44, matrix44, quaternion
 
 import moderngl
 from demosys import context
+from demosys.loaders.scene.base import SceneLoader
 from demosys.loaders.texture import t2d
 from demosys.opengl import VAO
+from demosys.resources import SceneDescription
 from demosys.scene import Material, MaterialTexture, Mesh, Node, Scene
-
-from demosys.loaders.scene.base import SceneLoader
 
 GLTF_MAGIC_HEADER = b'glTF'
 
@@ -72,7 +70,7 @@ class GLTF2(SceneLoader):
     ]
     supported_extensions = []
 
-    def __init__(self, path: Union[str, Path]):
+    def __init__(self, meta: SceneDescription):
         """
         Parse the json file and validate its contents.
         No actual data loading will happen.
@@ -82,7 +80,7 @@ class GLTF2(SceneLoader):
         - gltf embedded buffers
         - glb Binary format
         """
-        super().__init__(path)
+        super().__init__(meta)
         self.scenes = []
         self.nodes = []
         self.meshes = []
@@ -91,25 +89,18 @@ class GLTF2(SceneLoader):
         self.samplers = []
         self.textures = []
 
-        self.meta = None
-        self.path = path
+        self.path = None
         self.scene = None
 
-    def load(self, scene: Scene, path: Path=None):
+    def load(self):
         """
         Deferred loading of the scene
 
         :param scene: The scene object
         :param file: Resolved path if changed by finder
         """
-        print("Loading", self.path)
-        self.scene = scene
-
-        if path:
-            self.path = path
-
-        self.path = Path(self.path)
-        print(self.path)
+        self.path = self.meta.resolved_path
+        self.scene = Scene(self.path, mesh_programs=self.meta.mesh_programs)
 
         # Load gltf json file
         if self.path.suffix == '.gltf':
@@ -129,6 +120,9 @@ class GLTF2(SceneLoader):
         self.load_nodes()
 
         self.scene.calc_scene_bbox()
+        self.scene.prepare()
+
+        return self.scene
 
     def load_gltf(self):
         """Loads a gltf json file"""

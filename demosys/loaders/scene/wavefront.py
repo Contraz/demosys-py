@@ -1,16 +1,13 @@
-from pathlib import Path
-
 import numpy
-
-import moderngl
 import pywavefront
-from demosys.opengl import VAO
-from demosys.resources import textures
-from demosys.scene import Material, MaterialTexture, Mesh, Node
 from pywavefront import cache
 from pywavefront.obj import ObjParser
 
-from .base import SceneLoader
+import moderngl
+from demosys.loaders.scene.base import SceneLoader
+from demosys.opengl import VAO
+from demosys.resources import SceneDescription, textures
+from demosys.scene import Material, MaterialTexture, Mesh, Node, Scene
 
 
 def translate_buffer_format(vertex_format):
@@ -68,18 +65,19 @@ class ObjLoader(SceneLoader):
         ['.bin'],
     ]
 
-    def __init__(self, path):
-        super().__init__(path)
+    def __init__(self, meta: SceneDescription):
+        super().__init__(meta)
 
-    def load(self, scene, path: Path=None):
+    def load(self):
         """Deferred loading"""
+        path = self.meta.resolved_path
+
         if path.suffix == '.bin':
             path = path.parent / path.stem
 
         data = pywavefront.Wavefront(str(path), create_materials=True, cache=True)
 
         for _, mat in data.materials.items():
-
             mesh = Mesh(mat.name)
 
             # Traditional loader
@@ -104,6 +102,7 @@ class ObjLoader(SceneLoader):
                 # Empty
                 continue
 
+            scene = Scene(self.meta.resolved_path, mesh_programs=self.meta.mesh_programs)
             scene.meshes.append(mesh)
 
             mesh.material = Material(mat.name)

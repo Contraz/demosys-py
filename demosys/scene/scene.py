@@ -125,11 +125,9 @@ class Scene:
 
         self.diagonal_size = vector3.length(self.bbox_max - self.bbox_min)
 
-    def load(self, loader, path):
+    def prepare(self):
         """Deferred loading if a loader is specified"""
-        loader.load(self, path=path)
         self.apply_mesh_programs()
-        self.view_matrix = matrix44.create_identity()
 
     def destroy(self):
         """Destroy the scene data and deallocate buffers"""

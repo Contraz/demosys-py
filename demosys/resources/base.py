@@ -1,80 +1,145 @@
 """
 Base registry class
 """
+from pathlib import Path
+from typing import Any, Dict, Type
+
+from demosys.exceptions import ImproperlyConfigured
+from demosys.loaders.base import BaseLoader
 
 
 class ResourceDescription:
-    """Description of a resource"""
+    """
+    Description of any resource.
+    Resource descriptions are required by the resource system
+    to load a resource.
+    """
+    require_label = True  # Decides if the resource requires a label
+    default_loader = None  # The default loader if nothing is specified
+
     def __init__(self, **kwargs):
-        self.label = kwargs.get('label')
+        self._kwargs = kwargs
 
         # All resources should have a label
-        if not self.label:
-            raise ValueError("Resource is missing label: {}".format(kwargs))
+        if not self._label and self.require_label:
+            raise ValueError("Resource is missing label: {}".format(self.kwargs))
+
+    @property
+    def label(self) -> str:
+        """
+        (str) The internal label this resource is associated with
+        """
+        return self._kwargs.get('label')
+
+    @property
+    def path(self):
+        """
+        (str) The path to a resource when a single file is specified
+        """
+        return self._kwargs.get('path')
+
+    @property
+    def loader(self):
+        """
+        (str) Name of the loader
+        """
+        return self._kwargs.get('loader') or self.default_loader
+
+    @property
+    def loader_cls(self) -> Type:
+        """
+        (Type) The loader class for this resource
+        """
+        return self._kwargs.get('loader_cls')
+
+    @loader_cls.setter
+    def loader_cls(self, value: Type):
+        self._kwargs['loader_cls'] = value
+
+    @property
+    def resolved_path(self) -> Path:
+        """
+        (pathlib.Path) The resolved path by a finder
+        """
+        return self.kwargs.get('resolved_path')
+
+    @resolved_path.setter
+    def resolved_path(self, value: Path):
+        self._kwargs['resolved_path'] = value
+
+    @property
+    def kwargs(self) -> Dict[str, str]:
+        """
+        (dict) All keywords arguments passed to the resource
+        """
+        return self._kwargs
+
+    def __str__(self):
+        return str(self._kwargs)
+
+    def __repr__(self):
+        return str(self)
 
 
 class BaseRegistry:
-    """
-    Base registry class providing callback functionality
-    for each registry type.
-    """
+
     def __init__(self):
-        self.file_map = {}
-        self.file_meta = {}
+        self._resources = []
+        self._loaders = []
 
     @property
-    def count(self):
-        return len(self.file_map)
+    def count(self) -> int:
+        return len(self._resources)
 
-    def load(self, *args, **kwargs):
-        """Loads a resource or return existing one"""
-        raise NotImplementedError()
+    def load(self, meta: ResourceDescription) -> Any:
+        """
+        Loads a resource or return existing one
 
-    def load_deferred(self, *args, **kwargs):
-        """Register a resource for deferred loading"""
-        raise NotImplementedError()
+        :param meta: The resource description
+        """
+        self.resolve_loader(meta)
+        return meta.loader_cls(meta).load()
+
+    def add(self, meta):
+        """
+        Add a resource to this pool.
+        The resource is loaded and returned when ``load_pool()`` is called.
+
+        :param meta: The resource description
+        """
+        self.resolve_loader(meta)
+        self._resources.append(meta)
 
     def load_pool(self):
         """
         Loads all the data files using the configured finders.
         """
-        for path, data_file in self.file_map.items():
-            if data_file is None:
-                self._load(self.file_meta[path])
+        for meta in self._resources:
+            resource = self._load(meta)
+            yield meta, resource
 
-    def delete(self, obj, destroy=False):
+        self._resources = []
+
+    def resolve_loader(self, meta: ResourceDescription):
         """
-        Remove an object from the pool.
-        This only removes the reference and will not actually destroy the object itself
+        Attempts to assign a loader class to a resource description
+
+        :param meta: The resource description instance
         """
-        for path, data in self.file_map.items():
-            if data == obj:
-                del self.file_map[path]
-                del self.file_meta[path]
+        meta.loader_cls = self.get_loader(meta)
 
-                if destroy:
-                    self._destroy(obj)
-                break
+    def get_loader(self, meta: ResourceDescription, raise_on_error=False) -> BaseLoader:
+        """
+        Attempts to get a loader
 
-    def _destroy(self, obj):
-        """Destroys the object"""
-        raise NotImplementedError()
+        :param meta: The resource description instance
+        :param raise_on_error: Raise ImproperlyConfigured if the loader cannot be resolved
+        :returns: The requested loader class
+        """
+        try:
+            return self._loaders[meta.loader]
+        except KeyError:
+            if not raise_on_error:
+                return None
 
-    def flush(self, destroy=False):
-        """Delete all resources"""
-        for obj in list(self.file_map.values()):
-            if obj is not None:
-                self.delete(obj, destroy=destroy)
-
-        self.file_map = {}
-        self.file_meta = {}
-
-    def _find_last_of(self, file_path, finders):
-        """Find the last occurance of the file in finders"""
-        found_path = None
-        for finder in finders:
-            path = finder.find(file_path)
-            if path:
-                found_path = path
-
-        return found_path
+            raise ImproperlyConfigured("Resource has invalid loader '{}' set: {}".format(meta.loader, meta))

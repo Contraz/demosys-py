@@ -25,11 +25,5 @@ class Tracks:
             self.track_map[name] = track
         return track
 
-    # def load(self):
-    #     """
-    #     Dummy. This will be handled by the rocket library,
-    #     """
-    #     pass
-
 
 tracks = Tracks()

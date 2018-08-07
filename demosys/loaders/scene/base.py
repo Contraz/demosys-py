@@ -1,36 +1,24 @@
-from pathlib import Path
-from typing import Union
-
-from demosys import context
+from demosys.loaders.base import BaseLoader
 from demosys.scene import Scene
 
 
-class SceneLoader:
+class SceneLoader(BaseLoader):
     """Base class for object loaders"""
     # File extensions supported by this loader
     file_extensions = []
 
-    def __init__(self, path: Union[str, Path]=None, **kwargs):
-        self.path = path
+    def __init__(self, meta):
+        super().__init__(meta)
 
-    @property
-    def ctx(self):
-        return context.ctx()
-
-    def load(self, scene: Scene, path: Path=None):
-        """
-        Deferred loading of the scene
-
-        :param scene: The scene object
-        :param file: Resolved path if changed by finder
-        """
+    def load(self) -> Scene:
+        """Load the scene"""
         raise NotImplementedError()
 
     @classmethod
-    def supports_file(cls, path: Path):
+    def supports_file(cls, meta):
         """Check if the loader has a supported file extension"""
         for ext in cls.file_extensions:
-            if path.suffixes[:len(ext)] == ext:
+            if meta.resolved_path.suffixes[:len(ext)] == ext:
                 return True
 
         return False
