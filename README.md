@@ -99,6 +99,7 @@ Libraries
 
 GLFW binaries must be installed. Get from your favourite location. Use version 3.2.1 or later.
 
+* [ModernGL](https://github.com/cprogrammer1994/ModernGL) PyOpenGL replacement
 * [pyGLFW](https://github.com/FlorianRhiem/pyGLFW) for window and context creation + input
 * [PIL/Pillow](https://github.com/python-pillow/Pillow) for texture loading
 * [Pyrrr](https://github.com/adamlwgriffiths/Pyrr) for math (uses numpy)
