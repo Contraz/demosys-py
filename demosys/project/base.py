@@ -2,7 +2,7 @@ from demosys import context
 from demosys import resources
 
 
-class Project:
+class BaseProject:
     """The Project"""
 
     def __init__(self):
@@ -21,7 +21,7 @@ class Project:
 
     def load(self):
         # Throw each resource into their respective pools
-        for meta in self.create_resources():
+        for meta in self.create_resources(None):
             resources.add(meta)
 
         for meta, resource in resources.textures.load_pool():

@@ -15,20 +15,5 @@ def setup(settings_override=None):
 
 def run(*args, **kwargs):
     """Run"""
-    window = create_window()
-    kwargs['window'] = window
-
     from demosys import view
     view.run(*args, **kwargs)
-
-
-def create_window():
-    from demosys.conf import settings
-    from demosys.utils import module_loading
-
-    window_cls_name = settings.WINDOW.get('class', 'demosys.context.glfw.GLFW_Window')
-    print("window class", window_cls_name)
-    window_cls = module_loading.import_string(window_cls_name)
-    window = window_cls()
-    window.print_context_info()
-    return window

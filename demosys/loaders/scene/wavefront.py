@@ -6,7 +6,8 @@ from pywavefront.obj import ObjParser
 import moderngl
 from demosys.loaders.scene.base import SceneLoader
 from demosys.opengl import VAO
-from demosys.resources import SceneDescription, textures
+from demosys.resources import textures
+from demosys.resources.meta import SceneDescription
 from demosys.scene import Material, MaterialTexture, Mesh, Node, Scene
 
 

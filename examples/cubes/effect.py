@@ -6,10 +6,10 @@ from demosys.effects import effect
 class SimpleCubeEffect(effect.Effect):
     """Generated default effect"""
     def __init__(self):
-        self.plain_prog = self.get_program("cubes/cube_plain.glsl")
-        self.light_prog = self.get_program("cubes/cube_light.glsl")
-        self.texture_prog = self.get_program("cubes/cube_textured.glsl")
-        self.texture = self.get_texture("cubes/crate.jpg", mipmap=True)
+        self.plain_prog = self.get_program("plain")
+        self.light_prog = self.get_program("light")
+        self.texture_prog = self.get_program("textured")
+        self.texture = self.get_texture("crate")
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
     def draw(self, time, frametime, target):

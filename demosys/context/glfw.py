@@ -170,9 +170,9 @@ class GLFW_Window(Window):
 
         if key == glfw.KEY_R and action == glfw.PRESS:
             self.resources.shaders.reload()
-
-        # Forward the event to the effect manager
-        self.manager.key_event(key, scancode, action, mods)
+ 
+        # Forward the event to the timeline
+        self.timeline.key_event(key, scancode, action, mods)
 
     def mouse_event_callback(self, window, xpos, ypos):
         """

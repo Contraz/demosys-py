@@ -24,7 +24,7 @@ class Window:
         self.sys_camera = None
         self.timer = None
         self.resources = None
-        self.manager = None
+        self.timeline = None
 
         self.gl_version = GLVersion(
             *settings.OPENGL['version'],
@@ -51,7 +51,7 @@ class Window:
 
     def draw(self, current_time, frame_time):
         self.set_default_viewport()
-        self.manager.draw(current_time, frame_time, self.fbo)
+        self.timeline.draw(current_time, frame_time, self.fbo)
 
     def clear(self):
         """Clear the scren"""

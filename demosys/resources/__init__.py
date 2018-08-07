@@ -1,8 +1,8 @@
-from demosys.resources.programs import programs, ProgramDescription  # noqa
-from demosys.resources.textures import textures, TextureDescription  # noqa
+from demosys.resources.programs import programs  # noqa
+from demosys.resources.textures import textures  # noqa
 from demosys.resources.tracks import tracks  # noqa
-from demosys.resources.scenes import scenes, SceneDescription  # noqa
-from demosys.resources.data import data, DataDescription  # noqa
+from demosys.resources.scenes import scenes  # noqa
+from demosys.resources.data import data  # noqa
 
 
 def load():

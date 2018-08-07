@@ -1,21 +1,9 @@
 """Scene Regisry"""
 from demosys.conf import settings
 from demosys.exceptions import ImproperlyConfigured
-from demosys.resources.base import BaseRegistry, ResourceDescription
+from demosys.resources.meta import SceneDescription
+from demosys.resources.base import BaseRegistry
 from demosys.utils.module_loading import import_string
-
-
-class SceneDescription(ResourceDescription):
-    require_label = True
-    default_loader = None
-
-    def __init__(self, path=None, label=None, mesh_programs=None, **kwargs):
-        kwargs.update({
-            "path": path,
-            "label": label,
-            "mesh_programs": mesh_programs,
-        })
-        super().__init__(kwargs)
 
 
 class Scenes(BaseRegistry):

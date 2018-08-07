@@ -15,7 +15,7 @@ from demosys import context
 from demosys.loaders.scene.base import SceneLoader
 from demosys.loaders.texture import t2d
 from demosys.opengl import VAO
-from demosys.resources import SceneDescription
+from demosys.resources.meta import SceneDescription
 from demosys.scene import Material, MaterialTexture, Mesh, Node, Scene
 
 GLTF_MAGIC_HEADER = b'glTF'

@@ -1,8 +1,8 @@
-from demosys.loaders.shader.base import ShaderLoader
+from demosys.loaders.base import BaseLoader
 
 
-class SingleGLSLLoader(ShaderLoader):
+class Loader(BaseLoader):
     name = 'single'
 
     def load(self):
-        pass
+        return "Hello!"

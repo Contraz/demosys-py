@@ -1,5 +1,6 @@
 import os
 from functools import wraps
+from typing import Any
 
 from pyrr import Matrix33, Matrix44, Vector3, matrix44
 from rocket.tracks import Track
@@ -8,7 +9,7 @@ import moderngl
 from demosys import resources
 from demosys.context.base import Window  # noqa
 from demosys.opengl import ShaderProgram
-from demosys.resources import Data
+from demosys.project.base import BaseProject
 from demosys.scene import camera  # noqa
 from demosys.scene import Scene
 
@@ -52,6 +53,7 @@ class Effect:
 
     # Window properties set by controller on initialization (class vars)
     _window = None  # type: Window
+    _project = None  # type: BaseProject
 
     _ctx = None  # type: moderngl.Context
     _sys_camera = None  # type: camera.SystemCamera
@@ -101,49 +103,26 @@ class Effect:
     # Methods for getting resources
 
     @local_path
-    def get_program(self, path, local=False) -> ShaderProgram:
+    def get_program(self, label) -> ShaderProgram:
         """
-        Get a shader or schedule the shader for loading.
-        If the resource is not loaded yet, an empty shader object
-        is returned that will be populated later.
+        Get a program by its label
 
-        :param path: Path to the shader in the virtual shader directory
-        :param local: Auto-prepend the effect package name to the path
-        :return: Shader object
+        :param label: The label for the program
+        :return: ShaderProgram object
         """
-        return resources.programs.load(path)
+        return self._project.get_program(label)
 
     @local_path
-    def get_texture(self, path, flip=True, local=False, **kwargs) -> moderngl.Texture:
+    def get_texture(self, label) -> moderngl.Texture:
         """
-        Get a texture or schedule the texture for loading.
-        If the resource is not loaded yet, an empty texture object
-        is returned that will be populated later.
+        Get a texture by its label
 
-        :param path: Path to the texture in the virtual texture directory
-        :param flip: (bool) Flip the texture horisontally
-        :param local: Auto-prepend the effect package name to the path
-        :return: Texture object
+        :param label: Label for the texture
+        :return: The moderngl texture instance
         """
-        return resources.textures.load(path, loader='2d', flip=flip, **kwargs)
+        return self._project.get_texture(label)
 
-    @local_path
-    def get_texture_array(self, path, layers=0, flip=True, local=False, **kwargs) -> moderngl.TextureArray:
-        """
-        Get a texture or schedule the texture for loading.
-        If the resource is not loaded yet, an empty texture object
-        is returned that will be populated later.
-
-        :param path: Path to the texture in the virtual texture directory
-        :param layers: (int) Numer of layers
-        :param flip: (bool) Flip the texture horisontally
-        :param local: Auto-prepend the effect package name to the path
-        :return: Texture object
-        """
-        return resources.textures.load(path, loader='array', flip=flip, layers=layers, **kwargs)
-
-    @local_path
-    def get_track(self, name, local=False) -> Track:
+    def get_track(self, name) -> Track:
         """
         Get or create a rocket track. This only makes sense when using rocket timers.
         If the resource is not loaded yet, an empty track object
@@ -156,26 +135,24 @@ class Effect:
         return resources.tracks.get(name)
 
     @local_path
-    def get_scene(self, path, local=False, **kwargs) -> Scene:
+    def get_scene(self, label) -> Scene:
         """
-        Get or create a scene.
-        :param path: Path to the scene
-        :param local: Auto-prepend the effect package name to the path
-        :param kwargs: Generic paramters passed to scene loaders
+        Get a scene by its label
+
+        :param label: The label for the scene
         :return: Scene object
         """
-        return resources.scenes.load(path, **kwargs)
+        return self._project.get_scene(label)
 
     @local_path
-    def get_data(self, path, local=False, **kwargs) -> Data:
+    def get_data(self, label) -> Any:
         """
-        Get or create a data file.
-        :param path: Path to the data file
-        :param local: Auto-prepend the effect package name to the path
-        :param kwargs: Generic paramters passed to data loader
-        :return: Data object
+        Get a data file by its label
+
+        :param label: Label for the data file
+        :return: Contents of the data file
         """
-        return resources.data.load(path, **kwargs)
+        return self._project.get_data(label)
 
     # Utility methods for matrices
 

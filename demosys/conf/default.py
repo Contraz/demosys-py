@@ -27,17 +27,16 @@ MUSIC = None
 
 TIMER = 'demosys.timers.Timer'
 
+TIMELINE = 'demosys.timeline.simple.Timeline'
+
+EFFECTS = ()
+
 ROCKET = {
     'mode': 'editor',
     'rps': 24,
     'project': None,
     'files': None,
 }
-
-# Empty effects tuple
-EFFECTS = ()
-
-EFFECT_MANAGER = 'demosys.effects.managers.SingleEffectManager'
 
 # Raise errors when shader uniforms are assigned incorrectly
 # Otherwise just print the errors to terminal
@@ -50,6 +49,10 @@ PROGRAM_DIRS = (
 PROGRAM_FINDERS = (
     "demosys.finders.program.FileSystemFinder",
     "demosys.finders.program.EffectDirectoriesFinder",
+)
+
+PROGRAM_LOADERS = (
+    'demosys.loaders.program.single.Loader',
 )
 
 TEXTURE_DIRS = (
@@ -85,4 +88,10 @@ DATA_DIRS = ()
 DATA_FINDERS = (
     "demosys.finders.data.FileSystemFinder",
     "demosys.finders.data.EffectDirectoriesFinder",
+)
+
+DATA_LOADERS = (
+    'demosys.loaders.data.binary.Loader',
+    'demosys.loaders.data.text.Loader',
+    'demosys.loaders.data.json.Loader',
 )

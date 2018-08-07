@@ -3,7 +3,7 @@ Run a specific effect
 """
 import demosys
 from demosys.management.base import CreateCommand
-from demosys.effects.managers import SingleEffectManager
+from demosys.project.default import Project
 
 
 class Command(CreateCommand):
@@ -14,5 +14,5 @@ class Command(CreateCommand):
 
     def handle(self, *args, **options):
         demosys.setup(settings_override={'EFFECTS': [options['name']]})
-        manager = SingleEffectManager(effect_module=options['name'])
-        demosys.run(manager=manager)
+        project = Project(effect_module=options['name'])
+        demosys.run(project=project)
