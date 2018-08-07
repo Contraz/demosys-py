@@ -1,9 +1,9 @@
 import numpy
+from pyrr import matrix44
 
 import moderngl
-from demosys.opengl import VAO
 from demosys import resources
-from pyrr import matrix44
+from demosys.opengl import VAO
 
 from .base import BaseText, Meta
 
@@ -27,7 +27,7 @@ class TextWriter2D(BaseText):
         self._vao = None
         self._texture = resources.textures.load('demosys/text/VeraMono.png', loader='array', layers=190)
         self._texture.build_mipmaps()
-        self._shader = resources.shaders.load('demosys/text/textwriter2d.glsl')
+        self._program = resources.programs.load('demosys/text/textwriter2d.glsl')
         self._config = resources.data.load('demosys/text/meta.json')
 
         self._string_buffer = None
@@ -103,10 +103,10 @@ class TextWriter2D(BaseText):
         )
 
         self._texture.use(location=0)
-        self._shader.uniform("m_proj", self._projection_bytes)
-        self._shader.uniform("text_pos", cpos)
-        self._shader.uniform("font_texture", 0)
-        self._shader.uniform("char_size", csize)
-        self._shader.uniform("line_length", self.area[0])
+        self._program.uniform("m_proj", self._projection_bytes)
+        self._program.uniform("text_pos", cpos)
+        self._program.uniform("font_texture", 0)
+        self._program.uniform("char_size", csize)
+        self._program.uniform("line_length", self.area[0])
 
-        self._vao.draw(self._shader, instances=length)
+        self._vao.draw(self._program, instances=length)

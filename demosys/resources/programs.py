@@ -4,20 +4,20 @@ from typing import Union
 
 import moderngl
 from demosys.exceptions import ImproperlyConfigured
-from demosys.finders.shaders import get_finders
+from demosys.finders.program import get_finders
 from demosys.opengl import ShaderError, ShaderProgram
 
 from .base import BaseRegistry
 
 
-class ShaderMeta:
+class Program:
 
     def __init__(self, path, **kwargs):
         self.path = path
         self.kwargs = kwargs
 
 
-class Shaders(BaseRegistry):
+class Programs(BaseRegistry):
     """
     A registry for shaders requested by effects.
     Once all effects are initialized, we ask this class to load the shaders.
@@ -47,8 +47,8 @@ class Shaders(BaseRegistry):
 
         return shader
 
-    def load_deferred(self, path: Union[str, Path], **kwargs) -> ShaderMeta:
-        meta = ShaderMeta(path, **kwargs)
+    def load_deferred(self, path: Union[str, Path], **kwargs) -> Program:
+        meta = Program(path, **kwargs)
 
         self.file_map[path] = None
         self.file_meta[path] = meta
@@ -59,7 +59,7 @@ class Shaders(BaseRegistry):
         found_path = self._find_last_of(meta.path, get_finders())
 
         if not found_path:
-            raise ImproperlyConfigured("Cannot find shader {}".format(meta.path))
+            raise ImproperlyConfigured("Cannot find program {}".format(meta.path))
 
         print("Loading: {}".format(meta.path))
         if reload:
@@ -96,4 +96,4 @@ class Shaders(BaseRegistry):
             self._load(meta, reload=True)
 
 
-shaders = Shaders()
+programs = Programs()

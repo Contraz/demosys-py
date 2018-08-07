@@ -1,15 +1,16 @@
 import math
 
+from pyrr import Vector3
+
 import moderngl
 from demosys import geometry
 from demosys.effects import effect
-from pyrr import Vector3
 
 
 class SimpleRaymarchEffect(effect.Effect):
     """Generated raymarching effect"""
     def __init__(self):
-        self.shader = self.get_shader("raymarching_simple.glsl", local=True)
+        self.program = self.get_program("raymarching_simple.glsl", local=True)
 
         # create plane to fit whole screen
         self.plane = geometry.plane_xz(size=self.window.size, resolution=(10, 10))
@@ -35,21 +36,21 @@ class SimpleRaymarchEffect(effect.Effect):
 
         # Draw the plane
 
-        # For vertex shader
-        self.shader.uniform("m_proj", self.sys_camera.projection.tobytes())
-        self.shader.uniform("m_mv", m_mv.astype('f4').tobytes())
+        # For vertex program
+        self.program.uniform("m_proj", self.sys_camera.projection.tobytes())
+        self.program.uniform("m_mv", m_mv.astype('f4').tobytes())
 
-        # For fragment shader
-        self.shader.uniform("fov", fov)
-        self.shader.uniform("alpha", alpha)
-        self.shader.uniform("modifier", modifier)
+        # For fragment program
+        self.program.uniform("fov", fov)
+        self.program.uniform("alpha", alpha)
+        self.program.uniform("modifier", modifier)
 
-        self.shader.uniform("cPosition", cPosition.astype('f4').tobytes())
-        self.shader.uniform("cLookAt", cLookAt.astype('f4').tobytes())
-        self.shader.uniform("lPosition", lPosition.astype('f4').tobytes())
-        self.shader.uniform("lIntensity", lItensity)
-        self.shader.uniform("color", color.astype('f4').tobytes())
+        self.program.uniform("cPosition", cPosition.astype('f4').tobytes())
+        self.program.uniform("cLookAt", cLookAt.astype('f4').tobytes())
+        self.program.uniform("lPosition", lPosition.astype('f4').tobytes())
+        self.program.uniform("lIntensity", lItensity)
+        self.program.uniform("color", color.astype('f4').tobytes())
 
-        self.shader.uniform("resolution", (self.window.width, self.window.height))
+        self.program.uniform("resolution", (self.window.width, self.window.height))
 
-        self.plane.draw(self.shader)
+        self.plane.draw(self.program)

@@ -16,7 +16,7 @@ class DemosysTestCase(TestCase):
     window = context.window()
     ctx = context.ctx()
 
-    def create_shader(self, source=None, path=None):
+    def create_program(self, source=None, path=None):
         """
         Create a shader from source or file
         """
@@ -26,7 +26,7 @@ class DemosysTestCase(TestCase):
             program.prepare()
 
         if path:
-            program = resources.shaders.load(path)
+            program = resources.programs.load(path)
 
         return program
 

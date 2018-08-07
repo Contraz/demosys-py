@@ -7,9 +7,9 @@ from demosys import geometry
 class GeoCubesEffect(effect.Effect):
     """Simple effect drawing a textured cube"""
     def __init__(self):
-        self.cube_shader1 = self.get_shader('geocubes/cube_multi_fade.glsl')
-        self.cube_shader2 = self.get_shader('geocubes/cube_texture_light.glsl')
-        self.quad_shader = self.get_shader('geocubes/quad_fs_uvscale.glsl')
+        self.cube_prog1 = self.get_program('geocubes/cube_multi_fade.glsl')
+        self.cube_prog2 = self.get_program('geocubes/cube_texture_light.glsl')
+        self.quad_prog = self.get_program('geocubes/quad_fs_uvscale.glsl')
 
         self.texture1 = self.get_texture('geocubes/texture.png')
         self.texture2 = self.get_texture('geocubes/GreenFabric.png')
@@ -44,15 +44,15 @@ class GeoCubesEffect(effect.Effect):
 
         self.fbo.use()
 
-        self.cube_shader1.uniform("m_proj", proj_m.astype('f4').tobytes())
-        self.cube_shader1.uniform("m_mv", mv_m.astype('f4').tobytes())
-        self.cube_shader1.uniform("m_normal", normal_m.astype('f4').tobytes())
+        self.cube_prog1.uniform("m_proj", proj_m.astype('f4').tobytes())
+        self.cube_prog1.uniform("m_mv", mv_m.astype('f4').tobytes())
+        self.cube_prog1.uniform("m_normal", normal_m.astype('f4').tobytes())
         self.texture1.use(location=0)
         self.texture2.use(location=1)
-        self.cube_shader1.uniform("texture0", 0)
-        self.cube_shader1.uniform("texture1", 1)
-        self.cube_shader1.uniform("time", time)
-        self.cube.draw(self.cube_shader1)
+        self.cube_prog1.uniform("texture0", 0)
+        self.cube_prog1.uniform("texture1", 1)
+        self.cube_prog1.uniform("time", time)
+        self.cube.draw(self.cube_prog1)
 
         target.use()
 
@@ -61,13 +61,13 @@ class GeoCubesEffect(effect.Effect):
         view_m = self.sys_camera.view_matrix
         normal_m = self.create_normal_matrix(view_m)
 
-        self.cube_shader2.uniform("m_proj", self.sys_camera.projection.tobytes())
-        self.cube_shader2.uniform("m_mv", view_m.astype('f4').tobytes())
-        self.cube_shader2.uniform("m_normal", normal_m.astype('f4').tobytes())
+        self.cube_prog2.uniform("m_proj", self.sys_camera.projection.tobytes())
+        self.cube_prog2.uniform("m_mv", view_m.astype('f4').tobytes())
+        self.cube_prog2.uniform("m_normal", normal_m.astype('f4').tobytes())
         self.fbo.color_attachments[0].use(location=0)
-        self.cube_shader2.uniform("texture0", 0)
-        self.cube_shader2.uniform("time", time)
-        self.cube_shader2.uniform("lightpos", (0.0, 0.0, 0.0))
-        self.points.draw(self.cube_shader2)
+        self.cube_prog2.uniform("texture0", 0)
+        self.cube_prog2.uniform("time", time)
+        self.cube_prog2.uniform("lightpos", (0.0, 0.0, 0.0))
+        self.points.draw(self.cube_prog2)
 
         self.fbo.clear(red=0.5, green=0.5, blue=0.5, alpha=1.0, depth=1.0)

@@ -19,7 +19,7 @@ class DeferredTestCase(DemosysTestCase):
         renderer.add_point_light(position=[0.0, 0.0, 0.0], radius=40.0)
 
         cube = geometry.cube(width=8.0, height=8.0, depth=8.0)
-        geo_shader_color = self.create_shader(path="deferred/geometry_color.glsl")
+        geo_shader_color = self.create_program(path="deferred/geometry_color.glsl")
         projection = Projection()
 
         with renderer.gbuffer_scope:

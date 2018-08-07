@@ -20,7 +20,7 @@ class TextRenderer2D(TextWriter2D):
         self._texture_width = 0
 
         self._quad = self._create_vao()
-        self._quad_shader = resources.shaders.load('demosys/text/view_renderer_texture.glsl', create=True)
+        self._quad_program = resources.programs.load('demosys/text/view_renderer_texture.glsl', create=True)
         self._fbo = None
 
         self._texture_width = int(
@@ -42,11 +42,11 @@ class TextRenderer2D(TextWriter2D):
 
     def draw(self, pos, size=1.0):
         self._fbo.color_attachments[0].use(location=0)
-        self._quad_shader.uniform("texture0", 0)
-        self._quad_shader.uniform("yscale", self._texture_height / self._texture_width)
-        self._quad_shader.uniform("pos", pos)
-        self._quad_shader.uniform("size", size)
-        self._quad.draw(self._quad_shader)
+        self._quad_program.uniform("texture0", 0)
+        self._quad_program.uniform("yscale", self._texture_height / self._texture_width)
+        self._quad_program.uniform("pos", pos)
+        self._quad_program.uniform("size", size)
+        self._quad.draw(self._quad_program)
 
     def _create_vao(self):
         data = numpy.array([

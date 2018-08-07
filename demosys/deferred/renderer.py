@@ -65,13 +65,13 @@ class DeferredRenderer:
 
         # Unit cube for point lights (cube with radius 1.0)
         self.unit_cube = geometry.cube(width=2, height=2, depth=2)
-        self.point_light_shader = resources.shaders.get("deferred/light_point.glsl", create=True)
+        self.point_light_shader = resources.programs.get("deferred/light_point.glsl", create=True)
 
         # Debug draw lights
-        self.debug_shader = resources.shaders.get("deferred/debug.glsl", create=True)
+        self.debug_shader = resources.programs.get("deferred/debug.glsl", create=True)
 
         # Combine shader
-        self.combine_shader = resources.shaders.get("deferred/combine.glsl", create=True)
+        self.combine_shader = resources.programs.get("deferred/combine.glsl", create=True)
         self.quad = geometry.quad_fs()
 
     @property

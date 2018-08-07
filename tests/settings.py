@@ -41,8 +41,8 @@ ROCKET = {
 EFFECTS = (
 )
 
-SHADER_DIRS = (
-    os.path.join(PROJECT_DIR, 'resources/shaders'),
+PROGRAM_DIRS = (
+    os.path.join(PROJECT_DIR, 'resources/programs'),
 )
 
 SCENE_DIRS = (

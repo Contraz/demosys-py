@@ -16,7 +16,7 @@ class ContextTestCase(DemosysTestCase):
     def test_basic_render(self):
         """Ensure we actually draw something to the screen"""
         vao = geometry.quad_fs()
-        shader = self.create_shader(path='vf_pos_color.glsl')
+        shader = self.create_program(path='vf_pos_color.glsl')
         shader.uniform("color", (1.0, 1.0, 1.0, 1.0))
         vao.draw(shader)
 

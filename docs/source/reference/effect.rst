@@ -14,7 +14,7 @@ Draw Methods
 Resource Methods
 ----------------
 
-.. automethod:: Effect.get_shader(path, local=False) -> ShaderProgram
+.. automethod:: Effect.get_program(path, local=False) -> ShaderProgram
 .. automethod:: Effect.get_texture(path, flip=True, local=False, **kwargs) -> Texture
 .. automethod:: Effect.get_texture_array(path, layers=0, flip=True, local=False, **kwargs) -> TextureArray
 .. automethod:: Effect.get_track(name, local=False) -> Track

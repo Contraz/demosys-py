@@ -43,13 +43,13 @@ EFFECT_MANAGER = 'demosys.effects.managers.SingleEffectManager'
 # Otherwise just print the errors to terminal
 SHADER_STRICT_VALIDATION = False
 
-SHADER_DIRS = (
+PROGRAM_DIRS = (
 
 )
 
-SHADER_FINDERS = (
-    "demosys.finders.shaders.FileSystemFinder",
-    "demosys.finders.shaders.EffectDirectoriesFinder",
+PROGRAM_FINDERS = (
+    "demosys.finders.program.FileSystemFinder",
+    "demosys.finders.program.EffectDirectoriesFinder",
 )
 
 TEXTURE_DIRS = (

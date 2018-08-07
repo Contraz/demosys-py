@@ -20,5 +20,4 @@ class SceneEffect(effect.Effect):
             time=time,
         )
 
-        # Draw bbox
         # self.scene.draw_bbox(self.proj_mat, self.sys_camera.view_matrix, all=True)

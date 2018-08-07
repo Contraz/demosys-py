@@ -1,13 +1,14 @@
 import moderngl
-from demosys.effects import effect
 from demosys import geometry
+from demosys.effects import effect
+
 # from pyrr import matrix44
 
 
 class SimpleCubeEffect(effect.Effect):
     """Generated default effect"""
     def __init__(self):
-        self.shader = self.get_shader("cube_plain.glsl", local=True)
+        self.program = self.get_program("cube_plain.glsl", local=True)
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
     def draw(self, time, frametime, target):
@@ -24,8 +25,8 @@ class SimpleCubeEffect(effect.Effect):
         m_normal = self.create_normal_matrix(m_mv)
 
         # Draw the cube
-        self.shader.uniform("m_proj", self.sys_camera.projection.tobytes())
-        self.shader.uniform("m_mv", m_mv.astype('f4').tobytes())
-        self.shader.uniform("m_normal", m_normal.astype('f4').tobytes())
-        self.shader.uniform("time", time)
-        self.cube.draw(self.shader)
+        self.program.uniform("m_proj", self.sys_camera.projection.tobytes())
+        self.program.uniform("m_mv", m_mv.astype('f4').tobytes())
+        self.program.uniform("m_normal", m_normal.astype('f4').tobytes())
+        self.program.uniform("time", time)
+        self.cube.draw(self.program)

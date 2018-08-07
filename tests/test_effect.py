@@ -26,7 +26,7 @@ class EffectTestCase(DemosysTestCase):
         self.effect.draw(0, 0, None)
 
     def test_resources(self):
-        self.assertIsNotNone(self.effect.get_shader('vf_pos.glsl'))
+        self.assertIsNotNone(self.effect.get_program('vf_pos.glsl'))
         self.assertIsNotNone(self.effect.get_texture('crate.jpg'))
         self.assertIsNotNone(self.effect.get_scene('BoxTextured/glTF/BoxTextured.gltf'))
         self.assertIsNotNone(self.effect.get_data('data.txt', mode="text"))

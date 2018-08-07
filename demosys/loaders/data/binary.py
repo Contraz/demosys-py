@@ -1,7 +1,8 @@
 from demosys.loaders.base import BaseLoader
 
 
-class Binary(BaseLoader):
+class Loader(BaseLoader):
+    name = 'binary'
 
     def load(self):
         pass

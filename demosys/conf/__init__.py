@@ -15,7 +15,7 @@ ENVIRONMENT_VARIABLE = "DEMOSYS_SETTINGS_MODULE"
 class Settings:
     SETTINGS_MODULE = None
 
-    SHADER_DIRS = []
+    PROGRAM_DIRS = []
     TEXTURE_DIRS = []
     DATA_DIRS = []
     SCENE_DIRS = []
@@ -61,11 +61,11 @@ class Settings:
             settings_module=self.SETTINGS_MODULE,
         )
 
-    def add_shader_dir(self, directory):
-        """Hack in shader directory"""
-        dirs = list(self.SHADER_DIRS)
+    def add_program_dir(self, directory):
+        """Hack in program directory"""
+        dirs = list(self.PROGRAM_DIRS)
         dirs.append(directory)
-        self.SHADER_DIRS = dirs
+        self.PROGRAM_DIRS = dirs
 
     def add_texture_dir(self, directory):
         """Hack in texture directory"""

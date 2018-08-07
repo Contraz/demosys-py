@@ -101,7 +101,7 @@ class Effect:
     # Methods for getting resources
 
     @local_path
-    def get_shader(self, path, local=False) -> ShaderProgram:
+    def get_program(self, path, local=False) -> ShaderProgram:
         """
         Get a shader or schedule the shader for loading.
         If the resource is not loaded yet, an empty shader object
@@ -111,7 +111,7 @@ class Effect:
         :param local: Auto-prepend the effect package name to the path
         :return: Shader object
         """
-        return resources.shaders.load(path)
+        return resources.programs.load(path)
 
     @local_path
     def get_texture(self, path, flip=True, local=False, **kwargs) -> moderngl.Texture:

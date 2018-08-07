@@ -1,18 +1,18 @@
 import moderngl
 
 from demosys.effects import effect
-from demosys.scene import MeshShader
+from demosys.scene import MeshProgram
 from demosys.opengl import texture
 
 
 class MinecraftEffect(effect.Effect):
     """Generated default effect"""
     def __init__(self):
-        self.shader = MinecraftShader(shader=self.get_shader('minecraft.glsl', local=True))
+        self.mesh_program = MinecraftProgram(program=self.get_program('minecraft.glsl', local=True))
         self.scene = self.get_scene(
             'lost-empire/lost_empire.obj.bin',
             local=True,
-            mesh_shaders=[self.shader],
+            mesh_programs=[self.mesh_program],
         )
 
         self.fbo = self.ctx.framebuffer(
@@ -32,7 +32,6 @@ class MinecraftEffect(effect.Effect):
         self.sys_camera.velocity = 10.0
         self.sampler.use(location=0)
 
-        # m_view = self.create_transformation(translation=(0.0, -5.0, -8.0))
         m_proj = self.create_projection(75, near=0.1, far=300.0)
 
         self.fbo.use()
@@ -50,20 +49,20 @@ class MinecraftEffect(effect.Effect):
         self.fbo.clear()
 
 
-class MinecraftShader(MeshShader):
+class MinecraftProgram(MeshProgram):
     """
-    Simple texture shader
+    Simple texture program
     """
-    def __init__(self, shader=None, **kwargs):
-        super().__init__(shader=shader)
+    def __init__(self, program=None, **kwargs):
+        super().__init__(program=program)
 
     def draw(self, mesh, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
         mesh.material.mat_texture.texture.use()
-        self.shader.uniform("texture0", 0)
-        self.shader.uniform("m_proj", projection_matrix)
-        self.shader.uniform("m_view", view_matrix)
-        self.shader.uniform("m_cam", camera_matrix)
-        mesh.vao.draw(self.shader)
+        self.program.uniform("texture0", 0)
+        self.program.uniform("m_proj", projection_matrix)
+        self.program.uniform("m_view", view_matrix)
+        self.program.uniform("m_cam", camera_matrix)
+        mesh.vao.draw(self.program)
 
     def apply(self, mesh):
         return self
