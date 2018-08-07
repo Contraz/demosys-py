@@ -5,8 +5,8 @@ from typing import Union
 import moderngl
 
 from demosys.conf import settings
-from demosys.core.exceptions import ImproperlyConfigured
-from demosys.core.texturefiles.finders import get_finders
+from demosys.exceptions import ImproperlyConfigured
+from demosys.finders.textures import get_finders
 from demosys.utils.module_loading import import_string
 
 from .base import BaseRegistry

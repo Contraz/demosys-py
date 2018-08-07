@@ -2,7 +2,7 @@
 Run a specific effect
 """
 import demosys
-from demosys.core.management.base import CreateCommand
+from demosys.management.base import CreateCommand
 from demosys.effects.managers import SingleEffectManager
 
 

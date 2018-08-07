@@ -3,7 +3,7 @@ from PIL import Image
 from demosys import context
 
 
-class BaseLoader:
+class TextureLoader:
     name = None
 
     def __init__(self, path, **kwargs):

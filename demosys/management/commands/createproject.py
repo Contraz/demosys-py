@@ -1,5 +1,5 @@
 import os
-from demosys.core.management.base import CreateCommand
+from demosys.management.base import CreateCommand
 
 
 class Command(CreateCommand):
@@ -52,7 +52,7 @@ def gen_manage_py(project_name):
         'if __name__ == "__main__":',
         '    os.environ.setdefault("DEMOSYS_SETTINGS_MODULE", "{}.settings")'.format(project_name),
         '',
-        '    from demosys.core.management import execute_from_command_line',
+        '    from demosys.management import execute_from_command_line',
         '',
         '    execute_from_command_line(sys.argv)',
         '',

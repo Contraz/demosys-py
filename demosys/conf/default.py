@@ -43,46 +43,46 @@ EFFECT_MANAGER = 'demosys.effects.managers.SingleEffectManager'
 # Otherwise just print the errors to terminal
 SHADER_STRICT_VALIDATION = False
 
-SHADERS = {
-    'vertex_shader_suffix': ('vert', '_vs.glsl', '.glslv'),
-    'fragment_shader_suffix': ('frag', '_fs.glsl', '.glslf'),
-    'geometry_shader_suffix': ('geom', '_gs.glsl', '.glslg'),
-}
+SHADER_DIRS = (
 
-SHADER_DIRS = ()
-
-SHADER_FINDERS = (
-    'demosys.core.shaderfiles.finders.FileSystemFinder',
-    'demosys.core.shaderfiles.finders.EffectDirectoriesFinder'
 )
 
-TEXTURE_DIRS = ()
+SHADER_FINDERS = (
+    "demosys.finders.shaders.FileSystemFinder",
+    "demosys.finders.shaders.EffectDirectoriesFinder",
+)
+
+TEXTURE_DIRS = (
+
+)
 
 TEXTURE_FINDERS = (
-    'demosys.core.texturefiles.finders.FileSystemFinder',
-    'demosys.core.texturefiles.finders.EffectDirectoriesFinder'
+    "demosys.finders.textures.FileSystemFinder",
+    "demosys.finders.textures.EffectDirectoriesFinder",
 )
 
 TEXTURE_LOADERS = (
-    'demosys.loaders.texture.Texture2D',
-    'demosys.loaders.texture.TextureArray',
+    'demosys.loaders.texture.t2d.Loader',
+    'demosys.loaders.texture.array.Loader',
 )
 
-SCENE_DIRS = ()
+SCENE_DIRS = (
+
+)
 
 SCENE_FINDERS = (
-    "demosys.core.scenefiles.finders.FileSystemFinder",
-    "demosys.core.scenefiles.finders.EffectDirectoriesFinder",
+    "demosys.finders.scenes.FileSystemFinder",
+    "demosys.finders.scenes.EffectDirectoriesFinder",
 )
 
 SCENE_LOADERS = (
-    'demosys.loaders.scene.gltf.GLTF2',
-    'demosys.loaders.scene.wavefront.ObjLoader',
+    "demosys.loaders.scene.gltf.GLTF2",
+    "demosys.loaders.scene.wavefront.ObjLoader",
 )
 
 DATA_DIRS = ()
 
 DATA_FINDERS = (
-    "demosys.core.datafiles.finders.FileSystemFinder",
-    "demosys.core.datafiles.finders.EffectDirectoriesFinder",
+    "demosys.finders.data.FileSystemFinder",
+    "demosys.finders.data.EffectDirectoriesFinder",
 )

@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import Union
 
 from demosys.conf import settings
-from demosys.core.exceptions import ImproperlyConfigured
-from demosys.core.scenefiles.finders import get_finders
+from demosys.exceptions import ImproperlyConfigured
+from demosys.finders.scenes import get_finders
 from demosys.scene import Scene
 from demosys.utils.module_loading import import_string
 

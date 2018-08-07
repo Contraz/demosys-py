@@ -1,7 +1,7 @@
 import os
 import shutil
 from argparse import ArgumentTypeError
-from demosys.core.management.base import CreateCommand
+from demosys.management.base import CreateCommand
 
 
 class Command(CreateCommand):

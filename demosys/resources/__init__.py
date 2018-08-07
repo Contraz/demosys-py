@@ -1,23 +1,8 @@
 from .shaders import shaders
 from .textures import textures
-from .tracks import tracks
+from .tracks import tracks  # noqa
 from .scenes import scenes
-from .data import data
-from .data import Data  # noqa
-
-__all__ = [
-    'shaders',
-    'textures',
-    'tracks',
-    'scenes',
-    'data',
-    'Data',
-    'load',
-    'count',
-    'on_load',
-    'on_loaded',
-    'loading_complete',
-]
+from .data import data, Data  # noqa
 
 
 def load():

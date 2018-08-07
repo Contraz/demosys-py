@@ -3,9 +3,9 @@ Registry general data files
 """
 from pathlib import Path
 
-from demosys.core.exceptions import ImproperlyConfigured
-from demosys.core.datafiles.finders import get_finders
-from .base import BaseRegistry
+from demosys.exceptions import ImproperlyConfigured
+from demosys.finders.data import get_finders
+from .base import BaseRegistry, ResourceDescription
 
 
 class Data:
@@ -51,7 +51,7 @@ class Data:
                 if attr.startswith("load_")}
 
 
-class DataFileMeta:
+class DataFileMeta(ResourceDescription):
 
     def __init__(self, path, cls, mode, **kwargs):
         self.path = path

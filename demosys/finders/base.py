@@ -6,7 +6,7 @@ from collections import namedtuple
 from pathlib import Path
 
 from demosys.conf import settings
-from demosys.core.exceptions import ImproperlyConfigured
+from demosys.exceptions import ImproperlyConfigured
 from demosys.utils.module_loading import import_string
 
 FinderEntry = namedtuple('FinderEntry', ['path', 'abspath', 'exists'])

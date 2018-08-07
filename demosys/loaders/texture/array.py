@@ -1,7 +1,7 @@
-from demosys.loaders.texture.base import BaseLoader, image_data
+from demosys.loaders.texture.base import TextureLoader, image_data
 
 
-class TextureArray(BaseLoader):
+class Loader(TextureLoader):
     name = 'array'
 
     def __init__(self, path=None, layers=None, **kwargs):

@@ -2,7 +2,7 @@ import os
 
 from demosys.test import DemosysTestCase
 from demosys import resources
-from demosys.core.exceptions import ImproperlyConfigured
+from demosys.exceptions import ImproperlyConfigured
 from demosys.conf import settings
 
 

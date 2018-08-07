@@ -5,7 +5,7 @@ import importlib
 import os
 
 from demosys.conf import default
-from demosys.core.exceptions import ImproperlyConfigured
+from demosys.exceptions import ImproperlyConfigured
 
 ENVIRONMENT_VARIABLE = "DEMOSYS_SETTINGS_MODULE"
 
@@ -14,6 +14,7 @@ ENVIRONMENT_VARIABLE = "DEMOSYS_SETTINGS_MODULE"
 
 class Settings:
     SETTINGS_MODULE = None
+
     SHADER_DIRS = []
     TEXTURE_DIRS = []
     DATA_DIRS = []

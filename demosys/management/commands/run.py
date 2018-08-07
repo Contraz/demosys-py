@@ -1,6 +1,6 @@
 import demosys
-from demosys.core.management.base import BaseCommand
-from demosys.core.exceptions import ImproperlyConfigured
+from demosys.management.base import BaseCommand
+from demosys.exceptions import ImproperlyConfigured
 from demosys.utils.module_loading import import_string
 from demosys.conf import settings
 

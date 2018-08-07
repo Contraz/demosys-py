@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import Union
 
 import moderngl
-from demosys.core.exceptions import ImproperlyConfigured
-from demosys.core.shaderfiles.finders import get_finders
+from demosys.exceptions import ImproperlyConfigured
+from demosys.finders.shaders import get_finders
 from demosys.opengl import ShaderError, ShaderProgram
 
 from .base import BaseRegistry

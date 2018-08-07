@@ -3,12 +3,21 @@ Base registry class
 """
 
 
+class ResourceDescription:
+    """Description of a resource"""
+    def __init__(self, **kwargs):
+        self.label = kwargs.get('label')
+
+        # All resources should have a label
+        if not self.label:
+            raise ValueError("Resource is missing label: {}".format(kwargs))
+
+
 class BaseRegistry:
     """
     Base registry class providing callback functionality
     for each registry type.
     """
-
     def __init__(self):
         self.file_map = {}
         self.file_meta = {}

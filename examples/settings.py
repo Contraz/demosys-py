@@ -34,35 +34,3 @@ ROCKET = {
 EFFECTS = (
 
 )
-
-SHADER_DIRS = (
-
-)
-
-SHADER_FINDERS = (
-    "demosys.core.shaderfiles.finders.FileSystemFinder",
-    "demosys.core.shaderfiles.finders.EffectDirectoriesFinder",
-)
-
-TEXTURE_DIRS = (
-
-)
-
-TEXTURE_FINDERS = (
-    "demosys.core.texturefiles.finders.FileSystemFinder",
-    "demosys.core.texturefiles.finders.EffectDirectoriesFinder",
-)
-
-SCENE_DIRS = (
-
-)
-
-SCENE_FINDERS = (
-    "demosys.core.scenefiles.finders.FileSystemFinder",
-    "demosys.core.scenefiles.finders.EffectDirectoriesFinder",
-)
-
-SCENE_LOADERS = (
-    "demosys.loaders.scene.gltf.GLTF2",
-    "demosys.loaders.scene.wavefront.ObjLoader",
-)

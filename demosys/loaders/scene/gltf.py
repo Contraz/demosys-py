@@ -14,11 +14,11 @@ from pyrr import Matrix44, matrix44, quaternion
 
 import moderngl
 from demosys import context
-from demosys.loaders.texture import Texture2D
+from demosys.loaders.texture import t2d
 from demosys.opengl import VAO
 from demosys.scene import Material, MaterialTexture, Mesh, Node, Scene
 
-from .base import SceneLoader
+from demosys.loaders.scene.base import SceneLoader
 
 GLTF_MAGIC_HEADER = b'glTF'
 
@@ -688,7 +688,7 @@ class GLTFImage:
             print("Loading:", self.uri)
             image = Image.open(path)
 
-        texture = Texture2D(path=None, image=image, flip=False, mipmap=True).load()
+        texture = t2d.Loader(path=None, image=image, flip=False, mipmap=True).load()
 
         return texture
 

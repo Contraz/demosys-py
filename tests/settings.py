@@ -56,13 +56,3 @@ TEXTURE_DIRS = (
 DATA_DIRS = (
     os.path.join(PROJECT_DIR, 'resources/data'),
 )
-
-SHADER_FINDERS = (
-    'demosys.core.shaderfiles.finders.FileSystemFinder',
-    'demosys.core.shaderfiles.finders.EffectDirectoriesFinder',
-)
-
-TEXTURE_FINDERS = (
-    'demosys.core.texturefiles.finders.FileSystemFinder',
-    'demosys.core.texturefiles.finders.EffectDirectoriesFinder'
-)
