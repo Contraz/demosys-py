@@ -58,10 +58,24 @@ class TextureDescription(ResourceDescription):
     default_loader = '2d'
     resource_type = 'textures'
 
-    def __init__(self, path=None, label=None, loader=None, **kwargs):
+    def __init__(self, path=None, label=None, loader=None, flip=True, mipmap=True, image=None, **kwargs):
         kwargs.update({
             "path": path,
             "label": label,
             "loader": loader,
+            "flip": flip,
+            "image": image,
         })
         super().__init__(**kwargs)
+
+    @property
+    def flip(self):
+        return self.kwargs.get('flip')
+
+    @property
+    def image(self):
+        return self.kwargs.get('image')
+
+    @property
+    def mipmap(self):
+        return self.kwargs.get('mipmap')
