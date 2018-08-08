@@ -30,6 +30,7 @@ MODULES = [
     'scene.',
     'buffer.',
     'depth.',
+    'texture_array.',
     'array.',
 ]
 
@@ -51,8 +52,10 @@ class TestCase(unittest.TestCase):
             classname, methodname = method.split('.')
             sig = str(inspect.signature(getattr(getattr(module, classname), methodname)))
             sig = sig.replace('self, ', '').replace('typing.', '').replace(' -> None', '')
+
             for m in MODULES:
                 sig = sig.replace(m, '')
+
             sig = sig.replace('(self)', '()').replace(', *,', ',').replace('(*, ', '(')
             sig = re.sub(r'-> \'(\w+)\'', r'-> \1', sig)
             self.assertEqual(docsig, sig, msg=filename + '::' + method)
@@ -61,26 +64,6 @@ class TestCase(unittest.TestCase):
         self.validate(
             os.path.join('reference', 'effect.rst'),
             effects, 'Effect', [])
-
-    def test_texture2d_docs(self):
-        self.validate(
-            os.path.join('reference', 'texture2d.rst'),
-            opengl, 'Texture2D', ['quad', 'shader', 'sampler'])
-
-    def test_texture_array(self):
-        self.validate(
-            os.path.join('reference', 'texturearray.rst'),
-            opengl, 'TextureArray', [])
-
-    def test_depth_texture_docs(self):
-        self.validate(
-            os.path.join('reference', 'depthtexture.rst'),
-            opengl, 'DepthTexture', ['quad', 'shader', 'sampler', 'build_mipmaps'])
-
-    def test_fbo_docs(self):
-        self.validate(
-            os.path.join('reference', 'fbo.rst'),
-            opengl, 'FBO', [])
 
     def test_shader_docs(self):
         self.validate(

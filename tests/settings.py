@@ -41,8 +41,8 @@ ROCKET = {
 EFFECTS = (
 )
 
-SHADER_DIRS = (
-    os.path.join(PROJECT_DIR, 'resources/shaders'),
+PROGRAM_DIRS = (
+    os.path.join(PROJECT_DIR, 'resources/programs'),
 )
 
 SCENE_DIRS = (
@@ -55,14 +55,4 @@ TEXTURE_DIRS = (
 
 DATA_DIRS = (
     os.path.join(PROJECT_DIR, 'resources/data'),
-)
-
-SHADER_FINDERS = (
-    'demosys.core.shaderfiles.finders.FileSystemFinder',
-    'demosys.core.shaderfiles.finders.EffectDirectoriesFinder',
-)
-
-TEXTURE_FINDERS = (
-    'demosys.core.texturefiles.finders.FileSystemFinder',
-    'demosys.core.texturefiles.finders.EffectDirectoriesFinder'
 )

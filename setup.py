@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="demosys-py",
-    version="1.0.7",
+    version="2.0.0",
     description="Modern OpenGL 3.3+ Framework inspired by Django",
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',

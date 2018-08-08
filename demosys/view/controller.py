@@ -4,59 +4,40 @@ Thins needs to be improved once more pieces fall in place.
 """
 import time
 
-from demosys import resources
 from demosys.conf import settings
-from demosys.effects.registry import Effect
-from demosys.scene import camera
-from demosys.utils import module_loading
+from demosys.utils.module_loading import import_string
 
 
-def create_window():
-    window_cls_name = settings.WINDOW.get('class', 'demosys.context.glfw.GLFW_Window')
-    print("window class", window_cls_name)
-    window_cls = module_loading.import_string(window_cls_name)
-    window = window_cls()
-    window.print_context_info()
-    return window
-
-
-def run(manager=None):
+def run(window=None, project=None, timeline=None):
     """
     Initialize, load and run
 
     :param manager: The effect manager to use
     """
-    window = create_window()
-    window.manager = manager
+    from demosys.scene import camera
+    from demosys.opengl import texture
+    from demosys.effects.registry import Effect
 
-    print("Loader started at", time.time())
+    window.timeline = timeline
+
+    texture._init_texture2d_draw()
+    texture._init_depth_texture_draw()
 
     # Inject attributes into the base Effect class
-    setattr(Effect, '_window_width', window.buffer_width)
-    setattr(Effect, '_window_height', window.buffer_height)
-    setattr(Effect, '_window_aspect', window.aspect_ratio)
+    setattr(Effect, '_window', window)
     setattr(Effect, '_ctx', window.ctx)
+    setattr(Effect, '_project', project)
 
     # Set up the default system camera
     window.sys_camera = camera.SystemCamera(aspect=window.aspect_ratio, fov=60.0, near=1, far=1000)
     setattr(Effect, '_sys_camera', window.sys_camera)
 
-    # Initialize Effects
-    if not manager.pre_load():
-        return
+    print("Loading started at", time.time())
 
-    # Load resources
-    num_resources = resources.count()
-    print("Loading {} resources".format(num_resources))
-    window.resources = resources
-    resources.load()
-
-    # Post-Load actions for effects
-    if not manager.post_load():
-        return
+    project.load()
 
     # Initialize timer
-    timer_cls = module_loading.import_string(settings.TIMER)
+    timer_cls = import_string(settings.TIMER)
     window.timer = timer_cls()
     window.timer.start()
 

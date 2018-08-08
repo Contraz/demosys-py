@@ -1,18 +1,22 @@
 """
 Wrapper for a loaded scene with properties.
 """
-from demosys import context, geometry
-from demosys.resources import shaders
 from pyrr import matrix44, vector3
 
-from .shaders import ColorShader, FallbackShader, MeshShader, TextureShader
+from demosys import context, geometry
+from demosys.resources import programs
+from demosys.resources.meta import ProgramDescription
+
+from .programs import (ColorProgram, FallbackProgram, MeshProgram,
+                       TextureProgram)
 
 
 class Scene:
     """Generic scene"""
-    def __init__(self, name, mesh_shaders=None, **kwargs):
+    def __init__(self, name, mesh_programs=None, **kwargs):
         """
         :param name: Unique name or path for the scene
+        :param mesh_programs: List of MeshPrograms to apply to the scene
         :param loader: Loader class for the scene if relevant
         """
         self.name = name
@@ -23,14 +27,15 @@ class Scene:
         self.materials = []
         self.meshes = []
         self.cameras = []
-        self.mesh_shaders = mesh_shaders or [ColorShader(), TextureShader(), FallbackShader()]
 
         self.bbox_min = None
         self.bbox_max = None
         self.diagonal_size = 1.0
 
         self.bbox_vao = geometry.bbox()
-        self.bbox_shader = shaders.load('scene_default/bbox.glsl')
+        self.bbox_program = programs.load(ProgramDescription(
+            label='scene_default/bbox.glsl',
+            path='scene_default/bbox.glsl'))
 
         self._view_matrix = matrix44.create_identity()
 
@@ -74,37 +79,38 @@ class Scene:
         camera_matrix = camera_matrix.astype('f4').tobytes()
 
         # Scene bounding box
-        self.bbox_shader.uniform("m_proj", projection_matrix)
-        self.bbox_shader.uniform("m_view", self._view_matrix.astype('f4').tobytes())
-        self.bbox_shader.uniform("m_view", camera_matrix)
-        self.bbox_shader.uniform("bb_min", self.bbox_min.astype('f4').tobytes())
-        self.bbox_shader.uniform("bb_max", self.bbox_max.astype('f4').tobytes())
-        self.bbox_shader.uniform("color", (1.0, 0.0, 0.0))
-        self.bbox_vao.draw(self.bbox_shader)
+        self.bbox_program.uniform("m_proj", projection_matrix)
+        self.bbox_program.uniform("m_view", self._view_matrix.astype('f4').tobytes())
+        self.bbox_program.uniform("m_view", camera_matrix)
+        self.bbox_program.uniform("bb_min", self.bbox_min.astype('f4').tobytes())
+        self.bbox_program.uniform("bb_max", self.bbox_max.astype('f4').tobytes())
+        self.bbox_program.uniform("color", (1.0, 0.0, 0.0))
+        self.bbox_vao.draw(self.bbox_program)
 
         if not all:
             return
 
         # Draw bounding box for children
         for node in self.root_nodes:
-            node.draw_bbox(projection_matrix, camera_matrix, self.bbox_shader, self.bbox_vao)
+            node.draw_bbox(projection_matrix, camera_matrix, self.bbox_program, self.bbox_vao)
 
-    def apply_mesh_shaders(self):
-        """Applies mesh shaders to meshes"""
-        if self.mesh_shaders is None:
-            return
+    def apply_mesh_programs(self, mesh_programs=None):
+        """Applies mesh programs to meshes"""
+        if not mesh_programs:
+            mesh_programs = [ColorProgram(), TextureProgram(), FallbackProgram()]
 
         for mesh in self.meshes:
-            for ms in self.mesh_shaders:
-                instance = ms.apply(mesh)
+            for mp in mesh_programs:
+                instance = mp.apply(mesh)
                 if instance is not None:
-                    if isinstance(instance, MeshShader):
-                        mesh.mesh_shader = ms
+                    if isinstance(instance, MeshProgram):
+                        mesh.mesh_program = mp
                         break
                     else:
-                        raise ValueError("apply() must return a MeshShader instance, not {}".format(type(instance)))
-            if not mesh.mesh_shader:
-                print("WARING: No mesh shader applied to '{}'".format(mesh.name))
+                        raise ValueError("apply() must return a MeshProgram instance, not {}".format(type(instance)))
+
+            if not mesh.mesh_program:
+                print("WARING: No mesh program applied to '{}'".format(mesh.name))
 
     def calc_scene_bbox(self):
         """Calculate scene bbox"""
@@ -121,10 +127,8 @@ class Scene:
 
         self.diagonal_size = vector3.length(self.bbox_max - self.bbox_min)
 
-    def load(self, loader, path):
-        """Deferred loading if a loader is specified"""
-        loader.load(self, path=path)
-        self.apply_mesh_shaders()
+    def prepare(self):
+        self.apply_mesh_programs()
         self.view_matrix = matrix44.create_identity()
 
     def destroy(self):

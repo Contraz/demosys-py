@@ -28,3 +28,4 @@ __pycache__
 # Misc
 .DS_Store
 .vscode/settings.json
+/bug.py

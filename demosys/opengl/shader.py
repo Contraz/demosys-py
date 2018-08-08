@@ -1,4 +1,3 @@
-import os
 from typing import Tuple, Union
 
 import moderngl
@@ -14,21 +13,13 @@ class ShaderProgram:
     """
     Represents a shader program
     """
-    def __init__(self, path=None, name=None):
+    def __init__(self, name):
         """
         Create a shader using either a file path or a name
         :param path: Full file path to the shader
         :param name: Name of the shader (debug purposes)
         """
-        if not path and not name:
-            raise ShaderError("Shader must have a path or a name")
-
-        self.path = path
-
-        if not name:
-            self.name = os.path.basename(path)
-        else:
-            self.name = name
+        self.name = name
 
         self._vertex_source = None
         self._fragment_source = None
@@ -252,7 +243,7 @@ class ShaderProgram:
         return self.mglo.geometry_vertices
 
     def __repr__(self):
-        return '<ShaderProgram: {} id={}>'.format(self.path or self.name, self.mglo.glo)
+        return '<ShaderProgram: {} id={}>'.format(self.name, self.mglo.glo)
 
 
 class ShaderError(Exception):

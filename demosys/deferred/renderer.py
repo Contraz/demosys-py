@@ -1,7 +1,8 @@
+from pyrr import matrix44
+
 import moderngl
 from demosys import context, geometry, resources
-from demosys.opengl import FBO, DepthTexture, Texture2D
-from pyrr import matrix44
+from demosys.opengl import texture
 
 
 class PointLight:
@@ -25,8 +26,6 @@ class PointLight:
 class DeferredRenderer:
 
     def __init__(self, width, height, gbuffer=None, lightbuffer=None):
-        self.ctx = context.ctx()
-
         self.width = width
         self.height = height
         self.size = (width, height)
@@ -38,34 +37,46 @@ class DeferredRenderer:
         # Light Info
         self.point_lights = []
 
-        # Create geometry buffer if not supplied
-        depth_buffer = DepthTexture(self.size)
+        depth_texture = self.ctx.depth_texture(self.size)
 
         if not self.gbuffer:
-            self.gbuffer = FBO.create_from_textures(
-                [
-                    Texture2D.create(self.size, 4, dtype='f1'),
-                    Texture2D.create(self.size, 3, dtype='f2'),
-                ],
-                depth_buffer=depth_buffer,
+            self.gbuffer = self.ctx.framebuffer(
+                (
+                    self.ctx.texture(self.size, 4, dtype='f1'),
+                    self.ctx.texture(self.size, 3, dtype='f2'),
+                ),
+                depth_attachment=depth_texture,
             )
 
+        self.gbuffer_scope = self.ctx.scope(
+            self.gbuffer,
+            enable_only=moderngl.DEPTH_TEST | moderngl.CULL_FACE
+        )
+
         if not self.lightbuffer:
-            self.lightbuffer = FBO.create_from_textures(
-                [Texture2D.create(self.size, 4)],
-                # depth_buffer=depth_buffer,
+            self.lightbuffer = self.ctx.framebuffer(
+                self.ctx.texture(self.size, 4),
             )
+
+        self.lightbuffer_scope = self.ctx.scope(
+            self.lightbuffer,
+            enable_only=moderngl.BLEND | moderngl.CULL_FACE
+        )
 
         # Unit cube for point lights (cube with radius 1.0)
         self.unit_cube = geometry.cube(width=2, height=2, depth=2)
-        self.point_light_shader = resources.shaders.get("deferred/light_point.glsl", create=True)
+        self.point_light_shader = resources.programs.get("deferred/light_point.glsl", create=True)
 
         # Debug draw lights
-        self.debug_shader = resources.shaders.get("deferred/debug.glsl", create=True)
+        self.debug_shader = resources.programs.get("deferred/debug.glsl", create=True)
 
         # Combine shader
-        self.combine_shader = resources.shaders.get("deferred/combine.glsl", create=True)
+        self.combine_shader = resources.programs.get("deferred/combine.glsl", create=True)
         self.quad = geometry.quad_fs()
+
+    @property
+    def ctx(self):
+        return context.ctx()
 
     def draw_buffers(self, near, far):
         """
@@ -77,10 +88,10 @@ class DeferredRenderer:
         """
         self.ctx.disable(moderngl.DEPTH_TEST)
 
-        self.gbuffer.draw_color_layer(layer=0, pos=(0.0, 0.0), scale=(0.25, 0.25))
-        self.gbuffer.draw_color_layer(layer=1, pos=(0.5, 0.0), scale=(0.25, 0.25))
-        self.gbuffer.draw_depth(near, far, pos=(1.0, 0.0), scale=(0.25, 0.25))
-        self.lightbuffer.draw_color_layer(layer=0, pos=(1.5, 0.0), scale=(0.25, 0.25))
+        texture.draw(self.gbuffer.color_attachments[0], pos=(0.0, 0.0), scale=(0.25, 0.25))
+        texture.draw(self.gbuffer.color_attachments[1], pos=(0.5, 0.0), scale=(0.25, 0.25))
+        texture.draw_depth(self.gbuffer.depth_attachment, near, far, pos=(1.0, 0.0), scale=(0.25, 0.25))
+        texture.draw(self.lightbuffer.color_attachments[0], pos=(1.5, 0.0), scale=(0.25, 0.25))
 
     def add_point_light(self, position, radius):
         """Add point light"""
@@ -89,17 +100,11 @@ class DeferredRenderer:
     def render_lights(self, camera_matrix, projection):
         """Render light volumes"""
         # Draw light volumes from the inside
-        self.ctx.enable(moderngl.CULL_FACE)
         self.ctx.front_face = 'cw'
-
-        # No depth testing
-        self.ctx.disable(moderngl.DEPTH_TEST)
-
-        # Enable additive blending
-        self.ctx.enable(moderngl.BLEND)
         self.ctx.blend_func = moderngl.ONE, moderngl.ONE
 
-        with self.lightbuffer:
+        texture._depth_sampler.use(location=1)
+        with self.lightbuffer_scope:
             for light in self.point_lights:
                 # Calc light properties
                 light_size = light.radius
@@ -107,17 +112,16 @@ class DeferredRenderer:
                 # Draw the light volume
                 self.point_light_shader.uniform("m_proj", projection.tobytes())
                 self.point_light_shader.uniform("m_light", m_light.astype('f4').tobytes())
-                self.gbuffer.color_buffers[1].use(location=0)
+                self.gbuffer.color_attachments[1].use(location=0)
                 self.point_light_shader.uniform("g_normal", 0)
-                self.gbuffer.depth_buffer.use(location=1)
+                self.gbuffer.depth_attachment.use(location=1)
                 self.point_light_shader.uniform("g_depth", 1)
                 self.point_light_shader.uniform("screensize", (self.width, self.height))
                 self.point_light_shader.uniform("proj_const", projection.projection_constants)
                 self.point_light_shader.uniform("radius", light_size)
                 self.unit_cube.draw(self.point_light_shader)
 
-        self.ctx.disable(moderngl.BLEND)
-        self.ctx.disable(moderngl.CULL_FACE)
+        texture._depth_sampler.clear(location=1)
 
     def render_lights_debug(self, camera_matrix, projection):
         """Render outlines of light volumes"""
@@ -139,9 +143,9 @@ class DeferredRenderer:
 
     def combine(self):
         """Combine diffuse and light buffer"""
-        self.gbuffer.color_buffers[0].use(location=0)
+        self.gbuffer.color_attachments[0].use(location=0)
         self.combine_shader.uniform("diffuse_buffer", 0)
-        self.lightbuffer.color_buffers[0].use(location=1)
+        self.lightbuffer.color_attachments[0].use(location=1)
         self.combine_shader.uniform("light_buffer", 1)
         self.quad.draw(self.combine_shader)
 

@@ -1,0 +1,16 @@
+from demosys.loaders.base import BaseLoader
+from demosys.exceptions import ImproperlyConfigured
+
+
+class Loader(BaseLoader):
+    name = 'binary'
+
+    def load(self):
+        """Load a file in binary mode"""
+        self.meta.resolved_path = self.find_data(self.meta.path)
+
+        if not self.meta.resolved_path:
+            raise ImproperlyConfigured("Data file '{}' not found".format(self.meta.path))
+
+        with open(self.meta.resolved_path, 'rb') as fd:
+            return fd.read()

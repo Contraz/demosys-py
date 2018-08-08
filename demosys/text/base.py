@@ -2,7 +2,7 @@
 Text writer using monospace font from texture
 """
 import json
-
+import moderngl
 from demosys import context
 
 
@@ -12,9 +12,12 @@ class BaseText:
     """
 
     def __init__(self):
-        self.ctx = context.ctx()
         self._meta = None
         self._ct = None
+
+    @property
+    def ctx(self) -> moderngl.Context:
+        return context.ctx()
 
     def draw(self, *args, **kwargs):
         raise NotImplementedError()

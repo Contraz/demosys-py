@@ -25,7 +25,11 @@ WINDOW = {
 
 MUSIC = None
 
-TIMER = 'demosys.timers.Timer'
+TIMER = 'demosys.timers.time.Timer'
+
+TIMELINE = 'demosys.timeline.single.Timeline'
+
+EFFECTS = ()
 
 ROCKET = {
     'mode': 'editor',
@@ -34,50 +38,60 @@ ROCKET = {
     'files': None,
 }
 
-# Empty effects tuple
-EFFECTS = ()
-
-EFFECT_MANAGER = 'demosys.effects.managers.SingleEffectManager'
-
 # Raise errors when shader uniforms are assigned incorrectly
 # Otherwise just print the errors to terminal
 SHADER_STRICT_VALIDATION = False
 
-SHADERS = {
-    'vertex_shader_suffix': ('vert', '_vs.glsl', '.glslv'),
-    'fragment_shader_suffix': ('frag', '_fs.glsl', '.glslf'),
-    'geometry_shader_suffix': ('geom', '_gs.glsl', '.glslg'),
-}
+PROGRAM_DIRS = (
 
-SHADER_DIRS = ()
-
-SHADER_FINDERS = (
-    'demosys.core.shaderfiles.finders.FileSystemFinder',
-    'demosys.core.shaderfiles.finders.EffectDirectoriesFinder'
 )
 
-TEXTURE_DIRS = ()
+PROGRAM_FINDERS = (
+    "demosys.finders.program.FileSystemFinder",
+    "demosys.finders.program.EffectDirectoriesFinder",
+)
+
+PROGRAM_LOADERS = (
+    'demosys.loaders.program.single.Loader',
+)
+
+TEXTURE_DIRS = (
+
+)
 
 TEXTURE_FINDERS = (
-    'demosys.core.texturefiles.finders.FileSystemFinder',
-    'demosys.core.texturefiles.finders.EffectDirectoriesFinder'
+    "demosys.finders.textures.FileSystemFinder",
+    "demosys.finders.textures.EffectDirectoriesFinder",
 )
 
-SCENE_DIRS = ()
+TEXTURE_LOADERS = (
+    'demosys.loaders.texture.t2d.Loader',
+    'demosys.loaders.texture.array.Loader',
+)
+
+SCENE_DIRS = (
+
+)
 
 SCENE_FINDERS = (
-    "demosys.core.scenefiles.finders.FileSystemFinder",
-    "demosys.core.scenefiles.finders.EffectDirectoriesFinder",
+    "demosys.finders.scenes.FileSystemFinder",
+    "demosys.finders.scenes.EffectDirectoriesFinder",
 )
 
 SCENE_LOADERS = (
-    'demosys.scene.loaders.gltf.GLTF2',
-    'demosys.scene.loaders.wavefront.ObjLoader',
+    "demosys.loaders.scene.gltf.GLTF2",
+    "demosys.loaders.scene.wavefront.ObjLoader",
 )
 
 DATA_DIRS = ()
 
 DATA_FINDERS = (
-    "demosys.core.datafiles.finders.FileSystemFinder",
-    "demosys.core.datafiles.finders.EffectDirectoriesFinder",
+    "demosys.finders.data.FileSystemFinder",
+    "demosys.finders.data.EffectDirectoriesFinder",
+)
+
+DATA_LOADERS = (
+    'demosys.loaders.data.binary.Loader',
+    'demosys.loaders.data.text.Loader',
+    'demosys.loaders.data.json.Loader',
 )

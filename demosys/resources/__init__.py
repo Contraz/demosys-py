@@ -1,31 +1,16 @@
-from .shaders import shaders
-from .textures import textures
-from .tracks import tracks
-from .scenes import scenes
-from .data import data
-from .data import Data  # noqa
-
-__all__ = [
-    'shaders',
-    'textures',
-    'tracks',
-    'scenes',
-    'data',
-    'Data',
-    'load',
-    'count',
-    'on_load',
-    'on_loaded',
-    'loading_complete',
-]
+from demosys.resources.programs import programs  # noqa
+from demosys.resources.textures import textures  # noqa
+from demosys.resources.tracks import tracks  # noqa
+from demosys.resources.scenes import scenes  # noqa
+from demosys.resources.data import data  # noqa
 
 
 def load():
     scenes.load_pool()
-    shaders.load_pool()
+    programs.load_pool()
     textures.load_pool()
     data.load_pool()
 
 
 def count():
-    return scenes.count + shaders.count + textures.count + data.count
+    return scenes.count + programs.count + textures.count + data.count

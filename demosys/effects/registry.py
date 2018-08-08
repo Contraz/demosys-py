@@ -1,75 +1,180 @@
 import importlib
 import inspect
-import os
+from typing import Any, List, Type
 
 from demosys.effects.effect import Effect
-
-EFFECT_MODULE = 'effect'
-
-
-class EffectError(Exception):
-    pass
-
-
-class EffectConfig:
-    def __init__(self, module=None, cls=None):
-        self.module = module
-        self.cls = cls
-        self.name = module.__name__
-        self.path = os.path.dirname(module.__file__)
 
 
 class Effects:
     """
-    Registry for effects.
-    This also collects what resources effects are using
-    so we can use this in resource loading later on.
+    Registry for effects classes (not instances).
+
+    It collects all effects in registed effect modules
+    and shares information about them to the system.
     """
     def __init__(self):
-        self.effects = {}
+        self.packages = []
+        # EffectPackages with package path as key
+        self.package_map = {}
 
-    def get_dirs(self):
+    def get_dirs(self) -> List[str]:
         """
         Get all effect directories for registered effects.
         """
-        for value in self.effects.values():
-            yield value.path
+        for package in self.packages:
+            yield package.path
 
-    def polulate(self, effect_list):
+    def get_effect_resources(self) -> List[Any]:
         """
-        Find all effect modules.
-
-        :param effect_list: List of effect module paths
+        Get all resources registed in effect packages.
+        These are typically located in ``resources.py``
         """
-        for effect in effect_list:
-            name = '{}.{}'.format(effect, EFFECT_MODULE)
-            module, cls = self.get_effect_cls(name)
-            if cls:
-                cls.name = effect
-                self.effects[module.__name__] = EffectConfig(module=module, cls=cls)
-            else:
-                raise EffectError("Effect '{}' has no effect class".format(effect))
+        resources = []
+        for package in self.packages:
+            resources.extend(package.resources)
 
-    def get_effect_cls(self, module_name):
+        return resources
+
+    def polulate(self, package_list):
         """
-        Find and return an effect class in a module
+        Polulate the registry with effect packges.
+        This is normally the ``settings.EFFECTS`` list
 
-        :param module_name: Name of the module
-        :returns: module, cls tuple
+        :param module_list: List of effect module paths
         """
-        module = importlib.import_module(module_name)
+        for package in package_list:
+            self.add_package(package)
 
-        # Find the Effect class in the module
-        for _, cls in inspect.getmembers(module):
+    def add_package(self, name):
+        """
+        Registers a single package
+
+        :param name: (str) The effect package to add
+        """
+        package = EffectPackage(name)
+        package.load()
+
+        self.packages.append(package)
+        self.package_map[package.path] = package
+
+    def get_package(self, name) -> 'EffectPackage':
+        """
+        Get a package by python path
+        """
+        try:
+            return self.package_map[name]
+        except KeyError:
+            raise EffectError("No package '{}' registered".format(name))
+
+    def find_effect_class(self, class_name, package_name=None) -> Type[Effect]:
+        if package_name:
+            package = self.get_package(package_name)
+            return package.find_effect_class(class_name, raise_for_error=True)
+
+        for package in self.packages:
+            effect_cls = package.find_effect_class(class_name)
+            if effect_cls:
+                return effect_cls
+
+        raise EffectError("No effect class '{}' found in any packages".format(effect_cls))
+
+
+class EffectPackage:
+    """Loads and stores information about an effect package"""
+
+    def __init__(self, name):
+        self.name = name
+        self.package = None
+
+        self.effect_module = None
+        self.effect_classes = None
+        self.effect_class_map = {}
+
+        self.resource_module = None
+        self.resources = None
+
+    def runnable_effects(self) -> List[Type[Effect]]:
+        """Returns the first runnable effect in the package"""
+        return [cls for cls in self.effect_classes if cls.runnable]
+
+    def find_effect_class(self, class_name, raise_for_error=False) -> Type[Effect]:
+        try:
+            return self.effect_class_map[class_name]
+        except KeyError:
+            raise EffectError("No effect class '{}' found in package '{}'".format(class_name, self.name))
+
+    @property
+    def path(self) -> str:
+        return self.package.__path__._path[0]
+
+    @property
+    def effect_module_name(self) -> str:
+        return self.effect_module.__name__
+
+    def load(self):
+        self.load_package()
+        self.load_effect_module()
+        self.load_effects_classes()
+        self.load_resource_module()
+
+    def load_package(self):
+        """FInd the effect package"""
+        try:
+            self.package = importlib.import_module(self.name)
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError("Effect package '{}' not found.".format(self.name))
+
+    def load_effect_module(self):
+        """Attempt to load the effect module"""
+        self.load_effect_module_old()
+        if not self.effect_module:
+            self.load_effect_module_new()
+
+    def load_effect_module_old(self):
+        """Attempt to load the old effect module"""
+        try:
+            name = '{}.{}'.format(self.name, 'effect')
+            self.effect_module = importlib.import_module(name)
+            print("Warning: Effect module name 'effect' should be renamed to 'effects'")
+        except ModuleNotFoundError:
+            pass
+
+    def load_effect_module_new(self):
+        try:
+            name = '{}.{}'.format(self.name, 'effects')
+            self.effect_module = importlib.import_module(name)
+        except ModuleNotFoundError:
+            raise EffectError("Effect package '{}' has no effect module".format(self.name))
+
+    def load_effects_classes(self):
+        """Iterate the module attributes picking out effects"""
+        self.effect_classes = []
+
+        for _, cls in inspect.getmembers(self.effect_module):
             if inspect.isclass(cls):
                 if cls == Effect:
                     continue
-                # Use MRO to figure out if this is really an effect
-                mro = inspect.getmro(cls)
-                if cls in mro and Effect in mro:
-                    return module, cls
 
-        return None, None
+                if issubclass(cls, Effect):
+                    self.effect_classes.append(cls)
+                    self.effect_class_map[cls.__name__] = cls
+
+    def load_resource_module(self):
+        """Fetch the resource list"""
+        try:
+            name = '{}.{}'.format(self.name, 'resources')
+            self.resource_module = importlib.import_module(name)
+        except ModuleNotFoundError:
+            raise EffectError("Effect package '{}' has no resources module".format(self.name))
+
+        try:
+            self.resources = getattr(self.resource_module, 'resources')
+        except KeyError:
+            raise EffectError("Effect resource module '{}' has no resources attribute".format(name))
+
+
+class EffectError(Exception):
+    pass
 
 
 effects = Effects()

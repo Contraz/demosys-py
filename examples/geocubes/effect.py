@@ -2,18 +2,17 @@ import moderngl as mgl
 # import math
 from demosys.effects import effect
 from demosys import geometry
-from demosys.opengl import FBO
 
 
 class GeoCubesEffect(effect.Effect):
     """Simple effect drawing a textured cube"""
     def __init__(self):
-        self.cube_shader1 = self.get_shader('geocubes/cube_multi_fade.glsl')
-        self.cube_shader2 = self.get_shader('geocubes/cube_texture_light.glsl')
-        self.quad_shader = self.get_shader('geocubes/quad_fs_uvscale.glsl')
+        self.cube_prog1 = self.get_program('cube_multi_fade')
+        self.cube_prog2 = self.get_program('cube_texture_light')
+        self.quad_prog = self.get_program('quad_fs_uvscale')
 
-        self.texture1 = self.get_texture('geocubes/texture.png')
-        self.texture2 = self.get_texture('geocubes/GreenFabric.png')
+        self.texture1 = self.get_texture('texture')
+        self.texture2 = self.get_texture('GreenFabric')
 
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
@@ -28,9 +27,12 @@ class GeoCubesEffect(effect.Effect):
             seed=7656456
         )
         self.quad = geometry.quad_fs()
-        self.fbo = FBO.create((512, 512), depth=True)
 
-    @effect.bind_target
+        self.fbo = self.ctx.framebuffer(
+            self.ctx.texture((512, 512), 4),
+            depth_attachment=self.ctx.depth_texture((512, 512)),
+        )
+
     def draw(self, time, frametime, target):
         self.ctx.enable(mgl.DEPTH_TEST)
         self.ctx.enable(mgl.CULL_FACE)
@@ -40,29 +42,32 @@ class GeoCubesEffect(effect.Effect):
         normal_m = self.create_normal_matrix(mv_m)
         proj_m = self.create_projection(fov=60.0, ratio=1.0)
 
-        with self.fbo:
-            self.cube_shader1.uniform("m_proj", proj_m.astype('f4').tobytes())
-            self.cube_shader1.uniform("m_mv", mv_m.astype('f4').tobytes())
-            self.cube_shader1.uniform("m_normal", normal_m.astype('f4').tobytes())
-            self.texture1.use(location=0)
-            self.texture2.use(location=1)
-            self.cube_shader1.uniform("texture0", 0)
-            self.cube_shader1.uniform("texture1", 1)
-            self.cube_shader1.uniform("time", time)
-            self.cube.draw(self.cube_shader1)
+        self.fbo.use()
+
+        self.cube_prog1.uniform("m_proj", proj_m.astype('f4').tobytes())
+        self.cube_prog1.uniform("m_mv", mv_m.astype('f4').tobytes())
+        self.cube_prog1.uniform("m_normal", normal_m.astype('f4').tobytes())
+        self.texture1.use(location=0)
+        self.texture2.use(location=1)
+        self.cube_prog1.uniform("texture0", 0)
+        self.cube_prog1.uniform("texture1", 1)
+        self.cube_prog1.uniform("time", time)
+        self.cube.draw(self.cube_prog1)
+
+        target.use()
 
         self.sys_camera.projection.update(fov=75, near=0.1, far=1000)
 
         view_m = self.sys_camera.view_matrix
         normal_m = self.create_normal_matrix(view_m)
 
-        self.cube_shader2.uniform("m_proj", self.sys_camera.projection.tobytes())
-        self.cube_shader2.uniform("m_mv", view_m.astype('f4').tobytes())
-        self.cube_shader2.uniform("m_normal", normal_m.astype('f4').tobytes())
-        self.fbo.color_buffers[0].use(location=0)
-        self.cube_shader2.uniform("texture0", 0)
-        self.cube_shader2.uniform("time", time)
-        self.cube_shader2.uniform("lightpos", (0.0, 0.0, 0.0))
-        self.points.draw(self.cube_shader2)
+        self.cube_prog2.uniform("m_proj", self.sys_camera.projection.tobytes())
+        self.cube_prog2.uniform("m_mv", view_m.astype('f4').tobytes())
+        self.cube_prog2.uniform("m_normal", normal_m.astype('f4').tobytes())
+        self.fbo.color_attachments[0].use(location=0)
+        self.cube_prog2.uniform("texture0", 0)
+        self.cube_prog2.uniform("time", time)
+        self.cube_prog2.uniform("lightpos", (0.0, 0.0, 0.0))
+        self.points.draw(self.cube_prog2)
 
         self.fbo.clear(red=0.5, green=0.5, blue=0.5, alpha=1.0, depth=1.0)

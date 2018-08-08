@@ -8,12 +8,12 @@ from demosys import geometry
 class ShaderTest(DemosysTestCase):
 
     def test_create(self):
-        shader = self.create_shader(path='vf_pos.glsl')
+        shader = self.create_program(path='vf_pos.glsl')
         assert shader.mglo != None
 
     def test_uniforms(self):
         path = 'vf_pos_color.glsl'
-        shader = self.create_shader(path='vf_pos_color.glsl')
+        shader = self.create_program(path='vf_pos_color.glsl')
         self.assertAttributes(shader)
 
         byte_data = numpy.array([1.0] * 4, dtype=numpy.dtype('f4')).tobytes()
@@ -25,7 +25,7 @@ class ShaderTest(DemosysTestCase):
         uniform.write(byte_data)
 
     def test_geometry_shader(self):
-        shader = self.create_shader(path='vgf_quads.glsl')
+        shader = self.create_program(path='vgf_quads.glsl')
         self.assertAttributes(shader)
 
         assert shader.geometry_input == moderngl.POINTS
@@ -33,7 +33,7 @@ class ShaderTest(DemosysTestCase):
         assert shader.geometry_vertices == 4
 
     def test_subroutines(self):
-        shader = self.create_shader(path='vf_subroutines.glsl')
+        shader = self.create_program(path='vf_subroutines.glsl')
         cube = geometry.cube(1.0, 1.0, 1.0)
         self.assertAttributes(shader)
 

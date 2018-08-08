@@ -2,7 +2,7 @@ import os
 
 from demosys.test import DemosysTestCase
 from demosys import resources
-from demosys.core.exceptions import ImproperlyConfigured
+from demosys.exceptions import ImproperlyConfigured
 from demosys.conf import settings
 
 
@@ -62,31 +62,31 @@ class ResourceTestCase(DemosysTestCase):
         with self.assertRaises(ImproperlyConfigured):
             resources.scenes.load('notfound.gltf')
 
-    def test_shaders(self):
-        resources.shaders.flush(destroy=True)
+    def test_programs(self):
+        resources.programs.flush(destroy=True)
 
-        shader1 = resources.shaders.load('vf_pos.glsl')
-        shader2 = resources.shaders.load('vgf_quads.glsl')
-        self.assertEqual(resources.shaders.count, 2)
+        shader1 = resources.programs.load('vf_pos.glsl')
+        shader2 = resources.programs.load('vgf_quads.glsl')
+        self.assertEqual(resources.programs.count, 2)
 
-        # Attempt to reload shaders
-        resources.shaders.reload()
-        self.assertEqual(resources.shaders.count, 2)
+        # Attempt to reload programs
+        resources.programs.reload()
+        self.assertEqual(resources.programs.count, 2)
 
         # Ensure requesting the same file returns the existing one
-        shader = resources.shaders.load('vf_pos.glsl')
+        shader = resources.programs.load('vf_pos.glsl')
         self.assertEqual(shader, shader1)
-        shader = resources.shaders.load('vgf_quads.glsl')
+        shader = resources.programs.load('vgf_quads.glsl')
         self.assertEqual(shader, shader2)
 
         # Delete and destroy
-        resources.shaders.delete(shader1, destroy=True)
-        self.assertEqual(resources.shaders.count, 1)
-        resources.shaders.flush(destroy=True)
-        self.assertEqual(resources.shaders.count, 0)
+        resources.programs.delete(shader1, destroy=True)
+        self.assertEqual(resources.programs.count, 1)
+        resources.programs.flush(destroy=True)
+        self.assertEqual(resources.programs.count, 0)
 
         with self.assertRaises(ImproperlyConfigured):
-            resources.shaders.load('notfound.glsl')
+            resources.programs.load('notfound.glsl')
 
     def test_textures(self):
         resources.textures.flush(destroy=True)

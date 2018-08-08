@@ -3,7 +3,6 @@ import glfw
 import moderngl
 from demosys.scene import camera
 from demosys.view import screenshot
-from demosys.opengl import FBO
 from demosys import context
 from .base import Window
 
@@ -67,14 +66,11 @@ class GLFW_Window(Window):
         # Create mederngl context from existing context
         self.ctx = moderngl.create_context(require=self.gl_version.code)
         context.WINDOW = self
-        self.fbo = FBO()
-        self.fbo.ctx = self.ctx
-        self.fbo.fbo = self.ctx.screen
-        self.fbo.default_framebuffer = True
+        self.fbo = self.ctx.screen
         self.set_default_viewport()
 
     def use(self):
-        self.ctx.screen.use()
+        self.fbo.use()
 
     def should_close(self):
         return glfw.window_should_close(self.window)
@@ -173,10 +169,10 @@ class GLFW_Window(Window):
             screenshot.create()
 
         if key == glfw.KEY_R and action == glfw.PRESS:
-            self.resources.shaders.reload()
+            print("Shader reloading is disabled :(")
 
-        # Forward the event to the effect manager
-        self.manager.key_event(key, scancode, action, mods)
+        # Forward the event to the timeline
+        self.timeline.key_event(key, scancode, action, mods)
 
     def mouse_event_callback(self, window, xpos, ypos):
         """

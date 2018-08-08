@@ -25,18 +25,18 @@ class Mesh:
         self.attributes = attributes or {}
         self.bbox_min = bbox_min
         self.bbox_max = bbox_max
-        self.mesh_shader = None
+        self.mesh_program = None
 
     def draw(self, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
         """
-        Draw the mesh using the assigned mesh shader
+        Draw the mesh using the assigned mesh program
 
         :param projection_matrix: projection_matrix (bytes)
         :param view_matrix: view_matrix (bytes)
         :param camera_matrix: camera_matrix (bytes)
         """
-        if self.mesh_shader:
-            self.mesh_shader.draw(
+        if self.mesh_program:
+            self.mesh_program.draw(
                 self,
                 projection_matrix=projection_matrix,
                 view_matrix=view_matrix,
@@ -44,20 +44,20 @@ class Mesh:
                 time=time
             )
 
-    def draw_bbox(self, proj_matrix, view_matrix, cam_matrix, shader, vao):
-        shader.uniform("m_proj", proj_matrix)
-        shader.uniform("m_view", view_matrix)
-        shader.uniform("m_cam", cam_matrix)
-        shader.uniform("bb_min", self.bbox_min.astype('f4').tobytes())
-        shader.uniform("bb_max", self.bbox_max.astype('f4').tobytes())
-        shader.uniform("color", (0.75, 0.75, 0.75))
-        vao.draw(shader)
+    def draw_bbox(self, proj_matrix, view_matrix, cam_matrix, program, vao):
+        program.uniform("m_proj", proj_matrix)
+        program.uniform("m_view", view_matrix)
+        program.uniform("m_cam", cam_matrix)
+        program.uniform("bb_min", self.bbox_min.astype('f4').tobytes())
+        program.uniform("bb_max", self.bbox_max.astype('f4').tobytes())
+        program.uniform("color", (0.75, 0.75, 0.75))
+        vao.draw(program)
 
     def add_attribute(self, attr_type, name, components):
         """
         Add metadata about the mesh
         :param attr_type: POSITION, NORMAL ec
-        :param name: The attribute name used in the shader
+        :param name: The attribute name used in the program
         :param components: Number of floats
         """
         self.attributes[attr_type] = {"name": name, "components": components}

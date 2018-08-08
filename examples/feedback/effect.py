@@ -2,19 +2,19 @@ import math
 import random
 
 import numpy
+from pyrr import matrix44, vector3
 
 import moderngl as mgl
 from demosys.effects import effect
 from demosys.opengl import VAO
-from pyrr import matrix44, vector3
 
 
 class FeedbackEffect(effect.Effect):
 
     def __init__(self):
-        self.feedback = self.get_shader("feedback/transform.glsl")
-        self.shader = self.get_shader("feedback/billboards.glsl")
-        self.texture = self.get_texture("feedback/particle.png")
+        self.feedback = self.get_program("transform")
+        self.program = self.get_program("billboards")
+        self.texture = self.get_texture("particle")
 
         # VAOs representing the two different buffer bindings
         self.particles1 = None
@@ -27,7 +27,6 @@ class FeedbackEffect(effect.Effect):
         self.pos = None
         self.init_particles()
 
-    @effect.bind_target
     def draw(self, time, frametime, target):
         self.ctx.disable(mgl.DEPTH_TEST)
         self.ctx.enable(mgl.BLEND)
@@ -55,11 +54,11 @@ class FeedbackEffect(effect.Effect):
         self.particles.transform(self.feedback, self.pos)
 
         # Draw particles
-        self.shader.uniform("m_proj", m_proj.astype('f4').tobytes())
-        self.shader.uniform("m_mv", m_mv.astype('f4').tobytes())
+        self.program.uniform("m_proj", m_proj.astype('f4').tobytes())
+        self.program.uniform("m_mv", m_mv.astype('f4').tobytes())
         self.texture.use(location=0)
-        self.shader.uniform("texture0", 0)
-        self.particles.draw(self.shader)
+        self.program.uniform("texture0", 0)
+        self.particles.draw(self.program)
 
         # Swap buffers
         self.pos = self.pos1 if self.pos == self.pos2 else self.pos2
