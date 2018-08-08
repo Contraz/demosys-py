@@ -25,16 +25,16 @@ class BaseLoader:
         raise NotImplementedError()
 
     def find_data(self, path):
-        return self._find_last_of(path, data.get_finders())
+        return self._find_last_of(Path(path), data.get_finders())
 
     def find_program(self, path):
-        return self._find_last_of(path, program.get_finders())
+        return self._find_last_of(Path(path), program.get_finders())
 
     def find_texture(self, path):
-        return self._find_last_of(path, textures.get_finders())
+        return self._find_last_of(Path(path), textures.get_finders())
 
     def find_scene(self, path):
-        return self._find_last_of(path, scenes.get_finders())
+        return self._find_last_of(Path(path), scenes.get_finders())
 
     def _find_last_of(self, path, finders):
         """Find the last occurance of the file in finders"""

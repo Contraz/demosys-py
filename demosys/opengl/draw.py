@@ -83,7 +83,7 @@ class TextureHelper:
             "}",
             "#endif",
         ]
-        program = ShaderProgram(name="fbo_shader")
+        program = ShaderProgram("fbo_shader")
         program.set_source("\n".join(src))
         program.prepare()
 
@@ -127,7 +127,7 @@ class TextureHelper:
             "}",
             "#endif",
         ]
-        program = ShaderProgram(name="depth_shader")
+        program = ShaderProgram("depth_shader")
         program.set_source("\n".join(src))
         program.prepare()
 
