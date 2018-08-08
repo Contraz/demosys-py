@@ -7,10 +7,10 @@ from demosys import geometry
 class Empty(effect.Effect):
 
     def __init__(self):
-        self.program = self.get_program("shader.glsl", local=True)
         self.vao = geometry.quad_fs()
-        self.texture1 = self.get_texture("WarpspeedTexture.jpg", local=True)
-        self.texture2 = self.get_texture("WarpspeedTexture2.jpg", local=True)
+        self.program = self.get_program("shader")
+        self.texture1 = self.get_texture("WarpspeedTexture")
+        self.texture2 = self.get_texture("WarpspeedTexture2")
 
         self.zangle = 0.0
 
