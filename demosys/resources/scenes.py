@@ -21,7 +21,7 @@ class Scenes(BaseRegistry):
         """
         Resolve scene loader based on file extension
         """
-        for loader_cls in self.loaders:
+        for loader_cls in self._loaders:
             if loader_cls.supports_file(meta):
                 meta.loader_cls = loader_cls
                 break
