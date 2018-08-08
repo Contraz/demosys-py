@@ -7,7 +7,7 @@ import moderngl
 from demosys.loaders.scene.base import SceneLoader
 from demosys.opengl import VAO
 from demosys.resources import textures
-from demosys.resources.meta import SceneDescription
+from demosys.resources.meta import SceneDescription, TextureDescription
 from demosys.scene import Material, MaterialTexture, Mesh, Node, Scene
 
 
@@ -71,12 +71,17 @@ class ObjLoader(SceneLoader):
 
     def load(self):
         """Deferred loading"""
-        path = self.meta.resolved_path
+        path = self.find_scene(self.meta.path)
+
+        if not path:
+            raise ValueError("Scene '{}' not found".format(self.meta.path))
 
         if path.suffix == '.bin':
             path = path.parent / path.stem
 
         data = pywavefront.Wavefront(str(path), create_materials=True, cache=True)
+        scene = Scene(self.meta.resolved_path)
+        texture_cache = {}
 
         for _, mat in data.materials.items():
             mesh = Mesh(mat.name)
@@ -103,14 +108,23 @@ class ObjLoader(SceneLoader):
                 # Empty
                 continue
 
-            scene = Scene(self.meta.resolved_path, mesh_programs=self.meta.mesh_programs)
             scene.meshes.append(mesh)
 
             mesh.material = Material(mat.name)
             mesh.material.color = mat.diffuse
             if mat.texture:
+                # A texture can be referenced multiple times, so we need to cache loaded ones
+                texture = texture_cache.get(mat.texture.path)
+                if not texture:
+                    print("Loading:", mat.texture.path)
+                    texture = textures.load(TextureDescription(
+                        label=mat.texture.path,
+                        path=mat.texture.path,
+                    ))
+                    texture_cache[mat.texture.path] = texture
+
                 mesh.material.mat_texture = MaterialTexture(
-                    texture=textures.get(mat.texture.path, flip=True, mipmap=True),
+                    texture=texture,
                     # sampler=samplers.create(
                     #     wrap_s=GL.GL_CLAMP_TO_EDGE,
                     #     wrap_t=GL.GL_CLAMP_TO_EDGE,
@@ -120,5 +134,9 @@ class ObjLoader(SceneLoader):
 
             node = Node(mesh=mesh)
             scene.root_nodes.append(node)
+
+        # Not supported yet for obj
+        # self.calc_scene_bbox()
+        scene.prepare()
 
         return scene
