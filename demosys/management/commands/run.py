@@ -1,11 +1,11 @@
 import demosys
-from demosys.management.base import BaseCommand
+from demosys.management.base import RunCommand
 from demosys.exceptions import ImproperlyConfigured
 from demosys.utils.module_loading import import_string
 from demosys.conf import settings
 
 
-class Command(BaseCommand):
+class Command(RunCommand):
     help = "Run using the configured effect manager"
 
     def add_arguments(self, parser):
@@ -13,15 +13,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         demosys.setup()
-        manager_path = getattr(settings, 'EFFECT_MANAGER')
-        if not manager_path:
-            raise ImproperlyConfigured("EFFECT_MANAGER not properly configured in settings")
-        print(manager_path)
-        try:
-            manager_cls = import_string(manager_path)
-        except ImportError as err:
-            raise ImproperlyConfigured(
-                "EFFECT_MANAGER '{}' failed to initialize: {}".format(manager_path, err))
+        window = self.create_window()
+        project = self.create_project()
+        timeline = self.create_timeline(project)
 
-        manager = manager_cls()
-        demosys.run(manager=manager)
+        demosys.run(window=window, project=project, timeline=timeline)

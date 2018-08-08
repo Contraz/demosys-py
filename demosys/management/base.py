@@ -1,6 +1,9 @@
 import argparse
 from importlib import import_module
 
+from demosys.conf import settings
+from demosys.utils.module_loading import import_string
+
 
 class CommandError(Exception):
     pass
@@ -100,3 +103,19 @@ class CreateCommand(BaseCommand):
             pass
         else:
             raise ImportError("{} conflicts with an existing python module".format(name))
+
+
+class RunCommand(BaseCommand):
+
+    def create_window(self):
+        window_cls_name = settings.WINDOW.get('class', 'demosys.context.glfw.GLFW_Window')
+        window_cls = import_string(window_cls_name)
+        window = window_cls()
+        window.print_context_info()
+        return window
+
+    def create_project(self):
+        return import_string(settings.PROJECT)()
+
+    def create_timeline(self, project):
+        return import_string(settings.TIMELINE)(project)

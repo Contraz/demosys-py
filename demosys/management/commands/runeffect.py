@@ -2,17 +2,21 @@
 Run a specific effect
 """
 import demosys
-from demosys.management.base import CreateCommand
+from demosys.management.base import RunCommand
 from demosys.project.default import Project
+from demosys.timeline.single import Timeline
 
 
-class Command(CreateCommand):
+class Command(RunCommand):
     help = "Runs an effect"
 
     def add_arguments(self, parser):
         parser.add_argument("name", help="Name of the effect")
 
     def handle(self, *args, **options):
-        demosys.setup(settings_override={'EFFECTS': [options['name']]})
+        demosys.setup(EFFECTS=[options['name']])
+        window = self.create_window()
         project = Project(effect_module=options['name'])
-        demosys.run(project=project)
+        timeline = Timeline(project)
+
+        demosys.run(window=window, project=project, timeline=timeline)
