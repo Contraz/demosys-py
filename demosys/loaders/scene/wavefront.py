@@ -125,11 +125,7 @@ class ObjLoader(SceneLoader):
 
                 mesh.material.mat_texture = MaterialTexture(
                     texture=texture,
-                    # sampler=samplers.create(
-                    #     wrap_s=GL.GL_CLAMP_TO_EDGE,
-                    #     wrap_t=GL.GL_CLAMP_TO_EDGE,
-                    #     anisotropy=8,
-                    # )
+                    sampler=None,
                 )
 
             node = Node(mesh=mesh)
