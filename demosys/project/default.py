@@ -11,10 +11,12 @@ class Project(BaseProject):
         super().__init__()
         self.effect_moduele = effect_module
 
-    def create_resources(self, external):
-        # Ensure external resources are loaded
-        pass
+    def create_resources(self):
+        return super().create_resources()
 
     def create_effects(self):
         # Create the effect instance
+        pass
+
+    def get_first_runnable_effect(self):
         pass
