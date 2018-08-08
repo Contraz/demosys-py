@@ -89,19 +89,27 @@ class BaseProject:
             getattr(resources, meta.resource_type).add(meta)
 
     def get_effect(self, label):
-        return self._effects[label]
+        return self._get_resource(label, self._effects, "effect")
 
     def get_scene(self, label):
-        return self._scenes[label]
+        return self._get_resource(label, self._scenes, "scene")
 
     def get_program(self, label):
-        return self._programs[label]
+        return self._get_resource(label, self._programs, "program")
 
     def get_texture(self, label):
-        return self._textures[label]
+        return self._get_resource(label, self._textures, "texture")
 
     def get_data(self, label):
-        return self._data[label]
+        return self._get_resource(label, self._data, "data")
+
+    def _get_resource(self, label, source, resource_type):
+        try:
+            return source[label]
+        except KeyError:
+            raise ValueError("Cannot find {} with label '{}'.\nExisting labels: {}".format(
+                resource_type, label, list(source.keys())))
+
 
     @property
     def ctx(self):
