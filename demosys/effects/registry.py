@@ -165,7 +165,7 @@ class EffectPackage:
             name = '{}.{}'.format(self.name, 'resources')
             self.resource_module = importlib.import_module(name)
         except ModuleNotFoundError:
-            raise EffectError("Effect package '{}' has no resource module".format(self.name))
+            raise EffectError("Effect package '{}' has no resources module".format(self.name))
 
         try:
             self.resources = getattr(self.resource_module, 'resources')
