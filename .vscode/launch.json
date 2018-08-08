@@ -12,7 +12,7 @@
             "program": "${workspaceFolder}/manage.py",
             "args": [
                 "runeffect",
-                "examples.minecraft",
+                "examples.cubes",
             ],
         },
         {

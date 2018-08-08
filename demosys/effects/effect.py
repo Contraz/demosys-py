@@ -9,33 +9,8 @@ import moderngl
 from demosys import resources
 from demosys.context.base import Window  # noqa
 from demosys.opengl import ShaderProgram
-from demosys.project.base import BaseProject
 from demosys.scene import camera  # noqa
 from demosys.scene import Scene
-
-
-def local_path(func):
-    """
-    Decorator modifying the `path` parameter depending
-    on the `local` parameter.
-    If `local` is `True` we prepend the current effect name to the path.
-    """
-    @wraps(func)
-    def local_wrapper(*args, **kwargs):
-        use_local = kwargs.get('local')
-
-        # If use_local is True prepend the package name to the path
-        if use_local is True:
-            path = args[1]
-            path = os.path.join(args[0].effect_name, path)
-
-            # Replace path and rebuild tuple
-            args = list(args)
-            args[1] = path
-            args = tuple(args)
-
-        return func(*args, **kwargs)
-    return local_wrapper
 
 
 class Effect:
@@ -48,12 +23,15 @@ class Effect:
     * ``ctx`` (moderngl.Context): The moderngl context
     * ``sys_camera`` (demosys.scene.camera.Camera): The system camera responding to inputs
     """
+    # By default effects are runnable with ``runeffect``
+    runnable = True
+
     # Full python path to the effect (set per instance)
     _name = ""
 
     # Window properties set by controller on initialization (class vars)
     _window = None  # type: Window
-    _project = None  # type: BaseProject
+    _project = None  # type: demosys.project.base.BaseProject
 
     _ctx = None  # type: moderngl.Context
     _sys_camera = None  # type: camera.SystemCamera
@@ -102,7 +80,6 @@ class Effect:
 
     # Methods for getting resources
 
-    @local_path
     def get_program(self, label) -> ShaderProgram:
         """
         Get a program by its label
@@ -112,7 +89,6 @@ class Effect:
         """
         return self._project.get_program(label)
 
-    @local_path
     def get_texture(self, label) -> moderngl.Texture:
         """
         Get a texture by its label
@@ -134,7 +110,6 @@ class Effect:
         """
         return resources.tracks.get(name)
 
-    @local_path
     def get_scene(self, label) -> Scene:
         """
         Get a scene by its label
@@ -144,7 +119,6 @@ class Effect:
         """
         return self._project.get_scene(label)
 
-    @local_path
     def get_data(self, label) -> Any:
         """
         Get a data file by its label
