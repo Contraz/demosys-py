@@ -4,11 +4,7 @@ Thins needs to be improved once more pieces fall in place.
 """
 import time
 
-from demosys import resources
 from demosys.conf import settings
-from demosys.effects.registry import Effect
-from demosys.opengl import texture
-from demosys.scene import camera
 from demosys.utils.module_loading import import_string
 
 
@@ -18,17 +14,20 @@ def run(project=None):
 
     :param manager: The effect manager to use
     """
+    from demosys.scene import camera
+    from demosys.opengl import texture
+    from demosys.effects.registry import Effect
+
     window = create_window()
-    timeline = import_string(settings.TIMELINE)()
-    window.timeline = timeline
 
     if not project:
         project = import_string(settings.PROJECT)()
 
+    timeline = import_string(settings.TIMELINE)(project)
+    window.timeline = timeline
+
     texture._init_texture2d_draw()
     texture._init_depth_texture_draw()
-
-    print("Loader started at", time.time())
 
     # Inject attributes into the base Effect class
     setattr(Effect, '_window', window)
@@ -39,9 +38,9 @@ def run(project=None):
     window.sys_camera = camera.SystemCamera(aspect=window.aspect_ratio, fov=60.0, near=1, far=1000)
     setattr(Effect, '_sys_camera', window.sys_camera)
 
-    # Window key events can reload shaders
-    window.resources = resources
-    resources.load()
+    print("Loading started at", time.time())
+
+    project.load()
 
     # Initialize timer
     timer_cls = import_string(settings.TIMER)

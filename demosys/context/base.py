@@ -23,7 +23,6 @@ class Window:
         self.fbo = None
         self.sys_camera = None
         self.timer = None
-        self.resources = None
         self.timeline = None
 
         self.gl_version = GLVersion(

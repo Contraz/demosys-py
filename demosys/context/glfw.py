@@ -169,7 +169,7 @@ class GLFW_Window(Window):
             screenshot.create()
 
         if key == glfw.KEY_R and action == glfw.PRESS:
-            self.resources.shaders.reload()
+            print("Shader reloading is disabled :(")
  
         # Forward the event to the timeline
         self.timeline.key_event(key, scancode, action, mods)
