@@ -5,6 +5,7 @@ class DataDescription(ResourceDescription):
     """Describes data file to load"""
     require_label = True
     default_loader = 'binary'
+    resource_type = 'data'
 
     def __init__(self, path=None, label=None, loader=None, **kwargs):
         kwargs.update({
@@ -19,6 +20,7 @@ class ProgramDescription(ResourceDescription):
     """Describes a program to load"""
     require_label = True
     default_loader = 'single'
+    resource_type = 'programs'
 
     def __init__(self, path=None, label=None, loader=None,
                  vertex_shader=None, geometry_shader=None, fragment_shader=None,
@@ -40,6 +42,7 @@ class SceneDescription(ResourceDescription):
     """Describes a scene to load"""
     require_label = True
     default_loader = None
+    resource_type = 'scenes'
 
     def __init__(self, path=None, label=None, mesh_programs=None, **kwargs):
         kwargs.update({
@@ -54,6 +57,7 @@ class TextureDescription(ResourceDescription):
     """Describes a texture to load"""
     require_label = True
     default_loader = '2d'
+    resource_type = 'textures'
 
     def __init__(self, path=None, label=None, loader=None, **kwargs):
         kwargs.update({

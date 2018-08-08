@@ -2,73 +2,106 @@ from demosys import context
 from demosys import resources
 from demosys.effects.registry import effects
 from demosys.effects import Effect
+from demosys.conf import settings
 
 
 class BaseProject:
     """The Project"""
 
     def __init__(self):
-        self.effects = {}
-        self.programs = {}
-        self.textures = {}
-        self.scenes = {}
-        self.data = {}
+        self._effects = {}
+        self._programs = {}
+        self._textures = {}
+        self._scenes = {}
+        self._data = {}
+
+    def create_effect_classes(self):
+        """Create effect classes in the registry"""
+        effects.polulate(settings.EFFECTS)
+
+    def create_external_resources(self):
+        """
+        Create resources defined externally such as resource modules in effect packages.
+
+        :returns: List of resource descriptions to load
+        """
+        return effects.get_effect_resources()
 
     def create_resources(self):
-        # Just return the external list
-        return self._get_external_resources()
+        """
+        Create resources for the project
 
-    def create_effects(self):
+        :returns: List of resource descriptions to load
+        """
         raise NotImplementedError()
 
-    def load(self):
-        # Throw each resource into their respective pools
-        for meta in self.create_resources():
-            resources.add(meta)
+    def create_effect_instances(self):
+        """
+        Create instances of effects
+        """
+        raise NotImplementedError()
 
-        for meta, resource in resources.textures.load_pool():
-            self.textures[meta.label] = resource
+    def create_effect(self, label, class_name, package_name=None, **kwargs):
+        """Create an effect instance"""
+        effect_cls = effects.find_effect_class(class_name, package_name=package_name)
+        effect = effect_cls(**kwargs)
 
-        for meta, resource in resources.programs.load_pool():
-            self.programs[meta.label] = resource
+        if label in self._effects:
+            raise ValueError("An effect with label '{}' already exists".format(label))
 
-        for meta, resource in resources.scenes.load_pool():
-            self.scenes[meta.label] = resource
+        self._effects[label] = effect
 
-        for meta, resource in resources.data.load_pool():
-            self.data[meta.label] = resource
+        return effect
 
-        self.create_effects()
-        self._post_load()
-
-    def _post_load(self):
-        for _, effect in self.effects.items():
+    def post_load(self):
+        """
+        Actions after loading is complete
+        """
+        for _, effect in self._effects.items():
             effect.post_load()
 
-    def _get_external_resources(self):
-        """Get resources from effect modules or injected elsewhere"""
-        # We need to get this from the effects registry
-        return []
+    def load(self):
+        self.create_effect_classes()
 
-    def create_effect(self, label, python_path: str, **kwargs):
-        """Create an effect instance"""
-        effect_cls = effects.get_effect_cls(python_path)
-        self.effects[label] = effect_cls(**kwargs)
+        self._add_resource_descriptions_to_pools(self.create_external_resources())
+        self._add_resource_descriptions_to_pools(self.create_resources())
+
+        for meta, resource in resources.textures.load_pool():
+            self._textures[meta.label] = resource
+
+        for meta, resource in resources.programs.load_pool():
+            self._programs[meta.label] = resource
+
+        for meta, resource in resources.scenes.load_pool():
+            self._scenes[meta.label] = resource
+
+        for meta, resource in resources.data.load_pool():
+            self._data[meta.label] = resource
+
+        self.create_effect_instances()
+        self.post_load()
+
+    def _add_resource_descriptions_to_pools(self, meta_list):
+        if not meta_list:
+            return
+
+        for meta in meta_list:
+            getattr(resources, meta.resource_type).add(meta)
 
     def get_effect(self, label):
-        return self.effects[label]
+        return self._effects[label]
 
     def get_scene(self, label):
-        return self.scenes[label]
+        return self._scenes[label]
 
     def get_program(self, label):
-        return self.programs[label]
+        return self._programs[label]
 
     def get_texture(self, label):
-        return self.textures[label]
+        return self._textures[label]
 
     def get_data(self, label):
-        return self.data[label]
+        return self._data[label]
 
     @property
     def ctx(self):

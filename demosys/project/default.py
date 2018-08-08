@@ -1,4 +1,5 @@
 from demosys.project.base import BaseProject
+from demosys.effects.registry import effects
 
 
 class Project(BaseProject):
@@ -9,14 +10,19 @@ class Project(BaseProject):
     def __init__(self, effect_module):
 
         super().__init__()
-        self.effect_moduele = effect_module
+        self.effect_module = effect_module
+        self.effect = None
 
     def create_resources(self):
-        return super().create_resources()
-
-    def create_effects(self):
-        # Create the effect instance
         pass
 
-    def get_first_runnable_effect(self):
-        pass
+    def create_effect_instances(self):
+        cls = self.get_runnable_effect()
+        self.effect = self.create_effect('default', cls.__name__)
+
+    def get_runnable_effect(self):
+        """
+        Attempt to get a runnable effect in a package
+        """
+        runnable = effects.packages[0].runnable_effects()
+        return runnable[0]

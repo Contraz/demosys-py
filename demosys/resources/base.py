@@ -16,6 +16,7 @@ class ResourceDescription:
     """
     require_label = True  # Decides if the resource requires a label
     default_loader = None  # The default loader if nothing is specified
+    resource_type = None  # What resource type is described
 
     def __init__(self, **kwargs):
         self._kwargs = kwargs
@@ -115,7 +116,7 @@ class BaseRegistry:
         Loads all the data files using the configured finders.
         """
         for meta in self._resources:
-            resource = self._load(meta)
+            resource = self.load(meta)
             yield meta, resource
 
         self._resources = []
@@ -126,7 +127,7 @@ class BaseRegistry:
 
         :param meta: The resource description instance
         """
-        meta.loader_cls = self.get_loader(meta)
+        meta.loader_cls = self.get_loader(meta, raise_on_error=True)
 
     def get_loader(self, meta: ResourceDescription, raise_on_error=False) -> BaseLoader:
         """
@@ -136,10 +137,11 @@ class BaseRegistry:
         :param raise_on_error: Raise ImproperlyConfigured if the loader cannot be resolved
         :returns: The requested loader class
         """
-        try:
-            return self._loaders[meta.loader]
-        except KeyError:
-            if not raise_on_error:
-                return None
+        for loader in self._loaders:
+            if loader.name == meta.loader:
+                return loader
 
-            raise ImproperlyConfigured("Resource has invalid loader '{}' set: {}".format(meta.loader, meta))
+        if raise_on_error:
+            raise ImproperlyConfigured(
+                "Resource has invalid loader '{}': {}\nAvailiable loaders: {}".format(
+                    meta.loader, meta, [loader.name for loader in self._loaders]))

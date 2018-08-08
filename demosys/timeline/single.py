@@ -5,10 +5,9 @@ class Timeline(BaseTimeline):
     """Run a single effect"""
     def __init__(self, project, **kwargs):
         super().__init__(project)
-        self.active_effect = project.get_first_runnable_effect()
 
     def get_active_effect(self, time):
-        return self.active_effect
+        return self._project.effect
 
     def draw(self, time, frametime, target):
         effect = self.get_active_effect(time)
