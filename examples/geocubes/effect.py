@@ -7,12 +7,12 @@ from demosys import geometry
 class GeoCubesEffect(effect.Effect):
     """Simple effect drawing a textured cube"""
     def __init__(self):
-        self.cube_prog1 = self.get_program('geocubes/cube_multi_fade.glsl')
-        self.cube_prog2 = self.get_program('geocubes/cube_texture_light.glsl')
-        self.quad_prog = self.get_program('geocubes/quad_fs_uvscale.glsl')
+        self.cube_prog1 = self.get_program('cube_multi_fade')
+        self.cube_prog2 = self.get_program('cube_texture_light')
+        self.quad_prog = self.get_program('quad_fs_uvscale')
 
-        self.texture1 = self.get_texture('geocubes/texture.png')
-        self.texture2 = self.get_texture('geocubes/GreenFabric.png')
+        self.texture1 = self.get_texture('texture')
+        self.texture2 = self.get_texture('GreenFabric')
 
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
