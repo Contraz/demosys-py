@@ -8,7 +8,7 @@ class Loader(BaseLoader):
     def load(self):
         self.meta.resolved_path = self.find_program(self.meta.path)
         if not self.meta.resolved_path:
-            raise ValueError("Cannot find shader '{}'".format(self.meta.path))
+            raise ValueError("Cannot find program '{}'".format(self.meta.path))
 
         # Load it
         program = ShaderProgram(self.meta.path)
