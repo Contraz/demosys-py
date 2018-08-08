@@ -25,15 +25,27 @@ class BaseLoader:
         raise NotImplementedError()
 
     def find_data(self, path):
+        if not path:
+            return None
+
         return self._find_last_of(Path(path), data.get_finders())
 
     def find_program(self, path):
+        if not path:
+            return None
+
         return self._find_last_of(Path(path), program.get_finders())
 
     def find_texture(self, path):
+        if not path:
+            return None
+
         return self._find_last_of(Path(path), textures.get_finders())
 
     def find_scene(self, path):
+        if not path:
+            return None
+
         return self._find_last_of(Path(path), scenes.get_finders())
 
     def _find_last_of(self, path, finders):
