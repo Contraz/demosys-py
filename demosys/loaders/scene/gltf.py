@@ -99,8 +99,11 @@ class GLTF2(SceneLoader):
         :param scene: The scene object
         :param file: Resolved path if changed by finder
         """
-        self.path = self.meta.resolved_path
-        self.scene = Scene(self.path, mesh_programs=self.meta.mesh_programs)
+        self.path = self.find_scene(self.meta.path)
+        if not self.path:
+            raise ValueError("Scene '{}' not found".format(self.meta.path))
+
+        self.scene = Scene(self.path)
 
         # Load gltf json file
         if self.path.suffix == '.gltf':
