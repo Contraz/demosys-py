@@ -1,8 +1,8 @@
-from .music import MusicTimer
-from .rocket import RocketTimer
+from demosys.timers.music import Timer as MusicTimer
+from demosys.timers.rocket import Timer as RocketTimer
 
 
-class RocketMusicTimer(RocketTimer):
+class Timer(RocketTimer):
     """Rocket timer playing music"""
     def __init__(self, **kwargs):
         self.music = MusicTimer()

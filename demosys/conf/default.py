@@ -25,7 +25,7 @@ WINDOW = {
 
 MUSIC = None
 
-TIMER = 'demosys.timers.Timer'
+TIMER = 'demosys.timers.time.Timer'
 
 TIMELINE = 'demosys.timeline.single.Timeline'
 

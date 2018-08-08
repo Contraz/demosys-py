@@ -3,11 +3,10 @@ from rocket.controllers import TimeController
 
 from demosys.conf import settings
 from demosys.resources import tracks
+from demosys.timers.base import BaseTimer
 
-from .base import BaseTimer
 
-
-class RocketTimer(BaseTimer):
+class Timer(BaseTimer):
     """Basic rocket timer"""
     def __init__(self, **kwargs):
         """Initialize the rocket timer using values from settings"""

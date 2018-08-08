@@ -1,14 +1,14 @@
 # import glfw
 from demosys.conf import settings
-from .base import BaseTimer
+from demosys.timers.base import BaseTimer
 
 try:
     from pygame import mixer
 except ImportError:
-    print("pygame is needed for timer: MusicTimer")
+    raise ImportError("pygame is needed for music timer")
 
 
-class MusicTimer(BaseTimer):
+class Timer(BaseTimer):
     """Timer based on music"""
     def __init__(self, **kwargs):
         mixer.init(frequency=44100, size=-16, channels=2, buffer=1024)

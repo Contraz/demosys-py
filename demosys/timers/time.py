@@ -1,6 +1,6 @@
 import time
 
-from .base import BaseTimer
+from demosys.timers.base import BaseTimer
 
 
 class Timer(BaseTimer):
