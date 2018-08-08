@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from demosys.loaders.base import BaseLoader
 from demosys.scene import Scene
 
@@ -17,8 +19,10 @@ class SceneLoader(BaseLoader):
     @classmethod
     def supports_file(cls, meta):
         """Check if the loader has a supported file extension"""
+        path = Path(meta.path)
+
         for ext in cls.file_extensions:
-            if meta.resolved_path.suffixes[:len(ext)] == ext:
+            if path.suffixes[:len(ext)] == ext:
                 return True
 
         return False
