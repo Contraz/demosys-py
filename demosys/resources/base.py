@@ -1,6 +1,7 @@
 """
 Base registry class
 """
+import inspect
 from pathlib import Path
 from typing import Any, Dict, Type
 
@@ -98,6 +99,7 @@ class BaseRegistry:
 
         :param meta: The resource description
         """
+        self._check_meta(meta)
         self.resolve_loader(meta)
         return meta.loader_cls(meta).load()
 
@@ -108,6 +110,7 @@ class BaseRegistry:
 
         :param meta: The resource description
         """
+        self._check_meta(meta)
         self.resolve_loader(meta)
         self._resources.append(meta)
 
@@ -145,3 +148,10 @@ class BaseRegistry:
             raise ImproperlyConfigured(
                 "Resource has invalid loader '{}': {}\nAvailiable loaders: {}".format(
                     meta.loader, meta, [loader.name for loader in self._loaders]))
+
+    def _check_meta(self, meta):
+        if inspect.isclass(type(meta)):
+            if issubclass(meta.__class__, ResourceDescription):
+                return
+
+        raise ValueError("Resource loader got type {}, not a resource description".format(type(meta)))
