@@ -52,10 +52,10 @@ class TestCase(unittest.TestCase):
             classname, methodname = method.split('.')
             sig = str(inspect.signature(getattr(getattr(module, classname), methodname)))
             sig = sig.replace('self, ', '').replace('typing.', '').replace(' -> None', '')
-            print(sig)
+
             for m in MODULES:
                 sig = sig.replace(m, '')
-            print(sig)
+
             sig = sig.replace('(self)', '()').replace(', *,', ',').replace('(*, ', '(')
             sig = re.sub(r'-> \'(\w+)\'', r'-> \1', sig)
             self.assertEqual(docsig, sig, msg=filename + '::' + method)

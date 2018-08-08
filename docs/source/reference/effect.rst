@@ -14,12 +14,11 @@ Draw Methods
 Resource Methods
 ----------------
 
-.. automethod:: Effect.get_program(path, local=False) -> ShaderProgram
-.. automethod:: Effect.get_texture(path, flip=True, local=False, **kwargs) -> Texture
-.. automethod:: Effect.get_texture_array(path, layers=0, flip=True, local=False, **kwargs) -> TextureArray
-.. automethod:: Effect.get_track(name, local=False) -> Track
-.. automethod:: Effect.get_scene(path, local=False, **kwargs) -> Scene
-.. automethod:: Effect.get_data(path, local=False, **kwargs) -> Data
+.. automethod:: Effect.get_program(label) -> ShaderProgram
+.. automethod:: Effect.get_texture(label) -> Texture
+.. automethod:: Effect.get_track(name) -> Track
+.. automethod:: Effect.get_scene(label) -> Scene
+.. automethod:: Effect.get_data(label) -> Any
 .. automethod:: Effect.post_load()
 
 Utility Methods
@@ -37,8 +36,4 @@ Attributes
 .. autoattribute:: Effect.name
 .. autoattribute:: Effect.effect_name
 .. autoattribute:: Effect.window
-
-Decorators
-----------
-
-.. autofunction:: bind_target
+.. autoattribute:: Effect.runnable
