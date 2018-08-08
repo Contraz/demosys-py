@@ -15,7 +15,7 @@ from demosys import context
 from demosys.loaders.scene.base import SceneLoader
 from demosys.loaders.texture import t2d
 from demosys.opengl import VAO
-from demosys.resources.meta import SceneDescription
+from demosys.resources.meta import SceneDescription, TextureDescription
 from demosys.scene import Material, MaterialTexture, Mesh, Node, Scene
 
 GLTF_MAGIC_HEADER = b'glTF'
@@ -685,7 +685,12 @@ class GLTFImage:
             print("Loading:", self.uri)
             image = Image.open(path)
 
-        texture = t2d.Loader(path=None, image=image, flip=False, mipmap=True).load()
+        texture = t2d.Loader(TextureDescription(
+            label="gltf",
+            image=image,
+            flip=False,
+            mipmap=True,
+        )).load()
 
         return texture
 
