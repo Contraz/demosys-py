@@ -1,7 +1,6 @@
 from demosys import context
 from demosys import resources
 from demosys.effects.registry import effects
-from demosys.effects import Effect
 from demosys.conf import settings
 
 
@@ -109,7 +108,6 @@ class BaseProject:
         except KeyError:
             raise ValueError("Cannot find {} with label '{}'.\nExisting labels: {}".format(
                 resource_type, label, list(source.keys())))
-
 
     @property
     def ctx(self):

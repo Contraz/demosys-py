@@ -1,8 +1,5 @@
 import demosys
 from demosys.management.base import RunCommand
-from demosys.exceptions import ImproperlyConfigured
-from demosys.utils.module_loading import import_string
-from demosys.conf import settings
 
 
 class Command(RunCommand):

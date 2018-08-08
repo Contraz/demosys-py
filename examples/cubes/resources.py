@@ -1,5 +1,6 @@
 from demosys.resources.meta import TextureDescription, ProgramDescription
 
+
 def local(path):
     # Figure out the package name prepending it path
     return path

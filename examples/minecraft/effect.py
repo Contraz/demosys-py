@@ -10,7 +10,7 @@ class MinecraftEffect(effect.Effect):
     def __init__(self):
         self.mesh_program = MinecraftProgram(program=self.get_program('minecraft'))
         self.scene = self.get_scene('lost_empire')
-        
+
         self.fbo = self.ctx.framebuffer(
             self.ctx.texture(self.window.size, 4),
             depth_attachment=self.ctx.depth_texture(self.window.size)
