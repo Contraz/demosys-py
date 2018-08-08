@@ -3,6 +3,7 @@ import os
 from demosys import context
 from demosys.conf import settings
 from demosys.resources import programs
+from demosys.resources.meta import ProgramDescription
 
 settings.add_program_dir(os.path.join(os.path.dirname(__file__), 'programs'))
 
@@ -41,7 +42,10 @@ class ColorProgram(MeshProgram):
     Simple color program
     """
     def __init__(self, program=None, **kwargs):
-        super().__init__(program=programs.load("scene_default/color.glsl"))
+        super().__init__(program=None)
+        self.program = programs.load(ProgramDescription(
+            label="scene_default/color.glsl",
+            path="scene_default/color.glsl"))
 
     def draw(self, mesh, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
 
@@ -79,7 +83,10 @@ class TextureProgram(MeshProgram):
     Simple texture program
     """
     def __init__(self, program=None, **kwargs):
-        super().__init__(program=programs.load("scene_default/texture.glsl"))
+        super().__init__(program=None)
+        self.program = programs.load(ProgramDescription(
+            label="scene_default/texture.glsl",
+            path="scene_default/texture.glsl"))
 
     def draw(self, mesh, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
         # if mesh.material.double_sided:
@@ -112,7 +119,10 @@ class FallbackProgram(MeshProgram):
     Fallback program only rendering positions in white
     """
     def __init__(self, program=None, **kwargs):
-        super().__init__(program=programs.load("scene_default/fallback.glsl"))
+        super().__init__(program=None)
+        self.program = programs.load(ProgramDescription(
+            label="scene_default/fallback.glsl",
+            path="scene_default/fallback.glsl"))
 
     def draw(self, mesh, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
 
