@@ -10,7 +10,7 @@ from demosys.effects import effect
 class SimpleRaymarchEffect(effect.Effect):
     """Generated raymarching effect"""
     def __init__(self):
-        self.program = self.get_program("raymarching_simple.glsl", local=True)
+        self.program = self.get_program("raymarching_simple")
 
         # create plane to fit whole screen
         self.plane = geometry.plane_xz(size=self.window.size, resolution=(10, 10))
