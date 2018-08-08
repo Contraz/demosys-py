@@ -8,13 +8,9 @@ from demosys.opengl import texture
 class MinecraftEffect(effect.Effect):
     """Generated default effect"""
     def __init__(self):
-        self.mesh_program = MinecraftProgram(program=self.get_program('minecraft.glsl', local=True))
-        self.scene = self.get_scene(
-            'lost-empire/lost_empire.obj.bin',
-            local=True,
-            mesh_programs=[self.mesh_program],
-        )
-
+        self.mesh_program = MinecraftProgram(program=self.get_program('minecraft'))
+        self.scene = self.get_scene('lost_empire')
+        
         self.fbo = self.ctx.framebuffer(
             self.ctx.texture(self.window.size, 4),
             depth_attachment=self.ctx.depth_texture(self.window.size)
@@ -26,6 +22,10 @@ class MinecraftEffect(effect.Effect):
             max_lod=4.0,
         )
 
+    def post_load(self):
+        # self.scene.apply_mesh_programs([self.mesh_program])
+        pass
+
     def draw(self, time, frametime, target):
         self.ctx.enable(moderngl.DEPTH_TEST)
         self.ctx.disable(moderngl.CULL_FACE)
@@ -35,6 +35,7 @@ class MinecraftEffect(effect.Effect):
         m_proj = self.create_projection(75, near=0.1, far=300.0)
 
         self.fbo.use()
+
         self.scene.draw(
             projection_matrix=m_proj,
             camera_matrix=self.sys_camera.view_matrix,
