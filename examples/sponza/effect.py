@@ -5,7 +5,7 @@ from demosys.effects import effect
 class SceneEffect(effect.Effect):
     """Generated default effect"""
     def __init__(self):
-        self.scene = self.get_scene("Sponza/glTF/Sponza.gltf", local=True)
+        self.scene = self.get_scene("sponza")
 
         self.proj_mat = self.create_projection(fov=75.0, near=0.01, far=1000.0)
 
