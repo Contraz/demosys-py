@@ -8,7 +8,7 @@ from demosys.conf import settings
 from demosys.utils.module_loading import import_string
 
 
-def run(project=None):
+def run(window=None, project=None, timeline=None):
     """
     Initialize, load and run
 
@@ -18,12 +18,6 @@ def run(project=None):
     from demosys.opengl import texture
     from demosys.effects.registry import Effect
 
-    window = create_window()
-
-    if not project:
-        project = import_string(settings.PROJECT)()
-
-    timeline = import_string(settings.TIMELINE)(project)
     window.timeline = timeline
 
     texture._init_texture2d_draw()
@@ -72,11 +66,3 @@ def run(project=None):
         fps = round(window.frames / duration, 2)
         print("Duration: {}s rendering {} frames at {} fps".format(duration, window.frames, fps))
         print("Timeline duration:", duration_timer)
-
-
-def create_window():
-    window_cls_name = settings.WINDOW.get('class', 'demosys.context.glfw.GLFW_Window')
-    window_cls = import_string(window_cls_name)
-    window = window_cls()
-    window.print_context_info()
-    return window
