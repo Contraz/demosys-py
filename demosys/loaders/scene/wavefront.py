@@ -120,6 +120,7 @@ class ObjLoader(SceneLoader):
                     texture = textures.load(TextureDescription(
                         label=mat.texture.path,
                         path=mat.texture.path,
+                        mipmap=True,
                     ))
                     texture_cache[mat.texture.path] = texture
 
