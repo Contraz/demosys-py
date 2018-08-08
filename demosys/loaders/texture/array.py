@@ -24,7 +24,7 @@ class Loader(PillowLoader):
             data,
         )
 
-        if self.mipmap:
+        if self.meta.mipmap:
             self.build_mipmaps()
 
         self._close_image()

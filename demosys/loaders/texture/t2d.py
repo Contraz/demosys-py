@@ -6,8 +6,7 @@ class Loader(PillowLoader):
 
     def load(self):
         """Load a 2d texture"""
-        if not self.image:
-            self._open_image()
+        self._open_image()
 
         components, data = image_data(self.image)
 
@@ -17,7 +16,7 @@ class Loader(PillowLoader):
             data,
         )
 
-        if self.mipmap:
+        if self.meta.mipmap:
             texture.build_mipmaps()
 
         self._close_image()
