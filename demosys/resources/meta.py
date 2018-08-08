@@ -12,7 +12,7 @@ class DataDescription(ResourceDescription):
             "label": label,
             "loader": loader,
         })
-        super().__init__(kwargs)
+        super().__init__(**kwargs)
 
 
 class ProgramDescription(ResourceDescription):
@@ -33,7 +33,7 @@ class ProgramDescription(ResourceDescription):
             "tess_control_shader": tess_control_shader,
             "tess_evaluation_shader": tess_evaluation_shader,
         })
-        super().__init__(kwargs)
+        super().__init__(**kwargs)
 
 
 class SceneDescription(ResourceDescription):
@@ -47,7 +47,7 @@ class SceneDescription(ResourceDescription):
             "label": label,
             "mesh_programs": mesh_programs,
         })
-        super().__init__(kwargs)
+        super().__init__(**kwargs)
 
 
 class TextureDescription(ResourceDescription):
@@ -61,4 +61,4 @@ class TextureDescription(ResourceDescription):
             "label": label,
             "loader": loader,
         })
-        super().__init__(kwargs)
+        super().__init__(**kwargs)

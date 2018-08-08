@@ -21,7 +21,7 @@ class ResourceDescription:
         self._kwargs = kwargs
 
         # All resources should have a label
-        if not self._label and self.require_label:
+        if not self.label and self.require_label:
             raise ValueError("Resource is missing label: {}".format(self.kwargs))
 
     @property
