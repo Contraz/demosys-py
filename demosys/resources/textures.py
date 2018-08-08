@@ -11,7 +11,7 @@ class Textures(BaseRegistry):
     """
     def __init__(self):
         super().__init__()
-        self.loaders = [
+        self._loaders = [
             import_string(loader) for loader in settings.TEXTURE_LOADERS
         ]
 
