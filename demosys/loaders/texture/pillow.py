@@ -9,19 +9,21 @@ class PillowLoader(BaseLoader):
     """Base loader using PIL/Pillow"""
     name = '__unknown__'
 
-    def __init__(self, path, **kwargs):
-        super().__init__(path)
-        self.path = path
-        self.kwargs = kwargs
-        self.image = kwargs.get('image')
-        self.flip = kwargs.get('flip') or True
-        self.mipmap = kwargs.get('mipmap') or False
+    def __init__(self, meta):
+        super().__init__(meta)
+        self.image = getattr(meta, 'image', None)
+        self.flip = getattr(meta, 'flip', True)
+        self.mipmap = getattr(meta, 'mipmap', False)
 
     def load(self) -> Any:
         raise NotImplementedError()
 
     def _open_image(self):
-        self.image = Image.open(self.path)
+        self.meta.resolved_path = self.find_texture(self.meta.path)
+        if not self.meta.resolved_path:
+            raise ValueError("Cannot find texture: {}".format(self.meta.path))
+
+        self.image = Image.open(self.meta.resolved_path)
 
         if self.flip:
             self.image = self.image.transpose(Image.FLIP_TOP_BOTTOM)

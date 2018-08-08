@@ -4,9 +4,9 @@ from demosys.loaders.texture.pillow import PillowLoader, image_data
 class Loader(PillowLoader):
     name = 'array'
 
-    def __init__(self, path=None, layers=None, **kwargs):
-        super().__init__(path, **kwargs)
-        self.layers = layers
+    def __init__(self, meta):
+        super().__init__(meta)
+        self.layers = self.meta.get('layers')
 
         if self.layers is None:
             raise ValueError("TextureArray requires layers parameter")

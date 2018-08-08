@@ -1,7 +1,8 @@
+from pathlib import Path
 from typing import Any
 
 from demosys import context
-from demosys.finders import (data, program, textures, scenes)
+from demosys.finders import data, program, scenes, textures
 
 
 class BaseLoader:
@@ -39,9 +40,9 @@ class BaseLoader:
         """Find the last occurance of the file in finders"""
         found_path = None
         for finder in finders:
-            path = finder.find(path)
-            if path:
-                found_path = path
+            result = finder.find(path)
+            if result:
+                found_path = result
 
         return found_path
 
