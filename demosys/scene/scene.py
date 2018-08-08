@@ -92,8 +92,11 @@ class Scene:
         for node in self.root_nodes:
             node.draw_bbox(projection_matrix, camera_matrix, self.bbox_program, self.bbox_vao)
 
-    def apply_mesh_programs(self):
+    def apply_mesh_programs(self, mesh_programs=None):
         """Applies mesh programs to meshes"""
+        if mesh_programs:
+            self.mesh_programs = mesh_programs
+
         if self.mesh_programs is None:
             return
 
