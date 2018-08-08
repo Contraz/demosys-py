@@ -5,6 +5,7 @@ from pyrr import matrix44, vector3
 
 from demosys import context, geometry
 from demosys.resources import programs
+from demosys.resources.meta import ProgramDescription
 
 from .programs import (ColorProgram, FallbackProgram, MeshProgram,
                        TextureProgram)
@@ -26,14 +27,15 @@ class Scene:
         self.materials = []
         self.meshes = []
         self.cameras = []
-        self.mesh_programs = mesh_programs or [ColorProgram(), TextureProgram(), FallbackProgram()]
 
         self.bbox_min = None
         self.bbox_max = None
         self.diagonal_size = 1.0
 
         self.bbox_vao = geometry.bbox()
-        self.bbox_program = programs.load('scene_default/bbox.glsl')
+        self.bbox_program = programs.load(ProgramDescription(
+            label='scene_default/bbox.glsl',
+            path='scene_default/bbox.glsl'))
 
         self._view_matrix = matrix44.create_identity()
 
@@ -94,14 +96,11 @@ class Scene:
 
     def apply_mesh_programs(self, mesh_programs=None):
         """Applies mesh programs to meshes"""
-        if mesh_programs:
-            self.mesh_programs = mesh_programs
-
-        if self.mesh_programs is None:
-            return
+        if not mesh_programs:
+            mesh_programs = [ColorProgram(), TextureProgram(), FallbackProgram()]
 
         for mesh in self.meshes:
-            for mp in self.mesh_programs:
+            for mp in mesh_programs:
                 instance = mp.apply(mesh)
                 if instance is not None:
                     if isinstance(instance, MeshProgram):
@@ -129,8 +128,8 @@ class Scene:
         self.diagonal_size = vector3.length(self.bbox_max - self.bbox_min)
 
     def prepare(self):
-        """Deferred loading if a loader is specified"""
         self.apply_mesh_programs()
+        self.view_matrix = matrix44.create_identity()
 
     def destroy(self):
         """Destroy the scene data and deallocate buffers"""
