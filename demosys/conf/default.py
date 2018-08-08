@@ -27,7 +27,7 @@ MUSIC = None
 
 TIMER = 'demosys.timers.Timer'
 
-TIMELINE = 'demosys.timeline.simple.Timeline'
+TIMELINE = 'demosys.timeline.single.Timeline'
 
 EFFECTS = ()
 

@@ -6,19 +6,11 @@ class BaseTimeline:
     A manager is responsible for figuring out what effect should be drawn
     at any given time.
     """
-    def pre_load(self):
-        """
-        Called after OpenGL context creation before resources are loaded.
-        This method should be overridden.
-        """
-        return True
+    def __init__(self, project, **kwargs):
+        self._project = project
 
-    def post_load(self):
-        """
-        Called after resources are loaded.
-        This method should be overridden.
-        """
-        return True
+    def get_active_effect(self, time):
+        raise NotImplementedError()
 
     def draw(self, time, frametime, target):
         """
@@ -29,7 +21,7 @@ class BaseTimeline:
         :param frametime: The time one frame should take in seconds
         :param target: The target FBO
         """
-        pass
+        raise NotImplementedError()
 
     def key_event(self, key, scancode, action, mods):
         """
@@ -41,4 +33,4 @@ class BaseTimeline:
         :param action: GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
         :param mods: Bit field describing which modifier keys were held down.
         """
-        pass
+        raise NotImplementedError()
