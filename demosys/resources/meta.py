@@ -44,11 +44,10 @@ class SceneDescription(ResourceDescription):
     default_loader = None
     resource_type = 'scenes'
 
-    def __init__(self, path=None, label=None, mesh_programs=None, **kwargs):
+    def __init__(self, path=None, label=None, **kwargs):
         kwargs.update({
             "path": path,
             "label": label,
-            "mesh_programs": mesh_programs,
         })
         super().__init__(**kwargs)
 
