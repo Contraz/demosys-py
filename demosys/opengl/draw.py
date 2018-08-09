@@ -11,6 +11,13 @@ class TextureHelper:
     _depth_shader = None
     _depth_sampler = None
 
+    def __init__(self):
+        pass
+
+    @property
+    def initialized(self):
+        return self._quad is not None
+
     @property
     def ctx(self):
         return context.ctx()
@@ -23,6 +30,9 @@ class TextureHelper:
         :param pos: (tuple) offset x, y
         :param scale: (tuple) scale x, y
         """
+        if not self.initialized:
+            self.init()
+
         self._texture2d_shader.uniform("offset", (pos[0] - 1.0, pos[1] - 1.0))
         self._texture2d_shader.uniform("scale", (scale[0], scale[1]))
         texture.use(location=0)
@@ -42,6 +52,9 @@ class TextureHelper:
         :param pos: (tuple) offset x, y
         :param scale: (tuple) scale x, y
         """
+        if not self.initialized:
+            self.init()
+
         self._depth_shader.uniform("offset", (pos[0] - 1.0, pos[1] - 1.0))
         self._depth_shader.uniform("scale", (scale[0], scale[1]))
         self._depth_shader.uniform("near", near)
