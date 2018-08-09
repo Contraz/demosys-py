@@ -1,5 +1,6 @@
 from demosys.resources.meta import TextureDescription, ProgramDescription
 
+effects = []
 
 resources = [
     ProgramDescription(path="cubes/cube_plain.glsl", label="plain"),
