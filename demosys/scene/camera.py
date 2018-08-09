@@ -137,6 +137,24 @@ class SystemCamera(Camera):
 
         super().__init__(fov=fov, aspect=aspect, near=near, far=far)
 
+    def move_left(self, activate):
+        self.move_state(LEFT, activate)
+
+    def move_right(self, activate):
+        self.move_state(RIGHT, activate)
+
+    def move_forward(self, activate):
+        self.move_state(FORWARD, activate)
+
+    def move_backward(self, activate):
+        self.move_state(BACKWARD, activate)
+
+    def move_up(self, activate):
+        self.move_state(UP, activate)
+
+    def move_down(self, activate):
+        self.move_state(DOWN, activate)
+
     def move_state(self, direction, activate):
         """
         Set the camera position move state

@@ -1,7 +1,6 @@
 import glfw
 
 import moderngl
-from demosys.scene import camera
 from demosys.view import screenshot
 from demosys import context
 from .base import Window
@@ -128,41 +127,41 @@ class GLFW_Window(Window):
         # Right
         if key == glfw.KEY_D:
             if action == glfw.PRESS:
-                self.sys_camera.move_state(camera.RIGHT, True)
+                self.sys_camera.move_right(True)
             elif action == glfw.RELEASE:
-                self.sys_camera.move_state(camera.RIGHT, False)
+                self.sys_camera.move_right(False)
         # Left
         elif key == glfw.KEY_A:
             if action == glfw.PRESS:
-                self.sys_camera.move_state(camera.LEFT, True)
+                self.sys_camera.move_left(True)
             elif action == glfw.RELEASE:
-                self.sys_camera.move_state(camera.LEFT, False)
+                self.sys_camera.move_left(False)
         # Forward
         elif key == glfw.KEY_W:
             if action == glfw.PRESS:
-                self.sys_camera.move_state(camera.FORWARD, True)
+                self.sys_camera.move_forward(True)
             if action == glfw.RELEASE:
-                self.sys_camera.move_state(camera.FORWARD, False)
+                self.sys_camera.move_forward(False)
         # Backwards
         elif key == glfw.KEY_S:
             if action == glfw.PRESS:
-                self.sys_camera.move_state(camera.BACKWARD, True)
+                self.sys_camera.move_backward(True)
             if action == glfw.RELEASE:
-                self.sys_camera.move_state(camera.BACKWARD, False)
+                self.sys_camera.move_backward(False)
 
         # UP
         elif key == glfw.KEY_Q:
             if action == glfw.PRESS:
-                self.sys_camera.move_state(camera.UP, True)
+                self.sys_camera.move_down(True)
             if action == glfw.RELEASE:
-                self.sys_camera.move_state(camera.UP, False)
+                self.sys_camera.move_down(False)
 
         # Down
         elif key == glfw.KEY_E:
             if action == glfw.PRESS:
-                self.sys_camera.move_state(camera.DOWN, True)
+                self.sys_camera.move_up(True)
             if action == glfw.RELEASE:
-                self.sys_camera.move_state(camera.DOWN, False)
+                self.sys_camera.move_up(False)
 
         # Screenshots
         if key == glfw.KEY_X and action == glfw.PRESS:
