@@ -17,14 +17,13 @@ class MinecraftEffect(effect.Effect):
         )
 
         self.sampler = self.ctx.sampler(
-            filter=(moderngl.NEAREST_MIPMAP_NEAREST, moderngl.NEAREST),
+            filter=(moderngl.LINEAR_MIPMAP_LINEAR, moderngl.NEAREST),
             anisotropy=16.0,
             max_lod=4.0,
         )
 
     def post_load(self):
-        # self.scene.apply_mesh_programs([self.mesh_program])
-        pass
+        self.scene.apply_mesh_programs([self.mesh_program])
 
     def draw(self, time, frametime, target):
         self.ctx.enable(moderngl.DEPTH_TEST)
@@ -41,6 +40,7 @@ class MinecraftEffect(effect.Effect):
             camera_matrix=self.sys_camera.view_matrix,
             time=time
         )
+
         self.window.use()
 
         self.ctx.disable(moderngl.DEPTH_TEST)
