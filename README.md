@@ -78,7 +78,11 @@ python setup.py develop
 Running tests:
 
 ```bash
-pytest
+# All tests
+python manage.py test
+
+# Single tests module
+python manage.py test tests/test_effect.py
 ```
 
 Building docs:
