@@ -21,6 +21,9 @@ class Settings:
     SCENE_DIRS = []
 
     def __init__(self):
+        pass
+
+    def setup(self):
         settings_module = os.environ.get(ENVIRONMENT_VARIABLE)
         if not settings_module:
             raise ImproperlyConfigured(
