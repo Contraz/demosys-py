@@ -127,26 +127,17 @@ class EffectPackage:
             raise ModuleNotFoundError("Effect package '{}' not found.".format(self.name))
 
     def load_effect_module(self):
-        """Attempt to load the effect module"""
-        self.load_effect_module_old()
-        if not self.effect_module:
-            self.load_effect_module_new()
-
-    def load_effect_module_old(self):
-        """Attempt to load the old effect module"""
-        try:
-            name = '{}.{}'.format(self.name, 'effect')
-            self.effect_module = importlib.import_module(name)
-            print("Warning: Effect module name 'effect' should be renamed to 'effects'")
-        except ModuleNotFoundError:
-            pass
-
-    def load_effect_module_new(self):
         try:
             name = '{}.{}'.format(self.name, 'effects')
             self.effect_module = importlib.import_module(name)
-        except ModuleNotFoundError:
-            raise EffectError("Effect package '{}' has no effect module".format(self.name))
+        except ModuleNotFoundError as err:
+            raise EffectError(
+                (
+                    "Failed to import effects module '{}'.\n"
+                    "This means the module doesn't exist "
+                    "or you have an import errors inside the effects module.\n\n"
+                    "Forwarded error from importlib: {}\n"
+                ).format(self.name, err))
 
     def load_effects_classes(self):
         """Iterate the module attributes picking out effects"""
