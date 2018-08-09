@@ -1,5 +1,6 @@
 import importlib
 import inspect
+import os
 from typing import Any, List, Type
 
 from demosys.effects.effect import Effect
@@ -22,7 +23,7 @@ class Effects:
         Get all effect directories for registered effects.
         """
         for package in self.packages:
-            yield package.path
+            yield os.path.join(package.path, 'resources')
 
     def get_effect_resources(self) -> List[Any]:
         """
@@ -90,7 +91,7 @@ class EffectPackage:
         self.effect_classes = None
         self.effect_class_map = {}
 
-        self.resource_module = None
+        self.resource_description_module = None
         self.resources = None
 
     def runnable_effects(self) -> List[Type[Effect]]:
@@ -161,14 +162,19 @@ class EffectPackage:
 
     def load_resource_module(self):
         """Fetch the resource list"""
+        # Do we have a resources folder?
+        if not os.path.exists(os.path.join(self.path, 'resources')):
+            return
+
+        # Attempt to load resource descriptions
         try:
-            name = '{}.{}'.format(self.name, 'resources')
-            self.resource_module = importlib.import_module(name)
+            name = '{}.{}'.format(self.name, 'resources.descriptions')
+            self.resource_description_module = importlib.import_module(name)
         except ModuleNotFoundError:
             raise EffectError("Effect package '{}' has no resources module".format(self.name))
 
         try:
-            self.resources = getattr(self.resource_module, 'resources')
+            self.resources = getattr(self.resource_description_module, 'resources')
         except KeyError:
             raise EffectError("Effect resource module '{}' has no resources attribute".format(name))
 
