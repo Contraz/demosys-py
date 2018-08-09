@@ -6,6 +6,8 @@ from demosys.conf import settings
 
 class BaseProject:
     """The Project"""
+    resources = []
+    override_resources = {}
 
     def __init__(self):
         self._effects = {}
@@ -32,7 +34,7 @@ class BaseProject:
 
         :returns: List of resource descriptions to load
         """
-        raise NotImplementedError()
+        return self.resources
 
     def create_effect_instances(self):
         """
