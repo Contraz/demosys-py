@@ -111,7 +111,9 @@ class ObjLoader(SceneLoader):
             scene.meshes.append(mesh)
 
             mesh.material = Material(mat.name)
+            scene.materials.append(mesh.material)
             mesh.material.color = mat.diffuse
+
             if mat.texture:
                 # A texture can be referenced multiple times, so we need to cache loaded ones
                 texture = texture_cache.get(mat.texture.path)
