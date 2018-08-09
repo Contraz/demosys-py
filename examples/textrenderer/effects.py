@@ -2,7 +2,6 @@ import math
 import os
 
 from demosys.effects import effect
-from demosys.effects.text.effects import TextRenderer2D
 
 
 class TextRendererEffect(effect.Effect):
@@ -12,6 +11,8 @@ class TextRendererEffect(effect.Effect):
 
         with open(os.path.join(os.path.dirname(__file__), 'sample.txt'), 'r') as fd:
             lines = fd.readlines()
+
+        TextRenderer2D = self.get_effect_class('TextRenderer2D', package_name='demosys.effects.text')
 
         self.renderer = TextRenderer2D(
             (105, len(lines)),

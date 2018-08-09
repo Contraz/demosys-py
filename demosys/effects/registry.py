@@ -59,7 +59,7 @@ class Effects:
         package.load()
 
         self.packages.append(package)
-        self.package_map[package.path] = package
+        self.package_map[package.name] = package
 
         # Load effect package dependencies
         self.polulate(package.effect_packages)
@@ -192,6 +192,12 @@ class EffectPackage:
             raise EffectError(
                 "Effect dependencies module '{}': 'effect_packages' is of type {} instead of a list".format(
                     name, type(self.effects)))
+
+    def __str__(self):
+        return "<{} {}>".format(self.__class__.__name__, self.name)
+
+    def __repr__(self):
+        return str(self)
 
 
 class EffectError(Exception):

@@ -2,7 +2,6 @@ import math
 import os
 
 from demosys.effects import effect
-from demosys.effects.text.effects import TextWriter2D
 
 
 class TextWriterEffect(effect.Effect):
@@ -12,6 +11,8 @@ class TextWriterEffect(effect.Effect):
 
         with open(os.path.join(os.path.dirname(__file__), 'sample.txt'), 'r') as fd:
             lines = fd.readlines()
+
+        TextWriter2D = self.get_effect_class('TextWriter2D', package_name='demosys.effects.text')
 
         self.writer = TextWriter2D(
             (105, len(lines)),

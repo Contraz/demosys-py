@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Type
 
 from pyrr import Matrix33, Matrix44, Vector3, matrix44
 from rocket.tracks import Track
@@ -125,6 +125,24 @@ class Effect:
         :return: Contents of the data file
         """
         return self._project.get_data(label)
+
+    def get_effect(self, label) -> 'Effect':
+        """
+        Get an effect instance by label
+
+        :param label: Label for the data file
+        :return: The requested effect instance
+        """
+        return self._project.get_effect(label)
+
+    def get_effect_class(self, effect_name, package_name=None) -> Type['Effect']:
+        """
+        Get an effect class.
+
+        :param effect_name: Name of the effect class
+        :param package_name: (optional) The package this effect belongs to
+        """
+        return self._project.get_effect_class(effect_name, package_name=package_name)
 
     # Utility methods for matrices
 

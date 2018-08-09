@@ -92,6 +92,9 @@ class BaseProject:
     def get_effect(self, label):
         return self._get_resource(label, self._effects, "effect")
 
+    def get_effect_class(self, class_name, package_name=None):
+        return effects.find_effect_class(class_name, package_name=package_name)
+
     def get_scene(self, label):
         return self._get_resource(label, self._scenes, "scene")
 
