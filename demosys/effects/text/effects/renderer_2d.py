@@ -1,10 +1,8 @@
 import numpy
 
 import moderngl
+from demosys.effects.text.effects import TextWriter2D
 from demosys.opengl import VAO
-from demosys import resources
-
-from .writer2d import TextWriter2D
 
 
 class TextRenderer2D(TextWriter2D):
@@ -20,7 +18,7 @@ class TextRenderer2D(TextWriter2D):
         self._texture_width = 0
 
         self._quad = self._create_vao()
-        self._quad_program = resources.programs.load('demosys/text/view_renderer_texture.glsl', create=True)
+        self._quad_program = self.get_program('demosys.text.program_renderer_2d')
         self._fbo = None
 
         self._texture_width = int(
