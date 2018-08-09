@@ -15,4 +15,4 @@ install:
 
 script:
   - tox
-  - pytest tests/test_docs.py
+  - python manage.py test tests/test_docs.py --nocontext

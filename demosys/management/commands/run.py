@@ -3,7 +3,7 @@ from demosys.management.base import RunCommand
 
 
 class Command(RunCommand):
-    help = "Run using the configured effect manager"
+    help = "Run the project"
 
     def add_arguments(self, parser):
         pass
