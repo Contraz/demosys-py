@@ -1,6 +1,6 @@
 from demosys.resources.meta import TextureDescription, ProgramDescription
 
-effects = []
+effect_packages = []
 
 resources = [
     ProgramDescription(label="shader", path="warpspeed/shader.glsl"),

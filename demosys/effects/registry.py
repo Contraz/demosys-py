@@ -93,7 +93,7 @@ class EffectPackage:
 
         self.dependencies_module = None
         self.resources = []
-        self.effects = []
+        self.effect_packages = []
 
     def runnable_effects(self) -> List[Type[Effect]]:
         """Returns the first runnable effect in the package"""
@@ -187,16 +187,16 @@ class EffectPackage:
         if not isinstance(self.resources, list):
             raise EffectError(
                 "Effect dependencies module '{}' has a 'resources' attribute of type {} instead of a list".format(name, type(self.resources)))
-            
+
         # Fetch the effect class list
         try:
-            self.effects = getattr(self.dependencies_module, 'effects')
+            self.effect_packages = getattr(self.dependencies_module, 'effect_packages')
         except AttributeError:
-            raise EffectError("Effect dependencies module '{}' has 'effects' attribute".format(name))
+            raise EffectError("Effect dependencies module '{}' has 'effect_packages' attribute".format(name))
 
-        if not isinstance(self.effects, list):
+        if not isinstance(self.effect_packages, list):
             raise EffectError(
-                "Effect dependencies module '{}' has an 'effects' attribute of type {} instead of a list".format(name, type(self.effects)))
+                "Effect dependencies module '{}' has an 'effect_packages' attribute of type {} instead of a list".format(name, type(self.effects)))
 
 
 class EffectError(Exception):

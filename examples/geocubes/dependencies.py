@@ -1,6 +1,6 @@
 from demosys.resources.meta import ProgramDescription, TextureDescription
 
-effects = []
+effect_packages = []
 
 resources = [
     ProgramDescription(label="cube_multi_fade", path='geocubes/cube_multi_fade.glsl'),

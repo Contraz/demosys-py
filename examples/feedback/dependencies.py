@@ -1,6 +1,6 @@
 from demosys.resources.meta import ProgramDescription, TextureDescription
 
-effects = []
+effect_packages = []
 
 resources = [
     ProgramDescription(label="transform", path="feedback/transform.glsl"),
