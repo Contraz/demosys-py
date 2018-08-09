@@ -7,10 +7,9 @@ class Project(BaseProject):
     The project what will be assigned when no project are specified.
     This is mainly used when the ``runeffect`` command is used
     """
-    def __init__(self, effect_module):
+    def __init__(self):
 
         super().__init__()
-        self.effect_module = effect_module
         self.effect = None
 
     def create_resources(self):

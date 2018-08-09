@@ -8,7 +8,7 @@ from demosys.conf import settings
 from demosys.utils.module_loading import import_string
 
 
-def run(window=None, project=None, timeline=None):
+def init(window=None, project=None, timeline=None):
     """
     Initialize, load and run
 
@@ -33,13 +33,15 @@ def run(window=None, project=None, timeline=None):
     setattr(Effect, '_sys_camera', window.sys_camera)
 
     print("Loading started at", time.time())
-
     project.load()
 
     # Initialize timer
     timer_cls = import_string(settings.TIMER)
     window.timer = timer_cls()
     window.timer.start()
+
+
+def run(window=None, project=None, timeline=None):
 
     # Main loop
     frame_time = 60.0 / 1000.0

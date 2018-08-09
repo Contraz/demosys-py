@@ -1,1 +1,1 @@
-from .controller import run  # noqa
+from .controller import init, run  # noqa

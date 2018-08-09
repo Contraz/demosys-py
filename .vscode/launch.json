@@ -12,7 +12,17 @@
             "program": "${workspaceFolder}/manage.py",
             "args": [
                 "runeffect",
-                "examples.cubes",
+                "examples.minecraft",
+            ],
+        },
+        {
+            "name": "Python: demosys-py test",
+            "type": "python",
+            "request": "launch",
+            "console": "none",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
             ],
         },
         {

@@ -3,8 +3,6 @@ Run a specific effect
 """
 import demosys
 from demosys.management.base import RunCommand
-from demosys.project.default import Project
-from demosys.timeline.single import Timeline
 
 
 class Command(RunCommand):
@@ -14,9 +12,15 @@ class Command(RunCommand):
         parser.add_argument("name", help="Name of the effect")
 
     def handle(self, *args, **options):
-        demosys.setup(EFFECTS=[options['name']])
-        window = self.create_window()
-        project = Project(effect_module=options['name'])
-        timeline = Timeline(project)
+        demosys.setup(
+            EFFECTS=[options['name']],
+            PROJECT='demosys.project.default.Project',
+            TIMELINE='demosys.timeline.single.Timeline'
+        )
 
+        window = self.create_window()
+        project = self.create_project()
+        timeline = self.create_timeline(project)
+
+        demosys.init(window=window, project=project, timeline=timeline)
         demosys.run(window=window, project=project, timeline=timeline)
