@@ -183,10 +183,11 @@ class EffectPackage:
             self.resources = getattr(self.dependencies_module, 'resources')
         except AttributeError:
             raise EffectError("Effect dependencies module '{}' has no 'resources' attribute".format(name))
-        
+
         if not isinstance(self.resources, list):
             raise EffectError(
-                "Effect dependencies module '{}' has a 'resources' attribute of type {} instead of a list".format(name, type(self.resources)))
+                "Effect dependencies module '{}': 'resources' is of type {} instead of a list".format(
+                    name, type(self.resources)))
 
         # Fetch the effect class list
         try:
@@ -196,7 +197,8 @@ class EffectPackage:
 
         if not isinstance(self.effect_packages, list):
             raise EffectError(
-                "Effect dependencies module '{}' has an 'effect_packages' attribute of type {} instead of a list".format(name, type(self.effects)))
+                "Effect dependencies module '{}': 'effect_packages' is of type {} instead of a list".format(
+                    name, type(self.effects)))
 
 
 class EffectError(Exception):
