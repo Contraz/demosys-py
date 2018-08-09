@@ -92,7 +92,7 @@ class EffectPackage:
         self.effect_class_map = {}
 
         self.resource_description_module = None
-        self.resources = None
+        self.resources = []
 
     def runnable_effects(self) -> List[Type[Effect]]:
         """Returns the first runnable effect in the package"""
