@@ -1,5 +1,6 @@
 from demosys.resources.meta import SceneDescription, ProgramDescription
 
+effects = []
 
 resources = [
     ProgramDescription(label="minecraft", path='minecraft/minecraft.glsl'),
