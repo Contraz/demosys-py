@@ -108,7 +108,7 @@ class BaseProject:
         try:
             return source[label]
         except KeyError:
-            raise ValueError("Cannot find {} with label '{}'.\nExisting labels: {}".format(
+            raise ValueError("Cannot find {0} with label '{1}'.\nExisting {0} labels: {2}".format(
                 resource_type, label, list(source.keys())))
 
     @property
