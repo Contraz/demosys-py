@@ -91,8 +91,9 @@ class EffectPackage:
         self.effect_classes = None
         self.effect_class_map = {}
 
-        self.resource_description_module = None
+        self.dependencies_module = None
         self.resources = []
+        self.effects = []
 
     def runnable_effects(self) -> List[Type[Effect]]:
         """Returns the first runnable effect in the package"""
@@ -166,17 +167,36 @@ class EffectPackage:
         if not os.path.exists(os.path.join(self.path, 'resources')):
             return
 
-        # Attempt to load resource descriptions
+        # Attempt to load the dependencies module
         try:
-            name = '{}.{}'.format(self.name, 'resources.descriptions')
-            self.resource_description_module = importlib.import_module(name)
+            name = '{}.{}'.format(self.name, 'dependencies')
+            self.dependencies_module = importlib.import_module(name)
         except ModuleNotFoundError:
-            raise EffectError("Effect package '{}' has no resources module".format(self.name))
+            raise EffectError(
+                (
+                    "Effect package '{}' has no 'dependencies' module. "
+                    "This is required when the resources directory is present."
+                ).format(self.name))
 
+        # Fetch the resource descriptions
         try:
-            self.resources = getattr(self.resource_description_module, 'resources')
-        except KeyError:
-            raise EffectError("Effect resource module '{}' has no resources attribute".format(name))
+            self.resources = getattr(self.dependencies_module, 'resources')
+        except AttributeError:
+            raise EffectError("Effect dependencies module '{}' has no 'resources' attribute".format(name))
+        
+        if not isinstance(self.resources, list):
+            raise EffectError(
+                "Effect dependencies module '{}' has a 'resources' attribute of type {} instead of a list".format(name, type(self.resources)))
+            
+        # Fetch the effect class list
+        try:
+            self.effects = getattr(self.dependencies_module, 'effects')
+        except AttributeError:
+            raise EffectError("Effect dependencies module '{}' has 'effects' attribute".format(name))
+
+        if not isinstance(self.effects, list):
+            raise EffectError(
+                "Effect dependencies module '{}' has an 'effects' attribute of type {} instead of a list".format(name, type(self.effects)))
 
 
 class EffectError(Exception):
