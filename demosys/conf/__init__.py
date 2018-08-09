@@ -3,7 +3,7 @@ Settings and configuration for demosys
 """
 import importlib
 import os
-
+import functools
 from demosys.conf import default
 from demosys.exceptions import ImproperlyConfigured
 
@@ -19,9 +19,6 @@ class Settings:
     TEXTURE_DIRS = []
     DATA_DIRS = []
     SCENE_DIRS = []
-
-    def __init__(self):
-        pass
 
     def setup(self):
         settings_module = os.environ.get(ENVIRONMENT_VARIABLE)
