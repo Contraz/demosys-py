@@ -65,7 +65,7 @@ class TextureDescription(ResourceDescription):
             "loader": loader,
             "flip": flip,
             "image": image,
-            "mipmap": image,
+            "mipmap": mipmap,
         })
         super().__init__(**kwargs)
 
