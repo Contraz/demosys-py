@@ -33,7 +33,7 @@ class BaseCommand:
         :param args: arguments from the argparser
         :param options: keyword arguments from the argparser
         """
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def run_from_argv(self, argv):
         """
