@@ -3,7 +3,6 @@ Settings and configuration for demosys
 """
 import importlib
 import os
-import functools
 from demosys.conf import default
 from demosys.exceptions import ImproperlyConfigured
 
