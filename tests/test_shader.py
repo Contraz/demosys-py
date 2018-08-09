@@ -9,10 +9,9 @@ class ShaderTest(DemosysTestCase):
 
     def test_create(self):
         shader = self.create_program(path='vf_pos.glsl')
-        assert shader.mglo != None
+        assert shader.mglo is not None
 
     def test_uniforms(self):
-        path = 'vf_pos_color.glsl'
         shader = self.create_program(path='vf_pos_color.glsl')
         self.assertAttributes(shader)
 

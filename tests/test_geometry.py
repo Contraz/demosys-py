@@ -1,5 +1,3 @@
-import pytest
-
 from demosys import geometry
 from demosys.test import DemosysTestCase
 
@@ -12,15 +10,15 @@ class GeometryTest(DemosysTestCase):
     def test_bbox(self):
         vao = geometry.bbox()
         vao.draw(self.shader)
- 
+
     def test_cube(self):
         vao = geometry.cube(1.0, 1.0, 1.0)
         vao.draw(self.shader)
-    
+
     def test_plane(self):
         vao = geometry.plane_xz()
         vao.draw(self.shader)
-    
+
     def test_points(self):
         vao = geometry.points_random_3d(1000)
         vao.draw(self.shader)

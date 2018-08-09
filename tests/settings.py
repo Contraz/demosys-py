@@ -25,10 +25,7 @@ WINDOW = {
 HEADLESS_FRAMES = 1
 
 # MUSIC = os.path.join(PROJECT_DIR, 'resources/music/tg2035.mp3')
-TIMER = 'demosys.timers.Timer'
-# TIMER = 'demosys.timers.RocketTimer'
-# TIMER = 'demosys.timers.RocketMusicTimer'
-# TIMER = 'demosys.timers.MusicTimer'
+TIMER = 'demosys.timers.time.Timer'
 
 ROCKET = {
     'mode': 'project',
@@ -40,6 +37,8 @@ ROCKET = {
 # What effects to load
 EFFECTS = (
 )
+
+PROJECT = 'tests.project.Project'
 
 PROGRAM_DIRS = (
     os.path.join(PROJECT_DIR, 'resources/programs'),
