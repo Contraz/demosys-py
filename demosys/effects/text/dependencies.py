@@ -1,5 +1,6 @@
 from demosys.resources.meta import TextureDescription, ProgramDescription, DataDescription
 
+effect_packages = []
 
 resources = [
     # Font meta and texture

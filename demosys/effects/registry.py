@@ -52,11 +52,17 @@ class Effects:
 
         :param name: (str) The effect package to add
         """
+        if name in self.package_map:
+            return
+
         package = EffectPackage(name)
         package.load()
 
         self.packages.append(package)
         self.package_map[package.path] = package
+
+        # Load effect package dependencies
+        self.polulate(package.effect_packages)
 
     def get_package(self, name) -> 'EffectPackage':
         """
@@ -154,20 +160,16 @@ class EffectPackage:
 
     def load_resource_module(self):
         """Fetch the resource list"""
-        # Do we have a resources folder?
-        if not os.path.exists(os.path.join(self.path, 'resources')):
-            return
-
         # Attempt to load the dependencies module
         try:
             name = '{}.{}'.format(self.name, 'dependencies')
             self.dependencies_module = importlib.import_module(name)
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as err:
             raise EffectError(
                 (
-                    "Effect package '{}' has no 'dependencies' module. "
-                    "This is required when the resources directory is present."
-                ).format(self.name))
+                    "Effect package '{}' has no 'dependencies' module or the module has errors. "
+                    "Forwarded error from importlib: {}"
+                ).format(self.name, err))
 
         # Fetch the resource descriptions
         try:

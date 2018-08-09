@@ -6,7 +6,7 @@ class Loader(PillowLoader):
 
     def __init__(self, meta):
         super().__init__(meta)
-        self.layers = self.meta.get('layers')
+        self.layers = self.meta.kwargs.get('layers')
 
         if self.layers is None:
             raise ValueError("TextureArray requires layers parameter")
@@ -25,7 +25,7 @@ class Loader(PillowLoader):
         )
 
         if self.meta.mipmap:
-            self.build_mipmaps()
+            texture.build_mipmaps()
 
         self._close_image()
 

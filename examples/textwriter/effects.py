@@ -2,7 +2,7 @@ import math
 import os
 
 from demosys.effects import effect
-from demosys.text import TextWriter2D
+from demosys.effects.text.effects import TextWriter2D
 
 
 class TextWriterEffect(effect.Effect):

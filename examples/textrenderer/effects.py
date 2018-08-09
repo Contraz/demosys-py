@@ -2,7 +2,7 @@ import math
 import os
 
 from demosys.effects import effect
-from demosys.text import TextRenderer2D
+from demosys.effects.text.effects import TextRenderer2D
 
 
 class TextRendererEffect(effect.Effect):

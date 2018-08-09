@@ -24,13 +24,13 @@ class TextWriter2D(BaseText):
         self.aspect_ratio = aspect_ratio
 
         self._vao = None
+        self._config = self.get_data('demosys.program.font_meta')
         self._texture = self.get_texture('demosys.text.font_texture')
         self._program = self.get_program('demosys.text.program_writer_2d')
-        self._config = self.get_data('demosys.text.textwriter2d.glsl')
 
         self._string_buffer = None
 
-        self._init(FontMeta(self._config.data))
+        self._init(FontMeta(self._config))
 
         self._string_buffer = self.ctx.buffer(reserve=self.area[0] * 4 * self.area[1])
         self._string_buffer.clear(chunk=b'\32')
