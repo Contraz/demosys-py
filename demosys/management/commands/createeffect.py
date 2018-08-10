@@ -41,18 +41,19 @@ def copy_effect_template(template_name, effect_name, dest_path):
     shutil.copytree(os.path.join(template_dir(), template_name), dest_full_path)
 
     # Rename local resource directories if present
-    files = os.listdir(dest_full_path)
+    files = os.listdir(os.path.join(dest_full_path, 'resources'))
+    
     for resource_dir in files:
         # Skip non-dirs
-        if not os.path.isdir(os.path.join(dest_full_path, resource_dir)):
+        if not os.path.isdir(os.path.join(dest_full_path, 'resources', resource_dir)):
             continue
 
         # Rename local resource dirs to the new effect name
-        local_dir = os.path.join(dest_full_path, resource_dir, template_name)
+        local_dir = os.path.join(dest_full_path, 'resources', resource_dir, template_name)
         if os.path.exists(local_dir):
             os.rename(
                 local_dir,
-                os.path.join(dest_full_path, resource_dir, effect_name)
+                os.path.join(dest_full_path, 'resources', resource_dir, effect_name)
             )
 
 
