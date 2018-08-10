@@ -1,14 +1,14 @@
 import moderngl
 from demosys import geometry
 from demosys.effects import effect
-
 # from pyrr import matrix44
 
 
 class SimpleCubeEffect(effect.Effect):
-    """Generated default effect"""
+    runnable = True
+
     def __init__(self):
-        self.program = self.get_program("cube_plain.glsl", local=True)
+        self.program = self.get_program('cube_plain')
         self.cube = geometry.cube(4.0, 4.0, 4.0)
 
     def draw(self, time, frametime, target):
