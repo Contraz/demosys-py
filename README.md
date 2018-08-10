@@ -10,8 +10,8 @@ A Python 3 cross platform OpenGL 3.3+ core framework based on [ModernGL](https:/
 ---
 
 Originally made for for non-interactive real time graphics combined with music
-("real time music videos", see [demoscene](https://en.wikipedia.org/wiki/Demoscene)
-but can of course be used for other purposes.
+("real time music videos", see [demoscene](https://en.wikipedia.org/wiki/Demoscene))
+but can of course be used almost any purpose.
 
 Made for people who enjoy playing around with modern OpenGL without spending lots of time creating all the tooling to get things up and running.
 
