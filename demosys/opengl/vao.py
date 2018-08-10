@@ -239,16 +239,21 @@ class VAO:
 
         return vao
 
-    def release(self):
-        """Destroy the vao object and its buffers"""
+    def release(self, buffer=True):
+        """
+        Destroy the vao object
+
+        :param buffers: (bool) also release buffers
+        """
         for key, vao in self.vaos:
             vao.release()
 
-        for buff in self.buffers:
-            buff.buffer.release()
+        if buffer:
+            for buff in self.buffers:
+                buff.buffer.release()
 
-        if self._index_buffer:
-            self._index_buffer.release()
+            if self._index_buffer:
+                self._index_buffer.release()
 
 
 class VAOError(Exception):
