@@ -42,7 +42,7 @@ def copy_effect_template(template_name, effect_name, dest_path):
 
     # Rename local resource directories if present
     files = os.listdir(os.path.join(dest_full_path, 'resources'))
-    
+
     for resource_dir in files:
         # Skip non-dirs
         if not os.path.isdir(os.path.join(dest_full_path, 'resources', resource_dir)):
