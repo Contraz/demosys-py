@@ -10,6 +10,7 @@ Draw Methods
 ------------
 
 .. automethod:: Effect.draw(time, frametime, target)
+.. automethod:: Effect.post_load()
 
 Resource Methods
 ----------------
@@ -19,7 +20,8 @@ Resource Methods
 .. automethod:: Effect.get_track(name) -> Track
 .. automethod:: Effect.get_scene(label) -> Scene
 .. automethod:: Effect.get_data(label) -> Any
-.. automethod:: Effect.post_load()
+.. automethod:: Effect.get_effect(label) -> Effect
+.. automethod:: Effect.get_effect_class(effect_name, package_name=None) -> Type[_ForwardRef('Effect')]
 
 Utility Methods
 ---------------
