@@ -34,6 +34,6 @@ setup(
         'PyWavefront==0.4.1',
     ],
     entry_points={'console_scripts': [
-        'demosys-admin = demosys.core.management:execute_from_command_line',
+        'demosys-admin = demosys.management:execute_from_command_line',
     ]},
 )
