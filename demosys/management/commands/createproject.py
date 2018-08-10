@@ -70,5 +70,9 @@ class Command(CreateCommand):
         directory = os.path.join(directory, 'project_template')
         return directory
 
-    def create_project_file(self):
-        pass
+    def create_project_file(self):        
+        with open(os.path.join(self.template_dir, 'project', 'project.py'), 'r') as fd:
+            template = string.Template(fd.read())
+
+        with open(os.path.join(self.project_name, 'project.py'), 'w') as fd:
+            fd.write(template.substitute(project_name=self.project_name))
