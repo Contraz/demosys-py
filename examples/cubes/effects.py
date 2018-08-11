@@ -42,8 +42,8 @@ class PlainCube(Effect):
         m_mv = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),
                                           translation=(-7.0, 0.0, -12.0))
 
-        self.program.uniform("m_proj", self.sys_camera.projection.tobytes())
-        self.program.uniform("m_mv", m_mv.astype('f4').tobytes())
+        self.program["m_proj"].write(self.sys_camera.projection.tobytes())
+        self.program["m_mv"].write(m_mv.astype('f4').tobytes())
         self.cube.draw(self.program)
 
 
@@ -56,14 +56,22 @@ class LightCube(Effect):
         self.cube = cube
         self.program = self.get_program("light")
 
+        # Pre-fetch the uniforms
+        self.m_proj = self.program["m_proj"]
+        self.m_mv = self.program["m_mv"]
+        self.m_normal = self.program["m_normal"]
+
     def draw(self, time, frametime, target):
         m_mv = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),
                                           translation=(0.0, 0.0, -12.0))
         m_normal = self.create_normal_matrix(m_mv)
 
-        self.program.uniform("m_proj", self.sys_camera.projection.tobytes())
-        self.program.uniform("m_mv", m_mv.astype('f4').tobytes())
-        self.program.uniform("m_normal", m_normal.astype('f4').tobytes())
+        # Write to uniforms
+        self.m_proj.write(self.sys_camera.projection.tobytes())
+        self.m_mv.write(m_mv.astype('f4').tobytes())
+        self.m_normal.write(m_normal.astype('f4').tobytes())
+
+        # Draw the cube
         self.cube.draw(self.program)
 
 
@@ -77,14 +85,22 @@ class TexturedCube(Effect):
         self.program = self.get_program("textured")
         self.texture = self.get_texture("crate")
 
+        # pre-fetch the uniform buffers
+        self.m_proj = self.program["m_proj"]
+        self.m_mv = self.program["m_mv"]
+        self.m_normal = self.program["m_normal"]
+        self.wood = self.program["wood"]
+
     def draw(self, time, frametime, target):
         m_mv = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),
                                           translation=(7.0, 0.0, -12.0))
         m_normal = self.create_normal_matrix(m_mv)
 
-        self.program.uniform("m_proj", self.sys_camera.projection.tobytes())
-        self.program.uniform("m_mv", m_mv.astype('f4').tobytes())
-        self.program.uniform("m_normal", m_normal.astype('f4').tobytes())
+        self.m_proj.write(self.sys_camera.projection.tobytes())
+        self.m_mv.write(m_mv.astype('f4').tobytes())
+        self.m_normal.write(m_normal.astype('f4').tobytes())
+
         self.texture.use(location=0)
-        self.program.uniform("wood", 0)
+        self.wood.value = 0
+
         self.cube.draw(self.program)
