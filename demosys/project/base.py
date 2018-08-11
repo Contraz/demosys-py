@@ -6,6 +6,7 @@ from demosys.conf import settings
 
 class BaseProject:
     """The Project"""
+    effect_packages = []
     resources = []
     override_resources = {}
 
@@ -18,7 +19,7 @@ class BaseProject:
 
     def create_effect_classes(self):
         """Create effect classes in the registry"""
-        effects.polulate(settings.EFFECTS)
+        effects.polulate(self.effect_packages)
 
     def create_external_resources(self):
         """

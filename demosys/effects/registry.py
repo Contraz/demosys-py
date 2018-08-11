@@ -38,8 +38,7 @@ class Effects:
 
     def polulate(self, package_list):
         """
-        Polulate the registry with effect packges.
-        This is normally the ``settings.EFFECTS`` list
+        Polulate the registry with effect packages.
 
         :param module_list: List of effect module paths
         """

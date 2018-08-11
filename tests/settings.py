@@ -34,10 +34,6 @@ ROCKET = {
     'files': os.path.join(PROJECT_DIR, 'resources', 'tracks'),
 }
 
-# What effects to load
-EFFECTS = (
-)
-
 PROJECT = 'tests.project.Project'
 
 PROGRAM_DIRS = (

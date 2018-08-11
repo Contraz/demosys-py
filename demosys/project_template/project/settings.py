@@ -35,8 +35,6 @@ TIMELINE = 'demosys.timeline.single.Timeline'
 
 PROJECT = "$project_name.project.Project"
 
-EFFECTS = ()
-
 ROCKET = {
     'mode': 'editor',
     'rps': 24,

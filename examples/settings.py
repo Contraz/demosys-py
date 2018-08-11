@@ -30,7 +30,3 @@ ROCKET = {
     "project": None,
     "files": None,
 }
-
-EFFECTS = (
-
-)

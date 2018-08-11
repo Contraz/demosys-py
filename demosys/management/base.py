@@ -114,8 +114,8 @@ class RunCommand(BaseCommand):
         window.print_context_info()
         return window
 
-    def create_project(self):
-        return import_string(settings.PROJECT)()
+    def create_project(self, *args, **kwargs):
+        return import_string(settings.PROJECT)(*args, **kwargs)
 
     def create_timeline(self, project):
         return import_string(settings.TIMELINE)(project)

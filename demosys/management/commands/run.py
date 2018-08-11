@@ -5,9 +5,6 @@ from demosys.management.base import RunCommand
 class Command(RunCommand):
     help = "Run the project"
 
-    def add_arguments(self, parser):
-        pass
-
     def handle(self, *args, **options):
         demosys.setup()
 

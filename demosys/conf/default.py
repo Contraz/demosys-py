@@ -29,8 +29,6 @@ TIMER = 'demosys.timers.time.Timer'
 
 TIMELINE = 'demosys.timeline.single.Timeline'
 
-EFFECTS = ()
-
 ROCKET = {
     'mode': 'editor',
     'rps': 24,

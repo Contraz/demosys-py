@@ -9,17 +9,16 @@ class Command(RunCommand):
     help = "Runs an effect"
 
     def add_arguments(self, parser):
-        parser.add_argument("name", help="Name of the effect")
+        parser.add_argument("effect_package", help="Name of the effect package")
 
     def handle(self, *args, **options):
         demosys.setup(
-            EFFECTS=[options['name']],
             PROJECT='demosys.project.default.Project',
             TIMELINE='demosys.timeline.single.Timeline'
         )
 
         window = self.create_window()
-        project = self.create_project()
+        project = self.create_project(options['effect_package'])
         timeline = self.create_timeline(project)
 
         demosys.init(window=window, project=project, timeline=timeline)
