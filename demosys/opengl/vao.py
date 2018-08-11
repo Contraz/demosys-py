@@ -6,6 +6,7 @@ import moderngl
 from demosys import context
 from demosys.opengl import ShaderProgram, types
 
+# For sanity checking draw modes when creating the VAO
 DRAW_MODES = {
     moderngl.TRIANGLES: 'TRIANGLES',
     moderngl.TRIANGLE_FAN: 'TRIANGLE_FAN',
@@ -18,8 +19,6 @@ DRAW_MODES = {
     moderngl.LINE_LOOP: 'LINE_LOOP',
     moderngl.LINES_ADJACENCY: 'LINES_ADJACENCY',
 }
-
-SYSTEM_ATTRIBS = ['gl_InstanceID', ]
 
 
 class BufferInfo:
@@ -102,6 +101,7 @@ class VAO:
 
         self.vertex_count = 0
         self.vaos = {}
+        self.vaos2 = {}
 
     def draw(self, shader: ShaderProgram, mode=None, vertices=-1, first=0, instances=1):
         """
@@ -194,7 +194,7 @@ class VAO:
         self._index_buffer = buffer
         self._index_element_size = index_element_size
 
-    def _create_vao_instance(self, shader):
+    def _create_vao_instance(self, program: moderngl.Program):
         """
         Create a VAO based on the shader's attribute specification.
         This is called by ``bind(shader)`` and should not be messed with
@@ -203,40 +203,92 @@ class VAO:
         :param shader: The shader we are generating the combo for
         :return: A new VAOCombo object with the correct attribute binding
         """
+        if isinstance(program, moderngl.Program):
+            return self._create_vao_instance2(program)
+
         # Return the combo if already generated
-        vao = self.vaos.get(shader.vao_key)
+        vao = self.vaos.get(program.vao_key)
         if vao:
             return vao
 
+        program_attributes = [a.name for a in program.attribute_list]
+
         # Make sure all attributes are covered
-        for attrib in shader.attribute_list:
-            if attrib.name in SYSTEM_ATTRIBS:
+        for attrib_name in program_attributes:
+            # Ignore built in attributes for now
+            if attrib_name.startswith('gl_'):
                 continue
 
-            if not sum(b.has_attribute(attrib.name) for b in self.buffers):
+            # Do we have a buffer mapping to this attribute?
+            if not sum(b.has_attribute(attrib_name) for b in self.buffers):
                 raise VAOError("VAO {} doesn't have attribute {} for program {}".format(
-                    self.name, attrib.name, shader.name))
+                    self.name, attrib_name, program.name))
 
-        attributes = [a.name for a in shader.attribute_list]
         vao_content = []
 
+        # Pick out the attributes we can actually map
         for buffer in self.buffers:
-            content = buffer.content(attributes)
+            content = buffer.content(program_attributes)
             if content:
                 vao_content.append(content)
 
-        if attributes:
-            for attrib in attributes:
-                if attrib not in SYSTEM_ATTRIBS:
-                    raise VAOError("Did not find a buffer mapping for {}".format([n for n in attributes]))
+        # Any attribute left is not accounted for
+        if program_attributes:
+            for attrib_name in program_attributes:
+                if attrib_name.startswith('gl_'):
+                    raise VAOError("Did not find a buffer mapping for {}".format([n for n in program_attributes]))
 
+        # Create the vertex buffer object
         if self._index_buffer:
-            vao = context.ctx().vertex_array(shader.program, vao_content,
+            vao = context.ctx().vertex_array(program.program, vao_content,
                                              self._index_buffer, self._index_element_size)
         else:
-            vao = context.ctx().vertex_array(shader.program, vao_content)
-        self.vaos[shader.vao_key] = vao
+            vao = context.ctx().vertex_array(program.program, vao_content)
+        self.vaos[program.vao_key] = vao
 
+        return vao
+
+    def _create_vao_instance2(self, program: moderngl.Program):
+        # Return the combo if already generated
+        vao = self.vaos2.get(program.glo)
+        if vao:
+            return vao
+
+        program_attributes = [name for name, attr in program._members.items() if isinstance(attr, moderngl.Attribute)]
+
+        # Make sure all attributes are covered
+        for attrib_name in program_attributes:
+            # Ignore built in attributes for now
+            if attrib_name.startswith('gl_'):
+                continue
+
+            # Do we have a buffer mapping to this attribute?
+            if not sum(buffer.has_attribute(attrib_name) for buffer in self.buffers):
+                raise VAOError("VAO {} doesn't have attribute {} for program {}".format(
+                    self.name, attrib_name, program.name))
+
+        vao_content = []
+
+        # Pick out the attributes we can actually map
+        for buffer in self.buffers:
+            content = buffer.content(program_attributes)
+            if content:
+                vao_content.append(content)
+
+        # Any attribute left is not accounted for
+        if program_attributes:
+            for attrib_name in program_attributes:
+                if attrib_name.startswith('gl_'):
+                    raise VAOError("Did not find a buffer mapping for {}".format([n for n in program_attributes]))
+
+        # Create the vao
+        if self._index_buffer:
+            vao = context.ctx().vertex_array(program, vao_content,
+                                             self._index_buffer, self._index_element_size)
+        else:
+            vao = context.ctx().vertex_array(program, vao_content)
+
+        self.vaos2[program.glo] = vao
         return vao
 
     def release(self, buffer=True):
