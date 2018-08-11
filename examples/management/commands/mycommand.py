@@ -1,4 +1,4 @@
-from demosys.core.management.base import BaseCommand
+from demosys.management.base import BaseCommand
 
 
 class Command(BaseCommand):
