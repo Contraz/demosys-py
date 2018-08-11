@@ -90,7 +90,6 @@ class ProgramShaders:
             else:
                 out_attribs = self.vertex_source.find_out_attribs()
 
-
         return self.ctx.program(
             vertex_shader=self.vertex_source.source,
             geometry_shader=self.geometry_source.source if self.geometry_source else None,

@@ -3,7 +3,6 @@ import pkgutil
 import sys
 from typing import List
 
-from demosys.conf import settings
 from demosys.utils.module_loading import import_module
 
 

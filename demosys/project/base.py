@@ -1,7 +1,6 @@
 from demosys import context
 from demosys import resources
 from demosys.effects.registry import effects
-from demosys.conf import settings
 
 
 class BaseProject:

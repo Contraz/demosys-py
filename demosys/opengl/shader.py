@@ -3,7 +3,6 @@ from typing import Tuple, Union
 import moderngl
 from demosys import context
 from demosys.conf import settings
-from demosys.resources.meta import SceneDescription
 
 VERTEX_SHADER = 'VERTEX_SHADER'
 GEOMETRY_SHADER = 'GEOMETRY_SHADER'
