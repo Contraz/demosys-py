@@ -3,10 +3,14 @@ from typing import Tuple, Union
 import moderngl
 from demosys import context
 from demosys.conf import settings
+from demosys.resources.meta import SceneDescription
 
 VERTEX_SHADER = 'VERTEX_SHADER'
 GEOMETRY_SHADER = 'GEOMETRY_SHADER'
 FRAGMENT_SHADER = 'FRAGMENT_SHADER'
+TESS_CONTROL_SHADER = 'TESS_CONTROL_SHADER'
+TESS_EVALUATION_SHADER = 'TESS_EVALUATION_SHADER'
+COMPUTE_SHADER = 'COMPUTE_SHADER'
 
 
 class ShaderProgram:
@@ -252,41 +256,30 @@ class ShaderError(Exception):
 
 class ShaderSource:
     """
-    Helper class to deal with shader source files.
-    This represents a single shader (vert/frag/geo)
+    Helper class representing a single shader type
     """
-    def __init__(self, shader_type, name, source):
+    def __init__(self, shader_type: str, name: str, source: str):
         self.type = shader_type
         self.name = name
-        self.source = source
-        self.lines = None
-        self.shader = None
-
-        if not isinstance(self.source, str):
-            raise ShaderError("Shader source is not a string: {source}")
-
+        self.source = source.strip()
         self.lines = self.source.split('\n')
 
         # Make sure version is present
         if not self.lines[0].startswith("#version"):
             self.print()
             raise ShaderError(
-                "Missing #version in shader {}. A version must be defined in the first line".format(self.name),
+                "Missing #version in {}. A version must be defined in the first line".format(self.name),
             )
 
-        # Add preprocessors to source
-        if self.type == VERTEX_SHADER:
-            self.lines.insert(1, "#define VERTEX_SHADER 1")
-        elif self.type == FRAGMENT_SHADER:
-            self.lines.insert(1, "#define FRAGMENT_SHADER 1")
-        elif self.type == GEOMETRY_SHADER:
-            self.lines.insert(1, "#define GEOMETRY_SHADER 1")
+        # Add preprocessors to source VERTEX_SHADER, FRAGMENT_SHADER etc.
+        self.lines.insert(1, "#define {} 1".format(self.type))
 
         self.source = '\n'.join(self.lines)
 
     def find_out_attribs(self):
         """
         Get all out attributes in the shader source.
+
         :return: List of attribute names
         """
         names = []

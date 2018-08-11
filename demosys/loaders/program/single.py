@@ -1,5 +1,5 @@
 from demosys.loaders.base import BaseLoader
-from demosys.opengl import ShaderProgram
+from demosys.opengl import program
 
 
 class Loader(BaseLoader):
@@ -10,12 +10,7 @@ class Loader(BaseLoader):
         if not self.meta.resolved_path:
             raise ValueError("Cannot find program '{}'".format(self.meta.path))
 
-        # Load it
-        program = ShaderProgram(self.meta.path)
-
         with open(self.meta.resolved_path, 'r') as fd:
-            program.set_source(fd.read())
+            shaders = program.ProgramShaders.from_single(self.meta, fd.read())
 
-        program.prepare()
-
-        return program
+        return shaders.create()
