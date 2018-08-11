@@ -12,7 +12,7 @@ Methods
 .. automethod:: VAO.buffer(buffer, buffer_format:str, attribute_names, per_instance=False)
 .. automethod:: VAO.index_buffer(buffer, index_element_size=4)
 .. automethod:: VAO.subroutines(shader, routines:tuple)
-.. automethod:: VAO.release()
+.. automethod:: VAO.release(buffer=True)
 
 Draw Methods
 ------------
