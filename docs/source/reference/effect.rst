@@ -36,6 +36,6 @@ Attributes
 .. autoattribute:: Effect.ctx
 .. autoattribute:: Effect.sys_camera
 .. autoattribute:: Effect.name
-.. autoattribute:: Effect.effect_name
+.. autoattribute:: Effect.label
 .. autoattribute:: Effect.window
 .. autoattribute:: Effect.runnable
