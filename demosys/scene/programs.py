@@ -23,8 +23,8 @@ class MeshProgram:
         :param camera_matrix: camera_matrix (bytes)
         :param time: The current time
         """
-        self.program.uniform("m_proj", projection_matrix)
-        self.program.uniform("m_mv", view_matrix)
+        self.program["m_proj"].write(projection_matrix)
+        self.program["m_mv"].write(view_matrix)
         mesh.vao.draw(self.program)
 
     def apply(self, mesh):
@@ -56,13 +56,13 @@ class ColorProgram(MeshProgram):
             #     self.ctx.enable(moderngl.CULL_FACE)
 
             if mesh.material.color:
-                self.program.uniform("color", tuple(mesh.material.color))
+                self.program["color"].value = tuple(mesh.material.color)
             else:
-                self.program.uniform("color", (1.0, 1.0, 1.0, 1.0))
+                self.program["color"].value = (1.0, 1.0, 1.0, 1.0)
 
-        self.program.uniform("m_proj", projection_matrix)
-        self.program.uniform("m_view", view_matrix)
-        self.program.uniform("m_cam", camera_matrix)
+        self.program["m_proj"].write(projection_matrix)
+        self.program["m_view"].write(view_matrix)
+        self.program["m_cam"].write(camera_matrix)
         mesh.vao.draw(self.program)
 
     def apply(self, mesh):
@@ -95,10 +95,10 @@ class TextureProgram(MeshProgram):
         #     self.ctx.enable(moderngl.CULL_FACE)
 
         mesh.material.mat_texture.texture.use()
-        self.program.uniform("texture0", 0)
-        self.program.uniform("m_proj", projection_matrix)
-        self.program.uniform("m_view", view_matrix)
-        self.program.uniform("m_cam", camera_matrix)
+        self.program["texture0"].value = 0
+        self.program["m_proj"].write(projection_matrix)
+        self.program["m_view"].write(view_matrix)
+        self.program["m_cam"].write(camera_matrix)
         mesh.vao.draw(self.program)
 
     def apply(self, mesh):
@@ -126,14 +126,14 @@ class FallbackProgram(MeshProgram):
 
     def draw(self, mesh, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
 
-        self.program.uniform("m_proj", projection_matrix)
-        self.program.uniform("m_view", view_matrix)
-        self.program.uniform("m_cam", camera_matrix)
+        self.program["m_proj"].write(projection_matrix)
+        self.program["m_view"].write(view_matrix)
+        self.program["m_cam"].write(camera_matrix)
 
         if mesh.material:
-            self.program.uniform("color", tuple(mesh.material.color[0:3]))
+            self.program["color"].value = tuple(mesh.material.color[0:3])
         else:
-            self.program.uniform("color", (1.0, 1.0, 1.0))
+            self.program["color"].value = (1.0, 1.0, 1.0)
 
         mesh.vao.draw(self.program)
 
