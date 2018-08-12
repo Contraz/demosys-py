@@ -108,7 +108,10 @@ class EffectPackage:
         try:
             return self.effect_class_map[class_name]
         except KeyError:
-            raise EffectError("No effect class '{}' found in package '{}'".format(class_name, self.name))
+            if raise_for_error:
+                raise EffectError("No effect class '{}' found in package '{}'".format(class_name, self.name))
+
+        return None
 
     @property
     def path(self) -> str:
