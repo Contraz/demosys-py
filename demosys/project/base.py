@@ -47,6 +47,7 @@ class BaseProject:
         params = name.split('.')
         effect_cls = effects.find_effect_class(params[-1], package_name=".".join(params[:-1]))
         effect = effect_cls(*args, **kwargs)
+        effect._label = label
 
         if label in self._effects:
             raise ValueError("An effect with label '{}' already exists".format(label))

@@ -25,6 +25,7 @@ class Effect:
 
     # Full python path to the effect (set per instance)
     _name = ""
+    _label = ""
 
     # Window properties set by controller on initialization (class vars)
     _window = None  # type: Window
@@ -45,6 +46,11 @@ class Effect:
         return self._name
 
     @property
+    def label(self) -> str:
+        """Full python path to the effect"""
+        return self._label
+
+    @property
     def window(self) -> Window:
         return self._window
 
@@ -57,11 +63,6 @@ class Effect:
     def sys_camera(self) -> camera.SystemCamera:
         """The system camera responding to input"""
         return self._sys_camera
-
-    @property
-    def effect_name(self) -> str:
-        """Package name for the effect"""
-        return self.name.split('.')[-1]
 
     # Methods to override
     def draw(self, time, frametime, target):

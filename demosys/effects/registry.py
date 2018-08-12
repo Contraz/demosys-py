@@ -156,6 +156,7 @@ class EffectPackage:
                 if issubclass(cls, Effect):
                     self.effect_classes.append(cls)
                     self.effect_class_map[cls.__name__] = cls
+                    cls._name = "{}.{}".format(self.effect_module_name, cls.__name__)
 
     def load_resource_module(self):
         """Fetch the resource list"""
