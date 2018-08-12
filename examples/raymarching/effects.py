@@ -37,20 +37,20 @@ class SimpleRaymarchEffect(effect.Effect):
         # Draw the plane
 
         # For vertex program
-        self.program.uniform("m_proj", self.sys_camera.projection.tobytes())
-        self.program.uniform("m_mv", m_mv.astype('f4').tobytes())
+        self.program["m_proj"].write(self.sys_camera.projection.tobytes())
+        self.program["m_mv"].write(m_mv.astype('f4').tobytes())
 
         # For fragment program
-        self.program.uniform("fov", fov)
-        self.program.uniform("alpha", alpha)
-        self.program.uniform("modifier", modifier)
+        self.program["fov"].value = fov
+        self.program["alpha"].value = alpha
+        self.program["modifier"].value = modifier
 
-        self.program.uniform("cPosition", cPosition.astype('f4').tobytes())
-        self.program.uniform("cLookAt", cLookAt.astype('f4').tobytes())
-        self.program.uniform("lPosition", lPosition.astype('f4').tobytes())
-        self.program.uniform("lIntensity", lItensity)
-        self.program.uniform("color", color.astype('f4').tobytes())
+        self.program["cPosition"].write(cPosition.astype('f4').tobytes())
+        self.program["cLookAt"].write(cLookAt.astype('f4').tobytes())
+        self.program["lPosition"].write(lPosition.astype('f4').tobytes())
+        self.program["lIntensity"].value = lItensity
+        self.program["color"].write(color.astype('f4').tobytes())
 
-        self.program.uniform("resolution", (self.window.width, self.window.height))
+        self.program["resolution"].value = (self.window.width, self.window.height)
 
         self.plane.draw(self.program)
