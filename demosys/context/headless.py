@@ -26,6 +26,7 @@ class HeadlessWindow(Window):
         )
 
         self.set_default_viewport()
+        self.fbo.use()
 
     def draw(self, current_time, frame_time):
         super().draw(current_time, frame_time)
