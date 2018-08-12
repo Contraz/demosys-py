@@ -59,10 +59,10 @@ class MinecraftProgram(MeshProgram):
 
     def draw(self, mesh, projection_matrix=None, view_matrix=None, camera_matrix=None, time=0):
         mesh.material.mat_texture.texture.use()
-        self.program.uniform("texture0", 0)
-        self.program.uniform("m_proj", projection_matrix)
-        self.program.uniform("m_view", view_matrix)
-        self.program.uniform("m_cam", camera_matrix)
+        self.program["texture0"].value = 0
+        self.program["m_proj"].write(projection_matrix)
+        self.program["m_view"].write(view_matrix)
+        self.program["m_cam"].write(camera_matrix)
         mesh.vao.draw(self.program)
 
     def apply(self, mesh):

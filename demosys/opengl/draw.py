@@ -5,11 +5,11 @@ from demosys import context
 class TextureHelper:
     _quad = None
 
-    _texture2d_shader = None
-    _texture2d_sampler = None
+    _texture2d_shader = None  # Type: moderngl.Program
+    _texture2d_sampler = None  # Type: moderngl.Sampler
 
-    _depth_shader = None
-    _depth_sampler = None
+    _depth_shader = None  # Type: moderngl.Program
+    _depth_sampler = None  # Type: moderngl.Sampler
 
     def __init__(self):
         pass
@@ -33,11 +33,11 @@ class TextureHelper:
         if not self.initialized:
             self.init()
 
-        self._texture2d_shader.uniform("offset", (pos[0] - 1.0, pos[1] - 1.0))
-        self._texture2d_shader.uniform("scale", (scale[0], scale[1]))
+        self._texture2d_shader["offset"].value = (pos[0] - 1.0, pos[1] - 1.0)
+        self._texture2d_shader["scale"].value = (scale[0], scale[1])
         texture.use(location=0)
         self._texture2d_sampler.use(location=0)
-        self._texture2d_shader.uniform("texture0", 0)
+        self._texture2d_shader["texture0"].value = 0
         self._quad.draw(self._texture2d_shader)
         self._texture2d_sampler.clear(location=0)
 
@@ -55,22 +55,23 @@ class TextureHelper:
         if not self.initialized:
             self.init()
 
-        self._depth_shader.uniform("offset", (pos[0] - 1.0, pos[1] - 1.0))
-        self._depth_shader.uniform("scale", (scale[0], scale[1]))
-        self._depth_shader.uniform("near", near)
-        self._depth_shader.uniform("far", far)
+        self._depth_shader["offset"].value = (pos[0] - 1.0, pos[1] - 1.0)
+        self._depth_shader["scale"].value = (scale[0], scale[1])
+        self._depth_shader["near"].value = near
+        self._depth_shader["far"].value = far
         self._depth_sampler.use(location=0)
         texture.use(location=0)
-        self._depth_shader.uniform("texture0", 0)
+        self._depth_shader["texture0"].value = 0
         self._quad.draw(self._depth_shader)
         self._depth_sampler.clear(location=0)
 
     def _init_texture2d_draw(self):
         """Initialize geometry and shader for drawing FBO layers"""
-        from demosys import context, geometry  # noqa
+        from demosys import geometry
 
         if not TextureHelper._quad:
             TextureHelper._quad = geometry.quad_fs()
+
         # Shader for drawing color layers
         TextureHelper._texture2d_shader = context.ctx().program(
             vertex_shader="""
@@ -106,10 +107,11 @@ class TextureHelper:
 
     def _init_depth_texture_draw(self):
         """Initialize geometry and shader for drawing FBO layers"""
-        from demosys import context, geometry  # noqa
+        from demosys import geometry
 
         if not TextureHelper._quad:
             TextureHelper._quad = geometry.quad_fs()
+
         # Shader for drawing depth layers
         TextureHelper._depth_shader = context.ctx().program(
             vertex_shader="""

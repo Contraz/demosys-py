@@ -10,18 +10,16 @@ OPENGL = {
 WINDOW = {
     "class": "demosys.context.pyglet.Window",
     "size": (1280, 720),
-    "aspect_ratio": 1.7777777777777777,
+    "aspect_ratio": 16 / 9,
     "fullscreen": False,
     "resizable": True,
     "title": "Examples",
     "vsync": True,
-    "cursor": True,
+    "cursor": False,
     "samples": 4,
 }
 
-HEADLESS_DURATION = 10.0
-
-MUSIC = None
+HEADLESS_DURATION = 100.0
 
 ROCKET = {
     "mode": "editor",
