@@ -1,8 +1,6 @@
 import os
 from unittest import TestCase
 
-os.environ['DEMOSYS_SETTINGS_MODULE'] = 'tests.settings'  # noqa
-
 import demosys
 from demosys import context, resources
 from demosys.resources.meta import (
@@ -12,9 +10,6 @@ from demosys.resources.meta import (
     DataDescription,
 )
 
-demosys.setup()
-demosys.create_window().use()
-
 
 class DemosysTestCase(TestCase):
 
@@ -22,19 +17,19 @@ class DemosysTestCase(TestCase):
     ctx = context.ctx()
 
     def load_program(self, path):
-        return resources.programs.load(ProgramDescription(path=path))
+        return resources.programs.load(ProgramDescription(label=path, path=path))
 
     def load_texture(self, path):
-        return resources.textures.load(TextureDescription(path=path))
+        return resources.textures.load(TextureDescription(label=path, path=path))
 
     def load_texture_array(self, path, layers=0):
-        return resources.textures.load(TextureDescription(path=path, loader='array', layers=layers))
+        return resources.textures.load(TextureDescription(label=path, path=path, loader='array', layers=layers))
 
     def load_scene(self, path):
-        return resources.scenes.load(SceneDescription(path=path))
+        return resources.scenes.load(SceneDescription(label=path, path=path))
 
     def load_data(self, path, loader=None):
-        return resources.data.load(DataDescription(path=path, loader=loader))
+        return resources.data.load(DataDescription(label=path, path=path, loader=loader))
 
     def get_track(self, name):
         return resources.tracks.get(name)
