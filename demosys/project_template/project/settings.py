@@ -42,10 +42,6 @@ ROCKET = {
     'files': None,
 }
 
-# Raise errors when shader uniforms are assigned incorrectly
-# Otherwise just print the errors to terminal
-SHADER_STRICT_VALIDATION = False
-
 PROGRAM_DIRS = (
 
 )

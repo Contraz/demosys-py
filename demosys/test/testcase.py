@@ -33,5 +33,8 @@ class DemosysTestCase(TestCase):
     def load_scene(self, path):
         return resources.scenes.load(SceneDescription(path=path))
 
+    def load_data(self, path, loader=None):
+        return resources.data.load(DataDescription(path=path, loader=loader))
+
     def get_track(self, name):
         return resources.tracks.get(name)

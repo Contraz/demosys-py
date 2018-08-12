@@ -135,17 +135,6 @@ Configuration of the pyrocket_ sync-tracker library.
         "project_file": None,
     }
 
-EFFECTS
--------
-
-Effect packages that will be recognized by the project.
-Initialization should happens in the order they appear in the list.
-
-.. code:: python
-
-    EFFECTS = (
-        'myproject.cube',
-    )
 
 EFFECT_MANAGER
 --------------
@@ -164,18 +153,6 @@ If we use the ``run`` sub-command, the first registered effect will run.
     EFFECT_MANAGER = 'demosys.effects.managers.single.SingleEffectManager'
 
 More info in the :doc:`guides/effectmanagers` section.
-
-SHADER_STRICT_VALIDATION
-------------------------
-
-Boolean value. If ``True`` shaders will raise ``ShaderError`` when
-setting uniforms variables that don't exist.
-
-If the value is ``False`` an error message will be generated instead.
-
-This is useful when working with shaders. Sometimes you want to allow
-missing or incorrect uniforms. Other times you want to know in a more
-brutal way that something is wrong.
 
 SHADER_DIRS/FINDERS
 -------------------
