@@ -42,10 +42,10 @@ class BaseProject:
         """
         raise NotImplementedError()
 
-    def create_effect(self, label, class_name, package_name=None, **kwargs):
+    def create_effect(self, label, class_name, *args, **kwargs):
         """Create an effect instance"""
-        effect_cls = effects.find_effect_class(class_name, package_name=package_name)
-        effect = effect_cls(**kwargs)
+        effect_cls = effects.find_effect_class(class_name)  # , package_name=package_name)
+        effect = effect_cls(*args, **kwargs)
 
         if label in self._effects:
             raise ValueError("An effect with label '{}' already exists".format(label))
@@ -88,6 +88,9 @@ class BaseProject:
 
         for meta in meta_list:
             getattr(resources, meta.resource_type).add(meta)
+
+    def reload_shaders(self):
+        pass
 
     def get_effect(self, label):
         return self._get_resource(label, self._effects, "effect")

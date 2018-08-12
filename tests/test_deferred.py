@@ -1,33 +1,37 @@
 from pyrr import matrix44
 
 from demosys.test import DemosysTestCase
-from demosys.deferred import DeferredRenderer
 from demosys import geometry
 from demosys.opengl import Projection
-from demosys.opengl import texture
+from demosys.effects.registry import effects
 
 
 class DeferredTestCase(DemosysTestCase):
     """Crude test executing deferred code"""
 
     def setUp(self):
-        texture._init_texture2d_draw()
-        texture._init_depth_texture_draw()
+        effects.add_package('demosys.effects.deferred')
+        self.project.load()
+        self.instance = self.project.create_effect(
+            'test',
+            'DeferredRenderer',
+            self.window.width,
+            self.window.height,
+        )
 
     def test_create(self):
-        renderer = DeferredRenderer(self.window.width, self.window.height)
-        renderer.add_point_light(position=[0.0, 0.0, 0.0], radius=40.0)
+        self.instance.add_point_light(position=[0.0, 0.0, 0.0], radius=40.0)
 
         cube = geometry.cube(width=8.0, height=8.0, depth=8.0)
-        geo_shader_color = self.create_program(path="deferred/geometry_color.glsl")
+        geo_shader_color = self.load_program(path="deferred/geometry_color.glsl")
         projection = Projection()
 
-        with renderer.gbuffer_scope:
+        with self.instance.gbuffer_scope:
             cube.draw(geo_shader_color)
 
-        renderer.render_lights(
+        self.instance.render_lights(
             matrix44.create_identity(dtype='f4'),
             projection,
         )
-        renderer.combine()
-        renderer.clear()
+        self.instance.combine()
+        self.instance.clear()

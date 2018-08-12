@@ -1,29 +1,13 @@
 from pyrr import matrix44
 
 import moderngl
-from demosys import context, geometry, resources
+from demosys import geometry
 from demosys.opengl import texture
+from demosys.effects import Effect
 
 
-class PointLight:
-    """A point light and its properties"""
-    def __init__(self, position, radius):
-        self.matrix = None
-        self._position = position
-        self.position = position
-        self.radius = radius
-
-    @property
-    def position(self):
-        return self._position
-
-    @position.setter
-    def position(self, pos):
-        self._position = pos
-        self.matrix = matrix44.create_from_translation(pos)
-
-
-class DeferredRenderer:
+class DeferredRenderer(Effect):
+    runnable = False
 
     def __init__(self, width, height, gbuffer=None, lightbuffer=None):
         self.width = width
@@ -65,18 +49,14 @@ class DeferredRenderer:
 
         # Unit cube for point lights (cube with radius 1.0)
         self.unit_cube = geometry.cube(width=2, height=2, depth=2)
-        self.point_light_shader = resources.programs.get("deferred/light_point.glsl", create=True)
+        self.point_light_shader = self.get_program("demosys.deferred.point_light")
 
         # Debug draw lights
-        self.debug_shader = resources.programs.get("deferred/debug.glsl", create=True)
+        self.debug_shader = self.get_program("demosys.deferred.debug")
 
         # Combine shader
-        self.combine_shader = resources.programs.get("deferred/combine.glsl", create=True)
+        self.combine_shader = self.get_program("demosys.deferred.combine")
         self.quad = geometry.quad_fs()
-
-    @property
-    def ctx(self):
-        return context.ctx()
 
     def draw_buffers(self, near, far):
         """
@@ -110,15 +90,15 @@ class DeferredRenderer:
                 light_size = light.radius
                 m_light = matrix44.multiply(light.matrix, camera_matrix)
                 # Draw the light volume
-                self.point_light_shader.uniform("m_proj", projection.tobytes())
-                self.point_light_shader.uniform("m_light", m_light.astype('f4').tobytes())
+                self.point_light_shader["m_proj"].write(projection.tobytes())
+                self.point_light_shader["m_light"].write(m_light.astype('f4').tobytes())
                 self.gbuffer.color_attachments[1].use(location=0)
-                self.point_light_shader.uniform("g_normal", 0)
+                self.point_light_shader["g_normal"].value = 0
                 self.gbuffer.depth_attachment.use(location=1)
-                self.point_light_shader.uniform("g_depth", 1)
-                self.point_light_shader.uniform("screensize", (self.width, self.height))
-                self.point_light_shader.uniform("proj_const", projection.projection_constants)
-                self.point_light_shader.uniform("radius", light_size)
+                self.point_light_shader["g_depth"].value = 1
+                self.point_light_shader["screensize"].value = (self.width, self.height)
+                self.point_light_shader["proj_const"].value = projection.projection_constants
+                self.point_light_shader["radius"].value = light_size
                 self.unit_cube.draw(self.point_light_shader)
 
         texture._depth_sampler.clear(location=1)
@@ -131,9 +111,9 @@ class DeferredRenderer:
         for light in self.point_lights:
             m_mv = matrix44.multiply(light.matrix, camera_matrix)
             light_size = light.radius
-            self.debug_shader.uniform("m_proj", projection.tobytes())
-            self.debug_shader.uniform("m_mv", m_mv.astype('f4').tobytes())
-            self.debug_shader.uniform("size", light_size)
+            self.debug_shader["m_proj"].write(projection.tobytes())
+            self.debug_shader["m_mv"].write(m_mv.astype('f4').tobytes())
+            self.debug_shader["size"].value = light_size
             self.unit_cube.draw(self.debug_shader, mode=moderngl.LINE_STRIP)
 
         self.ctx.disable(moderngl.BLEND)
@@ -144,12 +124,30 @@ class DeferredRenderer:
     def combine(self):
         """Combine diffuse and light buffer"""
         self.gbuffer.color_attachments[0].use(location=0)
-        self.combine_shader.uniform("diffuse_buffer", 0)
+        self.combine_shader["diffuse_buffer"].value = 0
         self.lightbuffer.color_attachments[0].use(location=1)
-        self.combine_shader.uniform("light_buffer", 1)
+        self.combine_shader["light_buffer"].value = 1
         self.quad.draw(self.combine_shader)
 
     def clear(self):
         """clear all buffers"""
         self.gbuffer.clear()
         self.lightbuffer.clear()
+
+
+class PointLight:
+    """A point light and its properties"""
+    def __init__(self, position, radius):
+        self.matrix = None
+        self._position = position
+        self.position = position
+        self.radius = radius
+
+    @property
+    def position(self):
+        return self._position
+
+    @position.setter
+    def position(self, pos):
+        self._position = pos
+        self.matrix = matrix44.create_from_translation(pos)
