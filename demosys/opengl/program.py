@@ -166,12 +166,16 @@ class ReloadableProgram:
         return self.meta.path or self.meta.vertex_shader
 
     @property
+    def _members(self):
+        return self.program._members
+
+    @property
     def ctx(self) -> moderngl.Context:
         return self.program.ctx
 
     def __getitem__(self, key) -> Union[moderngl.Uniform, moderngl.UniformBlock, moderngl.Subroutine,
                                         moderngl.Attribute, moderngl.Varying]:
-        return self.mglo[key]
+        return self.program[key]
 
     def get(self, key, default):
         return self.program.get(key, default)

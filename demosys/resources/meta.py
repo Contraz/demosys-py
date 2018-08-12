@@ -22,13 +22,14 @@ class ProgramDescription(ResourceDescription):
     default_loader = 'single'
     resource_type = 'programs'
 
-    def __init__(self, path=None, label=None, loader=None,
+    def __init__(self, path=None, label=None, loader=None, reloadable=False,
                  vertex_shader=None, geometry_shader=None, fragment_shader=None,
                  tess_control_shader=None, tess_evaluation_shader=None, **kwargs):
         kwargs.update({
             "path": path,
             "label": label,
             "loader": loader,
+            "reloadable": reloadable,
             "vertex_shader": vertex_shader,
             "geometry_shader": geometry_shader,
             "fragment_shader": fragment_shader,
@@ -36,6 +37,14 @@ class ProgramDescription(ResourceDescription):
             "tess_evaluation_shader": tess_evaluation_shader,
         })
         super().__init__(**kwargs)
+
+    @property
+    def reloadable(self):
+        return self.kwargs.get('reloadable')
+
+    @reloadable.setter
+    def reloadable(self, value):
+        self.kwargs['reloadable'] = value
 
 
 class SceneDescription(ResourceDescription):

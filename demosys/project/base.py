@@ -91,8 +91,12 @@ class BaseProject:
         for meta in meta_list:
             getattr(resources, meta.resource_type).add(meta)
 
-    def reload_shaders(self):
-        pass
+    def reload_programs(self):
+        print("Reloading programs:")
+        for name, program in self._programs.items():
+            if getattr(program, 'program', None):
+                print(" - {}".format(program.meta.label))
+                program.program = resources.programs.load(program.meta)
 
     def get_effect(self, label):
         return self._get_resource(label, self._effects, "effect")

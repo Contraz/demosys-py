@@ -195,7 +195,6 @@ class VAO:
         self._index_element_size = index_element_size
 
     def _create_vao_instance(self, program: moderngl.Program):
-        # Return the combo if already generated
         vao = self.vaos.get(program.glo)
         if vao:
             return vao

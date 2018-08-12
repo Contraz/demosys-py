@@ -4,6 +4,7 @@ import moderngl
 from demosys.view import screenshot
 from demosys import context
 from .base import Window
+from demosys import project
 
 
 class GLFW_Window(Window):
@@ -168,7 +169,7 @@ class GLFW_Window(Window):
             screenshot.create()
 
         if key == glfw.KEY_R and action == glfw.PRESS:
-            print("Shader reloading is disabled :(")
+            project.instance.reload_programs()
 
         # Forward the event to the timeline
         self.timeline.key_event(key, scancode, action, mods)
