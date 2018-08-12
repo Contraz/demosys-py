@@ -27,7 +27,10 @@ from docutils.utils import get_source_line
 
 
 # Define a settings module
-os.environ['DEMOSYS_SETTINGS_MODULE'] = 'demosys.conf.default_settings'
+os.environ['DEMOSYS_SETTINGS_MODULE'] = 'demosys.conf.default'
+import demosys
+demosys.setup()
+
 
 class Mock(MagicMock):
     @classmethod
