@@ -21,6 +21,5 @@ class Loader(BaseLoader):
             self.meta.reloadable = False
             # Wrap it ..
             prog = program.ReloadableProgram(self.meta, prog)
-        
-        return prog
 
+        return prog

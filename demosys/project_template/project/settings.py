@@ -42,56 +42,10 @@ ROCKET = {
     'files': None,
 }
 
-PROGRAM_DIRS = (
+PROGRAM_DIRS = ()
 
-)
+TEXTURE_DIRS = ()
 
-PROGRAM_FINDERS = (
-    "demosys.finders.program.FileSystemFinder",
-    "demosys.finders.program.EffectDirectoriesFinder",
-)
-
-PROGRAM_LOADERS = (
-    'demosys.loaders.program.single.Loader',
-)
-
-TEXTURE_DIRS = (
-
-)
-
-TEXTURE_FINDERS = (
-    "demosys.finders.textures.FileSystemFinder",
-    "demosys.finders.textures.EffectDirectoriesFinder",
-)
-
-TEXTURE_LOADERS = (
-    'demosys.loaders.texture.t2d.Loader',
-    'demosys.loaders.texture.array.Loader',
-)
-
-SCENE_DIRS = (
-
-)
-
-SCENE_FINDERS = (
-    "demosys.finders.scenes.FileSystemFinder",
-    "demosys.finders.scenes.EffectDirectoriesFinder",
-)
-
-SCENE_LOADERS = (
-    "demosys.loaders.scene.gltf.GLTF2",
-    "demosys.loaders.scene.wavefront.ObjLoader",
-)
+SCENE_DIRS = ()
 
 DATA_DIRS = ()
-
-DATA_FINDERS = (
-    "demosys.finders.data.FileSystemFinder",
-    "demosys.finders.data.EffectDirectoriesFinder",
-)
-
-DATA_LOADERS = (
-    'demosys.loaders.data.binary.Loader',
-    'demosys.loaders.data.text.Loader',
-    'demosys.loaders.data.json.Loader',
-)
