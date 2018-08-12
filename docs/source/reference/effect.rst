@@ -15,7 +15,7 @@ Draw Methods
 Resource Methods
 ----------------
 
-.. automethod:: Effect.get_program(label) -> ShaderProgram
+.. automethod:: Effect.get_program(label) -> Program
 .. automethod:: Effect.get_texture(label) -> Texture
 .. automethod:: Effect.get_track(name) -> Track
 .. automethod:: Effect.get_scene(label) -> Scene

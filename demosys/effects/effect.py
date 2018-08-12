@@ -6,7 +6,6 @@ from rocket.tracks import Track
 import moderngl
 from demosys import resources
 from demosys.context.base import Window  # noqa
-from demosys.opengl import ShaderProgram
 from demosys.scene import camera  # noqa
 from demosys.scene import Scene
 
@@ -78,12 +77,12 @@ class Effect:
 
     # Methods for getting resources
 
-    def get_program(self, label) -> ShaderProgram:
+    def get_program(self, label) -> moderngl.Program:
         """
         Get a program by its label
 
         :param label: The label for the program
-        :return: ShaderProgram object
+        :return: moderngl.Program instance
         """
         return self._project.get_program(label)
 

@@ -4,7 +4,7 @@ import numpy
 
 import moderngl
 from demosys import context
-from demosys.opengl import ShaderProgram, types
+from demosys.opengl import types
 
 # For sanity checking draw modes when creating the VAO
 DRAW_MODES = {
@@ -101,39 +101,39 @@ class VAO:
 
         self.vertex_count = 0
         self.vaos = {}
-        self.vaos2 = {}
 
-    def draw(self, shader: ShaderProgram, mode=None, vertices=-1, first=0, instances=1):
+    def draw(self, program: moderngl.Program, mode=None, vertices=-1, first=0, instances=1):
         """
         Draw the VAO.
         Will use ``glDrawElements`` if an element buffer is present
         and ``glDrawArrays`` if no element array is present.
 
-        :param shader: The shader to draw with
+        :param program: The program to draw with
         :param mode: Override the draw mode (GL_TRIANGLES etc)
         :param vertices: The number of vertices to transform
         :param first: The index of the first vertex to start with
         :param instances: The number of instances
         """
-        vao = self._create_vao_instance(shader)
+        vao = self._create_vao_instance(program)
 
         if mode is None:
             mode = self.mode
 
         vao.render(mode, vertices=vertices, first=first, instances=instances)
 
-    def transform(self, shader, buffer: moderngl.Buffer, mode=None, vertices=-1, first=0, instances=1):
+    def transform(self, program: moderngl.Program, buffer: moderngl.Buffer,
+                  mode=None, vertices=-1, first=0, instances=1):
         """
         Transform vertices. Stores the output in a single buffer.
 
+        :param program: The program
         :param buffer: The buffer to store the output
         :param mode: Draw mode (for example `POINTS`
         :param vertices: The number of vertices to transform
         :param first: The index of the first vertex to start with
         :param instances: The number of instances
-        :return:
         """
-        vao = self._create_vao_instance(shader)
+        vao = self._create_vao_instance(program)
 
         if mode is None:
             mode = self.mode
@@ -195,62 +195,8 @@ class VAO:
         self._index_element_size = index_element_size
 
     def _create_vao_instance(self, program: moderngl.Program):
-        """
-        Create a VAO based on the shader's attribute specification.
-        This is called by ``bind(shader)`` and should not be messed with
-        unless you are absolutely sure about what you are doing.
-
-        :param shader: The shader we are generating the combo for
-        :return: A new VAOCombo object with the correct attribute binding
-        """
-        if isinstance(program, moderngl.Program):
-            return self._create_vao_instance2(program)
-
         # Return the combo if already generated
-        vao = self.vaos.get(program.vao_key)
-        if vao:
-            return vao
-
-        program_attributes = [a.name for a in program.attribute_list]
-
-        # Make sure all attributes are covered
-        for attrib_name in program_attributes:
-            # Ignore built in attributes for now
-            if attrib_name.startswith('gl_'):
-                continue
-
-            # Do we have a buffer mapping to this attribute?
-            if not sum(b.has_attribute(attrib_name) for b in self.buffers):
-                raise VAOError("VAO {} doesn't have attribute {} for program {}".format(
-                    self.name, attrib_name, program.name))
-
-        vao_content = []
-
-        # Pick out the attributes we can actually map
-        for buffer in self.buffers:
-            content = buffer.content(program_attributes)
-            if content:
-                vao_content.append(content)
-
-        # Any attribute left is not accounted for
-        if program_attributes:
-            for attrib_name in program_attributes:
-                if attrib_name.startswith('gl_'):
-                    raise VAOError("Did not find a buffer mapping for {}".format([n for n in program_attributes]))
-
-        # Create the vertex buffer object
-        if self._index_buffer:
-            vao = context.ctx().vertex_array(program.program, vao_content,
-                                             self._index_buffer, self._index_element_size)
-        else:
-            vao = context.ctx().vertex_array(program.program, vao_content)
-        self.vaos[program.vao_key] = vao
-
-        return vao
-
-    def _create_vao_instance2(self, program: moderngl.Program):
-        # Return the combo if already generated
-        vao = self.vaos2.get(program.glo)
+        vao = self.vaos.get(program.glo)
         if vao:
             return vao
 
@@ -288,7 +234,7 @@ class VAO:
         else:
             vao = context.ctx().vertex_array(program, vao_content)
 
-        self.vaos2[program.glo] = vao
+        self.vaos[program.glo] = vao
         return vao
 
     def release(self, buffer=True):

@@ -17,5 +17,5 @@ Methods
 Draw Methods
 ------------
 
-.. automethod:: VAO.draw(shader:ShaderProgram, mode=None, vertices=-1, first=0, instances=1)
-.. automethod:: VAO.transform(shader, buffer:Buffer, mode=None, vertices=-1, first=0, instances=1)
+.. automethod:: VAO.draw(program:Program, mode=None, vertices=-1, first=0, instances=1)
+.. automethod:: VAO.transform(program:Program, buffer:Buffer, mode=None, vertices=-1, first=0, instances=1)

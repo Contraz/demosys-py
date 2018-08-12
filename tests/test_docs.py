@@ -32,6 +32,7 @@ MODULES = [
     'depth.',
     'texture_array.',
     'array.',
+    'program.',
 ]
 
 class TestCase(unittest.TestCase):
@@ -64,12 +65,6 @@ class TestCase(unittest.TestCase):
         self.validate(
             os.path.join('reference', 'effect.rst'),
             effects, 'Effect', [])
-
-    def test_shader_docs(self):
-        self.validate(
-            os.path.join('reference', 'shaderprogram.rst'),
-            opengl, 'ShaderProgram', [],
-        )
 
     def test_vao_docs(self):
         self.validate(

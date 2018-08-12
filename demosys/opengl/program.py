@@ -1,3 +1,5 @@
+from typing import Tuple, Union
+
 import moderngl
 from demosys.resources.meta import ProgramDescription
 from demosys import context
@@ -144,3 +146,80 @@ class ShaderSource:
 
 class ShaderError(Exception):
     pass
+
+
+class ReloadableProgram:
+    """
+    Programs we want to be reloadabla must be created with this wrapper
+    """
+    def __init__(self, meta: ProgramDescription, program: moderngl.Program):
+        """
+        Create a shader using either a file path or a name
+        :param meta: The ProgramMeta
+        :param program: The program instance
+        """
+        self.program = program
+        self.meta = meta
+
+    @property
+    def name(self):
+        return self.meta.path or self.meta.vertex_shader
+
+    @property
+    def ctx(self) -> moderngl.Context:
+        return self.program.ctx
+
+    def __getitem__(self, key) -> Union[moderngl.Uniform, moderngl.UniformBlock, moderngl.Subroutine,
+                                        moderngl.Attribute, moderngl.Varying]:
+        return self.mglo[key]
+
+    def get(self, key, default):
+        return self.program.get(key, default)
+
+    @property
+    def mglo(self):
+        """The ModernGL Program object"""
+        return self.program.mglo
+
+    @property
+    def glo(self) -> int:
+        """
+        int: The internal OpenGL object.
+        This values is provided for debug purposes only.
+        """
+        return self.program.glo
+
+    @property
+    def subroutines(self) -> Tuple[str, ...]:
+        '''
+            tuple: The subroutine uniforms.
+        '''
+        return self.program.subroutines
+
+    @property
+    def geometry_input(self) -> int:
+        """
+        int: The geometry input primitive.
+        The GeometryShader's input primitive if the GeometryShader exists.
+        The geometry input primitive will be used for validation.
+        """
+        return self.program.geometry_input
+
+    @property
+    def geometry_output(self) -> int:
+        """
+        int: The geometry output primitive.
+        The GeometryShader's output primitive if the GeometryShader exists.
+        """
+        return self.program.geometry_output
+
+    @property
+    def geometry_vertices(self) -> int:
+        """
+        int: The maximum number of vertices that
+        the geometry shader will output.
+        """
+        return self.program.geometry_vertices
+
+    def __repr__(self):
+        return '<ReloadableProgram: {} id={}>'.format(self.name, self.mglo.glo)

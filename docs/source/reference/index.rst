@@ -6,5 +6,4 @@ Reference
 
     effect.rst
     vao.rst
-    shaderprogram.rst
     geometry.rst
