@@ -28,7 +28,7 @@ def create(file_format='png', name=None):
         print("SCREENSHOT_PATH not defined in settings. Using cwd as fallback.")
 
     if not Config.target:
-        Config.target = context.window().mgl_fbo()
+        Config.target = context.window().fbo
 
     image = Image.frombytes(
         "RGB",

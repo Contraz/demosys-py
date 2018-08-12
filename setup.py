@@ -32,6 +32,7 @@ setup(
         'Pillow==5.2.0',
         'pyrocket==0.2.7',
         'PyWavefront==0.4.1',
+        'pyglet==1.3.2',
     ],
     entry_points={'console_scripts': [
         'demosys-admin = demosys.management:execute_from_command_line',

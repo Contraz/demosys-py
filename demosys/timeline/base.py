@@ -23,7 +23,7 @@ class BaseTimeline:
         """
         raise NotImplementedError()
 
-    def key_event(self, key, scancode, action, mods):
+    def key_event(self, key, action, mods):
         """
         Forwarded (unconsumed) key events from the system.
         See glfw's key events for detailed information.

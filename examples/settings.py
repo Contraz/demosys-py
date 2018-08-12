@@ -1,4 +1,3 @@
-# Auto generated settings file
 import os
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -9,7 +8,7 @@ OPENGL = {
 }
 
 WINDOW = {
-    "class": "demosys.context.glfw.GLFW_Window",
+    "class": "demosys.context.pyglet.Window",
     "size": (1280, 720),
     "aspect_ratio": 1.7777777777777777,
     "fullscreen": False,

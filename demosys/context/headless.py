@@ -2,10 +2,10 @@ import moderngl
 from demosys import context
 from demosys.conf import ImproperlyConfigured, settings
 
-from .base import Window
+from .base import BaseWindow
 
 
-class HeadlessWindow(Window):
+class Window(BaseWindow):
 
     def __init__(self):
         super().__init__()

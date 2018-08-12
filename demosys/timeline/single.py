@@ -13,6 +13,6 @@ class Timeline(BaseTimeline):
         effect = self.get_active_effect(time)
         effect.draw(time, frametime, target)
 
-    def key_event(self, key, scancode, action, mods):
-        # print("Timeline:key_event", key, scancode, action, mods)
+    def key_event(self, key, action, mods):
+        # print("Timeline:key_event", key,  action, mods)
         pass

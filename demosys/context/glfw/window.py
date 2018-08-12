@@ -1,14 +1,14 @@
 import glfw
 
 import moderngl
-from demosys.view import screenshot
 from demosys import context
-from .base import Window
-from demosys import project
+from demosys.context.base import BaseWindow
+from demosys.context.glfw.keys import Keys
 
 
-class GLFW_Window(Window):
+class Window(BaseWindow):
     min_glfw_version = (3, 2, 1)
+    keys = Keys
 
     def __init__(self):
         super().__init__()
@@ -87,8 +87,7 @@ class GLFW_Window(Window):
         self.width = width
         self.height = height
         self.buffer_width, self.buffer_height = glfw.get_framebuffer_size(self.window)
-        print("Resize:", self.width, self.height, self.buffer_width, self.buffer_height)
-        super().resize(width, height)
+        self.set_default_viewport()
 
     def terminate(self):
         glfw.terminate()
@@ -108,71 +107,12 @@ class GLFW_Window(Window):
         Key event callback for glfw
 
         :param window: Window event origin
-        :param key: The keyboard key that was pressed or released.
+        :param key: The key that was pressed or released.
         :param scancode: The system-specific scancode of the key.
         :param action: GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
         :param mods: Bit field describing which modifier keys were held down.
         """
-        # print("Key event:", key, scancode, action, mods)
-
-        # The well-known standard key for quick exit
-        if key == glfw.KEY_ESCAPE:
-            self.close()
-            return
-
-        # Toggle pause time
-        if key == glfw.KEY_SPACE and action == glfw.PRESS:
-            self.timer.toggle_pause()
-
-        # Camera movement
-        # Right
-        if key == glfw.KEY_D:
-            if action == glfw.PRESS:
-                self.sys_camera.move_right(True)
-            elif action == glfw.RELEASE:
-                self.sys_camera.move_right(False)
-        # Left
-        elif key == glfw.KEY_A:
-            if action == glfw.PRESS:
-                self.sys_camera.move_left(True)
-            elif action == glfw.RELEASE:
-                self.sys_camera.move_left(False)
-        # Forward
-        elif key == glfw.KEY_W:
-            if action == glfw.PRESS:
-                self.sys_camera.move_forward(True)
-            if action == glfw.RELEASE:
-                self.sys_camera.move_forward(False)
-        # Backwards
-        elif key == glfw.KEY_S:
-            if action == glfw.PRESS:
-                self.sys_camera.move_backward(True)
-            if action == glfw.RELEASE:
-                self.sys_camera.move_backward(False)
-
-        # UP
-        elif key == glfw.KEY_Q:
-            if action == glfw.PRESS:
-                self.sys_camera.move_down(True)
-            if action == glfw.RELEASE:
-                self.sys_camera.move_down(False)
-
-        # Down
-        elif key == glfw.KEY_E:
-            if action == glfw.PRESS:
-                self.sys_camera.move_up(True)
-            if action == glfw.RELEASE:
-                self.sys_camera.move_up(False)
-
-        # Screenshots
-        if key == glfw.KEY_X and action == glfw.PRESS:
-            screenshot.create()
-
-        if key == glfw.KEY_R and action == glfw.PRESS:
-            project.instance.reload_programs()
-
-        # Forward the event to the timeline
-        self.timeline.key_event(key, scancode, action, mods)
+        self.keyboard_event(key, action, mods)
 
     def mouse_event_callback(self, window, xpos, ypos):
         """
@@ -182,7 +122,8 @@ class GLFW_Window(Window):
         :param xpos: viewport x pos
         :param ypos: viewport y pos
         """
-        self.sys_camera.rot_state(xpos, ypos)
+        # screen coordinates relative to the top-left corner
+        self.cursor_event(xpos, ypos, 0, 0)
 
     def window_resize_callback(self, window, width, height):
         """
@@ -192,5 +133,4 @@ class GLFW_Window(Window):
         :param width: New width
         :param height: New height
         """
-        print("Resize", width, height)
         self.resize(width, height)

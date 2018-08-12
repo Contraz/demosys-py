@@ -5,7 +5,7 @@ from rocket.tracks import Track
 
 import moderngl
 from demosys import resources
-from demosys.context.base import Window  # noqa
+from demosys.context.base import BaseWindow  # noqa
 from demosys.scene import camera  # noqa
 from demosys.scene import Scene
 
@@ -28,7 +28,7 @@ class Effect:
     _label = ""
 
     # Window properties set by controller on initialization (class vars)
-    _window = None  # type: Window
+    _window = None  # type: BaseWindow
     _project = None  # type: demosys.project.base.BaseProject
 
     _ctx = None  # type: moderngl.Context
@@ -51,7 +51,7 @@ class Effect:
         return self._label
 
     @property
-    def window(self) -> Window:
+    def window(self) -> BaseWindow:
         return self._window
 
     @property

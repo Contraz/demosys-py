@@ -2,12 +2,21 @@ import sys
 from collections import namedtuple
 
 import moderngl
+from demosys import project
 from demosys.conf import settings
+from demosys.view import screenshot
 
 GLVersion = namedtuple('GLVersion', ['major', 'minor', 'code'])
 
 
-class Window:
+class BaseKeys:
+    """Generic constants here"""
+    ACTION_PRESS = 'ACTION_PRESS'
+    ACTION_RELEASE = 'ACTION_RELEASE'
+
+
+class BaseWindow:
+    keys = None
 
     def __init__(self):
         """
@@ -90,8 +99,68 @@ class Window:
         """Cleanup after close"""
         raise NotImplementedError()
 
-    def mgl_fbo(self):
-        return self.ctx.screen
+    def keyboard_event(self, key, action, modifier):
+        # The well-known standard key for quick exit
+        if key == self.keys.ESCAPE:
+            self.close()
+            return
+
+        # Toggle pause time
+        if key == self.keys.SPACE and action == self.keys.ACTION_PRESS:
+            self.timer.toggle_pause()
+
+        # Camera movement
+        # Right
+        if key == self.keys.D:
+            if action == self.keys.ACTION_PRESS:
+                self.sys_camera.move_right(True)
+            elif action == self.keys.ACTION_RELEASE:
+                self.sys_camera.move_right(False)
+        # Left
+        elif key == self.keys.A:
+            if action == self.keys.ACTION_PRESS:
+                self.sys_camera.move_left(True)
+            elif action == self.keys.ACTION_RELEASE:
+                self.sys_camera.move_left(False)
+        # Forward
+        elif key == self.keys.W:
+            if action == self.keys.ACTION_PRESS:
+                self.sys_camera.move_forward(True)
+            if action == self.keys.ACTION_RELEASE:
+                self.sys_camera.move_forward(False)
+        # Backwards
+        elif key == self.keys.S:
+            if action == self.keys.ACTION_PRESS:
+                self.sys_camera.move_backward(True)
+            if action == self.keys.ACTION_RELEASE:
+                self.sys_camera.move_backward(False)
+
+        # UP
+        elif key == self.keys.Q:
+            if action == self.keys.ACTION_PRESS:
+                self.sys_camera.move_down(True)
+            if action == self.keys.ACTION_RELEASE:
+                self.sys_camera.move_down(False)
+
+        # Down
+        elif key == self.keys.E:
+            if action == self.keys.ACTION_PRESS:
+                self.sys_camera.move_up(True)
+            if action == self.keys.ACTION_RELEASE:
+                self.sys_camera.move_up(False)
+
+        # Screenshots
+        if key == self.keys.X and action == self.keys.ACTION_PRESS:
+            screenshot.create()
+
+        if key == self.keys.R and action == self.keys.ACTION_PRESS:
+            project.instance.reload_programs()
+
+        # Forward the event to the timeline
+        self.timeline.key_event(key, action, modifier)
+
+    def cursor_event(self, x, y, dx, dy):
+        self.sys_camera.rot_state(x, y)
 
     def print_context_info(self):
         """Prints out context info"""
