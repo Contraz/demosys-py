@@ -1,7 +1,5 @@
-import os
 from unittest import TestCase
 
-import demosys
 from demosys import context, resources
 from demosys.resources.meta import (
     TextureDescription,
