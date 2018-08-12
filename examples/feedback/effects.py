@@ -48,16 +48,16 @@ class FeedbackEffect(effect.Effect):
         # gravity_force = 2.0
 
         # Transform positions
-        self.feedback.uniform("gravity_pos", gravity_pos.astype('f4').tobytes())
-        self.feedback.uniform("gravity_force", gravity_force)
-        self.feedback.uniform("timedelta", frametime)
+        self.feedback["gravity_pos"].write(gravity_pos.astype('f4').tobytes())
+        self.feedback["gravity_force"].value = gravity_force
+        self.feedback["timedelta"].value = frametime
         self.particles.transform(self.feedback, self.pos)
 
         # Draw particles
-        self.program.uniform("m_proj", m_proj.astype('f4').tobytes())
-        self.program.uniform("m_mv", m_mv.astype('f4').tobytes())
+        self.program["m_proj"].write(m_proj.astype('f4').tobytes())
+        self.program["m_mv"].write(m_mv.astype('f4').tobytes())
         self.texture.use(location=0)
-        self.program.uniform("texture0", 0)
+        self.program["texture0"].value = 0
         self.particles.draw(self.program)
 
         # Swap buffers
