@@ -47,6 +47,10 @@ class ResourceDescription:
         """
         return self._kwargs.get('loader') or self.default_loader
 
+    @loader.setter
+    def loader(self, value):
+        self._kwargs['loader'] = value
+
     @property
     def loader_cls(self) -> Type:
         """

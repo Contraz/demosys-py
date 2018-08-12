@@ -47,6 +47,7 @@ PROGRAM_FINDERS = (
 
 PROGRAM_LOADERS = (
     'demosys.loaders.program.single.Loader',
+    'demosys.loaders.program.separate.Loader',
 )
 
 TEXTURE_DIRS = (

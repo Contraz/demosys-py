@@ -19,7 +19,7 @@ class DataDescription(ResourceDescription):
 class ProgramDescription(ResourceDescription):
     """Describes a program to load"""
     require_label = True
-    default_loader = 'single'
+    default_loader = None
     resource_type = 'programs'
 
     def __init__(self, path=None, label=None, loader=None, reloadable=False,
@@ -40,11 +40,23 @@ class ProgramDescription(ResourceDescription):
 
     @property
     def reloadable(self):
-        return self.kwargs.get('reloadable')
+        return self._kwargs.get('reloadable')
 
     @reloadable.setter
     def reloadable(self, value):
-        self.kwargs['reloadable'] = value
+        self._kwargs['reloadable'] = value
+
+    @property
+    def vertex_shader(self):
+        return self._kwargs.get('vertex_shader')
+
+    @property
+    def geometry_shader(self):
+        return self._kwargs.get('geometry_shader')
+
+    @property
+    def fragment_shader(self):
+        return self._kwargs.get('fragment_shader')
 
 
 class SceneDescription(ResourceDescription):
@@ -80,12 +92,12 @@ class TextureDescription(ResourceDescription):
 
     @property
     def flip(self):
-        return self.kwargs.get('flip')
+        return self._kwargs.get('flip')
 
     @property
     def image(self):
-        return self.kwargs.get('image')
+        return self._kwargs.get('image')
 
     @property
     def mipmap(self):
-        return self.kwargs.get('mipmap')
+        return self._kwargs.get('mipmap')
