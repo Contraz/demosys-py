@@ -3,6 +3,7 @@ from importlib import import_module
 
 from demosys.conf import settings
 from demosys.utils.module_loading import import_string
+from demosys import context
 
 
 class CommandError(Exception):
@@ -108,11 +109,7 @@ class CreateCommand(BaseCommand):
 class RunCommand(BaseCommand):
 
     def create_window(self):
-        window_cls_name = settings.WINDOW.get('class', 'demosys.context.glfw.GLFW_Window')
-        window_cls = import_string(window_cls_name)
-        window = window_cls()
-        window.print_context_info()
-        return window
+        return context.create_window()
 
     def create_project(self, *args, **kwargs):
         return import_string(settings.PROJECT)(*args, **kwargs)
