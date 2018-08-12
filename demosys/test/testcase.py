@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from demosys import context, resources
+from demosys import project
 from demosys.resources.meta import (
     TextureDescription,
     SceneDescription,
@@ -13,6 +14,8 @@ class DemosysTestCase(TestCase):
 
     window = context.window()
     ctx = context.ctx()
+    project = project.instance
+    timeline = None
 
     def load_program(self, path):
         return resources.programs.load(ProgramDescription(label=path, path=path))

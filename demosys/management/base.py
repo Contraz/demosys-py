@@ -3,7 +3,7 @@ from importlib import import_module
 
 from demosys.conf import settings
 from demosys.utils.module_loading import import_string
-from demosys import context
+from demosys import context, project, timeline
 
 
 class CommandError(Exception):
@@ -112,7 +112,9 @@ class RunCommand(BaseCommand):
         return context.create_window()
 
     def create_project(self, *args, **kwargs):
-        return import_string(settings.PROJECT)(*args, **kwargs)
+        project.instance = import_string(settings.PROJECT)(*args, **kwargs)
+        return project.instance
 
     def create_timeline(self, project):
-        return import_string(settings.TIMELINE)(project)
+        timeline.instance = import_string(settings.TIMELINE)(project)
+        return timeline.instance
