@@ -42,9 +42,10 @@ class BaseProject:
         """
         raise NotImplementedError()
 
-    def create_effect(self, label, class_name, *args, **kwargs):
+    def create_effect(self, label, name, *args, **kwargs):
         """Create an effect instance"""
-        effect_cls = effects.find_effect_class(class_name)  # , package_name=package_name)
+        params = name.split('.')
+        effect_cls = effects.find_effect_class(params[-1], package_name=".".join(params[:-1]))
         effect = effect_cls(*args, **kwargs)
 
         if label in self._effects:
