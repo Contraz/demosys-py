@@ -109,7 +109,7 @@ class VAO:
         and ``glDrawArrays`` if no element array is present.
 
         :param program: The program to draw with
-        :param mode: Override the draw mode (GL_TRIANGLES etc)
+        :param mode: Override the draw mode (TRIANGLES etc)
         :param vertices: The number of vertices to transform
         :param first: The index of the first vertex to start with
         :param instances: The number of instances
@@ -225,7 +225,9 @@ class VAO:
         if program_attributes:
             for attrib_name in program_attributes:
                 if attrib_name.startswith('gl_'):
-                    raise VAOError("Did not find a buffer mapping for {}".format([n for n in program_attributes]))
+                    continue
+
+                raise VAOError("Did not find a buffer mapping for {}".format([n for n in program_attributes]))
 
         # Create the vao
         if self._index_buffer:
