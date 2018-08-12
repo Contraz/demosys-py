@@ -8,6 +8,7 @@ from .base import BaseText, FontMeta
 
 
 class TextWriter2D(BaseText):
+    runnable = False
 
     def __init__(self, area, text_lines=None, aspect_ratio=1.0):
         """
@@ -101,10 +102,10 @@ class TextWriter2D(BaseText):
         )
 
         self._texture.use(location=0)
-        self._program.uniform("m_proj", self._projection_bytes)
-        self._program.uniform("text_pos", cpos)
-        self._program.uniform("font_texture", 0)
-        self._program.uniform("char_size", csize)
-        self._program.uniform("line_length", self.area[0])
+        self._program["m_proj"].write(self._projection_bytes)
+        self._program["text_pos"].value = cpos
+        self._program["font_texture"].value = 0
+        self._program["char_size"].value = csize
+        self._program["line_length"].value = self.area[0]
 
         self._vao.draw(self._program, instances=length)

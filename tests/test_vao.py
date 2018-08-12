@@ -7,7 +7,7 @@ from demosys.opengl import VAO
 class VAOTest(DemosysTestCase):
 
     def test_create(self):
-        shader = self.create_program(path="vf_pos.glsl")
+        shader = self.load_program("vf_pos.glsl")
         vao = VAO("test")
         vao.buffer(
             self.ctx.buffer(reserve=12),
@@ -17,7 +17,7 @@ class VAOTest(DemosysTestCase):
         vao.draw(shader)
 
     def test_transform(self):
-        shader = self.create_program(path="v_write_1.glsl")
+        shader = self.load_program("v_write_1.glsl")
         vao = VAO("transform", mode=moderngl.POINTS)
         vao.buffer(
             self.ctx.buffer(reserve=12),
@@ -32,7 +32,7 @@ class VAOTest(DemosysTestCase):
         )
 
     def test_instanced(self):
-        shader = self.create_program(path="vf_instanced.glsl")
+        shader = self.load_program("vf_instanced.glsl")
         vao = geometry.cube(1.0, 1.0, 1.0)
         vao.buffer(
             self.ctx.buffer(reserve=4 * 10),

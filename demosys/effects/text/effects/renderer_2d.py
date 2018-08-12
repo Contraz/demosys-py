@@ -6,6 +6,7 @@ from demosys.opengl import VAO
 
 
 class TextRenderer2D(TextWriter2D):
+    runnable = False
 
     def __init__(self, area, text_lines=None, texture_height=64):
         """

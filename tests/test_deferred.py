@@ -13,7 +13,7 @@ class DeferredTestCase(DemosysTestCase):
         effects.add_package('demosys.effects.deferred')
         self.project.load()
         self.instance = self.project.create_effect(
-            'test',
+            'DeferredRenderer',
             'DeferredRenderer',
             self.window.width,
             self.window.height,
