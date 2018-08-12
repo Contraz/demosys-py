@@ -2,8 +2,6 @@ import os
 
 from demosys.test import DemosysTestCase
 from demosys.effects.registry import effects
-from demosys.effects import Effect
-from demosys.scene import camera
 
 
 class EffectTemplateTestCase(DemosysTestCase):
@@ -11,17 +9,16 @@ class EffectTemplateTestCase(DemosysTestCase):
     def test_templates(self):
         templates = self.list_effect_templates()
         effects.polulate(templates)
+        self.project.load()
 
-        Effect.ctx = self.ctx
-        Effect.window = self.window
-        Effect.sys_camera = camera.SystemCamera()
+        for template in templates:
+            package = effects.get_package(template)
+            for effect_cls in package.runnable_effects():
+                effect = effect_cls()
+                effect.post_load()
+                effect.draw(0.0, 1 / 60, self.window.fbo)
 
-        for name, config in effects.effects.items():
-            effect = config.cls()
-            effect.post_load()
-            effect.draw(0.0, 1 / 60, self.window.fbo)
-
-            self.window.fbo.clear()
+                self.window.fbo.clear()
 
     def list_effect_templates(self):
         dirs = os.listdir(

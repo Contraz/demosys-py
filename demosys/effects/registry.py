@@ -101,7 +101,7 @@ class EffectPackage:
         self.effect_packages = []
 
     def runnable_effects(self) -> List[Type[Effect]]:
-        """Returns the first runnable effect in the package"""
+        """Returns the runnable effect in the package"""
         return [cls for cls in self.effect_classes if cls.runnable]
 
     def find_effect_class(self, class_name, raise_for_error=False) -> Type[Effect]:

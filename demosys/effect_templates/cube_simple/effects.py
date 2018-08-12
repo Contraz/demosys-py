@@ -25,8 +25,8 @@ class SimpleCubeEffect(effect.Effect):
         m_normal = self.create_normal_matrix(m_mv)
 
         # Draw the cube
-        self.program.uniform("m_proj", self.sys_camera.projection.tobytes())
-        self.program.uniform("m_mv", m_mv.astype('f4').tobytes())
-        self.program.uniform("m_normal", m_normal.astype('f4').tobytes())
-        self.program.uniform("time", time)
+        self.program["m_proj"].write(self.sys_camera.projection.tobytes())
+        self.program["m_mv"].write(m_mv.astype('f4').tobytes())
+        self.program["m_normal"].write(m_normal.astype('f4').tobytes())
+        self.program["time"].value = time
         self.cube.draw(self.program)
