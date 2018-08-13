@@ -57,6 +57,10 @@ class BaseWindow:
     def size(self):
         return (self.width, self.height)
 
+    @property
+    def buffer_size(self):
+        return (self.buffer_width, self.buffer_height)
+
     def draw(self, current_time, frame_time):
         self.set_default_viewport()
         self.timeline.draw(current_time, frame_time, self.fbo)
