@@ -27,7 +27,7 @@ class DeferredTestCase(DemosysTestCase):
         projection = Projection()
 
         with self.instance.gbuffer_scope:
-            cube.draw(geo_shader_color)
+            cube.render(geo_shader_color)
 
         self.instance.render_lights(
             matrix44.create_identity(dtype='f4'),

@@ -18,7 +18,7 @@ class ContextTestCase(DemosysTestCase):
         vao = geometry.quad_fs()
         program = self.load_program(path='vf_pos_color.glsl')
         program["color"].value = (1.0, 1.0, 1.0, 1.0)
-        vao.draw(program)
+        vao.render(program)
 
         data = self.window.fbo.read()
         self.assertEqual(data[:10], b'\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff')

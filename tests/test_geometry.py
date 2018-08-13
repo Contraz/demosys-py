@@ -11,24 +11,24 @@ class GeometryTest(DemosysTestCase):
 
     def test_bbox(self):
         vao = geometry.bbox()
-        vao.draw(self.program)
+        vao.render(self.program)
 
     def test_cube(self):
         vao = geometry.cube(1.0, 1.0, 1.0)
-        vao.draw(self.program)
+        vao.render(self.program)
 
     def test_plane(self):
         vao = geometry.plane_xz()
-        vao.draw(self.program)
+        vao.render(self.program)
 
     def test_points(self):
         vao = geometry.points_random_3d(1000)
-        vao.draw(self.program)
+        vao.render(self.program)
 
     def test_quad(self):
         vao = geometry.quad_fs()
-        vao.draw(self.program)
+        vao.render(self.program)
 
     def test_sphere(self):
         vao = geometry.sphere()
-        vao.draw(self.program)
+        vao.render(self.program)

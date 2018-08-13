@@ -45,7 +45,7 @@ class TextRenderer2D(TextWriter2D):
         self._quad_program["yscale"].value = self._texture_height / self._texture_width
         self._quad_program["pos"].value = pos
         self._quad_program["size"].value = size
-        self._quad.draw(self._quad_program)
+        self._quad.render(self._quad_program)
 
     def _create_vao(self):
         data = numpy.array([

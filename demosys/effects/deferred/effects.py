@@ -99,7 +99,7 @@ class DeferredRenderer(Effect):
                 self.point_light_shader["screensize"].value = (self.width, self.height)
                 self.point_light_shader["proj_const"].value = projection.projection_constants
                 self.point_light_shader["radius"].value = light_size
-                self.unit_cube.draw(self.point_light_shader)
+                self.unit_cube.render(self.point_light_shader)
 
         texture._depth_sampler.clear(location=1)
 
@@ -114,7 +114,7 @@ class DeferredRenderer(Effect):
             self.debug_shader["m_proj"].write(projection.tobytes())
             self.debug_shader["m_mv"].write(m_mv.astype('f4').tobytes())
             self.debug_shader["size"].value = light_size
-            self.unit_cube.draw(self.debug_shader, mode=moderngl.LINE_STRIP)
+            self.unit_cube.render(self.debug_shader, mode=moderngl.LINE_STRIP)
 
         self.ctx.disable(moderngl.BLEND)
 
@@ -127,7 +127,7 @@ class DeferredRenderer(Effect):
         self.combine_shader["diffuse_buffer"].value = 0
         self.lightbuffer.color_attachments[0].use(location=1)
         self.combine_shader["light_buffer"].value = 1
-        self.quad.draw(self.combine_shader)
+        self.quad.render(self.combine_shader)
 
     def clear(self):
         """clear all buffers"""

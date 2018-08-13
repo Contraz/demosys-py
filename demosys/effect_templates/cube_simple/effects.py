@@ -29,4 +29,4 @@ class SimpleCubeEffect(effect.Effect):
         self.program["m_mv"].write(m_mv.astype('f4').tobytes())
         self.program["m_normal"].write(m_normal.astype('f4').tobytes())
         self.program["time"].value = time
-        self.cube.draw(self.program)
+        self.cube.render(self.program)

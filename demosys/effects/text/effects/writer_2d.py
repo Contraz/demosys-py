@@ -108,4 +108,4 @@ class TextWriter2D(BaseText):
         self._program["char_size"].value = csize
         self._program["line_length"].value = self.area[0]
 
-        self._vao.draw(self._program, instances=length)
+        self._vao.render(self._program, instances=length)

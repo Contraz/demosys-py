@@ -119,7 +119,7 @@ class VAO:
 
         vao.render(mode, vertices=vertices, first=first, instances=instances)
 
-    def render_indirect(self, program, buffer, mode=None, count=-1, *, first=0):
+    def render_indirect(self, program: moderngl.Program, buffer, mode=None, count=-1, *, first=0):
         """
         The render primitive (mode) must be the same as the input primitive of the GeometryShader.
         The draw commands are 5 integers: (count, instanceCount, firstIndex, baseVertex, baseInstance).
@@ -205,7 +205,7 @@ class VAO:
         self._index_buffer = buffer
         self._index_element_size = index_element_size
 
-    def instance(self, program: moderngl.Program):
+    def instance(self, program: moderngl.Program) -> moderngl.VertexArray:
         """
         Obtain the moderngl.VertexArray instance for the program
 

@@ -31,8 +31,9 @@ MODULES = [
     'buffer.',
     'depth.',
     'texture_array.',
-    'array.',
     'program.',
+    'vertex_array.',
+    'array.',
 ]
 
 class TestCase(unittest.TestCase):
@@ -52,6 +53,7 @@ class TestCase(unittest.TestCase):
         for method, docsig in methods:
             classname, methodname = method.split('.')
             sig = str(inspect.signature(getattr(getattr(module, classname), methodname)))
+            print(sig)
             sig = sig.replace('self, ', '').replace('typing.', '').replace(' -> None', '')
 
             for m in MODULES:
@@ -59,6 +61,7 @@ class TestCase(unittest.TestCase):
 
             sig = sig.replace('(self)', '()').replace(', *,', ',').replace('(*, ', '(')
             sig = re.sub(r'-> \'(\w+)\'', r'-> \1', sig)
+
             self.assertEqual(docsig, sig, msg=filename + '::' + method)
 
     def test_effect_docs(self):

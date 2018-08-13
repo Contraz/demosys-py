@@ -14,7 +14,7 @@ class VAOTest(DemosysTestCase):
             '3f',
             "in_position",
         )
-        vao.draw(shader)
+        vao.render(shader)
 
     def test_transform(self):
         shader = self.load_program("v_write_1.glsl")
@@ -40,4 +40,4 @@ class VAOTest(DemosysTestCase):
             "in_instance",
             per_instance=True,
         )
-        vao.draw(shader, instances=10)
+        vao.render(shader, instances=10)
