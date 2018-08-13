@@ -79,12 +79,12 @@ class Scene:
         camera_matrix = camera_matrix.astype('f4').tobytes()
 
         # Scene bounding box
-        self.bbox_program.uniform("m_proj", projection_matrix)
-        self.bbox_program.uniform("m_view", self._view_matrix.astype('f4').tobytes())
-        self.bbox_program.uniform("m_view", camera_matrix)
-        self.bbox_program.uniform("bb_min", self.bbox_min.astype('f4').tobytes())
-        self.bbox_program.uniform("bb_max", self.bbox_max.astype('f4').tobytes())
-        self.bbox_program.uniform("color", (1.0, 0.0, 0.0))
+        self.bbox_program["m_proj"].write(projection_matrix)
+        self.bbox_program["m_view"].write(self._view_matrix.astype('f4').tobytes())
+        self.bbox_program["m_cam"].write(camera_matrix)
+        self.bbox_program["bb_min"].write(self.bbox_min.astype('f4').tobytes())
+        self.bbox_program["bb_max"].write(self.bbox_max.astype('f4').tobytes())
+        self.bbox_program["color"].value = (1.0, 0.0, 0.0)
         self.bbox_vao.draw(self.bbox_program)
 
         if not all:
