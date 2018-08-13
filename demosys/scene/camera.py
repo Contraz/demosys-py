@@ -1,7 +1,7 @@
 import time
 from math import cos, radians, sin
 
-from demosys.opengl import Projection
+from demosys.opengl.projection import Projection
 from pyrr import Vector3, matrix44, vector, vector3
 
 # Direction Definitions

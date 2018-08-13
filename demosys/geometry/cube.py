@@ -1,6 +1,6 @@
 import numpy
 
-from demosys.opengl import VAO
+from demosys.opengl.vao import VAO
 
 
 def cube(width, height, depth, center=(0.0, 0.0, 0.0), normals=True, uvs=True) -> VAO:

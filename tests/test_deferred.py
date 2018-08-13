@@ -2,7 +2,7 @@ from pyrr import matrix44
 
 from demosys.test import DemosysTestCase
 from demosys import geometry
-from demosys.opengl import Projection
+from demosys.opengl.projection import Projection
 from demosys.effects.registry import effects
 
 

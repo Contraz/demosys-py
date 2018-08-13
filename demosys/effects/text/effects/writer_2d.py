@@ -2,7 +2,7 @@ import numpy
 from pyrr import matrix44
 
 import moderngl
-from demosys.opengl import VAO
+from demosys.opengl.vao import VAO
 
 from .base import BaseText, FontMeta
 

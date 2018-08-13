@@ -2,7 +2,7 @@ import numpy
 
 import moderngl
 from demosys.effects.text.effects import TextWriter2D
-from demosys.opengl import VAO
+from demosys.opengl.vao import VAO
 
 
 class TextRenderer2D(TextWriter2D):

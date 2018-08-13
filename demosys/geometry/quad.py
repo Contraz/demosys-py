@@ -1,7 +1,7 @@
 import numpy
 
 import moderngl
-from demosys.opengl import VAO
+from demosys.opengl.vao import VAO
 
 
 def quad_fs() -> VAO:

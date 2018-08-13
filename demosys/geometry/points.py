@@ -3,7 +3,7 @@ import random
 import numpy
 
 import moderngl
-from demosys.opengl import VAO
+from demosys.opengl.vao import VAO
 
 
 def points_random_3d(count, range_x=(-10.0, 10.0), range_y=(-10.0, 10.0), range_z=(-10.0, 10.0), seed=None) -> VAO:

@@ -1,7 +1,7 @@
 import moderngl
 from demosys.test import DemosysTestCase
 from demosys import geometry
-from demosys.opengl import VAO
+from demosys.opengl.vao import VAO
 
 
 class VAOTest(DemosysTestCase):

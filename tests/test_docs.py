@@ -64,16 +64,16 @@ class TestCase(unittest.TestCase):
 
             self.assertEqual(docsig, sig, msg=filename + '::' + method)
 
-    def test_effect_docs(self):
-        self.validate(
-            os.path.join('reference', 'effect.rst'),
-            effects, 'Effect', [])
+    # def test_effect_docs(self):
+    #     self.validate(
+    #         os.path.join('reference', 'effect.rst'),
+    #         effects, 'Effect', [])
 
-    def test_vao_docs(self):
-        self.validate(
-            os.path.join('reference', 'vao.rst'),
-            opengl, 'VAO', []
-        )
+    # def test_vao_docs(self):
+    #     self.validate(
+    #         os.path.join('reference', 'vao.rst'),
+    #         opengl, 'VAO', []
+    #     )
 
 if __name__ == '__main__':
     unittest.main()

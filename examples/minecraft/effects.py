@@ -2,7 +2,7 @@ import moderngl
 
 from demosys.effects import effect
 from demosys.scene import MeshProgram
-from demosys.opengl import texture
+from demosys.opengl.texture import helper
 
 
 class MinecraftEffect(effect.Effect):
@@ -45,8 +45,8 @@ class MinecraftEffect(effect.Effect):
 
         self.ctx.disable(moderngl.DEPTH_TEST)
 
-        texture.draw(self.fbo.color_attachments[0])
-        texture.draw_depth(self.fbo.depth_attachment, 0.1, 300, pos=(1.25, 1.25), scale=(0.5, 0.5))
+        helper.draw(self.fbo.color_attachments[0])
+        helper.draw_depth(self.fbo.depth_attachment, 0.1, 300, pos=(1.25, 1.25), scale=(0.5, 0.5))
         self.fbo.clear()
 
 

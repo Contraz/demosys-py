@@ -1,8 +1,12 @@
+"""
+Draw methods for textures and depth textures
+"""
 import moderngl
-from demosys import context
+from demosys import context, geometry
 
 
 class TextureHelper:
+    """Draw methods for textures and depth textures"""
     _quad = None
 
     _texture2d_shader = None  # Type: moderngl.Program
@@ -12,7 +16,8 @@ class TextureHelper:
     _depth_sampler = None  # Type: moderngl.Sampler
 
     def __init__(self):
-        pass
+        self._init_texture2d_draw()
+        self._init_depth_texture_draw()
 
     @property
     def initialized(self):
@@ -67,8 +72,6 @@ class TextureHelper:
 
     def _init_texture2d_draw(self):
         """Initialize geometry and shader for drawing FBO layers"""
-        from demosys import geometry
-
         if not TextureHelper._quad:
             TextureHelper._quad = geometry.quad_fs()
 
@@ -151,4 +154,4 @@ class TextureHelper:
         )
 
 
-texture = TextureHelper()
+helper = TextureHelper()

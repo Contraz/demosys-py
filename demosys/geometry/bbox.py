@@ -1,7 +1,7 @@
 import numpy
 
 import moderngl
-from demosys.opengl import VAO
+from demosys.opengl.vao import VAO
 
 
 def bbox(width=1.0, height=1.0, depth=1.0):

@@ -1,5 +1,5 @@
 from demosys.test import DemosysTestCase
-from demosys.opengl import Projection
+from demosys.opengl.projection import Projection
 
 
 class ProjectionTest(DemosysTestCase):

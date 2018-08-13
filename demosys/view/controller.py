@@ -14,14 +14,10 @@ def init(window=None, project=None, timeline=None):
 
     :param manager: The effect manager to use
     """
-    from demosys.scene import camera
-    from demosys.opengl import texture
     from demosys.effects.registry import Effect
+    from demosys.scene import camera
 
     window.timeline = timeline
-
-    texture._init_texture2d_draw()
-    texture._init_depth_texture_draw()
 
     # Inject attributes into the base Effect class
     setattr(Effect, '_window', window)

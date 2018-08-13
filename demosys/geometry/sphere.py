@@ -3,7 +3,7 @@ import math
 import numpy
 
 import moderngl as mlg
-from demosys.opengl import VAO
+from demosys.opengl.vao import VAO
 
 
 def sphere(radius=0.5, sectors=32, rings=16) -> VAO:

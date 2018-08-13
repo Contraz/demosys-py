@@ -2,7 +2,7 @@ from pyrr import matrix44
 
 import moderngl
 from demosys import geometry
-from demosys.opengl import texture
+from demosys.opengl.texture import helper
 from demosys.effects import Effect
 
 
@@ -68,10 +68,10 @@ class DeferredRenderer(Effect):
         """
         self.ctx.disable(moderngl.DEPTH_TEST)
 
-        texture.draw(self.gbuffer.color_attachments[0], pos=(0.0, 0.0), scale=(0.25, 0.25))
-        texture.draw(self.gbuffer.color_attachments[1], pos=(0.5, 0.0), scale=(0.25, 0.25))
-        texture.draw_depth(self.gbuffer.depth_attachment, near, far, pos=(1.0, 0.0), scale=(0.25, 0.25))
-        texture.draw(self.lightbuffer.color_attachments[0], pos=(1.5, 0.0), scale=(0.25, 0.25))
+        helper.draw(self.gbuffer.color_attachments[0], pos=(0.0, 0.0), scale=(0.25, 0.25))
+        helper.draw(self.gbuffer.color_attachments[1], pos=(0.5, 0.0), scale=(0.25, 0.25))
+        helper.draw_depth(self.gbuffer.depth_attachment, near, far, pos=(1.0, 0.0), scale=(0.25, 0.25))
+        helper.draw(self.lightbuffer.color_attachments[0], pos=(1.5, 0.0), scale=(0.25, 0.25))
 
     def add_point_light(self, position, radius):
         """Add point light"""
@@ -83,7 +83,7 @@ class DeferredRenderer(Effect):
         self.ctx.front_face = 'cw'
         self.ctx.blend_func = moderngl.ONE, moderngl.ONE
 
-        texture._depth_sampler.use(location=1)
+        helper._depth_sampler.use(location=1)
         with self.lightbuffer_scope:
             for light in self.point_lights:
                 # Calc light properties
@@ -101,7 +101,7 @@ class DeferredRenderer(Effect):
                 self.point_light_shader["radius"].value = light_size
                 self.unit_cube.render(self.point_light_shader)
 
-        texture._depth_sampler.clear(location=1)
+        helper._depth_sampler.clear(location=1)
 
     def render_lights_debug(self, camera_matrix, projection):
         """Render outlines of light volumes"""

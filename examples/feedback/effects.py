@@ -6,7 +6,7 @@ from pyrr import matrix44, vector3
 
 import moderngl as mgl
 from demosys.effects import effect
-from demosys.opengl import VAO
+from demosys.opengl.vao import VAO
 
 
 class FeedbackEffect(effect.Effect):
