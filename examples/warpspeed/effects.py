@@ -16,14 +16,14 @@ class Empty(effect.Effect):
 
     def draw(self, time, frametime, target):
         self.texture1.use(location=0)
-        self.program.uniform("tex", 0)
+        self.program["tex"].value = 0
         self.texture2.use(location=1)
-        self.program.uniform("tex2", 1)
+        self.program["tex2"].value = 1
 
-        self.program.uniform("scroll", time * 1.5)
-        self.program.uniform("intensity", 1.0 + ((math.sin(time / 2)) / 2))
-        self.program.uniform("zangle", time)
-        self.program.uniform("speedlayer_alpha", (math.sin(time) + 1.0) / 2)
-        self.program.uniform("accelerate", 0.5)
+        self.program["scroll"].value = time * 1.5
+        self.program["intensity"].value = 1.0 + ((math.sin(time / 2)) / 2)
+        self.program["zangle"].value = time
+        self.program["speedlayer_alpha"].value = (math.sin(time) + 1.0) / 2
+        self.program["accelerate"].value = 0.5
 
         self.vao.draw(self.program)
