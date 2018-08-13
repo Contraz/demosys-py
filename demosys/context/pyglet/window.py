@@ -1,4 +1,5 @@
 import pyglet
+pyglet.options['debug_gl'] = False  # noqa
 
 import moderngl
 from demosys import context
@@ -25,7 +26,7 @@ class Window(BaseWindow):
         # Find monitor
 
         # Open window
-        self.window = pyglet.window.Window(
+        self.window = PygletWrapper(
             width=self.width, height=self.height,
             caption=self.title,
             resizable=self.resizable,
@@ -64,6 +65,10 @@ class Window(BaseWindow):
         self.fbo.use()
 
     def swap_buffers(self):
+        # Ensure the context is present
+        if not self.window.context:
+            return
+
         self.frames += 1
         self.window.flip()
         self.window.dispatch_events()
@@ -75,4 +80,23 @@ class Window(BaseWindow):
         self.window.close()
 
     def terminate(self):
+        pass
+
+
+class PygletWrapper(pyglet.window.Window):
+    """
+    Block out some window methods so pyglet behaves
+    """
+
+    def on_resize(self, width, height):
+        """For some reason pyglet calls its own resize handler randomly"""
+        pass
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        pass
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        pass
+
+    def on_draw(self):
         pass
