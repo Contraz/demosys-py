@@ -41,10 +41,10 @@ class TextRenderer2D(TextWriter2D):
 
     def draw(self, pos, size=1.0):
         self._fbo.color_attachments[0].use(location=0)
-        self._quad_program.uniform("texture0", 0)
-        self._quad_program.uniform("yscale", self._texture_height / self._texture_width)
-        self._quad_program.uniform("pos", pos)
-        self._quad_program.uniform("size", size)
+        self._quad_program["texture0"].value = 0
+        self._quad_program["yscale"].value = self._texture_height / self._texture_width
+        self._quad_program["pos"].value = pos
+        self._quad_program["size"].value = size
         self._quad.draw(self._quad_program)
 
     def _create_vao(self):
