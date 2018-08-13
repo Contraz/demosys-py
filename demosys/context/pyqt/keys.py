@@ -1,3 +1,4 @@
+# flake8: noqa
 from PyQt5.QtCore import Qt
 
 from demosys.context.base import BaseKeys
