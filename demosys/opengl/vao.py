@@ -102,11 +102,9 @@ class VAO:
         self.vertex_count = 0
         self.vaos = {}
 
-    def draw(self, program: moderngl.Program, mode=None, vertices=-1, first=0, instances=1):
+    def render(self, program: moderngl.Program, mode=None, vertices=-1, first=0, instances=1):
         """
-        Draw the VAO.
-        Will use ``glDrawElements`` if an element buffer is present
-        and ``glDrawArrays`` if no element array is present.
+        Render the VAO.
 
         :param program: The program to draw with
         :param mode: Override the draw mode (TRIANGLES etc)
@@ -114,12 +112,30 @@ class VAO:
         :param first: The index of the first vertex to start with
         :param instances: The number of instances
         """
-        vao = self._create_vao_instance(program)
+        vao = self.instance(program)
 
         if mode is None:
             mode = self.mode
 
         vao.render(mode, vertices=vertices, first=first, instances=instances)
+
+    def render_indirect(self, program, buffer, mode=None, count=-1, *, first=0):
+        """
+        The render primitive (mode) must be the same as the input primitive of the GeometryShader.
+        The draw commands are 5 integers: (count, instanceCount, firstIndex, baseVertex, baseInstance).
+
+        :param program: (Buffer) Indirect drawing commands.
+        :param buffer: (Buffer) Indirect drawing commands.
+        :param mode:  (int) By default :py:data:`TRIANGLES` will be used.
+        :param count: (int) The number of draws.
+        :param first: (int) The index of the first indirect draw command.
+        """
+        vao = self.instance(program)
+
+        if mode is None:
+            mode = self.mode
+
+        vao.render_indirect(buffer, mode=mode, count=count, first=first)
 
     def transform(self, program: moderngl.Program, buffer: moderngl.Buffer,
                   mode=None, vertices=-1, first=0, instances=1):
@@ -133,17 +149,12 @@ class VAO:
         :param first: The index of the first vertex to start with
         :param instances: The number of instances
         """
-        vao = self._create_vao_instance(program)
+        vao = self.instance(program)
 
         if mode is None:
             mode = self.mode
 
         vao.transform(buffer, mode=mode, vertices=vertices, first=first, instances=instances)
-
-    def subroutines(self, shader, routines: tuple):
-        """Set the active subroutines"""
-        vao = self._create_vao_instance(shader)
-        vao.subroutines = (r.index for r in routines)
 
     def buffer(self, buffer, buffer_format: str, attribute_names, per_instance=False):
         """
@@ -194,7 +205,12 @@ class VAO:
         self._index_buffer = buffer
         self._index_element_size = index_element_size
 
-    def _create_vao_instance(self, program: moderngl.Program):
+    def instance(self, program: moderngl.Program):
+        """
+        Obtain the moderngl.VertexArray instance for the program
+
+        :return: moderngl.VertexArray
+        """
         vao = self.vaos.get(program.glo)
         if vao:
             return vao
