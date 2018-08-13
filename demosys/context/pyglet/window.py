@@ -1,10 +1,19 @@
-import pyglet
-pyglet.options['debug_gl'] = False  # noqa
+import platform
 
 import moderngl
+import pyglet
+
 from demosys import context
 from demosys.context.base import BaseWindow
+
 from .keys import Keys
+
+if platform.system() == "Darwin":
+    raise RuntimeError((
+        "Pyglet do not support OpenGL core contexts "
+        "and will only be able to support version 2.1 on OS X.\n"
+        "Please use another window driver for this platform"
+    ))
 
 
 class Window(BaseWindow):
