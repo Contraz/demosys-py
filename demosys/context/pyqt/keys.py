@@ -37,4 +37,3 @@ class Keys(BaseKeys):
     X = Qt.Key_X
     Y = Qt.Key_Y
     Z = Qt.Key_Z
-

@@ -1,5 +1,5 @@
 import moderngl
-from PyQt5 import QtCore, QtOpenGL, QtWidgets, QtGui
+from PyQt5 import QtCore, QtOpenGL, QtWidgets
 
 from demosys.context.base import BaseWindow
 from demosys import context
@@ -12,7 +12,7 @@ class Window(BaseWindow):
 
     def __init__(self):
         super().__init__()
-        self._closed = False 
+        self._closed = False
 
         # Specify OpenGL context parameters
         gl = QtOpenGL.QGLFormat()
@@ -26,8 +26,7 @@ class Window(BaseWindow):
             gl.setSampleBuffers(True)
             gl.setSamples(self.samples)
 
-        # We need a dummy application object,
-        # but we are not using the event loop
+        # We need an application object, but we are not using the event loop
         self.app = QtWidgets.QApplication([])
 
         # Create the OpenGL widget
