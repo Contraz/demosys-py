@@ -26,13 +26,14 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
     install_requires=[
-        'glfw==1.7.0',
         'moderngl==5.4.2',
         'pyrr==0.9.2',
         'Pillow==5.2.0',
         'pyrocket==0.2.7',
         'PyWavefront==0.4.1',
+        'glfw==1.7.0',
         'pyglet==1.3.2',
+        'PyQt5==5.11.2',
     ],
     entry_points={'console_scripts': [
         'demosys-admin = demosys.management:execute_from_command_line',

@@ -8,7 +8,7 @@ OPENGL = {
 }
 
 WINDOW = {
-    "class": "demosys.context.pyglet.Window",
+    "class": "demosys.context.pyqt.Window",
     "size": (1280, 720),
     "aspect_ratio": 16 / 9,
     "fullscreen": False,
