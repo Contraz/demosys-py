@@ -85,6 +85,7 @@ class Window(BaseWindow):
         print("Resize", width, height)
 
     def swap_buffers(self):
+        self.frames += 1
         self.widget.swapBuffers()
         # We don't use standard event loop having to manually process events
         self.app.processEvents()
