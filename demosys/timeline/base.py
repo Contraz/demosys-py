@@ -6,7 +6,7 @@ class BaseTimeline:
     A manager is responsible for figuring out what effect should be drawn
     at any given time.
     """
-    def __init__(self, project, **kwargs):
+    def __init__(self, project, *args, **kwargs):
         self._project = project
 
     def get_active_effect(self, time):

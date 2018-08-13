@@ -12,6 +12,9 @@ class Project(BaseProject):
         self.effect_packages = [effect_package]
         self.effect = None
 
+    def get_default_effect(self):
+        return self.effect
+
     def create_resources(self):
         pass
 

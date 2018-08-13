@@ -16,6 +16,9 @@ class BaseProject:
         self._scenes = {}
         self._data = {}
 
+    def get_default_effect(self):
+        raise NotImplementedError()
+
     def create_effect_classes(self):
         """Create effect classes in the registry"""
         effects.polulate(self.effect_packages)
