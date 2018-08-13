@@ -44,7 +44,7 @@ class PlainCube(Effect):
 
         self.program["m_proj"].write(self.sys_camera.projection.tobytes())
         self.program["m_mv"].write(m_mv.astype('f4').tobytes())
-        self.cube.draw(self.program)
+        self.cube.render(self.program)
 
 
 class LightCube(Effect):
@@ -72,7 +72,7 @@ class LightCube(Effect):
         self.m_normal.write(m_normal.astype('f4').tobytes())
 
         # Draw the cube
-        self.cube.draw(self.program)
+        self.cube.render(self.program)
 
 
 class TexturedCube(Effect):
@@ -103,4 +103,4 @@ class TexturedCube(Effect):
         self.texture.use(location=0)
         self.wood.value = 0
 
-        self.cube.draw(self.program)
+        self.cube.render(self.program)

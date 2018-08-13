@@ -58,7 +58,7 @@ class FeedbackEffect(effect.Effect):
         self.program["m_mv"].write(m_mv.astype('f4').tobytes())
         self.texture.use(location=0)
         self.program["texture0"].value = 0
-        self.particles.draw(self.program)
+        self.particles.render(self.program)
 
         # Swap buffers
         self.pos = self.pos1 if self.pos == self.pos2 else self.pos2

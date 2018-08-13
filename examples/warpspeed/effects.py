@@ -26,4 +26,4 @@ class Empty(effect.Effect):
         self.program["speedlayer_alpha"].value = (math.sin(time) + 1.0) / 2
         self.program["accelerate"].value = 0.5
 
-        self.vao.draw(self.program)
+        self.vao.render(self.program)

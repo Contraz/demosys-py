@@ -25,7 +25,7 @@ class MeshProgram:
         """
         self.program["m_proj"].write(projection_matrix)
         self.program["m_mv"].write(view_matrix)
-        mesh.vao.draw(self.program)
+        mesh.vao.render(self.program)
 
     def apply(self, mesh):
         """
@@ -63,7 +63,7 @@ class ColorProgram(MeshProgram):
         self.program["m_proj"].write(projection_matrix)
         self.program["m_view"].write(view_matrix)
         self.program["m_cam"].write(camera_matrix)
-        mesh.vao.draw(self.program)
+        mesh.vao.render(self.program)
 
     def apply(self, mesh):
         if not mesh.material:
@@ -99,7 +99,7 @@ class TextureProgram(MeshProgram):
         self.program["m_proj"].write(projection_matrix)
         self.program["m_view"].write(view_matrix)
         self.program["m_cam"].write(camera_matrix)
-        mesh.vao.draw(self.program)
+        mesh.vao.render(self.program)
 
     def apply(self, mesh):
         if not mesh.material:
@@ -135,7 +135,7 @@ class FallbackProgram(MeshProgram):
         else:
             self.program["color"].value = (1.0, 1.0, 1.0)
 
-        mesh.vao.draw(self.program)
+        mesh.vao.render(self.program)
 
     def apply(self, mesh):
         return self

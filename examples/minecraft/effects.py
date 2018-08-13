@@ -63,7 +63,7 @@ class MinecraftProgram(MeshProgram):
         self.program["m_proj"].write(projection_matrix)
         self.program["m_view"].write(view_matrix)
         self.program["m_cam"].write(camera_matrix)
-        mesh.vao.draw(self.program)
+        mesh.vao.render(self.program)
 
     def apply(self, mesh):
         return self

@@ -53,4 +53,4 @@ class SimpleRaymarchEffect(effect.Effect):
 
         self.program["resolution"].value = (self.window.width, self.window.height)
 
-        self.plane.draw(self.program)
+        self.plane.render(self.program)

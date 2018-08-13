@@ -38,7 +38,7 @@ class TextureHelper:
         texture.use(location=0)
         self._texture2d_sampler.use(location=0)
         self._texture2d_shader["texture0"].value = 0
-        self._quad.draw(self._texture2d_shader)
+        self._quad.render(self._texture2d_shader)
         self._texture2d_sampler.clear(location=0)
 
     def draw_depth(self, texture, near, far, pos=(0.0, 0.0), scale=(1.0, 1.0)):
@@ -62,7 +62,7 @@ class TextureHelper:
         self._depth_sampler.use(location=0)
         texture.use(location=0)
         self._depth_shader["texture0"].value = 0
-        self._quad.draw(self._depth_shader)
+        self._quad.render(self._depth_shader)
         self._depth_sampler.clear(location=0)
 
     def _init_texture2d_draw(self):

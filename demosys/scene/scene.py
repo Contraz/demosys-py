@@ -85,7 +85,7 @@ class Scene:
         self.bbox_program["bb_min"].write(self.bbox_min.astype('f4').tobytes())
         self.bbox_program["bb_max"].write(self.bbox_max.astype('f4').tobytes())
         self.bbox_program["color"].value = (1.0, 0.0, 0.0)
-        self.bbox_vao.draw(self.bbox_program)
+        self.bbox_vao.render(self.bbox_program)
 
         if not all:
             return
