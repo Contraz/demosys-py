@@ -45,12 +45,12 @@ class Mesh:
             )
 
     def draw_bbox(self, proj_matrix, view_matrix, cam_matrix, program, vao):
-        program.uniform("m_proj", proj_matrix)
-        program.uniform("m_view", view_matrix)
-        program.uniform("m_cam", cam_matrix)
-        program.uniform("bb_min", self.bbox_min.astype('f4').tobytes())
-        program.uniform("bb_max", self.bbox_max.astype('f4').tobytes())
-        program.uniform("color", (0.75, 0.75, 0.75))
+        program["m_proj"].write(proj_matrix)
+        program["m_view"].write(view_matrix)
+        program["m_cam"].write(cam_matrix)
+        program["bb_min"].write(self.bbox_min.astype('f4').tobytes())
+        program["bb_max"].write(self.bbox_max.astype('f4').tobytes())
+        program["color"].value = (0.75, 0.75, 0.75)
         vao.draw(program)
 
     def add_attribute(self, attr_type, name, components):
