@@ -57,7 +57,7 @@ class Timer(BaseTimer):
         if value < 0:
             value = 0
 
-        self.controller.row =  self.rps * value
+        self.controller.row = self.rps * value
 
     def pause(self):
         """Pause the timer"""
