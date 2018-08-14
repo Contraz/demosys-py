@@ -16,7 +16,7 @@ class Timeline(BaseTimeline):
     Effects are drawn in the user-defined order.
 
     We might want to eventually convert this timeline data into a more managable format
-    internally in the timeline because rocket tracks are not ideal for 
+    internally because rocket tracks are not ideal for this in larger projects.
     """
     def __init__(self, project, *args, **kwargs):
         super().__init__(project)
