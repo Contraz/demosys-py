@@ -29,7 +29,7 @@ setup(
         'moderngl==5.4.2',
         'pyrr==0.9.2',
         'Pillow==5.2.0',
-        'pyrocket==0.2.7',
+        'pyrocket==0.2.8',
         'PyWavefront==0.4.1',
         'PyQt5==5.11.2',
     ],
