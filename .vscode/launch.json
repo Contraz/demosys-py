@@ -12,85 +12,8 @@
             "program": "${workspaceFolder}/manage.py",
             "args": [
                 "runeffect",
-                "examples.minecraft",
+                "examples.cubes",
             ],
-        },
-        {
-            "name": "Python: demosys-py test",
-            "type": "python",
-            "request": "launch",
-            "console": "none",
-            "program": "${workspaceFolder}/manage.py",
-            "args": [
-                "test",
-            ],
-        },
-        {
-            "name": "Python: demosys-py createeffect",
-            "type": "python",
-            "request": "launch",
-            "console": "none",
-            "program": "${workspaceFolder}/manage.py",
-            "args": [
-                "createeffect",
-                "examples/bolle"
-            ],
-        },
-        {
-            "name": "Python: Current File",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}"
-        },
-        {
-            "name": "Python: Attach",
-            "type": "python",
-            "request": "attach",
-            "localRoot": "${workspaceFolder}",
-            "remoteRoot": "${workspaceFolder}",
-            "port": 3000,
-            "secret": "my_secret",
-            "host": "localhost"
-        },
-        {
-            "name": "Python: Terminal (integrated)",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Python: Terminal (external)",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "externalTerminal"
-        },
-        {
-            "name": "Python: Module",
-            "type": "python",
-            "request": "launch",
-            "module": "module.name"
-        },
-        {
-            "name": "Python: All debug Options",
-            "type": "python",
-            "request": "launch",
-            "pythonPath": "${config:python.pythonPath}",
-            "program": "${file}",
-            "module": "module.name",
-            "env": {
-                "VAR1": "1",
-                "VAR2": "2"
-            },
-            "envFile": "${workspaceFolder}/.env",
-            "args": [
-                "arg1",
-                "arg2"
-            ],
-            "debugOptions": [
-                "RedirectOutput"
-            ]
         }
     ]
 }
