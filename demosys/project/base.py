@@ -126,6 +126,14 @@ class BaseProject:
             raise ValueError("Cannot find {0} with label '{1}'.\nExisting {0} labels: {2}".format(
                 resource_type, label, list(source.keys())))
 
+    def get_runnable_effects(self):
+        """
+        Returns all runnable effects in the project
+
+        :return: List of all runnable effects
+        """
+        return [effect for name, effect in self._effects.items() if effect.runnable]
+
     @property
     def ctx(self):
         return context.ctx()
