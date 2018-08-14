@@ -11,6 +11,10 @@ class Keys(BaseKeys):
     ENTER = Qt.Key_Enter
     PAGE_UP = Qt.Key_PageUp
     PAGE_DOWN = Qt.Key_PageDown
+    LEFT = Qt.Key_Left
+    RIGHT = Qt.Key_Right
+    UP = Qt.Key_Up
+    DOWN = Qt.Key_Down
 
     A = Qt.Key_A
     B = Qt.Key_B

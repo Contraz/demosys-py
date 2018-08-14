@@ -19,6 +19,9 @@ class Timer(RocketTimer):
         self.rocket.update()
         return self.music.get_time()
 
+    def set_time(self, value):
+        self.music.set_time(value)
+
     def pause(self):
         """Pause the timer"""
         self.controller.playing = False

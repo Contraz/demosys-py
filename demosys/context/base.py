@@ -160,6 +160,12 @@ class BaseWindow:
         if key == self.keys.R and action == self.keys.ACTION_PRESS:
             project.instance.reload_programs()
 
+        if key == self.keys.RIGHT and action == self.keys.ACTION_PRESS:
+            self.timer.set_time(self.timer.get_time() + 10.0)
+
+        if key == self.keys.LEFT and action == self.keys.ACTION_PRESS:
+            self.timer.set_time(self.timer.get_time() - 10.0)
+
         # Forward the event to the timeline
         self.timeline.key_event(key, action, modifier)
 

@@ -24,3 +24,7 @@ class BaseTimer:
     def get_time(self):
         """Get the current time in seconds (float)"""
         raise NotImplementedError()
+
+    def set_time(self, value):
+        """Set the current time"""
+        raise NotImplementedError()

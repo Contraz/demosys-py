@@ -14,6 +14,10 @@ class Keys(BaseKeys):
     ENTER = glfw.KEY_ENTER
     PAGE_UP = glfw.KEY_PAGE_UP
     PAGE_DOWN = glfw.KEY_PAGE_DOWN
+    LEFT = glfw.KEY_LEFT
+    RIGHT = glfw.KEY_RIGHT
+    UP = glfw.KEY_UP
+    DOWN = glfw.KEY_DOWN
 
     A = glfw.KEY_A
     B = glfw.KEY_B

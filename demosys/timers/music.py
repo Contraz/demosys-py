@@ -11,7 +11,7 @@ except ImportError:
 class Timer(BaseTimer):
     """Timer based on music"""
     def __init__(self, **kwargs):
-        mixer.init(frequency=44100, size=-16, channels=2, buffer=1024)
+        mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
         mixer.music.load(settings.MUSIC)
         self.paused = True
         self.pause_time = 0
@@ -53,3 +53,10 @@ class Timer(BaseTimer):
             return self.pause_time
 
         return mixer.music.get_pos() / 1000.0
+
+    def set_time(self, value):
+        if value < 0:
+            value = 0
+
+        # mixer.music.play(start=value)
+        mixer.music.set_pos(value)

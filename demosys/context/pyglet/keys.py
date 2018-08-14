@@ -11,6 +11,10 @@ class Keys(BaseKeys):
     ENTER = key.ENTER
     PAGE_UP = key.PAGEUP
     PAGE_DOWN = key.PAGEDOWN
+    LEFT = key.LEFT
+    RIGHT = key.RIGHT
+    UP = key.UP
+    DOWN = key.DOWN
 
     A = key.A
     B = key.B

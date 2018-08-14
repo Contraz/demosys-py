@@ -52,3 +52,9 @@ class Timer(BaseTimer):
 
         curr_time = time.time()
         return curr_time - self.start_time - self.offset
+
+    def set_time(self, value):
+        if value < 0:
+            value = 0
+
+        self.offset += self.get_time() - value
