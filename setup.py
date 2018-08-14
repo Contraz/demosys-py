@@ -36,6 +36,7 @@ setup(
     extras_require={
         "glfw": ['glfw==1.7.0'],
         "pyglet": ['pyglet==1.3.2'],
+        "python-vlc": ['python-vlc==3.0.102'],
     },
     entry_points={'console_scripts': [
         'demosys-admin = demosys.management:execute_from_command_line',

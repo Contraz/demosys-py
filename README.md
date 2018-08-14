@@ -13,7 +13,11 @@ Originally made for for non-interactive real time graphics combined with music
 ("real time music videos", see [demoscene](https://en.wikipedia.org/wiki/Demoscene))
 but can of course be used almost any purpose.
 
-Made for people who enjoy playing around with modern OpenGL without spending lots of time creating all the tooling to get things up and running.
+Made for people who enjoy playing around with modern OpenGL without spending lots of
+time creating all the tooling to get things up and running. Using [ModernGL](https://github.com/cprogrammer1994/ModernGL)
+also makes working with OpenGL a breeze accomplishing a lot with very few lines of code.
+
+A high priority for this project is also to help improving [ModernGL](https://github.com/cprogrammer1994/ModernGL).
 
 * [Documentation](http://demosys-py.readthedocs.io/)
 * [ModernGL Documentation](https://moderngl.readthedocs.io)
@@ -23,7 +27,6 @@ Made for people who enjoy playing around with modern OpenGL without spending lot
 * [demosys-py on PyPi](https://pypi.python.org/pypi/demosys-py)
 
 Creating a project with a spinning cube can be done in less than a minute.
-(Assuming you have glfw installed)
 
 ```bash
 pip install demosys-py
@@ -41,19 +44,14 @@ Features
 --------
 
 * A simple effect system based on python packages
-* Supports loading GLTF 2.0 and obj files/scenes
+* Supports most modern OpenGL features through [ModernGL](https://github.com/cprogrammer1994/ModernGL)
+* Loading GLTF 2.0 and wavefront obj files/scenes
 * Support for the rocket sync-tracker system to create interesting keyframe data (Using [pyrocket](https://github.com/Contraz/pyrocket))
-* Management commands to create new projects and effects
-* Convenient wrappers for VAO, Shader, Texture, FBO etc
-* Runtime re-loading shaders (press R)
-* Time line / Timer support
-* A highly pluggable framework
-* Support for custom management commands
-* Camera and system camera support so we can easily inspect our scene
-* Easy resource management system (shaders, textures)
-* Supports vertex, fragment and geometry shaders (tessellation is wip)
+* Management commands to create new projects and effects including the ability to make custom commands
+* Runtime re-loading shader programs (press R)
+* A highly pluggable framework with customizable timers, resource loaders, timelines and more
 * A geometry module for quick creation of common mesh/VAO types
-* (Experimental audio playback support)
+* Experimental audio playback support
 
 Requirements
 ------------
@@ -88,6 +86,7 @@ python manage.py test tests/test_effect.py
 Building docs:
 
 ```bash
+pip install -r requirements-test.txt
 python setup.py build_sphinx
 ```
 
@@ -101,13 +100,14 @@ Contributors
 Libraries
 ---------
 
-GLFW binaries must be installed. Get from your favourite location. Use version 3.2.1 or later.
-
 * [ModernGL](https://github.com/cprogrammer1994/ModernGL) PyOpenGL replacement
-* [pyGLFW](https://github.com/FlorianRhiem/pyGLFW) for window and context creation + input
 * [PIL/Pillow](https://github.com/python-pillow/Pillow) for texture loading
 * [Pyrrr](https://github.com/adamlwgriffiths/Pyrr) for math (uses numpy)
+* [PyQt5](https://pypi.org/project/PyQt5/) is default for window/context creation (works out of the box on most platforms)
 
-Optional for audio:
+Optional:
 
+* [pyGLFW](https://github.com/FlorianRhiem/pyGLFW) for window/context creation
+* [pyglet](https://bitbucket.org/pyglet/pyglet/wiki/Home) for window/context creation (Does not work on OS X)
 * [pygame](https://www.pygame.org) using the mixer module for music
+* [python-vlc](https://github.com/oaubert/python-vlc) for audio playback
