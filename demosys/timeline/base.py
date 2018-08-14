@@ -9,9 +9,6 @@ class BaseTimeline:
     def __init__(self, project, *args, **kwargs):
         self._project = project
 
-    def get_active_effect(self, time):
-        raise NotImplementedError()
-
     def draw(self, time, frametime, target):
         """
         Called by the system every frame.
@@ -25,12 +22,10 @@ class BaseTimeline:
 
     def key_event(self, key, action, mods):
         """
-        Forwarded (unconsumed) key events from the system.
-        See glfw's key events for detailed information.
+        Forwarded key events from the system.
 
-        :param key: The keyboard key that was pressed or released.
-        :param scancode: The system-specific scancode of the key.
-        :param action: GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
+        :param key: The key that was pressed or released.
+        :param action: ACTION_PRESS, ACTION_RELEASE
         :param mods: Bit field describing which modifier keys were held down.
         """
-        raise NotImplementedError()
+        pass
