@@ -25,7 +25,7 @@ WINDOW = {
 HEADLESS_FRAMES = 1
 
 # MUSIC = os.path.join(PROJECT_DIR, 'resources/music/tg2035.mp3')
-TIMER = 'demosys.timers.time.Timer'
+TIMER = 'demosys.timers.clock.Timer'
 
 ROCKET = {
     'mode': 'project',
