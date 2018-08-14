@@ -83,10 +83,12 @@ class Camera:
         :param pos: python list [x, y, x]
         :return: Camera matrix
         """
-        if pos:
+        if pos is None:
             vec = Vector3(pos)
+
         if vec is None:
             raise ValueError("vector or pos must be set")
+
         return self._gl_look_at(self.position, vec, self._up)
 
     def _gl_look_at(self, pos, target, up):
