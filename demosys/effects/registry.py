@@ -82,7 +82,7 @@ class Effects:
             if effect_cls:
                 return effect_cls
 
-        raise EffectError("No effect class '{}' found in any packages".format(effect_cls))
+        raise EffectError("No effect class '{}' found in any packages".format(class_name))
 
 
 class EffectPackage:
