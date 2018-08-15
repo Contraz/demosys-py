@@ -10,6 +10,8 @@ class Loader(BaseLoader):
         if not self.meta.resolved_path:
             raise ValueError("Cannot find program '{}'".format(self.meta.path))
 
+        print("Loading:", self.meta.path)
+
         with open(self.meta.resolved_path, 'r') as fd:
             shaders = program.ProgramShaders.from_single(self.meta, fd.read())
 
