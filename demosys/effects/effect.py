@@ -67,6 +67,8 @@ class Effect:
 
     def post_load(self):
         """
+        Override this method if needed when creating an effect.
+
         Called after all effects are initialized before drawing starts.
         Some initialization may be neccessary to do here such as
         interaction with other effects.

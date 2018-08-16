@@ -8,15 +8,27 @@ A Python 3 cross platform OpenGL 3.3+ core framework based on `ModernGL <https:/
 | |screenshot1|   | |screenshot2|   |
 +-----------------+-----------------+
 
+
+User Guide
+----------
+
+This is the user guide
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   quickstart
-   settings.rst
-   controls.rst
-   guides/index.rst
-   reference/index.rst
+   user_guide/quickstart
+   user_guide/controls
+   user_guide/index
+
+Reference
+---------
+
+.. toctree::
+   :maxdepth: 1
+
+   reference/effect
+   reference/settings   
 
 
 Indices and tables
