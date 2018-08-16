@@ -16,7 +16,7 @@ OPENGL = {
 
 # Window / context properties
 WINDOW = {
-    "class": "demosys.context.pyqt.GLFW_Window",
+    "class": "demosys.context.pyqt.Window",
     "size": (1280, 720),
     "aspect_ratio": 16 / 9,
     "fullscreen": False,
