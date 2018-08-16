@@ -13,10 +13,10 @@ A Python 3 cross platform OpenGL 3.3+ core framework based on `ModernGL <https:/
    :caption: Contents:
 
    quickstart
-   reference/index.rst
    settings.rst
    controls.rst
    guides/index.rst
+   reference/index.rst
 
 
 Indices and tables

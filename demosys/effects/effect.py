@@ -12,15 +12,22 @@ from demosys.scene import Scene
 
 class Effect:
     """
-    Effect base class.
+    Effect base class that should be extended when making an effect
 
-    The following attributes are injected by demosys before initialization:
+    Example::
 
-    * ``window`` (demosys.context.Context): Window
-    * ``ctx`` (moderngl.Context): The moderngl context
-    * ``sys_camera`` (demosys.scene.camera.Camera): The system camera responding to inputs
+        from demosys.effects import Effect
+
+        class MyEffect(Effect):
+            def __init__(self):
+                # Initalization
+
+            def draw(self, time, frametime, target):
+                # Draw stuff
     """
-    # By default effects are runnable with ``runeffect``
+    #: The runnable status of the effect instance.
+    #: A runnable effect should be able to run with the ``runeffect`` command
+    #: or run in a project
     runnable = True
 
     # Full python path to the effect (set per instance)
@@ -34,9 +41,35 @@ class Effect:
     _ctx = None  # type: moderngl.Context
     _sys_camera = None  # type: camera.SystemCamera
 
+    def __init__(self, *args, **kwargs):
+        """
+        Implement the initialize when extending the class.
+        This method is responsible for fetching resources
+        and doing genereal initalization of the effect.
+
+        The effect initializer is called when all resources are loaded
+        with the exception of resources loaded by other effects in
+        the initializer.
+
+        The siganture of this method is entirely up to you.
+
+        You do not have to call the superclass initializer though ``super()``
+
+        Example::
+
+            def __init__(self):
+                # Fetch reference to resource by their label
+                self.program = self.get_program('simple_textured')
+                self.texture = self.get_texture('bricks')
+                # .. create a cube etc ..
+        """
+        pass
+
     def post_load(self):
         """
-        Called when all effects are initialized before effects start running.
+        Called after all effects are initialized before drawing starts.
+        Some initialization may be neccessary to do here such as
+        interaction with other effects.
         """
         pass
 
@@ -52,11 +85,12 @@ class Effect:
 
     @property
     def window(self) -> BaseWindow:
+        """The :py:class:`Window`"""
         return self._window
 
     @property
     def ctx(self) -> moderngl.Context:
-        """ModernGL context"""
+        """The ModernGL context"""
         return self._ctx
 
     @property
@@ -70,9 +104,10 @@ class Effect:
         Draw function called by the system every frame when the effect is active.
         You are supposed to override this method.
 
-        :param time: The current time in seconds (float)
-        :param frametime: The time the previous frame used to render in seconds (float)
-        :param target: The target FBO for the effect
+        Args:
+            time (float): The current time in seconds.
+            frametime (float): The time the previous frame used to render in seconds.
+            target (``moderngl.Framebuffer``): The target FBO for the effect.
         """
         raise NotImplementedError("draw() is not implemented")
 
@@ -82,8 +117,10 @@ class Effect:
         """
         Get a program by its label
 
-        :param label: The label for the program
-        :return: moderngl.Program instance
+        Args:
+            label (str): The label for the program
+
+        Returns: py:class:`moderngl.Program` instance
         """
         return self._project.get_program(label)
 
@@ -91,20 +128,27 @@ class Effect:
         """
         Get a texture by its label
 
-        :param label: Label for the texture
-        :return: The moderngl texture instance
+        Args:
+            label (str): The Label for the texture
+
+        Returns:
+            The py:class:`moderngl.Texture` instance
         """
         return self._project.get_texture(label)
 
     def get_track(self, name) -> Track:
         """
+        This is only avaiable when using a Rocket timer.
+
         Get or create a rocket track. This only makes sense when using rocket timers.
         If the resource is not loaded yet, an empty track object
         is returned that will be populated later.
 
-        :param name: The rocket track name
-        :param local: Auto-prepend the effect package name to the path
-        :return: Track object
+        Args:
+            name (str): The rocket track name
+
+        Returns:
+            The :py:class:`rocket.Track` instance
         """
         return resources.tracks.get(name)
 
@@ -112,26 +156,34 @@ class Effect:
         """
         Get a scene by its label
 
-        :param label: The label for the scene
-        :return: Scene object
+        Args:
+            label (str): The label for the scene
+
+        Returns: The :py:class:`Scene` instance
         """
         return self._project.get_scene(label)
 
     def get_data(self, label) -> Any:
         """
-        Get a data file by its label
+        Get a data instance by its label
 
-        :param label: Label for the data file
-        :return: Contents of the data file
+        Args:
+            label (str): Label for the data instance
+
+        Returns:
+            Contents of the data file
         """
         return self._project.get_data(label)
 
     def get_effect(self, label) -> 'Effect':
         """
-        Get an effect instance by label
+        Get an effect instance by label.
+        This is only possible when you have your own Project
 
-        :param label: Label for the data file
-        :return: The requested effect instance
+        Args:
+            label (str): Label for the data file
+
+        Returns: The :py:class:`Effect` instance
         """
         return self._project.get_effect(label)
 
@@ -139,32 +191,53 @@ class Effect:
         """
         Get an effect class.
 
-        :param effect_name: Name of the effect class
-        :param package_name: (optional) The package this effect belongs to
+        Args:
+            effect_name (str): Name of the effect class
+
+        Keyword Args:
+            package_name (str): The package the effect belongs to
+
+        Returns:
+            :py:class:`Effect` class
         """
         return self._project.get_effect_class(effect_name, package_name=package_name)
 
     # Utility methods for matrices
 
-    def create_projection(self, fov=75.0, near=1.0, far=100.0, ratio=None):
+    def create_projection(self, fov=75.0, near=1.0, far=100.0, aspect_ratio=None):
         """
         Create a projection matrix with the following parameters.
+        When ``aspect_ratio`` is not provided the configured aspect
+        ratio for the window will be used.
 
-        :param fov: Field of view (float)
-        :param near: Camera near value
-        :param far: Camrea far value
-        :param ratio: Aspect ratio of the window
-        :return: The projection matrix
+        Args:
+            :param float fov: Field of view (float)
+            :param float near: Camera near value
+            :param float far: Camrea far value
+
+        :param float ratio: Aspect ratio of the window
+
+        Returns: The projection matrix as a float32 :py:class:`numpy.array`
         """
         return matrix44.create_perspective_projection_matrix(
             fov,
-            ratio or self.window.aspect_ratio,
+            aspect_ratio or self.window.aspect_ratio,
             near,
             far,
+            dtype='f4',
         )
 
     def create_transformation(self, rotation=None, translation=None):
-        """Convenient transformation method doing rotations and translation"""
+        """
+        Creates a transformation matrix woth rotations and translation.
+
+        Args:
+            rotation: 3 component vector as a list, tuple, or :py:class:`pyrr.Vector3`
+            translation: 3 component vector as a list, tuple, or :py:class:`pyrr.Vector3`
+
+        Returns:
+            A 4x4 matrix as a :py:class:`numpy.array`
+        """
         mat = None
         if rotation is not None:
             mat = Matrix44.from_eulers(Vector3(rotation))
@@ -180,11 +253,13 @@ class Effect:
 
     def create_normal_matrix(self, modelview):
         """
-        Convert to mat3 and return inverse transpose.
-        These are normally needed when dealing with normals in shaders.
+        Creates a normal matrix from modelview matrix
 
-        :param modelview: The modelview matrix
-        :return: Normal matrix
+        Args:
+            modelview: The modelview matrix
+
+        :return:
+            A 3x3 Normal matrix as a :py:class:`numpy.array`
         """
         normal_m = Matrix33.from_matrix44(modelview)
         normal_m = normal_m.inverse
