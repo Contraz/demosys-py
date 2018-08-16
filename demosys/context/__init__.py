@@ -31,7 +31,7 @@ def create_window():
     if window(raise_on_error=False):
         raise RuntimeError("Attempting to create window twice")
 
-    window_cls_name = settings.WINDOW.get('class', 'demosys.context.glfw.Window')
+    window_cls_name = settings.WINDOW.get('class', 'demosys.context.pyqt.Window')
     window_cls = import_string(window_cls_name)
     new_window = window_cls()
     new_window.print_context_info()
