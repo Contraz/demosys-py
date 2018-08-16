@@ -8,31 +8,35 @@ A Python 3 cross platform OpenGL 3.3+ core framework based on `ModernGL <https:/
 | |screenshot1|   | |screenshot2|   |
 +-----------------+-----------------+
 
-
-User Guide
-----------
-
-This is the user guide
+.. warning:: The documentation for 2.0 is currently work in progress and you may find some sections outdated
 
 .. toctree::
    :maxdepth: 2
+   :caption: Getting Started
 
-   user_guide/quickstart
-   user_guide/controls
-   user_guide/index
-
-Reference
----------
+   quickstart
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
+   :caption: User Guide
 
-   reference/effect
-   reference/settings   
+   user_guide/index
+   controls
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Reference
+
+   reference/index
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Settings
+
+   settings
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`

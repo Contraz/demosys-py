@@ -50,8 +50,8 @@ Rotation
     mat = matrix44.multiply(x, y)
     mat = matrix44.multiply(mat, z)
 
-Covert
-------
+Type conversion
+---------------
 
 .. code:: python
 
@@ -59,16 +59,3 @@ Covert
     mat3 = Matrix33.from_matrix44(mat)
     # mat3 to mat4
     mat4 = Matrix44.from_matrix33(mat)
-
-
-Common Mistakes
----------------
-
-Matrices and vectors are just numpy arrays. When multiplying matrices,
-use the ``mult`` method/function.
-
-.. code:: python
-
-    mat = matrix44.mult(mat1, mat2)
-
-Using the ``*`` operator would just make a product of the two arrays.

@@ -1,14 +1,15 @@
-Guides
-======
+
+User Guide
+==========
 
 .. toctree::
-    :maxdepth: 1
+   :maxdepth: 2
 
-    project.rst
-    effects.rst
-    effectmanagers.rst
-    geometry.rst
-    timers.rst
-    pyrrmath.rst
-    performance.rst
-    audio.rst
+   effects
+   project
+   geometry
+   timers
+   timeline
+   pyrrmath
+   performance
+   audio

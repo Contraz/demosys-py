@@ -86,7 +86,7 @@ We should now have the following structure:
     cube
     ├── effects.py
     ├── dependencies.py
-    └── resoruces
+    └── resources
         └── programs
             └── cube
                 └── default.glsl
