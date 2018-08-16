@@ -1,8 +1,8 @@
 VAO
 ===
 
-.. py:module:: demosys.opengl
-.. py:currentmodule:: demosys.opengl
+.. py:module:: demosys.opengl.vao
+.. py:currentmodule:: demosys.opengl.vao
 
 .. autoclass:: VAO
 

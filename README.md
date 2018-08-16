@@ -111,3 +111,9 @@ Optional:
 * [pyglet](https://bitbucket.org/pyglet/pyglet/wiki/Home) for window/context creation (Does not work on OS X)
 * [pygame](https://www.pygame.org) using the mixer module for music
 * [python-vlc](https://github.com/oaubert/python-vlc) for audio playback
+
+Mentions
+--------
+
+Also consider supporting [Read the Docs](https://readthedocs.org/sustainability/) by becoming a gold member
+though a one time ($5 or more) donation for an ad-free experience.
