@@ -6,7 +6,7 @@ from typing import Any, List, Type
 from demosys.effects.effect import Effect
 
 
-class Effects:
+class EffectRegistry:
     """
     Registry for effects classes (not instances).
 
@@ -207,4 +207,4 @@ class EffectError(Exception):
     pass
 
 
-effects = Effects()
+effects = EffectRegistry()
