@@ -79,6 +79,7 @@ Running tests:
 
 ```bash
 # All tests
+pip install -r requirements-test.txt
 python manage.py test
 
 # Single tests module
