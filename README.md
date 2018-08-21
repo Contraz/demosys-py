@@ -71,6 +71,8 @@ Installing the project in development mode (in a virtualenv):
 
 ```bash
 python setup.py develop
+# pyqt5 doesn't support develop and have to manually be installed after
+pip install PyQt5
 ```
 
 Running tests:
