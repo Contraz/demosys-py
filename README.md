@@ -89,7 +89,7 @@ python manage.py test tests/test_effect.py
 Building docs:
 
 ```bash
-pip install -r requirements-test.txt
+pip install -r docs/requirements.txt
 python setup.py build_sphinx
 ```
 
