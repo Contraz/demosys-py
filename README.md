@@ -47,8 +47,9 @@ Features
 * Supports most modern OpenGL features through [ModernGL](https://github.com/cprogrammer1994/ModernGL)
 * Loading GLTF 2.0 and wavefront obj files/scenes
 * Support for the rocket sync-tracker system to create interesting keyframe data (Using [pyrocket](https://github.com/Contraz/pyrocket))
-* Management commands to create new projects and effects including the ability to make custom commands
 * Runtime re-loading shader programs (press R)
+* Supports headless rendering and various visible windows such as pyGLFW, PyQt5 and Pyglet.
+* Management commands to create new projects and effects including the ability to make custom commands
 * A highly pluggable framework with customizable timers, resource loaders, timelines and more
 * A geometry module for quick creation of common mesh/VAO types
 * Experimental audio playback support
