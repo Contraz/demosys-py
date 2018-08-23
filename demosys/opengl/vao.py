@@ -188,7 +188,7 @@ class VAO:
             buffer: The buffer data. Can be ``numpy.array``, ``moderngl.Buffer`` or ``bytes``.
             buffer_format (str): The format of the buffer. (eg. ``3f 3f`` for interleaved positions and normals).
             attribute_names: A list of attribute names this buffer should map to.
-        
+
         Keyword Args:
             per_instance (bool): Is this buffer per instance data for instanced rendering?
 
