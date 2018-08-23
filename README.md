@@ -1,4 +1,4 @@
-[![pypi](https://img.shields.io/pypi/v/demosys-py.svg)](https://pypi.python.org/pypi/demosys-py) [![travis](https://travis-ci.org/Contraz/demosys-py.svg?branch=master)](https://travis-ci.org/Contraz/demosys-py) [![rtd](https://readthedocs.org/projects/demosys-py/badge/?version=latest)](http://pip.pypa.io/en/stable/?badge=stable)
+[![pypi](https://img.shields.io/pypi/v/demosys-py.svg)](https://pypi.python.org/pypi/demosys-py) [![travis](https://travis-ci.org/Contraz/demosys-py.svg?branch=master)](https://travis-ci.org/Contraz/demosys-py) [![Documentation Status](https://readthedocs.org/projects/demosys-py/badge/?version=latest)](https://demosys-py.readthedocs.io/en/latest/?badge=latest)
 
 demosys-py
 ==========
