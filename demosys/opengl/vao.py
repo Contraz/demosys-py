@@ -76,15 +76,29 @@ class BufferInfo:
 class VAO:
     """
     Represents a vertex array object.
-    A name must be provided for debug puporses.
-    The default draw mode is ``moderngl.TRIANGLES``
+    This is a wrapper class over ``moderngl.VertexArray`` to provide helper method.
+
+    The main purpose is to provide render methods taking a program as parameter.
+    The class will auto detect the programs attributes and add padding when needed
+    to match the vertex object.
+    A new vertexbuffer object is created and stored internally for each unique
+    shader program used.
+
+    A secondary purpose is to provide an alternate way to build vertexbuffers
+    This can be practical when loading or creating various geometry.
+
+    There is no requirements to use this class, but most methods in the
+    system creating vertexbuffers will return this type. You can obtain
+    a single vertexbuffer instance by calling :py:meth:`VAO.instance`
+    method if you prefer to work directly on moderngl instances.
     """
-    def __init__(self, name, mode=moderngl.TRIANGLES):
+    def __init__(self, name="", mode=moderngl.TRIANGLES):
         """
         Create and empty VAO
 
-        :param name: The name for debug purposes
-        :param mode: Default draw mode for this VAO
+        Keyword Args:
+            name (str): The name for debug purposes
+            mode (int): Default draw mode
         """
         self.ctx = context.ctx()
         self.name = name
@@ -106,11 +120,14 @@ class VAO:
         """
         Render the VAO.
 
-        :param program: The program to draw with
-        :param mode: Override the draw mode (TRIANGLES etc)
-        :param vertices: The number of vertices to transform
-        :param first: The index of the first vertex to start with
-        :param instances: The number of instances
+        Args:
+            program: The ``moderngl.Program``
+
+         Keyword Args:
+            mode: Override the draw mode (``TRIANGLES`` etc)
+            vertices (int): The number of vertices to transform
+            first (int): The index of the first vertex to start with
+            instances (int): The number of instances
         """
         vao = self.instance(program)
 
@@ -124,11 +141,14 @@ class VAO:
         The render primitive (mode) must be the same as the input primitive of the GeometryShader.
         The draw commands are 5 integers: (count, instanceCount, firstIndex, baseVertex, baseInstance).
 
-        :param program: (Buffer) Indirect drawing commands.
-        :param buffer: (Buffer) Indirect drawing commands.
-        :param mode:  (int) By default :py:data:`TRIANGLES` will be used.
-        :param count: (int) The number of draws.
-        :param first: (int) The index of the first indirect draw command.
+        Args:
+            program: The ``moderngl.Program``
+            buffer: The ``moderngl.Buffer`` containing indirect draw commands
+
+        Keyword Args:
+            mode (int): By default :py:data:`TRIANGLES` will be used.
+            count (int): The number of draws.
+            first (int): The index of the first indirect draw command.
         """
         vao = self.instance(program)
 
@@ -142,12 +162,15 @@ class VAO:
         """
         Transform vertices. Stores the output in a single buffer.
 
-        :param program: The program
-        :param buffer: The buffer to store the output
-        :param mode: Draw mode (for example `POINTS`
-        :param vertices: The number of vertices to transform
-        :param first: The index of the first vertex to start with
-        :param instances: The number of instances
+        Args:
+            program: The ``moderngl.Program``
+            buffer: The ``moderngl.buffer`` to store the output
+
+        Keyword Args:
+            mode: Draw mode (for example ``moderngl.POINTS``)
+            vertices (int): The number of vertices to transform
+            first (int): The index of the first vertex to start with
+            instances (int): The number of instances
         """
         vao = self.instance(program)
 
@@ -161,9 +184,15 @@ class VAO:
         Register a buffer/vbo for the VAO. This can be called multiple times.
         adding multiple buffers (interleaved or not)
 
-        :param buffer: The buffer object. Can be ndarray or Buffer
-        :param buffer_format: The format of the buffer ('f', 'u', 'i')
-        :returns: The buffer object
+        Args:
+            buffer: The buffer data. Can be ``numpy.array``, ``moderngl.Buffer`` or ``bytes``.
+            buffer_format (str): The format of the buffer. (eg. ``3f 3f`` for interleaved positions and normals).
+            attribute_names: A list of attribute names this buffer should map to.
+        
+        Keyword Args:
+            per_instance (bool): Is this buffer per instance data for instanced rendering?
+
+        Returns: The ``moderngl.Buffer`` instance object. This is handy when providing ``bytes`` and ``numpy.array``.
         """
         if not isinstance(attribute_names, list):
             attribute_names = [attribute_names, ]
@@ -190,8 +219,11 @@ class VAO:
         """
         Set the index buffer for this VAO
 
-        :param buffer: Buffer object or ndarray
-        :param index_element_size: Byte size of each element. 1, 2 or 4
+        Args:
+            buffer: ``moderngl.Buffer``, ``numpy.array`` or ``bytes``
+
+        Keyword Args:
+            index_element_size (int): Byte size of each element. 1, 2 or 4
         """
         if not type(buffer) in [moderngl.Buffer, numpy.ndarray, bytes]:
             raise VAOError("buffer parameter must be a moderngl.Buffer, numpy.ndarray or bytes instance")
@@ -207,9 +239,10 @@ class VAO:
 
     def instance(self, program: moderngl.Program) -> moderngl.VertexArray:
         """
-        Obtain the moderngl.VertexArray instance for the program
+        Obtain the ``moderngl.VertexArray`` instance for the program.
+        The instance is only created once and cached internally.
 
-        :return: moderngl.VertexArray
+        Returns: ``moderngl.VertexArray`` instance
         """
         vao = self.vaos.get(program.glo)
         if vao:
@@ -258,7 +291,8 @@ class VAO:
         """
         Destroy the vao object
 
-        :param buffers: (bool) also release buffers
+        Keyword Args:
+            buffers (bool): also release buffers
         """
         for key, vao in self.vaos:
             vao.release()
