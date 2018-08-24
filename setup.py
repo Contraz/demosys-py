@@ -1,8 +1,8 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
 setup(
     name="demosys-py",
-    version="2.0.0",
+    version="2.0.1",
     description="Modern OpenGL 3.3+ Framework inspired by Django",
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -11,7 +11,7 @@ setup(
     author_email="eforselv@gmail.com",
     maintainer="Einar Forselv",
     maintainer_email="eforselv@gmail.com",
-    packages=find_packages(),
+    packages=find_namespace_packages(include=['demosys', 'demosys.*']),
     include_package_data=True,
     keywords = ['opengl', 'framework', 'demoscene'],
     classifiers=[
