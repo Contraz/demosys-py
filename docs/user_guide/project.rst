@@ -74,6 +74,48 @@ The created effect instances can then be used by a timeline class deciding what
 effects should be rendered at any given point in time.
 The default timeline configured just grabs the first runnable effect it finds and render only that one.
 
+Timers
+------
+
+Timers are classes responsible for controlling the current time.
+It simply reports the number of seconds as a float since effect rendering started.
+Timers also need to support pausing and time seeking so we can
+freely move around in the timeline. 
+
+This time value is passed through the configured timeline class and forwarded
+to each active effect through their ```draw()`` method.
+We should assume time can move in any direction at any speed and suddenly
+jump forward and backwards in time.
+
+The default timer if not specified in settings:
+
+.. code-block:: shell
+
+    TIMER = 'demosys.timers.clock.Timer'
+
+Standard Timers
+^^^^^^^^^^^^^^^
+
+- :py:class:`demosys.timers.clock.Timer`: Default timer just tracking time in seconds using pythons ``time`` module.
+- :py:class:`demosys.timers.music.Timer`: Timer playing music reporting duration in the song
+- :py:class:`demosys.timers.rocket.Timer`: Timer using the rocket sync system
+- :py:class:`demosys.timers.rocketmusic.Timer`: Timer using the rocket sync system with
+  music playback
+
+You create a custom timer by extending :py:class:`demosys.timers.base.BaseTimer`.
+
+Timelines
+---------
+
+A timeline is a project responsible for knowing exactly when an effect instance
+is active based on the reported time from a timer.
+
+The current standard timelines are:
+
+* :py:class:`demosys.timeline.single.Timeline`: Grabs a the single effect instance from your project rendering it
+* :py:class:`demosys.timeline.rocket.Timeline`: The active status of each effect is decided by rocket
+
+New timeline classes can be created by extending :py:class:`demosys.timeline.base.BaseTimeline`.
 
 Effects Package Organization
 ----------------------------

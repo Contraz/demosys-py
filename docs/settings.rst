@@ -167,7 +167,7 @@ You can create your own class handling this logic.
 More info in the :doc:`/user_guide/timeline` section.
 
 PROGRAM_DIRS/PROGRAM_FINDERS
--------------------
+----------------------------
 
 ``PROGRAM_DIRS`` contains absolute paths the ``FileSystemFinder`` will
 look for shaders programs.
@@ -281,7 +281,7 @@ The default scene loaders are:
     )
 
 DATA_DIRS/DATA_FINDERS
-------------------------
+----------------------
 
 Same principle as ``PROGRAM_DIRS`` and ``PROGRAM_FINDERS``.
 This is where the system looks for data files. These are

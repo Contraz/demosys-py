@@ -8,6 +8,9 @@ Basic Keyboard Controls
 - ``ESC`` to exit
 - ``SPACE`` to pause the current time (tells the configured timer to pause)
 - ``X`` for taking a screenshot (output path is configurable in :doc:`settings`)
+- ``R`` reload shader programs (Needs configuration)
+- ``LEFT`` jump 10 seconds back in time
+- ``RIGHT`` jump 10 seconds forward in time
 
 Camera Controls
 ^^^^^^^^^^^^^^^
@@ -23,7 +26,6 @@ Simply apply the ``view_matrix`` of the camera to your transformations.
 - ``D`` strafe right
 - ``Q`` down the y axis
 - ``E`` up the y axis
-- ``R`` reload shader programs (Needs configuration)
 
 **Mouse Controls**
 

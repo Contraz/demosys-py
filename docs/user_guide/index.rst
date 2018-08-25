@@ -8,8 +8,5 @@ User Guide
    effects
    project
    geometry
-   timers
-   timeline
-   pyrrmath
    performance
    audio
