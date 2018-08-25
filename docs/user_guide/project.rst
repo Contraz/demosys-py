@@ -27,6 +27,54 @@ This will generate the following structure:
 - ``manage.py`` is the entrypoint for running your project
 - ``project.py`` is used to initialize more complex project.
 
+The project.py Module
+---------------------
+
+The ``project.py`` module is the standard location to configure more complex projects.
+We achieve this by creating a class implementing :py:class:`BaseProject`.
+This class contains references to all resources, effect packages, effect instances
+and whatnot so we can freely configure our project::
+
+    from demosys.project.base import BaseProject
+
+    class Project(BaseProject):
+        effect_packages = [
+            'myproject.cube',
+        ]
+        resources = []
+
+        def create_effect_instances(self):
+            # Create three instances of a cube effect that takes a color keyword argument
+            # adding them to the internal effect instance dictionary using label as the key
+            # Args: label, class name, arguments to effect initializer
+            self.create_effect('cube_red', 'CubeEffect', color=(1.0, 0.0, 0.0))
+            self.create_effect('cube_green', 'CubeEffect', color=(0.0, 1.0, 0.0))
+            # Use full path to class
+            self.create_effect('cube_blue', 'myproject.cube.CubeEffect', color=(0.0, 0.0, 1.0))
+
+This project configuration is used when the ``run`` command is issued.
+For the project class to be recognized we need to update the ``settings.PROJECT``
+attribute with the python path::
+
+    PROJECT = 'myproject.project.Project'
+
+``manage.py run`` will now run the project using this project configuration.
+
+How you organize your resources and effects are entirely up to you. You can
+load all resources in the Project class and/or have effect packages loading
+their own resources. Resources dependencies for effect packages are always
+loaded automatically when adding the package to ``effect_packages``
+(can be overriden by implementing the ``create_external_resources`` method.
+
+The Project class also have direct access to the moderngl context
+through ``self.ctx``, so you are free to manually create any global
+resource (like framebuffers) and assign them to effects.
+
+The created effect instances can then be used by a timeline class deciding what
+effects should be rendered at any given point in time.
+The default timeline configured just grabs the first runnable effect it finds and render only that one.
+
+
 Effects Package Organization
 ----------------------------
 
