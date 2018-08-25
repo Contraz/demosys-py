@@ -173,4 +173,4 @@ The runnable effect is resposible for instantiating other effects it depends on 
 directly.
 
 If you need a more complex setup where multiple runnable effects are involved, you need
-to create a proper project config and instead use the ``run`` command.
+to create a proper project config using ``project.py`` and instead use the ``run`` command.
