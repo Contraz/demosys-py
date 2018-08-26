@@ -14,7 +14,7 @@ def points_random_3d(count, range_x=(-10.0, 10.0), range_y=(-10.0, 10.0), range_
         count (int): Number of points to generate
 
     Keyword Args:
-        range_x (tuple): min-max range for x axis: Example (-10.0. 10.0) 
+        range_x (tuple): min-max range for x axis: Example (-10.0. 10.0)
         range_y (tuple): min-max range for y axis: Example (-10.0. 10.0)
         range_z (tuple): min-max range for z axis: Example (-10.0. 10.0)
         seed (int): The random seed
