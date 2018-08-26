@@ -2,29 +2,21 @@
 Audio
 =====
 
-We currently use pygame's mixer module for music playback.
-More work needs to be done to find a better alternative
-as depending on such a huge package should not be needed.
+The current music timers do a decent job reporting the current time,
+but more work needs to be done to find a better alternative for
+accurate audio playback.
 
-You will have to manually add pygame to your requirements
-and pip install the package.
+We separate playback libraries in two types based on their capabilities.
 
-In oder to get pygame to work you probably need sdl, sdl_mixer
-and libvorbis. These are binary dependencies and not python
-packages.
+1) Accurate reporting of current time
+2) Accurate reporting of current time and fast and accurate time seeking
 
-We need to figure out what requiremnets are actually needed.
+These capabilites should also ideally work across the tree main platforms:
+Linux, OS X and Windows.
 
-As mentioned in readme, the state of audio is not in good shape.
+We have deceent type 1 timers, but more work needs to be done to
+find better type 2 libraries. This is important when working with
+timing tools such as rocket and also when jumping around in the timeline.
 
-The sound player an be a bit wonky at times on startup refusing to play
-on some platforms. We have tried a few libraries and ended up using
-pygame's mixer module. (Optional setup for this)
-
-Audio Requirements:
-
-- As the current position in the music is what all
-  draw timers are based on, we need a library that can deliver very accurate
-  value for this.
-- Efficient and accurate seeking + pause support
-- Some way to extract simple data from the music for visualisation
+Some of the current times also work inconsistenly between platforms.
+A lot more research and work is needed.
