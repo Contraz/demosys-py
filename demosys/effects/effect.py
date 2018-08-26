@@ -1,4 +1,4 @@
-from typing import Any, Type
+from typing import Any, Type, Union
 
 from pyrr import Matrix33, Matrix44, Vector3, matrix44
 from rocket.tracks import Track
@@ -112,7 +112,7 @@ class Effect:
         return self._sys_camera
 
     # Methods to override
-    def draw(self, time, frametime, target):
+    def draw(self, time: float, frametime: float, target: moderngl.Framebuffer):
         """
         Draw function called by the system every frame when the effect is active.
         This method raises ``NotImplementedError`` unless implemented.
@@ -126,7 +126,7 @@ class Effect:
 
     # Methods for getting resources
 
-    def get_program(self, label) -> moderngl.Program:
+    def get_program(self, label: str) -> moderngl.Program:
         """
         Get a program by its label
 
@@ -137,7 +137,8 @@ class Effect:
         """
         return self._project.get_program(label)
 
-    def get_texture(self, label) -> moderngl.Texture:
+    def get_texture(self, label: str) -> Union[moderngl.Texture, moderngl.TextureArray,
+                                               moderngl.Texture3D, moderngl.TextureCube]:
         """
         Get a texture by its label
 
@@ -149,7 +150,7 @@ class Effect:
         """
         return self._project.get_texture(label)
 
-    def get_track(self, name) -> Track:
+    def get_track(self, name: str) -> Track:
         """
         Gets or creates a rocket track.
         Only avaiable when using a Rocket timer.
@@ -162,7 +163,7 @@ class Effect:
         """
         return resources.tracks.get(name)
 
-    def get_scene(self, label) -> Scene:
+    def get_scene(self, label: str) -> Scene:
         """
         Get a scene by its label
 
@@ -173,7 +174,7 @@ class Effect:
         """
         return self._project.get_scene(label)
 
-    def get_data(self, label) -> Any:
+    def get_data(self, label: str) -> Any:
         """
         Get a data instance by its label
 
@@ -185,7 +186,7 @@ class Effect:
         """
         return self._project.get_data(label)
 
-    def get_effect(self, label) -> 'Effect':
+    def get_effect(self, label: str) -> 'Effect':
         """
         Get an effect instance by label.
 
@@ -196,7 +197,7 @@ class Effect:
         """
         return self._project.get_effect(label)
 
-    def get_effect_class(self, effect_name, package_name=None) -> Type['Effect']:
+    def get_effect_class(self, effect_name: str, package_name: str = None) -> Type['Effect']:
         """
         Get an effect class by the class name
 
@@ -214,20 +215,22 @@ class Effect:
 
     # Utility methods for matrices
 
-    def create_projection(self, fov=75.0, near=1.0, far=100.0, aspect_ratio=None):
+    def create_projection(self, fov: float = 75.0, near: float = 1.0, far: float = 100.0, aspect_ratio: float = None):
         """
         Create a projection matrix with the following parameters.
         When ``aspect_ratio`` is not provided the configured aspect
         ratio for the window will be used.
 
         Args:
-            :param float fov: Field of view (float)
-            :param float near: Camera near value
-            :param float far: Camrea far value
+            fov (float): Field of view (float)
+            near (float): Camera near value
+            far (float): Camrea far value
 
-        :param float ratio: Aspect ratio of the window
+        Keyword Args:
+            aspect_ratio (float): Aspect ratio of the viewport
 
-        Returns: The projection matrix as a float32 :py:class:`numpy.array`
+        Returns:
+            The projection matrix as a float32 :py:class:`numpy.array`
         """
         return matrix44.create_perspective_projection_matrix(
             fov,
@@ -268,7 +271,7 @@ class Effect:
         Args:
             modelview: The modelview matrix
 
-        :return:
+        Returns:
             A 3x3 Normal matrix as a :py:class:`numpy.array`
         """
         normal_m = Matrix33.from_matrix44(modelview)
