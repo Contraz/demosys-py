@@ -12,18 +12,28 @@ from demosys.scene import Scene
 
 class Effect:
     """
-    Effect base class that should be extended when making an effect
+    The base Effect base class that should be extended when making an effect.
 
-    Example::
+    The typical example::
 
+        import moderngl
         from demosys.effects import Effect
+        from demosys import geometry
 
         class MyEffect(Effect):
             def __init__(self):
-                # Initalization
+                # Initalization happens after resources are loaded
+                self.program = self.get_program("my_program_label")
+                self.fullscreen_quad = geometry.quad_fs()
+
+            def post_load(self):
+                # Initialization after all effects are initialized
 
             def draw(self, time, frametime, target):
-                # Draw stuff
+                # Render a colored fullscreen quad
+                self.ctx.enable_only(moderngl.DEPTH_TEST)
+                self.program["color"].value = (1.0, 1.0, 1.0, 1.0)
+                self.fullscreen_quad.render(self.program)
     """
     #: The runnable status of the effect instance.
     #: A runnable effect should be able to run with the ``runeffect`` command
@@ -44,16 +54,17 @@ class Effect:
     def __init__(self, *args, **kwargs):
         """
         Implement the initialize when extending the class.
-        This method is responsible for fetching resources
+        This method is responsible for fetching or creating resources
         and doing genereal initalization of the effect.
 
         The effect initializer is called when all resources are loaded
-        with the exception of resources loaded by other effects in
-        the initializer.
+        (with the exception of resources you manually load in the
+        the initializer).
 
-        The siganture of this method is entirely up to you.
+        If your effect requires arguments during initialiation you
+        are free to add positional and keyword arguments.
 
-        You do not have to call the superclass initializer though ``super()``
+        You **do not** have to call the superclass initializer though ``super()``
 
         Example::
 
@@ -67,11 +78,11 @@ class Effect:
 
     def post_load(self):
         """
-        Override this method if needed when creating an effect.
-
         Called after all effects are initialized before drawing starts.
         Some initialization may be neccessary to do here such as
         interaction with other effects.
+
+        This method does nothing unless implemented.
         """
         pass
 
@@ -104,7 +115,7 @@ class Effect:
     def draw(self, time, frametime, target):
         """
         Draw function called by the system every frame when the effect is active.
-        You are supposed to override this method.
+        This method raises ``NotImplementedError`` unless implemented.
 
         Args:
             time (float): The current time in seconds.
@@ -140,11 +151,8 @@ class Effect:
 
     def get_track(self, name) -> Track:
         """
-        This is only avaiable when using a Rocket timer.
-
-        Get or create a rocket track. This only makes sense when using rocket timers.
-        If the resource is not loaded yet, an empty track object
-        is returned that will be populated later.
+        Gets or creates a rocket track.
+        Only avaiable when using a Rocket timer.
 
         Args:
             name (str): The rocket track name
@@ -180,7 +188,6 @@ class Effect:
     def get_effect(self, label) -> 'Effect':
         """
         Get an effect instance by label.
-        This is only possible when you have your own Project
 
         Args:
             label (str): Label for the data file
@@ -191,13 +198,14 @@ class Effect:
 
     def get_effect_class(self, effect_name, package_name=None) -> Type['Effect']:
         """
-        Get an effect class.
+        Get an effect class by the class name
 
         Args:
             effect_name (str): Name of the effect class
 
         Keyword Args:
-            package_name (str): The package the effect belongs to
+            package_name (str): The package the effect belongs to. This is optional and only
+                                needed when effect class names are not unique.
 
         Returns:
             :py:class:`Effect` class
