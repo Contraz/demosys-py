@@ -1,4 +1,10 @@
 
+2.0.1
+-----
+
+* Resolved a problem with the distributuon causing some packages to not be included. This was related to implicit namespace packages
+* Project template now contains a basic project
+
 2.0.0
 -----
 
