@@ -136,4 +136,5 @@ class BaseProject:
 
     @property
     def ctx(self):
+        """The MondernGL context"""
         return context.ctx()
