@@ -9,10 +9,60 @@ from demosys.scene import Scene
 
 
 class BaseProject:
-    """The Project"""
-    effect_packages = []
-    resources = []
-    override_resources = {}
+    """
+    The base project class we extend when creating a project configuration
+
+    The minimal implementation::
+
+        from demosys.project.base import BaseProject
+        from demosys.resources.meta import ProgramDescription, TextureDescription
+
+        class Project(BaseProject):
+            # The effect packages to import using full python path
+            effect_packages = [
+                'myproject.efect_package1',
+                'myproject.efect_package2',
+                'myproject.efect_package2',
+            ]
+            # Resource description for global project resources (not loaded by effect packages)
+            resources = [
+                ProgramDescription(label='cube_textured', path="cube_textured.glsl'),
+                TextureDescription(label='wood', path="wood.png', mipmap=True),
+            ]
+
+            def create_resources(self):
+                # Override the method adding additional resources
+
+                # Create some shared fbo
+                size = (256, 256)
+                self.shared_framebuffer = self.ctx.framebuffer(
+                    color_attachments=self.ctx.texture(size, 4),
+                    depth_attachement=self.ctx.depth_texture(size)
+                )
+
+                return self.resources
+
+            def create_effect_instances(self):
+                # Create and register instances of an effect class we loaded from the effect packages
+                self.create_effect('cube1', 'CubeEffect')
+
+                # Using full path to class
+                self.create_effect('cube2', 'myproject.efect_package1.CubeEffect')
+
+                # Passing variables to initializer
+                self.create_effect('cube3', 'CubeEffect', texture=self.get_texture('wood'))
+
+                # Assign resources manually
+                cube = self.create_effect('cube1', 'CubeEffect')
+                cube.program = self.get_program('cube_textured')
+                cube.texture = self.get_texture('wood')
+                cube.fbo = self.shared_framebuffer
+    
+    These effects instances can then be obtained by the configured timeline class deciding
+    when they should be rendered.
+    """
+    effect_packages = []  #: The effect packages to load
+    resources = []  #: Global project resource descriptions
 
     def __init__(self):
         self._effects = {}
