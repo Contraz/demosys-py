@@ -93,7 +93,7 @@ class Effect:
 
     @property
     def label(self) -> str:
-        """Full python path to the effect"""
+        """The label assigned to this effect instance"""
         return self._label
 
     @property
