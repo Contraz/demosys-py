@@ -123,7 +123,7 @@ class VAO:
         Args:
             program: The ``moderngl.Program``
 
-         Keyword Args:
+        Keyword Args:
             mode: Override the draw mode (``TRIANGLES`` etc)
             vertices (int): The number of vertices to transform
             first (int): The index of the first vertex to start with
@@ -192,7 +192,8 @@ class VAO:
         Keyword Args:
             per_instance (bool): Is this buffer per instance data for instanced rendering?
 
-        Returns: The ``moderngl.Buffer`` instance object. This is handy when providing ``bytes`` and ``numpy.array``.
+        Returns:
+            The ``moderngl.Buffer`` instance object. This is handy when providing ``bytes`` and ``numpy.array``.
         """
         if not isinstance(attribute_names, list):
             attribute_names = [attribute_names, ]
