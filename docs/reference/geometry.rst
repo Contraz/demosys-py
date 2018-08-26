@@ -1,5 +1,5 @@
-geometry
-========
+demosys.geometry
+================
 
 The geometry module is a collection of functions
 generating simple geometry / VAOs.

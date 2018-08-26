@@ -7,7 +7,12 @@ from demosys.timers.base import BaseTimer
 
 
 class Timer(BaseTimer):
-    """Basic rocket timer"""
+    """
+    Basic rocket timer.
+    Sets up rocket using values in ``settings.ROCKET``.
+    The current time is translated internally in rocket
+    to row positions based on the configured rows per second (RPS).
+    """
     def __init__(self, **kwargs):
         """Initialize the rocket timer using values from settings"""
         config = getattr(settings, 'ROCKET', None)
@@ -48,12 +53,23 @@ class Timer(BaseTimer):
         if not self.start_paused:
             self.rocket.start()
 
-    def get_time(self):
-        """Get the current time in seconds"""
+    def get_time(self) -> float:
+        """
+        Get the current time in seconds
+
+        Returns:
+            The current time in seconds
+        """
         self.rocket.update()
         return self.rocket.time
 
-    def set_time(self, value):
+    def set_time(self, value: float):
+        """
+        Set the current time jumping in the timeline.
+
+        Args:
+            value (float): The new time
+        """
         if value < 0:
             value = 0
 
@@ -67,6 +83,11 @@ class Timer(BaseTimer):
         """Toggle pause mode"""
         self.controller.playing = not self.controller.playing
 
-    def stop(self):
-        """Stop the timer"""
+    def stop(self) -> float:
+        """
+        Stop the timer
+
+        Returns:
+            The current time.
+        """
         return self.rocket.time

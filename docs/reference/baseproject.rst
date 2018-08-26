@@ -2,8 +2,8 @@
 .. py:module:: demosys.project.base
 .. py:currentmodule:: demosys.project.base
 
-BaseProject
-===========
+demosys.project.base.BaseProject
+================================
 
 .. autodata:: BaseProject
    :annotation:

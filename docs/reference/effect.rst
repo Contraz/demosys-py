@@ -2,8 +2,8 @@
 .. py:module:: demosys.effects
 .. py:currentmodule:: demosys.effects
 
-Effect
-======
+demosys.effects.Effect
+======================
 
 .. autodata:: Effect
    :annotation:

@@ -1,14 +1,20 @@
+import os
 from demosys.conf import settings
 from .base import BaseTimer
 
 try:
     import vlc
 except ImportError:
-    print("python-vlc is needed for timer: VLCTimer")
+    if not os.environ.get('DOCS_BUILDING'):
+        raise ImportError("python-vlc is needed for vlc timer")
 
 
-class VLCTimer(BaseTimer):
-    """Timer based on music"""
+class Timer(BaseTimer):
+    """
+    Timer based on the python-vlc wrapper.
+    Plays the music file defined in ``settings.MUSIC``.
+    Requires ``python-vlc`` to be installed including the vlc application.
+    """
     def __init__(self, **kwargs):
         self.player = vlc.MediaPlayer(settings.MUSIC)
         self.paused = True
@@ -17,11 +23,12 @@ class VLCTimer(BaseTimer):
         super().__init__(**kwargs)
 
     def start(self):
-        """Start the timer and music"""
+        """Start the music"""
         self.player.play()
         self.paused = False
 
     def pause(self):
+        """Pause the music"""
         self.pause_time = self.get_time()
         self.paused = True
         self.player.pause()
@@ -33,14 +40,23 @@ class VLCTimer(BaseTimer):
         else:
             self.pause()
 
-    def stop(self):
-        """Stop the music and the timer"""
+    def stop(self) -> float:
+        """
+        Stop the music
+
+        Returns:
+            The current time in seconds
+        """
         self.player.stop()
         return self.get_time()
 
-    def get_time(self):
-        """Get the current time in seconds"""
-        # Hack around inaccuracy in mixer
+    def get_time(self) -> float:
+        """
+        Get the current time in seconds
+
+        Returns:
+            The current time in seconds
+        """
         if self.paused:
             return self.pause_time
 

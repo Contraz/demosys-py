@@ -1,5 +1,5 @@
-VAO
-===
+demosys.opengl.vao.VAO
+======================
 
 .. py:module:: demosys.opengl.vao
 .. py:currentmodule:: demosys.opengl.vao
