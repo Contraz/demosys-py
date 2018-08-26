@@ -6,11 +6,15 @@ from demosys.opengl.vao import VAO
 
 def plane_xz(size=(10, 10), resolution=(10, 10)) -> VAO:
     """
-    Generates a plane on the xz axis of a specific size and resolution
+    Generates a plane on the xz axis of a specific size and resolution.
+    Normals and texture coordinates are also included.
 
-    :param size: (x, y) tuple
-    :param resolution: (x, y) tuple
-    :return: VAO
+    Args:
+        size: (x, y) tuple
+        resolution: (x, y) tuple
+
+    Returns:
+        A :py:class:`demosys.opengl.vao.VAO` instance
     """
     sx, sz = size
     rx, rz = resolution

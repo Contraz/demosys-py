@@ -6,13 +6,16 @@ from demosys.opengl.vao import VAO
 
 def bbox(width=1.0, height=1.0, depth=1.0):
     """
-    Generates a bounding box.
-    This is simply a box with LINE_STRIP as draw mode
+    Generates a bounding box with (0.0, 0.0, 0.0) as the center.
+    This is simply a box with ``LINE_STRIP`` as draw mode.
 
-    :param width: Width of the box
-    :param height: height of the box
-    :param depth: depth of the box
-    :return: VAO
+    Keyword Args:
+        width (float): Width of the box
+        height (float): Height of the box
+        depth (float): Depth of the box
+
+    Returns:
+        A :py:class:`demosys.opengl.vao.VAO` instance
     """
     width, height, depth = width / 2.0, height / 2.0, depth / 2.0
     pos = numpy.array([

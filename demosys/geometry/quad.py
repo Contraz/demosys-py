@@ -6,19 +6,28 @@ from demosys.opengl.vao import VAO
 
 def quad_fs() -> VAO:
     """
-    Creates a screen aligned quad.
+    Creates a screen aligned quad using two triangles with normals and texture coordiantes.
+
+    Returns:
+        A :py:class:`demosys.opengl.vao.VAO` instance.
     """
     return quad_2d(2.0, 2.0, 0.0, 0.0)
 
 
 def quad_2d(width, height, xpos=0.0, ypos=0.0) -> VAO:
     """
-    Creates a 2D quad VAO using 2 triangles.
+    Creates a 2D quad VAO using 2 triangles with normals and texture coordinates.
 
-    :param width: Width of the quad
-    :param height: Height of the quad
-    :param xpos: Center position x
-    :param ypos: Center position y
+    Args:
+        width (float): Width of the quad
+        height (float): Height of the quad
+
+    Keyword Args:
+        xpos (float): Center position x
+        ypos (float): Center position y
+
+    Returns:
+        A :py:class:`demosys.opengl.vao.VAO` instance.
     """
     pos = numpy.array([
         xpos - width / 2.0, ypos + height / 2.0, 0.0,

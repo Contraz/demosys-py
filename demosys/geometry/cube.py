@@ -5,15 +5,20 @@ from demosys.opengl.vao import VAO
 
 def cube(width, height, depth, center=(0.0, 0.0, 0.0), normals=True, uvs=True) -> VAO:
     """
-    Generates a cube VAO. The cube center is (0.0, 0.0 0.0) unless other is specified.
+    Creates a cube VAO with normals and texture coordinates
 
-    :param width: Width of the cube
-    :param height: height of the cube
-    :param depth: depth of the cube
-    :param center: center of the cube
-    :param normals: (bool) Include normals
-    :param uvs: (bool) include uv coordinates
-    :return: VAO representing the cube
+    Args:
+        width (float): Width of the cube
+        height (float): Height of the cube
+        depth (float): Depth of the cube
+
+    Keyword Args:
+        center: center of the cube as a 3-component tuple
+        normals: (bool) Include normals
+        uvs: (bool) include uv coordinates
+
+    Returns:
+        A :py:class:`demosys.opengl.vao.VAO` instance
     """
     width, height, depth = width / 2.0, height / 2.0, depth / 2.0
 

@@ -8,12 +8,15 @@ from demosys.opengl.vao import VAO
 
 def sphere(radius=0.5, sectors=32, rings=16) -> VAO:
     """
-    Generate a sphere
+    Creates a sphere.
 
-    :param radius: Radius or the sphere
-    :param rings: number or horizontal rings
-    :param sectors: number of vertical segments
-    :return: VAO containing the sphere
+    Keyword Args:
+        radius (float): Radius or the sphere
+        rings (int): number or horizontal rings
+        sectors (int): number of vertical segments
+
+    Returns:
+        A :py:class:`demosys.opengl.vao.VAO` instance
     """
     R = 1.0 / (rings - 1)
     S = 1.0 / (sectors - 1)
