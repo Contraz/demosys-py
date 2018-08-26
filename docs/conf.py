@@ -26,6 +26,8 @@ from unittest.mock import MagicMock
 import sphinx.environment
 from docutils.utils import get_source_line
 
+# Enviroment variable used to code to detect if modules are imported by sphinx
+os.environ['DOCS_BUILDING'] = "True"
 
 # Define a settings module
 os.environ['DEMOSYS_SETTINGS_MODULE'] = 'demosys.conf.default'
