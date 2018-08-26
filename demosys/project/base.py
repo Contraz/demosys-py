@@ -57,7 +57,7 @@ class BaseProject:
                 cube.program = self.get_program('cube_textured')
                 cube.texture = self.get_texture('wood')
                 cube.fbo = self.shared_framebuffer
-    
+
     These effects instances can then be obtained by the configured timeline class deciding
     when they should be rendered.
     """
