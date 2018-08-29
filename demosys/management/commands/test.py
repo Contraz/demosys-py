@@ -30,4 +30,5 @@ class Command(RunCommand):
         if options.get('module'):
             sys.argv.append(options.get('module'))
 
-        pytest.main()
+        exit_code = pytest.main()
+        sys.exit(exit_code)
