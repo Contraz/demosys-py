@@ -1,7 +1,11 @@
 import sys
 from unittest.mock import MagicMock
 
-MOCK_MODULES = ['glfw', 'pyglet', 'pyglet.window']
+MOCK_MODULES = [
+    'glfw',
+    'pyglet',
+    'pyglet.window',
+]
 
 
 def apply_mocks():

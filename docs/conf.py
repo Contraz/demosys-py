@@ -35,7 +35,17 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
         return MagicMock()
 
-MOCK_MODULES = ['glfw', 'pyglet', 'pyglet.window']
+MOCK_MODULES = [
+    'glfw',
+    'pyglet',
+    'pyglet.window',
+    'PyQt5',
+    'PyQt5.QtCore',
+    'QtCore',
+    'QtOpenGL',
+    'QtWidgets',
+]
+
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # Define a settings module
