@@ -5,7 +5,7 @@ from demosys.context.base import BaseKeys
 
 
 class Keys(BaseKeys):
-    """Namespace translating glfw keys"""
+    """Namespace defining glfw specific keys constants"""
     ACTION_PRESS = glfw.PRESS
     ACTION_RELEASE = glfw.RELEASE
 

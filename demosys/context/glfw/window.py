@@ -7,10 +7,17 @@ from demosys.context.glfw.keys import Keys
 
 
 class Window(BaseWindow):
+    """
+    Window implementation using pyGLFW
+    """
     min_glfw_version = (3, 2, 1)
     keys = Keys
 
     def __init__(self):
+        """
+        Initializes glfw, sets up key and mouse events and
+        creates a ``moderngl.Context`` using the context glfw createad.
+        """
         super().__init__()
 
         if not glfw.init():
@@ -70,26 +77,44 @@ class Window(BaseWindow):
         self.set_default_viewport()
 
     def use(self):
+        """
+        Bind the window framebuffer making it the current render target
+        """
         self.fbo.use()
 
     def should_close(self):
+        """
+        Ask glfw is the window should be closed
+        """
         return glfw.window_should_close(self.window)
 
     def close(self):
+        """
+        Set the window closing state in glfw
+        """
         glfw.set_window_should_close(self.window, True)
 
     def swap_buffers(self):
+        """
+        Swaps buffers, incement the framecounter and pull events.
+        """
         self.frames += 1
         glfw.swap_buffers(self.window)
         self.poll_events()
 
     def resize(self, width, height):
+        """
+        Sets the new size and buffer size internally
+        """
         self.width = width
         self.height = height
         self.buffer_width, self.buffer_height = glfw.get_framebuffer_size(self.window)
         self.set_default_viewport()
 
     def terminate(self):
+        """
+        Terminates the glfw library
+        """
         glfw.terminate()
 
     def poll_events(self):
@@ -97,14 +122,17 @@ class Window(BaseWindow):
         glfw.poll_events()
 
     def check_glfw_version(self):
-        """Ensure glfw version is compatible"""
+        """
+        Ensure glfw library  version is compatible
+        """
         print("glfw version: {} (python wrapper version {})".format(glfw.get_version(), glfw.__version__))
         if glfw.get_version() < self.min_glfw_version:
             raise ValueError("Please update glfw binaries to version {} or later".format(self.min_glfw_version))
 
     def key_event_callback(self, window, key, scancode, action, mods):
         """
-        Key event callback for glfw
+        Key event callback for glfw.
+        Translates and forwards keyboard event to :py:func:`keyboard_event`
 
         :param window: Window event origin
         :param key: The key that was pressed or released.
@@ -116,7 +144,8 @@ class Window(BaseWindow):
 
     def mouse_event_callback(self, window, xpos, ypos):
         """
-        Mouse event callback from glfw
+        Mouse event callback from glfw.
+        Translates the events forwarding them to :py:func:`cursor_event`.
 
         :param window: The window
         :param xpos: viewport x pos
