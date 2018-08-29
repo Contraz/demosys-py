@@ -11,14 +11,16 @@ This version is simplified:
 """
 import os
 import re
+import unittest
 
-from demosys.test import DemosysTestCase
+from demosys.test.mocks import apply_mocks
 from demosys.utils import module_loading
 
+apply_mocks()
 os.environ['DEMOSYS_SETTINGS_MODULE'] = 'tests.settings'  # noqa
 
 
-class TestCase(DemosysTestCase):
+class TestCase(unittest.TestCase):
     """
     Test reference docs
     """
