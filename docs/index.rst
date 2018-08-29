@@ -8,8 +8,6 @@ A Python 3 cross platform OpenGL 3.3+ core framework based on `ModernGL <https:/
 | |screenshot1|   | |screenshot2|   |
 +-----------------+-----------------+
 
-.. warning:: The documentation for 2.0 is currently work in progress and you may find some sections outdated
-
 .. toctree::
    :maxdepth: 2
    :caption: Getting Started
