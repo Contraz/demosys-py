@@ -29,11 +29,19 @@ from docutils.utils import get_source_line
 # Enviroment variable used to code to detect if modules are imported by sphinx
 os.environ['DOCS_BUILDING'] = "True"
 
+# Mock modules
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
+MOCK_MODULES = ['glfw',]
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
 # Define a settings module
 os.environ['DEMOSYS_SETTINGS_MODULE'] = 'demosys.conf.default'
 import demosys
 demosys.setup()
-
 
 # Monkey patch sphinx to ignore: WARNING: nonlocal image URI
 def _warn_node(self, msg, node, **kwargs):
