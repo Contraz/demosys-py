@@ -1,4 +1,5 @@
 import platform
+import os
 
 import moderngl
 import pyglet
@@ -8,7 +9,7 @@ from demosys.context.base import BaseWindow
 
 from .keys import Keys
 
-if platform.system() == "Darwin":
+if platform.system() == "Darwin" and not os.environ.get('DOCS_BUILDING'):
     raise RuntimeError((
         "Pyglet do not support OpenGL core contexts "
         "and will only be able to support version 2.1 on OS X.\n"
@@ -17,9 +18,19 @@ if platform.system() == "Darwin":
 
 
 class Window(BaseWindow):
+    """
+    Window based on pyglet.
+
+    Note that pylget is unable to make core 3.3+ contexts
+    and will not work for certain drivers and enviroments such as on OS X.
+    """
     keys = Keys
 
     def __init__(self):
+        """
+        Opens a window using pyglet, registers input callbacks
+        and creates a moderngl context.
+        """
         super().__init__()
         # Disable all error checking
         pyglet.options['debug_gl'] = False
@@ -55,16 +66,31 @@ class Window(BaseWindow):
         self.set_default_viewport()
 
     def on_key_press(self, symbol, modifiers):
+        """
+        Pyglet specific key press callback.
+        Forwards and translates the events to :py:func:`keyboard_event`
+        """
         self.keyboard_event(symbol, self.keys.ACTION_PRESS, modifiers)
 
     def on_key_release(self, symbol, modifiers):
+        """
+        Pyglet specific key release callback.
+        Forwards and translates the events to :py:func:`keyboard_event`
+        """
         self.keyboard_event(symbol, self.keys.ACTION_RELEASE, modifiers)
 
     def on_mouse_motion(self, x, y, dx, dy):
+        """
+        Pyglet specific mouse motion callback.
+        Forwards and traslates the event to :py:func:`cursor_event`
+        """
         # screen coordinates relative to the lower-left corner
         self.cursor_event(x, self.buffer_height - y, dx, dy)
 
     def on_resize(self, width, height):
+        """
+        Pyglet specific callback for window resize events.
+        """
         self.width, self.height = width, height
         self.buffer_width, self.buffer_height = width, height
         self.resize(width, height)
@@ -74,7 +100,9 @@ class Window(BaseWindow):
         self.fbo.use()
 
     def swap_buffers(self):
-        # Ensure the context is present
+        """
+        Swap buffers, increment frame counter and pull events
+        """
         if not self.window.context:
             return
 
@@ -82,13 +110,22 @@ class Window(BaseWindow):
         self.window.flip()
         self.window.dispatch_events()
 
-    def should_close(self):
+    def should_close(self) -> bool:
+        """
+        returns the ``has_exit`` state in the pyglet window
+        """
         return self.window.has_exit
 
     def close(self):
+        """
+        Sets the close state in the pyglet window
+        """
         self.window.close()
 
     def terminate(self):
+        """
+        No cleanup is really needed. Empty method
+        """
         pass
 
 

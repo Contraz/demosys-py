@@ -5,7 +5,9 @@ from demosys.context.base import BaseKeys
 
 
 class Keys(BaseKeys):
-    """Namespace translating pyglet keys"""
+    """
+    Namespace mapping pyglet specific key constants
+    """
     ESCAPE = key.ESCAPE
     SPACE = key.SPACE
     ENTER = key.ENTER

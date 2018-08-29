@@ -18,3 +18,4 @@ Reference
    demosys.context.base
    demosys.context.glfw
    demosys.context.headless
+   demosys.context.pyglet
