@@ -15,3 +15,4 @@ Reference
    demosys.timers.rocket
    demosys.timers.rocketmusic
    demosys.timers.vlc
+   demosys.context.base

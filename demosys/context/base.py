@@ -10,17 +10,25 @@ GLVersion = namedtuple('GLVersion', ['major', 'minor', 'code'])
 
 
 class BaseKeys:
-    """Generic constants here"""
+    """
+    Namespace for generic key constants
+    working across all window types.
+    """
     ACTION_PRESS = 'ACTION_PRESS'
     ACTION_RELEASE = 'ACTION_RELEASE'
 
 
 class BaseWindow:
-    keys = None
+    """
+    The base window we extend when adding new window types to the system.
+    """
+    keys = None  #: The key class/namespace used by the window defining keyboard constants
 
     def __init__(self):
         """
-        Base window intializer
+        Base window intializer reading values from ``settings``.
+        If you need an initializer in your own window, always call
+        this methods using ``super().__init__()``
         """
         self.frames = 0
         self.width = settings.WINDOW['size'][0]
@@ -55,18 +63,43 @@ class BaseWindow:
 
     @property
     def size(self):
+        """
+        (width, height) tuple containing the window size.
+
+        Note that for certain displays we rely on :py:func:`buffer_size`
+        to get the actual window buffer size. This is fairly common
+        for retina and 4k displays where the UI scale is > 1.0
+        """
         return (self.width, self.height)
 
     @property
     def buffer_size(self):
+        """
+        (width, heigh) buffer size of the window.
+
+        This is the actual buffer size of the window
+        taking UI scale into account. A 1920 x 1080
+        window running in an environment with UI scale 2.0
+        would have a 3840 x 2160 window buffer.
+        """
         return (self.buffer_width, self.buffer_height)
 
     def draw(self, current_time, frame_time):
+        """
+        Draws a frame. Internally it calls the
+        configured timeline's draw method.
+
+        Args:
+            current_time (float): The current time (preferrably always from the configured timer class)
+            frame_time (float): The duration of the previous frame in seconds
+        """
         self.set_default_viewport()
         self.timeline.draw(current_time, frame_time, self.fbo)
 
     def clear(self):
-        """Clear the scren"""
+        """
+        Clear the window buffer
+        """
         self.ctx.fbo.clear(
             red=self.clear_color[0],
             green=self.clear_color[1],
@@ -76,34 +109,91 @@ class BaseWindow:
         )
 
     def clear_values(self, red=0.0, green=0.0, blue=0.0, alpha=0.0, depth=1.0):
+        """
+        Sets the clear values for the window buffer.
+
+        Args:
+            red (float): red compoent
+            green (float): green compoent
+            blue (float): blue compoent
+            alpha (float): alpha compoent
+            depth (float): depth value
+        """
         self.clear_color = (red, green, blue, alpha)
         self.clear_depth = depth
 
     def use(self):
-        """Render to this window"""
+        """
+        Set the window buffer as the current render target
+
+        Raises:
+            NotImplementedError
+        """
         raise NotImplementedError()
 
     def swap_buffers(self):
-        """Swap frame buffer"""
+        """
+        Swap the buffers. Most windows have at least support for double buffering
+        cycling a back and front buffer.
+
+        Raises:
+            NotImplementedError
+        """
         raise NotImplementedError()
 
     def resize(self, width, height):
-        """Resize window"""
+        """
+        Resize the window. Should normallty be overriden
+        when implementing a window as most window libraries need additional logic here.
+
+        Args:
+            width (int): Width of the window
+            height: (int): Height of the window
+        """
         self.set_default_viewport()
 
     def close(self):
-        """Set the close state"""
+        """
+        Set the window in close state. This doesn't actually close the window,
+        but should make :py:func:`should_close` return ``True`` so the
+        main loop can exit gracefully.
+
+        Raises:
+            NotImplementedError
+        """
         raise NotImplementedError()
 
     def should_close(self):
-        """Check if window should close"""
+        """
+        Check if window should close. This should always be checked in the main draw loop.
+
+        Raises:
+            NotImplementedError
+        """
         raise NotImplementedError()
 
     def terminate(self):
-        """Cleanup after close"""
+        """
+        The actual teardown of the window.
+
+        Raises:
+            NotImplementedError
+        """
         raise NotImplementedError()
 
     def keyboard_event(self, key, action, modifier):
+        """
+        Handles the standard keyboard events such as camera movements,
+        taking a screenshot, closing the window etc.
+
+        Can be overriden add new keyboard events. Ensure this method
+        is also called if you want to keep the standard features.
+
+        Arguments:
+            key: The key that was pressed or released
+            action: The key action. Can be `ACTION_PRESS` or `ACTION_RELEASE`
+            modifier: Modifiers such as holding shift or ctrl
+        """
         # The well-known standard key for quick exit
         if key == self.keys.ESCAPE:
             self.close()
@@ -170,10 +260,23 @@ class BaseWindow:
         self.timeline.key_event(key, action, modifier)
 
     def cursor_event(self, x, y, dx, dy):
+        """
+        The standard mouse movement event method.
+        Can be overriden to add new functionality.
+        By default this feeds the system camera with new values.
+
+        Args:
+            x: The current mouse x position
+            y: The current mouse y position
+            dx: Delta x postion (x position difference from the previous event)
+            dy: Delta y postion (y position difference from the previous event)
+        """
         self.sys_camera.rot_state(x, y)
 
     def print_context_info(self):
-        """Prints out context info"""
+        """
+        Prints moderngl context info.
+        """
         print("Context Version:")
         print('ModernGL:', moderngl.__version__)
         print('vendor:', self.ctx.info['GL_VENDOR'])
@@ -184,7 +287,10 @@ class BaseWindow:
         print('code:', self.ctx.version_code)
 
     def set_default_viewport(self):
-        """Calculate viewport with correct aspect ratio"""
+        """
+        Calculates the viewport based on the configured aspect ratio in settings.
+        Will add black borders if the window do not match the viewport.
+        """
         # The expected height with the current viewport width
         expected_height = int(self.buffer_width / self.aspect_ratio)
 
