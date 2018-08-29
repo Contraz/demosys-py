@@ -27,8 +27,17 @@ class BaseWindow:
     def __init__(self):
         """
         Base window intializer reading values from ``settings``.
-        If you need an initializer in your own window, always call
-        this methods using ``super().__init__()``
+
+        When creating the initializer in your own window always call
+        this methods using ``super().__init__()``.
+
+        The main responsebility of the initializer is to:
+
+        * initialize the window library
+        * identify the window framebuffer
+        * set up keyboard and mouse events
+        * create the ``moderngl.Context`` instance
+        * register the window in ``context.WINDOW``
         """
         self.frames = 0
         self.width = settings.WINDOW['size'][0]
