@@ -8,9 +8,20 @@ from .keys import Keys
 
 
 class Window(BaseWindow):
+    """
+    Window using PyQt5.
+
+    This is the recommended window if you want your project to work
+    on most platforms out of the box without any binary dependecies.
+    """
     keys = Keys
 
     def __init__(self):
+        """
+        Creates a pyqt application and window overriding the
+        built in event loop. Sets up keyboard and mouse events
+        and creates a ``monderngl.Context``.
+        """
         super().__init__()
         self._closed = False
 
@@ -73,31 +84,62 @@ class Window(BaseWindow):
         self.set_default_viewport()
 
     def keyPressEvent(self, event):
+        """
+        Pyqt specific key press callback function.
+        Translates and forwards events to :py:func:`keyboard_event`.
+        """
         self.keyboard_event(event.key(), self.keys.ACTION_PRESS, 0)
 
     def keyReleaseEvent(self, event):
+        """
+        Pyqt specific key release callback function.
+        Translates and forwards events to :py:func:`keyboard_event`.
+        """
         self.keyboard_event(event.key(), self.keys.ACTION_RELEASE, 0)
 
     def mouseMoveEvent(self, event):
+        """
+        Pyqt specific mouse event callback
+        Translates and forwards events to :py:func:`cursor_event`.
+        """
         self.cursor_event(event.x(), event.y(), 0, 0)
 
     def resizeGL(self, width, height):
+        """
+        Pyqt specific resize callback.
+        The window currently do not support resizing.
+        """
         print("Resize", width, height)
 
     def swap_buffers(self):
+        """
+        Swaps buffers, increments the frame counter and pulls events
+        """
         self.frames += 1
         self.widget.swapBuffers()
         # We don't use standard event loop having to manually process events
         self.app.processEvents()
 
     def use(self):
+        """
+        Make the window's framebuffer the current render target
+        """
         self.fbo.use()
 
-    def should_close(self):
+    def should_close(self) -> bool:
+        """
+        Checks if the internal close state is set
+        """
         return self._closed
 
     def close(self):
+        """
+        Set the internal close state
+        """
         self._closed = True
 
     def terminate(self):
+        """
+        Quits the running qt application
+        """
         QtCore.QCoreApplication.instance().quit()

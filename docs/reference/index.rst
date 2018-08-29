@@ -16,6 +16,7 @@ Reference
    demosys.timers.rocketmusic
    demosys.timers.vlc
    demosys.context.base
+   demosys.context.pyqt
    demosys.context.glfw
    demosys.context.headless
    demosys.context.pyglet

@@ -5,7 +5,9 @@ from demosys.context.base import BaseKeys
 
 
 class Keys(BaseKeys):
-    """Namespace translating pyqt keys"""
+    """
+    Namespace creating pyqt specific key constants
+    """
     ESCAPE = Qt.Key_Escape
     SPACE = Qt.Key_Space
     ENTER = Qt.Key_Enter
