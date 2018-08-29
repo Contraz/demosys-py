@@ -17,6 +17,8 @@ class Window(BaseWindow):
         """
         Initializes glfw, sets up key and mouse events and
         creates a ``moderngl.Context`` using the context glfw createad.
+
+        Using the glfw window requires glfw binaries and pyGLFW.
         """
         super().__init__()
 
