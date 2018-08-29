@@ -6,8 +6,10 @@ demosys.context.pyqt.Window
 ===========================
 
 .. autodata:: Window
+   :annotation:
 
 .. autodata:: Keys
+   :annotation:
 
 Methods
 -------

@@ -6,8 +6,10 @@ demosys.context.pyglet.Window
 =============================
 
 .. autodata:: Window
+   :annotation:
 
 .. autodata:: Keys
+   :annotation:
 
 Methods
 -------
