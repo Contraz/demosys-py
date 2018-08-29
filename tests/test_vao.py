@@ -1,5 +1,5 @@
 import moderngl
-from demosys.test import DemosysTestCase
+from demosys.test.testcase import DemosysTestCase
 from demosys import geometry
 from demosys.opengl.vao import VAO
 

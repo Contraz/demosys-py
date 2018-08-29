@@ -1,4 +1,4 @@
-from demosys.test import DemosysTestCase
+from demosys.test.testcase import DemosysTestCase
 from demosys.effects.registry import effects
 from demosys.scene import camera
 

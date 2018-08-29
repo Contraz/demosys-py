@@ -1,6 +1,6 @@
 import moderngl
 from demosys.conf import settings
-from demosys.test import DemosysTestCase
+from demosys.test.testcase import DemosysTestCase
 
 
 class WindowTestCase(DemosysTestCase):

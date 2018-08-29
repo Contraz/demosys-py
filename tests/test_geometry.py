@@ -1,5 +1,5 @@
 from demosys import geometry
-from demosys.test import DemosysTestCase
+from demosys.test.testcase import DemosysTestCase
 
 
 class GeometryTest(DemosysTestCase):

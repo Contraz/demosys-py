@@ -2,7 +2,7 @@ import os
 
 import moderngl
 
-from demosys.test import DemosysTestCase
+from demosys.test.testcase import DemosysTestCase
 from demosys import resources
 from demosys.exceptions import ImproperlyConfigured
 from demosys.conf import settings
