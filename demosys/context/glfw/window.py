@@ -10,7 +10,7 @@ class Window(BaseWindow):
     """
     Window implementation using pyGLFW
     """
-    min_glfw_version = (3, 2, 1)
+    min_glfw_version = (3, 2, 1)  #: The minimum glfw version required
     keys = Keys
 
     def __init__(self):

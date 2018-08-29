@@ -24,6 +24,8 @@ Methods
 .. automethod:: Window.key_event_callback
 .. automethod:: Window.mouse_event_callback
 .. automethod:: Window.window_resize_callback
+.. automethod:: Window.poll_events
+.. automethod:: Window.check_glfw_version
 
 Other Inherited Methods
 -----------------------
@@ -42,3 +44,4 @@ Attributes
 .. autoattribute:: Window.size
 .. autoattribute:: Window.buffer_size
 .. autoattribute:: Window.keys
+.. autoattribute:: Window.min_glfw_version
