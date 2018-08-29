@@ -1,79 +1,51 @@
 """
 Documentation testing
 
-Based on:
+Inspired by:
 https://github.com/cprogrammer1994/ModernGL/blob/master/tests/test_documentation.py
 by Szabolcs Dombi
+
+This version is simplified:
+* Only test if the attribute or method is present in the class. Function parameters are not inspected.
+* Include ignore pattern in the implemented set
 """
-import inspect
 import os
 import re
-import unittest
+
+from demosys.test import DemosysTestCase
+from demosys.utils import module_loading
 
 os.environ['DEMOSYS_SETTINGS_MODULE'] = 'tests.settings'  # noqa
 
-import demosys
-from demosys import effects, opengl
 
-# Modules we want to remove from types
-MODULES = [
-    'demosys.',
-    'opengl.',
-    'texture.',
-    'shader.',
-    'resources.',
-    'data.',
-    'moderngl.',
-    'buffer.',
-    'rocket.',
-    'tracks.',
-    'scene.',
-    'buffer.',
-    'depth.',
-    'texture_array.',
-    'program.',
-    'vertex_array.',
-    'array.',
-]
-
-class TestCase(unittest.TestCase):
-
+class TestCase(DemosysTestCase):
+    """
+    Test reference docs
+    """
     def validate(self, filename, module, classname, ignore):
-        root = os.path.dirname(os.path.dirname(__file__))
-        with open(os.path.normpath(os.path.join(root, 'docs', 'source', filename))) as f:
+        """
+        Finds all automethod and autoattribute statements in an rst file
+        comparing them to the attributes found in the actual class
+        """
+        with open(os.path.normpath(os.path.join('docs', 'reference', filename))) as f:
             docs = f.read()
-        methods = re.findall(r'^\.\. automethod:: ([^\(\n]+)([^\n]+)', docs, flags=re.M)
+
+        module = module_loading.import_module(module)
+
+        methods = re.findall(r'^\.\. automethod:: ([^\(\n]+)', docs, flags=re.M)
         attributes = re.findall(r'^\.\. autoattribute:: ([^\n]+)', docs, flags=re.M)
-        documented = set(filter(lambda x: x.startswith(classname), [a for a, b in methods] + attributes))
-        implemented = set(classname + '.' + x for x in dir(getattr(module, classname)) if not x.startswith('_'))
+
+        documented = set(filter(lambda x: x.startswith(classname), [a for a in methods] + attributes))
+        implemented = set(classname + '.' + x for x in dir(getattr(module, classname))
+                          if not x.startswith('_') or x == '__init__')
+        print(implemented)
         ignored = set(classname + '.' + x for x in ignore)
+
         self.assertSetEqual(implemented - documented - ignored, set(), msg='Implemented but not Documented')
-        self.assertSetEqual(documented - implemented, set(), msg='Documented but not Implemented')
+        self.assertSetEqual(documented - implemented - ignored, set(), msg='Documented but not Implemented')
 
-        for method, docsig in methods:
-            classname, methodname = method.split('.')
-            sig = str(inspect.signature(getattr(getattr(module, classname), methodname)))
-            print(sig)
-            sig = sig.replace('self, ', '').replace('typing.', '').replace(' -> None', '')
+    def test_demosys_contex_base(self):
+        self.validate('demosys.context.base.rst', 'demosys.context.base', 'BaseWindow', [])
 
-            for m in MODULES:
-                sig = sig.replace(m, '')
-
-            sig = sig.replace('(self)', '()').replace(', *,', ',').replace('(*, ', '(')
-            sig = re.sub(r'-> \'(\w+)\'', r'-> \1', sig)
-
-            self.assertEqual(docsig, sig, msg=filename + '::' + method)
-
-    # def test_effect_docs(self):
-    #     self.validate(
-    #         os.path.join('reference', 'effect.rst'),
-    #         effects, 'Effect', [])
-
-    # def test_vao_docs(self):
-    #     self.validate(
-    #         os.path.join('reference', 'vao.rst'),
-    #         opengl, 'VAO', []
-    #     )
-
-if __name__ == '__main__':
-    unittest.main()
+    def test_demosys_context_glfw(self):
+        self.validate('demosys.context.glfw.rst', 'demosys.context.glfw', 'Window', [])

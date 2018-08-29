@@ -14,6 +14,17 @@
                 "runeffect",
                 "examples.cubes",
             ],
+        },
+        {
+            "name": "Python: demosys-py test",
+            "type": "python",
+            "request": "launch",
+            "console": "none",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "tests/test_docs.py",
+            ],
         }
     ]
 }
