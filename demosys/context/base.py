@@ -1,5 +1,6 @@
 import sys
 from collections import namedtuple
+from typing import Tuple
 
 import moderngl
 from demosys import project
@@ -71,7 +72,7 @@ class BaseWindow:
         self.ctx = None
 
     @property
-    def size(self):
+    def size(self) -> Tuple[int, int]:
         """
         (width, height) tuple containing the window size.
 
@@ -82,7 +83,7 @@ class BaseWindow:
         return (self.width, self.height)
 
     @property
-    def buffer_size(self):
+    def buffer_size(self) -> Tuple[int, int]:
         """
         (width, heigh) buffer size of the window.
 
@@ -172,7 +173,7 @@ class BaseWindow:
         """
         raise NotImplementedError()
 
-    def should_close(self):
+    def should_close(self) -> bool:
         """
         Check if window should close. This should always be checked in the main draw loop.
 
