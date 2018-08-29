@@ -26,8 +26,8 @@ Methods
 .. automethod:: BaseWindow.terminate
 .. automethod:: BaseWindow.keyboard_event
 .. automethod:: BaseWindow.cursor_event
-.. automethod:: print_context_info
-.. automethod:: set_default_viewport
+.. automethod:: BaseWindow.print_context_info
+.. automethod:: BaseWindow.set_default_viewport
 
 Attributes
 ----------
