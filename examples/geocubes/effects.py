@@ -40,7 +40,7 @@ class GeoCubesEffect(effect.Effect):
         mv_m = self.create_transformation(rotation=(time * 1.2, time * 2.1, time * 0.25),
                                           translation=(0.0, 0.0, -8.0))
         normal_m = self.create_normal_matrix(mv_m)
-        proj_m = self.create_projection(fov=60.0, ratio=1.0)
+        proj_m = self.create_projection(fov=60.0, aspect_ratio=1.0)
 
         self.fbo.use()
 
