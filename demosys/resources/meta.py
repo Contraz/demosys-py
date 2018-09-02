@@ -58,6 +58,14 @@ class ProgramDescription(ResourceDescription):
     def fragment_shader(self):
         return self._kwargs.get('fragment_shader')
 
+    @property
+    def tess_control_shader(self):
+        return self._kwargs.get('tess_control_shader')
+
+    @property
+    def tess_evaluation_shader(self):
+        return self._kwargs.get('tess_evaluation_shader')
+
 
 class SceneDescription(ResourceDescription):
     """Describes a scene to load"""
