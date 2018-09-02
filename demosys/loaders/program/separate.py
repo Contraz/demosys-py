@@ -17,8 +17,8 @@ class Loader(BaseLoader):
             vs_source,
             geometry_source=geo_source,
             fragment_source=fs_source,
-            tess_control_shader=tc_source,
-            tess_evaluation_shader=te_source,
+            tess_control_source=tc_source,
+            tess_evaluation_source=te_source,
         )
         prog = shaders.create()
 
