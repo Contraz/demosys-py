@@ -123,9 +123,11 @@ python manage.py runeffect examples.raymaching
 Terrain
 -------
 
-Simple tessellation example using a height map. The original vertex buffer is a 8 x 8 reolution
+Simple tessellation example using a height map. The original vertex buffer is a 8 x 8 resolution
 grid with 128 triangles. Each triangle is tessellated using inner and outer level of 64
 giving us around 780.000 triangles. We toggle the draw mode between textured and wireframe over time.
+Because the tessellation evaluation shader reads from the height map we get curved tessellation
+instead of all triangles ending up in the same plane.
 
 ```bash
 python manage.py runeffect examples.terrain
