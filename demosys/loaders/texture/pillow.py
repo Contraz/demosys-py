@@ -24,6 +24,8 @@ class PillowLoader(BaseLoader):
             if not self.meta.resolved_path:
                 raise ValueError("Cannot find texture: {}".format(self.meta.path))
 
+            print("Loading:", self.meta.path)
+
             self.image = Image.open(self.meta.resolved_path)
 
         if self.meta.flip:

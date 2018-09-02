@@ -14,5 +14,7 @@ class Loader(BaseLoader):
         if not self.meta.resolved_path:
             raise ImproperlyConfigured("Data file '{}' not found".format(self.meta.path))
 
+        print("Loading:", self.meta.path)
+
         with open(self.meta.resolved_path, 'r') as fd:
             return json.loads(fd.read())
