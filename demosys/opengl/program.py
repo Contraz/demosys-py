@@ -20,6 +20,8 @@ class ProgramShaders:
         self.vertex_source = None
         self.geometry_source = None
         self.fragment_source = None
+        self.tess_control_source = None
+        self.tess_evaluation_source = None
 
     @property
     def ctx(self) -> moderngl.Context:
@@ -50,10 +52,25 @@ class ProgramShaders:
                 source,
             )
 
+        if TESS_CONTROL_SHADER in source:
+            instance.tess_control_source = ShaderSource(
+                TESS_CONTROL_SHADER,
+                meta.path or meta.tess_control_shader,
+                source,
+            )
+
+        if TESS_EVALUATION_SHADER in source:
+            instance.tess_evaluation_source = ShaderSource(
+                TESS_EVALUATION_SHADER,
+                meta.path or meta.tess_evaluation_shader,
+                source,
+            )
+
         return instance
 
     @classmethod
-    def from_separate(cls, meta: ProgramDescription, vertex_source, geometry_source=None, fragment_source=None):
+    def from_separate(cls, meta: ProgramDescription, vertex_source, geometry_source=None, fragment_source=None,
+                      tess_control_shader=None, tess_evaluation_shader=None):
         """Initialize multiple shader strings"""
         instance = cls(meta)
         instance.vertex_source = ShaderSource(
@@ -96,6 +113,8 @@ class ProgramShaders:
             vertex_shader=self.vertex_source.source,
             geometry_shader=self.geometry_source.source if self.geometry_source else None,
             fragment_shader=self.fragment_source.source if self.fragment_source else None,
+            tess_control_shader=self.tess_control_source.source if self.tess_control_source else None,
+            tess_evaluation_shader=self.tess_evaluation_source.source if self.tess_evaluation_source else None,
             varyings=out_attribs,
         )
 
