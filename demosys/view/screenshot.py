@@ -32,7 +32,8 @@ def create(file_format='png', name=None):
 
     image = Image.frombytes(
         "RGB",
-        (Config.target.width, Config.target.height), Config.target.read(alignment=Config.alignment)
+        (Config.target.viewport[2], Config.target.viewport[3]),
+        Config.target.read(viewport=Config.target.viewport, alignment=Config.alignment),
     )
     image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
