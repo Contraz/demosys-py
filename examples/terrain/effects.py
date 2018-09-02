@@ -15,7 +15,7 @@ def calculate_triangles(n: int):
         return 1
     if n == 0:
         return 0
-    return ((2 * n -2) * 3) + calculate_triangles(n - 2)
+    return ((2 * n - 2) * 3) + calculate_triangles(n - 2)
 
 
 class TerrainTessellation(effect.Effect):
