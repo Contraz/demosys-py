@@ -119,3 +119,16 @@ python manage.py runeffect examples.raymaching
 ```
 
 ![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/raymarching.png)
+
+Terrain
+-------
+
+Simple tessellation example using a height map. The original vertex buffer is a 8 x 8 reolution
+grid with 128 triangles. Each triangle is tessellated using inner and outer level of 64
+giving us around 780.000 triangles. We toggle the draw mode between textured and wireframe over time.
+
+```bash
+python manage.py runeffect examples.terrain
+```
+
+![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/terrain.png)

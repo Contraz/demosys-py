@@ -1,3 +1,4 @@
+import math
 import moderngl
 
 from demosys.effects import effect
@@ -5,7 +6,19 @@ from demosys import geometry
 from pyrr import matrix44
 
 
-class Empty(effect.Effect):
+def calculate_triangles(n: int):
+    """
+    Calculate the number of triangles for the barycentric subdivision of a
+    single triangle (where the inner and outer subdivision is equal
+    """
+    if n < 0:
+        return 1
+    if n == 0:
+        return 0
+    return ((2 * n -2) * 3) + calculate_triangles(n - 2)
+
+
+class TerrainTessellation(effect.Effect):
 
     def __init__(self):
         self.terrain = geometry.plane_xz(size=(400, 400), resolution=(8, 8))
@@ -20,6 +33,12 @@ class Empty(effect.Effect):
         self.heights = self.program['heightmap']
 
         self.sys_camera.velocity = 50.0
+        self.tess_level = 64
+
+        original_triangles = 8 * 8 * 2
+        tess_triangles = calculate_triangles(self.tess_level)
+        print("Number of triangles:", original_triangles)
+        print("Total triangles with tessellation:", original_triangles * tess_triangles)
 
     def draw(self, time, frametime, target):
         self.ctx.enable_only(moderngl.DEPTH_TEST)
@@ -29,15 +48,14 @@ class Empty(effect.Effect):
         m_mv = matrix44.multiply(m_mv, self.sys_camera.view_matrix)
 
         self.ctx.patch_vertices = 3
-        # self.ctx.wireframe = True
+        self.ctx.wireframe = True if math.fmod(time, 10) < 5.0 else False
 
         self.heightmap.use(location=0)
         self.heights.value = 0
         self.proj_matrix.write(m_proj.astype('f4').tobytes())
         self.mv_matrix.write(m_mv.astype('f4').tobytes())
 
-        tess_level = 64.0
-        self.program['TessLevelInner'].value = tess_level
-        self.program['TessLevelOuter'].value = tess_level
+        self.program['TessLevelInner'].value = self.tess_level
+        self.program['TessLevelOuter'].value = self.tess_level
 
         self.terrain.render(self.program, mode=moderngl.PATCHES)
