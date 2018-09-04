@@ -45,11 +45,12 @@ Features
 
 * A simple effect system based on python packages
 * Supports most modern OpenGL features through [ModernGL](https://github.com/cprogrammer1994/ModernGL)
+* Resource loading system for shader programs, textures, scenes and misc data
 * Loading GLTF 2.0 and wavefront obj files/scenes
-* Support for the rocket sync-tracker system to create interesting keyframe data (Using [pyrocket](https://github.com/Contraz/pyrocket))
+* Supports the rocket sync-tracker system to create interesting keyframe data (Using [pyrocket](https://github.com/Contraz/pyrocket))
 * Runtime re-loading shader programs (press R)
 * Supports headless rendering and various visible windows such as pyGLFW, PyQt5 and Pyglet.
-* Management commands to create new projects and effects including the ability to make custom commands
+* Management commands for creting new projects and effects including the ability to make custom commands
 * A highly pluggable framework with customizable timers, resource loaders, timelines and more
 * A geometry module for quick creation of common mesh/VAO types
 * Experimental audio playback support
@@ -101,8 +102,8 @@ Contributors
 * [Arttu Tamminen](https://github.com/helgrima)
 * [binaryf](https://github.com/binaryf)
 
-Libraries
----------
+Dependencies
+------------
 
 * [ModernGL](https://github.com/cprogrammer1994/ModernGL) PyOpenGL replacement
 * [PIL/Pillow](https://github.com/python-pillow/Pillow) for texture loading
@@ -119,5 +120,5 @@ Optional:
 Mentions
 --------
 
-Also consider supporting [Read the Docs](https://readthedocs.org/sustainability/) by becoming a gold member
-though a one time ($5 or more) donation for an ad-free experience.
+* Also consider supporting [Read the Docs](https://readthedocs.org/sustainability/) by becoming a
+  gold member though a one time ($5 or more) donation for an ad-free experience.
