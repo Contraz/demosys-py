@@ -52,9 +52,18 @@ class Window(BaseWindow):
             self.buffer_width = rect.width() * self.widget.devicePixelRatio()
             self.buffer_height = rect.height() * self.widget.devicePixelRatio()
 
-        self.widget.setFixedSize(self.width, self.height)
+        if self.resizable:
+            size_policy = QtWidgets.QSizePolicy(
+                QtWidgets.QSizePolicy.Expanding,
+                QtWidgets.QSizePolicy.Expanding,
+            )
+            self.widget.setSizePolicy(size_policy)
+            self.widget.resize(self.width, self.height)
+        else:
+            self.widget.setFixedSize(self.width, self.height)
 
         self.widget.move(QtWidgets.QDesktopWidget().rect().center() - self.widget.rect().center())
+        self.widget.resizeGL = self.resize  # Needs to be set before show()
         self.widget.show()
 
         if not self.cursor:
@@ -70,7 +79,6 @@ class Window(BaseWindow):
         self.widget.keyPressEvent = self.keyPressEvent
         self.widget.keyReleaseEvent = self.keyReleaseEvent
         self.widget.mouseMoveEvent = self.mouseMoveEvent
-        self.widget.resizeGL = self.resizeGL
 
         # Attach to the context
         self.ctx = moderngl.create_context(require=self.gl_version.code)
@@ -104,12 +112,21 @@ class Window(BaseWindow):
         """
         self.cursor_event(event.x(), event.y(), 0, 0)
 
-    def resizeGL(self, width, height):
+    def resize(self, width, height):
         """
         Pyqt specific resize callback.
         The window currently do not support resizing.
         """
-        print("Resize", width, height)
+        if not self.fbo:
+            return
+
+        self.width = width
+        self.height = height
+        self.buffer_width = self.width * self.widget.devicePixelRatio()
+        self.buffer_height = self.height * self.widget.devicePixelRatio()
+
+        print(width, height)
+        super().resize(width, height)
 
     def swap_buffers(self):
         """
