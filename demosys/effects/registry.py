@@ -99,7 +99,7 @@ class EffectRegistry:
 
         Args:
             name (str): Path to effect package or effect
-        
+
         Returns:
             The requested EffectPackage
 
@@ -119,7 +119,7 @@ class EffectRegistry:
 
         Args:
             path (str): effect class name or full python path to effect class
-        
+
         Returns:
             Effect class
 
