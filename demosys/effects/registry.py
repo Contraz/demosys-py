@@ -31,7 +31,7 @@ def parse_package_string(path):
     if parts[-1][0].isupper():
         return ".".join(parts[:-1]), parts[-1]
 
-    return path
+    return path, ""
 
 
 class EffectRegistry:
@@ -79,6 +79,8 @@ class EffectRegistry:
 
         :param name: (str) The effect package to add
         """
+        name, cls_name = parse_package_string(name)
+
         if name in self.package_map:
             return
 
@@ -93,14 +95,39 @@ class EffectRegistry:
 
     def get_package(self, name) -> 'EffectPackage':
         """
-        Get a package by python path
+        Get a package by python path. Can also contain path to an effect.
+
+        Args:
+            name (str): Path to effect package or effect
+        
+        Returns:
+            The requested EffectPackage
+
+        Raises:
+            EffectError when no package is found
         """
+        name, cls_name = parse_package_string(name)
+
         try:
             return self.package_map[name]
         except KeyError:
             raise EffectError("No package '{}' registered".format(name))
 
-    def find_effect_class(self, class_name, package_name=None) -> Type[Effect]:
+    def find_effect_class(self, path) -> Type[Effect]:
+        """
+        Find an effect class by class name or full python path to class
+
+        Args:
+            path (str): effect class name or full python path to effect class
+        
+        Returns:
+            Effect class
+
+        Raises:
+            EffectError if no class is found
+        """
+        package_name, class_name = parse_package_string(path)
+
         if package_name:
             package = self.get_package(package_name)
             return package.find_effect_class(class_name, raise_for_error=True)

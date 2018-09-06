@@ -1,5 +1,5 @@
 from demosys.project.base import BaseProject
-from demosys.effects.registry import effects
+from demosys.effects.registry import effects, parse_package_string
 
 
 class Project(BaseProject):
@@ -9,7 +9,9 @@ class Project(BaseProject):
     """
     def __init__(self, effect_package):
         super().__init__()
-        self.effect_packages = [effect_package]
+        self.path = effect_package
+        self.effect_package_name, self.effect_class_name = parse_package_string(effect_package)
+        self.effect_packages = [self.effect_package_name]
         self.effect = None
 
     def get_default_effect(self):
@@ -19,12 +21,9 @@ class Project(BaseProject):
         pass
 
     def create_effect_instances(self):
-        cls = self.get_runnable_effect()
-        self.effect = self.create_effect('default', cls.__name__)
+        cls = effects.find_effect_class(self.path)
 
-    def get_runnable_effect(self):
-        """
-        Attempt to get a runnable effect in a package
-        """
-        runnable = effects.packages[0].runnable_effects()
-        return runnable[0]
+        if not cls.runnable:
+            raise ValueError("Effect doesn't have the runnable flag set:", self.path)
+
+        self.effect = self.create_effect('default', cls.__name__)

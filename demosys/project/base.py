@@ -117,8 +117,7 @@ class BaseProject:
         Returns:
             The newly created Effect instance
         """
-        params = name.split('.')
-        effect_cls = effects.find_effect_class(params[-1], package_name=".".join(params[:-1]))
+        effect_cls = effects.find_effect_class(name)
         effect = effect_cls(*args, **kwargs)
         effect._label = label
 

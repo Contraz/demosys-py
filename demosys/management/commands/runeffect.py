@@ -9,7 +9,7 @@ class Command(RunCommand):
     help = "Runs an effect"
 
     def add_arguments(self, parser):
-        parser.add_argument("effect_package", help="Name of the effect package")
+        parser.add_argument("effect_package", help="Python path to effect package or effect class")
 
     def handle(self, *args, **options):
         demosys.setup(
