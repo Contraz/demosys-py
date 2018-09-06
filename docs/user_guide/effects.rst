@@ -165,12 +165,23 @@ Effect packages can be run by using the ``runeffect`` command::
 
     python manage.py runeffect <python.path.to.package>
 
+    # Example
+    python manage.py runeffect examples.cubes
+
 This will currently look for the first effect class with the ``runnable`` attribute set to ``True``,
 make an instance of that effect and call its ``draw`` method every frame. The effect package
 dependencies are also handled. (All handled by ``DefaultProject`` class)
 
 The runnable effect is resposible for instantiating other effects it depends on and call them
 directly.
+
+Optionally you can also specify the exact effect to run in the effect package
+by adding the class name to the path::
+
+    python manage.py runeffect <python.path.to.package>.<effect class name>
+
+    # Example
+    python manage.py runeffect examples.cubes.Cubes
 
 If you need a more complex setup where multiple runnable effects are involved, you need
 to create a proper project config using ``project.py`` and instead use the ``run`` command.
