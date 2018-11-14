@@ -120,5 +120,5 @@ Optional:
 Mentions
 --------
 
-* Also consider supporting [Read the Docs](https://readthedocs.org/sustainability/) by becoming a
-  gold member though a one time ($5 or more) donation for an ad-free experience.
+Also consider supporting [Read the Docs](https://readthedocs.org/sustainability/) by becoming a
+gold member though a one time ($5 or more) donation for an ad-free experience.
