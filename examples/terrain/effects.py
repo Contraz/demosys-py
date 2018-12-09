@@ -48,7 +48,7 @@ class TerrainTessellation(effect.Effect):
         m_mv = matrix44.multiply(m_mv, self.sys_camera.view_matrix)
 
         self.ctx.patch_vertices = 3
-        self.ctx.wireframe = True if math.fmod(time, 10) < 5.0 else False
+        self.ctx.wireframe = True if math.fmod(time, 5) < 2.5 else False
 
         self.heightmap.use(location=0)
         self.heights.value = 0
