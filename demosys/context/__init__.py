@@ -1,12 +1,14 @@
 import moderngl
+
 from demosys.conf import settings
 from demosys.utils.module_loading import import_string
+from demosys.context.base import BaseWindow
 
 # Window instance shortcut
 WINDOW = None  # noqa
 
 
-def window(raise_on_error=True) -> 'demosys.context.base.Window':
+def window(raise_on_error=True) -> BaseWindow:
     """
     The window instance we are rendering to
 
