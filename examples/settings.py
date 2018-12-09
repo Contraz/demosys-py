@@ -9,7 +9,7 @@ OPENGL = {
 
 WINDOW = {
     "class": "demosys.context.pyqt.Window",
-    "size": (1280, 720),
+    "size": (1920, 1080),
     "aspect_ratio": 16 / 9,
     "fullscreen": False,
     "resizable": False,
