@@ -207,7 +207,10 @@ class BaseProject:
         Returns:
             Effect class
         """
-        return effects.find_effect_class(class_name, package_name=package_name)
+        if package_name:
+            return effects.find_effect_class("{}.{}".format(package_name, class_name))
+
+        return effects.find_effect_class(class_name)
 
     def get_scene(self, label: str) -> Scene:
         """
