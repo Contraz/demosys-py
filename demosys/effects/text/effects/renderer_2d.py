@@ -32,7 +32,7 @@ class TextRenderer2D(TextWriter2D):
 
     @property
     def texture(self):
-        return self._fbo.color_buffers[0]
+        return self._fbo.color_attachments[0]
 
     def render(self):
         self._fbo.clear()
