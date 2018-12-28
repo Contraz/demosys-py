@@ -15,6 +15,7 @@ class Loader(PillowLoader):
             components,
             data,
         )
+        texture.extra = {'meta': self.meta}
 
         if self.meta.mipmap:
             texture.build_mipmaps()

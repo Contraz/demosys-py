@@ -110,7 +110,12 @@ class ProgramShaders:
         return instance
 
     def create(self):
-        """Return create arguments to the Contex.program function in moderngl"""
+        """
+        Creates a shader program.
+
+        Returns:
+            ModernGL Program instance
+        """
         # Get out varyings
         out_attribs = []
 
@@ -123,7 +128,7 @@ class ProgramShaders:
             else:
                 out_attribs = self.vertex_source.find_out_attribs()
 
-        return self.ctx.program(
+        program = self.ctx.program(
             vertex_shader=self.vertex_source.source,
             geometry_shader=self.geometry_source.source if self.geometry_source else None,
             fragment_shader=self.fragment_source.source if self.fragment_source else None,
@@ -131,6 +136,8 @@ class ProgramShaders:
             tess_evaluation_shader=self.tess_evaluation_source.source if self.tess_evaluation_source else None,
             varyings=out_attribs,
         )
+        program.extra = {'meta': self.meta}
+        return program
 
 
 class ShaderSource:
