@@ -12,7 +12,7 @@ WINDOW = {
     "size": (1280, 720),
     "aspect_ratio": 16 / 9,
     "fullscreen": False,
-    "resizable": False,
+    "resizable": True,
     "title": "Examples",
     "vsync": True,
     "cursor": True,
