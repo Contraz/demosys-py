@@ -18,12 +18,27 @@ Methods
 .. automethod:: Window.keyPressEvent
 .. automethod:: Window.keyReleaseEvent
 .. automethod:: Window.mouseMoveEvent
-.. automethod:: Window.resizeGL
 .. automethod:: Window.swap_buffers
 .. automethod:: Window.use
 .. automethod:: Window.should_close
 .. automethod:: Window.close
 .. automethod:: Window.terminate
+.. automethod:: Window.resize
+
+Other Inherited Methods
+-----------------------
+
+.. automethod:: Window.draw
+.. automethod:: Window.clear
+.. automethod:: Window.clear_values
+.. automethod:: Window.keyboard_event
+.. automethod:: Window.cursor_event
+.. automethod:: Window.print_context_info
+.. automethod:: Window.set_default_viewport
 
 Attributes
 ----------
+
+.. autoattribute:: Window.size
+.. autoattribute:: Window.buffer_size
+.. autoattribute:: Window.keys
