@@ -50,6 +50,7 @@ class TextWriter2D(BaseText):
     @text_lines.setter
     def text_lines(self, value):
         self._text_lines = value
+        self._string_buffer.clear(chunk=b'\32')
 
         for i, line in enumerate(self._text_lines):
             self.set_text_line(i, line)
