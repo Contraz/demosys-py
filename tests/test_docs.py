@@ -52,5 +52,8 @@ class TestCase(unittest.TestCase):
     def test_demosys_context_glfw(self):
         self.validate('demosys.context.glfw.rst', 'demosys.context.glfw', 'Window', [])
 
+    def test_demosys_context_pyqt(self):
+        self.validate('demosys.context.pyqt.rst', 'demosys.context.pyqt', 'Window', [])
+
     def test_demosys_context_headless(self):
         self.validate('demosys.context.headless.rst', 'demosys.context.headless', 'Window', [])
