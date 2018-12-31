@@ -27,11 +27,11 @@ setup(
     ],
     install_requires=[
         'moderngl==5.4.2',
-        'pyrr==0.9.2',
-        'Pillow==5.2.0',
+        'pyrr==0.10.0',
+        'Pillow==5.3.0',
         'pyrocket==0.2.8',
-        'PyWavefront==0.4.1',
-        'PyQt5==5.11.2',
+        'PyWavefront==1.0.2 ',
+        'PyQt5==5.11.3',
     ],
     extras_require={
         "glfw": ['glfw==1.7.0'],
