@@ -80,7 +80,7 @@ class TextWriter2D(BaseText):
 
         self._string_buffer.write(
             numpy.fromiter(
-                self._translate_string(text.encode('iso-8859-1'), self.area[0]),
+                self._translate_string(text.encode('iso-8859-1', errors='replace'), self.area[0]),
                 dtype=numpy.uint32
             ).tobytes(),
             offset=(self.area[0] * 4) * line,
