@@ -4,8 +4,10 @@ sudo: false
 
 matrix:
   include:
-   - env: TOXENV=pep8
-     python: 3.7
+    - env: TOXENV=pep8
+      python: 3.7
+      dist: xenial
+      sudo: true
 
 install: 
   - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
