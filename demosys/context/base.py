@@ -139,7 +139,7 @@ class BaseWindow:
         Raises:
             NotImplementedError
         """
-        raise NotImplementedError()
+        raise NotImplementedError("Window.use() not implemented in window class {}".format(self.__class__))
 
     def swap_buffers(self):
         """
