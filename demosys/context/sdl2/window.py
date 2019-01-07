@@ -87,10 +87,12 @@ class Window(BaseWindow):
         """
         self.width = width
         self.height = height
+        self.buffer_width, self.buffer_height = self.width, self.height
 
+        # FIXME: This doesn't actually work for retina and 4k displays. Upscaled buffer?
         # Fetch the actual buffer size of the screen. This can double the size on 4k displays
-        sdl2.SDL_GL_GetDrawableSize(self.window, self.tmp_size_x, self.tmp_size_y)
-        self.buffer_width, self.buffer_height = self.tmp_size_x.value, self.tmp_size_y.value
+        # sdl2.SDL_GL_GetDrawableSize(self.window, self.tmp_size_x, self.tmp_size_y)
+        # self.buffer_width, self.buffer_height = self.tmp_size_x.value, self.tmp_size_y.value
 
         self.set_default_viewport()
 
