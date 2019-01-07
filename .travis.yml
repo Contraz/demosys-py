@@ -5,7 +5,7 @@ sudo: false
 matrix:
   include:
     - env: TOXENV=pep8
-      python: 3.7
+      python: 3.6
       dist: xenial
       sudo: true
 
