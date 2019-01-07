@@ -34,22 +34,37 @@ class Window(BaseWindow):
         sdl2.video.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, self.gl_version.major)
         sdl2.video.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, self.gl_version.minor)
         sdl2.video.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_CORE)
+        sdl2.video.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG, 1)
+        sdl2.video.SDL_GL_SetAttribute(sdl2.SDL_GL_DOUBLEBUFFER, 1)
+        sdl2.video.SDL_GL_SetAttribute(sdl2.SDL_GL_DEPTH_SIZE, 24)
+        sdl2.SDL_ShowCursor(sdl2.SDL_ENABLE if self.cursor else sdl2.SDL_DISABLE)
+        if self.samples > 1:
+            sdl2.video.SDL_GL_SetAttribute(sdl2.SDL_GL_MULTISAMPLEBUFFERS, 1)
+            sdl2.video.SDL_GL_SetAttribute(sdl2.SDL_GL_MULTISAMPLESAMPLES, self.samples)
 
-        # TODO: Fullscreen
-        # SDL_WINDOW_FULLSCREEN
+        flags = sdl2.SDL_WINDOW_OPENGL
+        if self.fullscreen:
+            flags |= sdl2.SDL_WINDOW_FULLSCREEN
+        else:
+            if self.resizable:
+                flags |= sdl2.SDL_WINDOW_RESIZABLE
+
         self.window = sdl2.SDL_CreateWindow(
             self.title.encode(),
             sdl2.SDL_WINDOWPOS_UNDEFINED,
             sdl2.SDL_WINDOWPOS_UNDEFINED,
             self.width,
             self.height,
-            sdl2.SDL_WINDOW_OPENGL | sdl2.SDL_WINDOW_RESIZABLE,
+            flags
         )
 
         if not self.window:
             raise ValueError("Failed to create window:", sdl2.SDL_GetError())
 
         self.context = sdl2.SDL_GL_CreateContext(self.window)
+        if self.vsync:
+            sdl2.video.SDL_GL_SetSwapInterval(1)
+
         self.ctx = moderngl.create_context(require=self.gl_version.code)
         context.WINDOW = self
         self.fbo = self.ctx.screen
