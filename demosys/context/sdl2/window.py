@@ -1,4 +1,4 @@
-from ctypes import c_int, POINTER
+from ctypes import c_int
 
 from demosys import context
 from demosys.context.base import BaseWindow
@@ -7,6 +7,7 @@ from demosys.context.sdl2.keys import Keys
 import moderngl
 import sdl2
 import sdl2.ext
+import sdl2.video
 
 
 class Window(BaseWindow):
@@ -29,6 +30,10 @@ class Window(BaseWindow):
 
         if sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO) != 0:
             raise ValueError("Failed to initialize sdl2")
+
+        sdl2.video.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, self.gl_version.major)
+        sdl2.video.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, self.gl_version.minor)
+        sdl2.video.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_CORE)
 
         # TODO: Fullscreen
         # SDL_WINDOW_FULLSCREEN
@@ -54,7 +59,7 @@ class Window(BaseWindow):
         """
         Bind the window framebuffer making it the current render target
         """
-        self.fbo.use()        
+        self.fbo.use()
 
     def swap_buffers(self):
         self.frames += 1
