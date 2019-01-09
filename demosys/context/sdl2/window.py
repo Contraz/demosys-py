@@ -8,6 +8,7 @@ import moderngl
 import sdl2
 import sdl2.ext
 import sdl2.video
+from sdl2 import version
 
 
 class Window(BaseWindow):
@@ -28,6 +29,8 @@ class Window(BaseWindow):
         self.tmp_size_x = c_int()
         self.tmp_size_y = c_int()
 
+        print("Using sdl2 library version:", self.get_library_version())
+
         if sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO) != 0:
             raise ValueError("Failed to initialize sdl2")
 
@@ -44,7 +47,7 @@ class Window(BaseWindow):
 
         flags = sdl2.SDL_WINDOW_OPENGL
         if self.fullscreen:
-            flags |= sdl2.SDL_WINDOW_FULLSCREEN
+            flags |= sdl2.SDL_WINDOW_FULLSCREEN_DESKTOP
         else:
             if self.resizable:
                 flags |= sdl2.SDL_WINDOW_RESIZABLE
@@ -62,8 +65,7 @@ class Window(BaseWindow):
             raise ValueError("Failed to create window:", sdl2.SDL_GetError())
 
         self.context = sdl2.SDL_GL_CreateContext(self.window)
-        if self.vsync:
-            sdl2.video.SDL_GL_SetSwapInterval(1)
+        sdl2.video.SDL_GL_SetSwapInterval(1 if self.vsync else 0)
 
         self.ctx = moderngl.create_context(require=self.gl_version.code)
         context.WINDOW = self
@@ -119,3 +121,8 @@ class Window(BaseWindow):
         sdl2.SDL_GL_DeleteContext(self.context)
         sdl2.SDL_DestroyWindow(self.window)
         sdl2.SDL_Quit()
+
+    def get_library_version(self):
+        v = version.SDL_version()
+        sdl2.SDL_GetVersion(v)
+        return v.major, v.minor, v.patch
