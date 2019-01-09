@@ -100,7 +100,10 @@ class Window(BaseWindow):
 
     def process_events(self):
         for event in sdl2.ext.get_events():
-            if event.type in [sdl2.SDL_KEYDOWN, sdl2.SDL_KEYUP]:
+            if event.type == sdl2.SDL_MOUSEMOTION:
+                self.cursor_event(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel)
+
+            elif event.type in [sdl2.SDL_KEYDOWN, sdl2.SDL_KEYUP]:
                 self.keyboard_event(event.key.keysym.sym, event.type, None)
 
             elif event.type == sdl2.SDL_QUIT:
