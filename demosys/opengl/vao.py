@@ -199,7 +199,10 @@ class VAO:
             attribute_names = [attribute_names, ]
 
         if not type(buffer) in [moderngl.Buffer, numpy.ndarray, bytes]:
-            raise VAOError("buffer parameter must be a moderngl.Buffer, numpy.ndarray or bytes instance")
+            raise VAOError(
+                ("buffer parameter must be a moderngl.Buffer, numpy.ndarray or bytes instance"
+                "(not {})".format(type(buffer)))
+            )
 
         if isinstance(buffer, numpy.ndarray):
             buffer = self.ctx.buffer(buffer.tobytes())
