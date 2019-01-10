@@ -13,7 +13,7 @@ out vec3 normal;
 out vec3 pos;
 
 void main() {
-    mat4 mv =  m_cam * m_view;
+    mat4 mv = m_cam * m_view;
     vec4 p = mv * vec4(in_position, 1.0);
 	gl_Position = m_proj * p;
     mat3 m_normal = transpose(inverse(mat3(mv)));
