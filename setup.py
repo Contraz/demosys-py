@@ -33,6 +33,7 @@ setup(
         'pyrocket==0.2.8',
         'PyWavefront==1.0.2 ',
         'PyQt5==5.11.3',
+        'trimesh==2.36.3',
     ],
     extras_require={
         "glfw": ['glfw==1.7.0'],
