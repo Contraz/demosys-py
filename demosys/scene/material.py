@@ -3,7 +3,7 @@
 class Material:
     def __init__(self, name):
         self.name = name
-        self.color = None
+        self.color = (1.0, 1.0, 1.0, 1.0)
         self.mat_texture = None
         self.double_sided = True
 
