@@ -6,8 +6,7 @@ import trimesh
 
 from demosys.loaders.scene.base import SceneLoader
 from demosys.opengl.vao import VAO
-from demosys.resources.meta import SceneDescription
-from demosys.scene import Material, MaterialTexture, Mesh, Node, Scene
+from demosys.scene import Material, Mesh, Node, Scene
 
 
 class STLLoader(SceneLoader):
@@ -23,7 +22,7 @@ class STLLoader(SceneLoader):
 
         file_obj = str(path)
         if file_obj.endswith('.gz'):
-            file_obj =  gzip.GzipFile(file_obj)
+            file_obj = gzip.GzipFile(file_obj)
 
         stl_mesh = trimesh.load(file_obj, file_type='stl')
         scene = Scene(self.meta.resolved_path)
