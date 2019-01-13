@@ -20,6 +20,18 @@ python manage.py runeffect examples.cubes
 
 Texture source : http://free-texture-site.blogspot.com/2010/10/free-game-crate-texture.html
 
+System
+------
+
+Simple solar system using textures from NASA.
+
+```bash
+python manage.py runeffect examples.system
+```
+
+![screenshot](https://raw.githubusercontent.com/Contraz/demosys-py/master/examples/images/system.png)
+
+
 Feedback
 --------
 
