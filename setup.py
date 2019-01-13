@@ -27,7 +27,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
     install_requires=[
-        'moderngl==5.4.2',
+        'moderngl==5.5.0',
         'pyrr==0.10.0',
         'Pillow==5.4.1',
         'pyrocket==0.2.8',
