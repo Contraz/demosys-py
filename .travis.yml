@@ -10,7 +10,7 @@ matrix:
       sudo: true
 
 install: 
-  - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
+  # - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
   - pip install -U setuptools
   - pip install tox
   - pip install -r requirements-test.txt
