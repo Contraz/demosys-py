@@ -59,6 +59,7 @@ class SunSystemEffect(effect.Effect):
 
 
 class EarthEffect(effect.Effect):
+    runnable = False
 
     def __init__(self, parent=None):
         self.parent = parent
