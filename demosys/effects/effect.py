@@ -46,7 +46,7 @@ class Effect:
 
     # Window properties set by controller on initialization (class vars)
     _window = None  # type: BaseWindow
-    _project = None  # type: demosys.project.base.BaseProject
+    _project = None  # type: 'demosys.project.base.BaseProject'
 
     _ctx = None  # type: moderngl.Context
     _sys_camera = None  # type: camera.SystemCamera
