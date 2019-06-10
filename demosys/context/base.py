@@ -3,6 +3,7 @@ from collections import namedtuple
 from typing import Tuple
 
 import moderngl
+import demosys
 from demosys import project
 from demosys.conf import settings
 from demosys.view import screenshot
@@ -287,14 +288,18 @@ class BaseWindow:
         """
         Prints moderngl context info.
         """
-        print("Context Version:")
-        print('ModernGL:', moderngl.__version__)
-        print('vendor:', self.ctx.info['GL_VENDOR'])
-        print('renderer:', self.ctx.info['GL_RENDERER'])
-        print('version:', self.ctx.info['GL_VERSION'])
-        print('python:', sys.version)
-        print('platform:', sys.platform)
-        print('code:', self.ctx.version_code)
+        print()
+        print("Version Info")
+        print("------------")
+        print("demosys-py :", demosys.__version__)
+        print('ModernGL   :', moderngl.__version__)
+        print('vendor     :', self.ctx.info['GL_VENDOR'])
+        print('renderer   :', self.ctx.info['GL_RENDERER'])
+        print('version    :', self.ctx.info['GL_VERSION'])
+        print('code       :', self.ctx.version_code)
+        print('python     :', sys.version)
+        print('platform   :', sys.platform)
+        print()
 
     def set_default_viewport(self):
         """
