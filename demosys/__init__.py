@@ -1,7 +1,7 @@
 from demosys.conf import settings
 from demosys import view
 
-__version__ = '2.0.4'
+__version__ = "2.1.0"
 
 
 def setup(**kwargs):
