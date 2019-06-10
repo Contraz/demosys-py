@@ -22,12 +22,14 @@ __pycache__
 
 # IDE files
 /.idea
+/.vscode
 
 # Test project
 /testdemo/
+# Local testing of obj loaders
+/examples/objtest
 
 # Misc
 .DS_Store
-.vscode/settings.json
 /bug.py
 /tmp
