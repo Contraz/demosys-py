@@ -41,6 +41,7 @@ The currently supported classes are:
 - ``demosys.context.pyqt.Window`` PyQt5 window (default)
 - ``demosys.context.glfw.Window`` pyGLFW window
 - ``demosys.context.pyglet.Window`` Pyglet window (Not for OS X)
+- ``demosys.context.sdl2.Window`` PySDL2 window
 - ``demosys.context.headless.Window`` Headless window
 
 .. code:: python
