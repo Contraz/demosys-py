@@ -50,7 +50,7 @@ Features
 * Loading GLTF 2.0 and wavefront obj files/scenes
 * Supports the rocket sync-tracker system to create interesting keyframe data (Using [pyrocket](https://github.com/Contraz/pyrocket))
 * Runtime re-loading shader programs (press R)
-* Supports headless rendering and various visible windows such as pyGLFW, PyQt5 and Pyglet.
+* Supports headless rendering and various visible windows such as pyGLFW, PyQt5, PySDL2 and Pyglet.
 * Management commands for creting new projects and effects including the ability to make custom commands
 * A highly pluggable framework with customizable timers, resource loaders, timelines and more
 * A geometry module for quick creation of common mesh/VAO types
