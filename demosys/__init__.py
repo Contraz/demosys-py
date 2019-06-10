@@ -1,6 +1,8 @@
 from demosys.conf import settings
 from demosys import view
 
+__version__ = '2.0.4'
+
 
 def setup(**kwargs):
     """Configure"""
