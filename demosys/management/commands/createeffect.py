@@ -8,7 +8,7 @@ class Command(CreateCommand):
     help = "Create an effect"
 
     def add_arguments(self, parser):
-        parser.add_argument("name", help="Name of the effect")
+        parser.add_argument("name", help="Name of the effect including relative path if needed")
         parser.add_argument("--template", type=available_templates, default="cube_simple",
                             help="The effect template to clone from")
 
