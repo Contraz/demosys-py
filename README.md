@@ -123,3 +123,8 @@ Mentions
 
 Also consider supporting [Read the Docs](https://readthedocs.org/sustainability/) by becoming a
 gold member though a one time ($5 or more) donation for an ad-free experience.
+
+---
+This project is sponsored by [zetta.io](https://www.zetta.io)
+
+[![Zetta.IO](https://raw.githubusercontent.com/Contraz/demosys-py/master/.github/logo.png)](https://www.zetta.io)
