@@ -25,7 +25,6 @@ A high priority for this project is also to help improving [ModernGL](https://gi
 * [Effect Templates](https://github.com/Contraz/demosys-py/tree/master/demosys/effect_templates)
 * [demosys-py on Github](https://github.com/Contraz/demosys-py)
 * [demosys-py on PyPi](https://pypi.python.org/pypi/demosys-py)
-* [Discord Server](https://discord.gg/2p3WTHE)
 
 Creating a project with a spinning cube can be done in less than a minute.
 
