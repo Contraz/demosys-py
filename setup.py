@@ -27,12 +27,12 @@ setup(
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
     install_requires=[
-        'moderngl==5.5.2',
-        'pyrr>=0.10',
-        'Pillow>=5',
+        'moderngl==5.5.4',
+        'pyrr>=0.10.3',
+        'Pillow>=7.1.2',
         'pyrocket==0.2.8',
-        'PyWavefront==1.0.4',
-        'PyQt5>=5.12',
+        'PyWavefront==1.3.2',
+        'PyQt5>=5.14.2 ',
         'trimesh>=2.38',
     ],
     extras_require={
