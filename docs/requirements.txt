@@ -1,4 +1,4 @@
-setuptools==40.2.0
+setuptools==65.5.1
 Sphinx==1.7.7
 sphinx-rtd-theme==0.4.1
 sphinxcontrib-napoleon==0.6.1
